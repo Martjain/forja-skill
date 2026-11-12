@@ -39,6 +39,7 @@
     "git": "cuentas en un hilo de papel continuo: cada commit es una cuenta, las ramas son etiquetas-puntero que cuelgan de una cuenta y se mueven cuando el hilo crece",
     "ramas": "un hilo que se abre en dos y vuelve a anudarse en un commit de fusión",
     "remotos": "dos copias del mismo hilo en máquinas distintas, con marcadores de dónde estaba el otro la última vez",
-    "diffs": "renglones de papel impreso con márgenes verde y rojo"
+    "diffs": "renglones de papel impreso con márgenes verde y rojo",
+    "ramas-merge-rebase-conflictos": "cinta de papel perforado que avanza de izquierda a derecha: cada commit es un tramo rectangular con su patrón de perforaciones, cada rama es una pista de cinta con su etiqueta; merge empalma dos pistas con un tramo de unión de dos padres, rebase corta los tramos y los vuelve a perforar al final de otra pista (copias con hash nuevo, los originales quedan como recortes); un conflicto son dos perforaciones distintas en el mismo renglón"
   }
 }
