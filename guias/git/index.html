@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="forja:familia" content="control-de-versiones">
+<meta name="forja:nivel" content="principiante">
+<meta name="forja:fecha" content="2026-11-12">
+<title>Cómo funciona git: guía visual para principiantes</title>
+<style>
+:root {
+  /* Valores de familias/control-de-versiones.json */
+  --fondo: #F5F3EC;
+  --superficie: #EAE7DC;
+  --borde: #D6D1C2;
+  --tinta: #1D1B16;
+  --tinta-suave: #57534A;
+  --gris: #A39E90;
+  --acento: #E39A1C;
+  --acento-texto: #8F5400;
+  --verde: #256B42;
+  --rojo: #A33328;
+  --o-fondo: #17150F;
+  --o-tinta: #F3E9D2;
+  --o-suave: #B8AD95;
+  --o-acento: #FFB000;
+  --o-verde: #5FC08A;
+  --o-rojo: #F07A6A;
+  --f-titulos: ui-serif, Georgia, "Times New Roman", serif;
+  --f-cuerpo: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --f-codigo: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --ancho: 72rem;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--fondo); color: var(--tinta); font: 400 1.0625rem/1.65 var(--f-cuerpo); overflow-wrap: anywhere; }
+img, svg { max-width: 100%; height: auto; }
+pre { overflow-x: auto; white-space: pre; font-family: var(--f-codigo); }
+code { font-family: var(--f-codigo); font-size: .92em; background: var(--superficie); padding: .05em .35em; border-radius: 3px; overflow-wrap: anywhere; }
+section { padding: clamp(3rem, 8vw, 6rem) clamp(1.25rem, 5vw, 3rem); background: var(--fondo); }
+section > * { max-width: var(--ancho); margin-inline: auto; }
+section[data-tono="oscuro"] {
+  --tinta: var(--o-tinta); --tinta-suave: var(--o-suave); --superficie: #24211A; --borde: #3B362B;
+  --gris: #6F685A; --acento: var(--o-acento); --acento-texto: var(--o-acento); --verde: var(--o-verde); --rojo: var(--o-rojo);
+  --fondo: var(--o-fondo);
+  background: var(--o-fondo); color: var(--o-tinta);
+}
+h1, h2, h3 { font-family: var(--f-titulos); font-weight: 600; line-height: 1.15; margin: 0 0 1rem; }
+h2 { font-size: clamp(2rem, 5vw, 2.75rem); }
+h3 { font-size: 1.3rem; }
+p { margin: 0 0 1rem; max-width: 68ch; }
+.antetitulo { font: 600 .8rem/1 var(--f-codigo); letter-spacing: .12em; text-transform: uppercase; color: var(--acento-texto); margin-bottom: .9rem; }
+.suave { color: var(--tinta-suave); }
+a { color: inherit; text-decoration-color: var(--acento); text-underline-offset: 3px; }
+a.cita { font-size: .75em; vertical-align: super; text-decoration: none; color: var(--acento-texto); font-weight: 600; padding: 0 .1em; }
+:focus-visible { outline: 3px solid var(--acento); outline-offset: 3px; }
+button, input, textarea { font: inherit; }
+button, input { min-height: 44px; }
+.boton { min-height: 44px; min-width: 44px; padding: .55rem 1.1rem; border: 1.5px solid var(--tinta); background: transparent; color: var(--tinta); border-radius: 3px; cursor: pointer; font-weight: 600; }
+.boton.principal { background: var(--acento); border-color: var(--acento); color: #1D1B16; }
+.boton:disabled { opacity: .4; cursor: default; }
+
+/* Terminal */
+pre.terminal { background: #17150F; color: #F3E9D2; padding: 1rem 1.15rem; border-radius: 4px; font-size: .86rem; line-height: 1.55; margin: 0; border-left: 4px solid var(--acento); }
+section[data-tono="oscuro"] pre.terminal { background: #0D0C08; border: 1px solid #3B362B; border-left: 4px solid var(--o-acento); }
+pre.terminal .p { color: #FFB000; }
+pre.terminal .v { color: #5FC08A; }
+pre.terminal .r { color: #F07A6A; }
+pre.terminal .s { color: #B8AD95; }
+
+/* Utilidades SVG */
+.f-tinta { fill: var(--tinta); } .f-suave { fill: var(--tinta-suave); } .f-acento { fill: var(--acento); }
+.f-acento-t { fill: var(--acento-texto); } .f-sup { fill: var(--superficie); } .f-fondo { fill: var(--fondo); }
+.f-verde { fill: var(--verde); } .f-rojo { fill: var(--rojo); } .f-no { fill: none; }
+.l-tinta { stroke: var(--tinta); } .l-borde { stroke: var(--borde); } .l-acento { stroke: var(--acento); }
+.l-verde { stroke: var(--verde); } .l-rojo { stroke: var(--rojo); } .l-suave { stroke: var(--tinta-suave); } .l-gris { stroke: var(--gris); }
+.t-mono { font-family: var(--f-codigo); } .t-ser { font-family: var(--f-titulos); font-weight: 600; }
+svg text { font-family: var(--f-cuerpo); }
+.punteada { stroke-dasharray: 5 4; }
+figure { margin: 0; }
+figcaption { font-size: .85rem; color: var(--tinta-suave); margin-top: .6rem; }
+
+/* ---------- portada ---------- */
+[data-layout="portada"] .rejilla { display: grid; grid-template-columns: 1.25fr 1fr; gap: clamp(2rem, 5vw, 4rem); align-items: center; }
+[data-layout="portada"] h1 { font-size: clamp(2.6rem, 8vw, 4.6rem); line-height: 1.02; margin-bottom: 1.25rem; }
+[data-layout="portada"] h1 span { color: var(--acento-texto); }
+.lema { font-size: 1.2rem; color: var(--tinta-suave); max-width: 40ch; }
+.cifras { display: flex; flex-wrap: wrap; gap: 1.5rem 2.5rem; margin-top: 2.25rem; padding-top: 1.5rem; border-top: 1px solid var(--borde); }
+.cifras div { min-width: 7rem; }
+.cifras strong { display: block; font: 600 clamp(2.6rem, 7vw, 3.6rem)/1 var(--f-titulos); color: var(--acento-texto); }
+.cifras span { font-size: .9rem; color: var(--tinta-suave); }
+[data-layout="portada"] svg { width: 100%; max-width: 330px; display: block; margin-inline: auto; }
+
+/* ---------- comparacion ---------- */
+.enfrentadas { display: grid; grid-template-columns: 1fr 1fr; gap: 0; margin-top: 2rem; border-top: 1px solid var(--borde); }
+.enfrentadas > div { padding: 1.75rem 1.75rem 0 0; }
+.enfrentadas > div + div { padding: 1.75rem 0 0 1.75rem; border-left: 3px solid var(--acento); }
+.enfrentadas .etq { font: 600 .8rem/1 var(--f-codigo); letter-spacing: .08em; text-transform: uppercase; color: var(--tinta-suave); }
+.enfrentadas .etq.git { color: var(--acento-texto); }
+.enfrentadas svg { width: 100%; max-width: 380px; display: block; margin: 1rem 0; }
+.nota-local { margin-top: 2.5rem; padding: 1.1rem 1.25rem; background: var(--superficie); border-radius: 4px; max-width: 68ch; }
+
+/* ---------- dividido ---------- */
+[data-layout="dividido"] .rejilla { display: grid; grid-template-columns: 2fr 3fr; gap: clamp(2rem, 5vw, 4rem); align-items: start; }
+.diagrama-caja { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1.5rem; align-items: start; }
+.diagrama-caja svg { width: 100%; max-width: 340px; }
+[data-nodo] { cursor: pointer; }
+[data-nodo] rect { fill: var(--superficie); stroke: var(--borde); stroke-width: 1.5; transition: opacity .2s, stroke .2s; }
+[data-nodo] text { transition: opacity .2s; }
+[data-nodo].activo rect { stroke: var(--acento); stroke-width: 3; }
+[data-nodo]:focus { outline: none; }
+[data-nodo]:focus-visible rect { stroke: var(--acento); stroke-width: 3; stroke-dasharray: 4 3; }
+.atenuado [data-nodo]:not(.activo) { opacity: .62; }
+[data-une] path { fill: none; stroke: var(--gris); stroke-width: 2; transition: stroke .2s; }
+[data-une] text { fill: var(--tinta-suave); font-family: var(--f-codigo); font-size: 11px; }
+[data-une].activo path { stroke: var(--acento); stroke-width: 3; marker-end: url(#punta-act); }
+.m-gris { fill: var(--gris); }
+[data-une].activo text { fill: var(--acento-texto); font-weight: 600; }
+.ficha { background: var(--superficie); border-radius: 4px; padding: 1.25rem; border-top: 3px solid var(--acento); }
+.ficha h3 { margin-bottom: .25rem; }
+.ficha .tec { font: 400 .85rem/1.4 var(--f-codigo); color: var(--acento-texto); margin-bottom: .8rem; }
+.ficha ul { padding-left: 1.1rem; margin: .4rem 0 0; }
+.ficha li { margin-bottom: .35rem; }
+
+/* ---------- secuencia / pasos ---------- */
+.etapas { display: flex; gap: 0; overflow-x: auto; scroll-snap-type: x mandatory; padding: .25rem .25rem 1rem; margin: 2rem auto 1.5rem; list-style: none; }
+.etapas li { scroll-snap-align: start; flex: 1 0 9.5rem; position: relative; }
+.etapas li + li::before { content: ""; position: absolute; top: 22px; left: -50%; width: 100%; height: 2px; background: var(--borde); z-index: 0; }
+.etapas li.hecho + li::before, .etapas li.hecho + li.actual::before { background: var(--acento); }
+.etapas button { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: .4rem; width: 100%; background: none; border: 0; color: var(--tinta); cursor: pointer; padding: 0 .4rem; }
+.etapas .num { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; background: var(--fondo); border: 2px solid var(--borde); font: 600 .95rem/1 var(--f-codigo); }
+.etapas li.hecho .num { border-color: var(--acento); }
+.etapas li.actual .num { background: var(--acento); border-color: var(--acento); color: #1D1B16; }
+.etapas .nom { font: 400 .78rem/1.3 var(--f-codigo); text-align: center; color: var(--tinta-suave); }
+.etapas li.actual .nom { color: var(--tinta); font-weight: 600; }
+.paso-cuerpo { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1.5rem 2.5rem; align-items: start; }
+.paso-cuerpo svg { width: 100%; max-width: 460px; display: block; }
+.chip rect { fill: var(--fondo); stroke: var(--borde); stroke-width: 1.5; }
+.chip[data-estado="sin-seguimiento"] rect { stroke: var(--gris); stroke-dasharray: 4 3; }
+.chip[data-estado="preparado"] rect, .chip[data-estado="nuevo"] rect { stroke: var(--verde); stroke-width: 2.5; }
+.chip[data-estado="modificado"] rect { stroke: var(--rojo); stroke-width: 2.5; }
+.chip .estado { font-size: 9.5px; fill: var(--tinta-suave); }
+.chip[data-estado="preparado"] .estado, .chip[data-estado="nuevo"] .estado { fill: var(--verde); font-weight: 600; }
+.chip[data-estado="modificado"] .estado { fill: var(--rojo); font-weight: 600; }
+.zona { fill: var(--superficie); stroke: var(--borde); stroke-width: 1.5; transition: stroke .25s; }
+.zona.viva { stroke: var(--acento); stroke-width: 2.5; }
+.oculto { display: none; }
+.flecha-p { stroke: var(--gris); stroke-width: 2; fill: none; }
+.flecha-p.viva { stroke: var(--acento); stroke-width: 3; marker-end: url(#punta2-act); }
+.paso-texto h3 { margin-bottom: .5rem; }
+.controles { display: flex; align-items: center; gap: .75rem; flex-wrap: wrap; margin-top: 1.25rem; }
+.progreso { flex: 1 1 8rem; font: 400 .85rem/1 var(--f-codigo); color: var(--tinta-suave); }
+.barra { height: 4px; background: var(--borde); border-radius: 2px; margin-top: .45rem; overflow: hidden; }
+.barra i { display: block; height: 100%; background: var(--acento); width: 0; transition: width .25s; }
+.config { margin-top: 2.5rem; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: 1rem 2rem; align-items: center; border-top: 1px solid var(--borde); padding-top: 1.5rem; }
+
+/* ---------- dato-heroe ---------- */
+[data-layout="dato-heroe"] .rejilla { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr); gap: clamp(2rem, 5vw, 4rem); align-items: start; }
+.heroe-num { font: 600 clamp(7rem, 22vw, 13rem)/.85 var(--f-titulos); color: var(--acento-texto); letter-spacing: -.03em; }
+.heroe-etq { font: 600 1.1rem/1.3 var(--f-codigo); margin-top: .75rem; }
+.heroe-etq + p { margin-top: .75rem; }
+.probador { background: var(--superficie); border-radius: 4px; padding: 1.25rem; margin-top: 1.5rem; }
+.probador label { display: block; font-weight: 600; margin-bottom: .4rem; }
+.probador textarea { width: 100%; min-height: 5.5rem; padding: .7rem .8rem; border: 1.5px solid var(--borde); border-radius: 3px; background: var(--fondo); color: var(--tinta); font-family: var(--f-codigo); font-size: .95rem; resize: vertical; }
+.hash { font: 600 clamp(.82rem, 2.6vw, 1.05rem)/1.6 var(--f-codigo); letter-spacing: .02em; margin: .9rem 0 .3rem; overflow-wrap: anywhere; word-break: break-all; }
+.hash span.cambio { color: var(--rojo); text-decoration: underline; text-decoration-thickness: 2px; }
+.hash-meta { font-size: .85rem; color: var(--tinta-suave); margin: 0; }
+.hash-meta code { background: var(--fondo); }
+.medidor { display: flex; gap: 2px; margin: .8rem 0 .3rem; }
+.medidor i { flex: 1; height: 8px; background: var(--borde); border-radius: 1px; }
+.medidor i.on { background: var(--rojo); }
+
+/* ---------- mosaico ---------- */
+.mosaico { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); grid-auto-rows: auto; gap: 1rem; margin-top: 2rem; }
+.mosaico > div { background: var(--superficie); border-radius: 4px; padding: 1.5rem; }
+.mosaico .grande { grid-column: span 4; grid-row: span 2; }
+.mosaico .a { grid-column: span 2; }
+.mosaico .b { grid-column: span 2; }
+.mosaico .c { grid-column: span 6; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: 1rem 2rem; align-items: center; }
+.mosaico .grande svg { width: 100%; max-width: 520px; display: block; margin: .5rem 0 1rem; }
+.mosaico .cifra { font: 600 3.6rem/1 var(--f-titulos); color: var(--acento-texto); }
+
+/* ---------- laboratorio ---------- */
+[data-layout="laboratorio"] .cabeza { max-width: 48rem; margin-inline: auto; text-align: center; }
+[data-layout="laboratorio"] .cabeza p { margin-inline: auto; }
+.lab { max-width: 52rem; margin: 2rem auto 0; border: 1px solid var(--borde); border-radius: 4px; background: var(--fondo); }
+.lab-lienzo { padding: 1rem; border-bottom: 1px solid var(--borde); background: var(--superficie); overflow-x: auto; }
+.lab-lienzo svg { width: 100%; max-width: 560px; min-width: 280px; display: block; margin-inline: auto; }
+.lab-controles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.25rem; padding: 1.25rem; }
+.lab-controles label { display: block; font-weight: 600; font-size: .95rem; margin-bottom: .2rem; }
+.lab-controles output { font: 600 1.4rem/1 var(--f-codigo); color: var(--acento-texto); }
+.lab-controles input[type="range"] { width: 100%; accent-color: #8F5400; }
+.marcas { display: flex; justify-content: space-between; font: 400 .72rem/1.2 var(--f-codigo); color: var(--tinta-suave); }
+.marcas .critico { color: var(--acento-texto); font-weight: 600; }
+.casilla { display: flex; align-items: center; gap: .6rem; min-height: 44px; cursor: pointer; }
+.casilla input { width: 22px; height: 22px; min-height: 0; accent-color: #A33328; }
+.lab-resultado { padding: 0 1.25rem 1.25rem; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1.25rem; align-items: start; }
+.estado-sim { display: inline-block; font: 600 .85rem/1 var(--f-codigo); padding: .5rem .7rem; border-radius: 3px; border: 2px solid currentColor; margin-bottom: .7rem; }
+.estado-sim[data-estado="ff"] { color: var(--acento-texto); }
+.estado-sim[data-estado="fusion"] { color: var(--verde); }
+.estado-sim[data-estado="conflicto"] { color: var(--rojo); }
+.g-commit { stroke-width: 2.5; }
+.g-linea { fill: none; stroke: var(--tinta-suave); stroke-width: 2.5; }
+.g-tag rect { stroke-width: 1.5; }
+.g-txt { font: 600 12.5px var(--f-codigo); }
+.g-cap { font: 400 11px var(--f-codigo); fill: var(--tinta-suave); }
+
+/* ---------- lista-grande ---------- */
+.lista-num { list-style: none; padding: 0; margin: 2.5rem auto 0; counter-reset: n; }
+.lista-num > li { counter-increment: n; display: grid; grid-template-columns: 5.5rem minmax(0, 1fr); gap: .25rem 1.5rem; padding: 1.75rem 0; border-top: 1px solid var(--borde); }
+.lista-num > li::before { content: counter(n, decimal-leading-zero); font: 600 clamp(2.8rem, 7vw, 4rem)/1 var(--f-titulos); color: var(--acento-texto); grid-row: span 3; }
+.lista-num h3 { margin: 0 0 .4rem; font-family: var(--f-codigo); font-size: 1.15rem; }
+.lista-num pre.terminal { margin-top: .5rem; }
+.remotos-fig { max-width: 560px; margin: 2rem auto 0; }
+.remotos-fig svg { width: 100%; display: block; }
+
+/* ---------- repaso / flashcards ---------- */
+.mazo { max-width: 40rem; margin: 2rem auto 0; }
+.mazo-cabeza { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; flex-wrap: wrap; font: 400 .9rem/1.3 var(--f-codigo); color: var(--tinta-suave); margin-bottom: .75rem; }
+.mazo-cabeza strong { color: var(--acento-texto); }
+.tarjeta { width: 100%; min-height: 15rem; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; text-align: left; padding: 2rem 1.75rem; border: 1.5px solid var(--tinta); border-radius: 4px; background: var(--fondo); color: var(--tinta); cursor: pointer; position: relative; transition: background .2s; }
+.tarjeta .cara-etq { font: 600 .75rem/1 var(--f-codigo); letter-spacing: .1em; text-transform: uppercase; color: var(--acento-texto); margin-bottom: 1rem; }
+.tarjeta .texto { font: 600 clamp(1.25rem, 3.5vw, 1.6rem)/1.3 var(--f-titulos); }
+.tarjeta.volteada { background: var(--superficie); border-color: var(--acento); }
+.tarjeta.volteada .texto { font: 400 1.1rem/1.55 var(--f-cuerpo); }
+.tarjeta .pista { position: absolute; right: 1rem; bottom: .75rem; font-size: .8rem; color: var(--tinta-suave); }
+.mazo-botones { display: flex; gap: .75rem; margin-top: 1rem; flex-wrap: wrap; }
+.mazo-botones .boton { flex: 1 1 10rem; }
+.fin-mazo { text-align: center; padding: 2rem 1rem; border: 1.5px dashed var(--acento); border-radius: 4px; }
+
+/* ---------- fuentes ---------- */
+#fuentes ol { padding-left: 1.4rem; margin-top: 1.5rem; }
+#fuentes li { margin-bottom: .6rem; }
+#fuentes li span { color: var(--tinta-suave); font-size: .9rem; }
+
+@media (max-width: 720px) {
+  [data-layout="portada"] .rejilla, [data-layout="dividido"] .rejilla, [data-layout="dato-heroe"] .rejilla,
+  .paso-cuerpo, .config, .diagrama-caja, .lab-resultado { grid-template-columns: minmax(0, 1fr); }
+  .enfrentadas { grid-template-columns: minmax(0, 1fr); }
+  .enfrentadas > div { padding: 1.5rem 0 0; }
+  .enfrentadas > div + div { padding: 1.5rem 0 0; border-left: 0; border-top: 3px solid var(--acento); margin-top: 1.5rem; }
+  .mosaico { grid-template-columns: minmax(0, 1fr); }
+  .mosaico .grande, .mosaico .a, .mosaico .b, .mosaico .c { grid-column: auto; grid-row: auto; }
+  .mosaico .c { grid-template-columns: minmax(0, 1fr); }
+  .lab-controles { grid-template-columns: minmax(0, 1fr); }
+  .lista-num > li { grid-template-columns: minmax(0, 1fr); }
+  .lista-num > li::before { grid-row: auto; }
+  [data-layout="portada"] svg { max-width: 260px; }
+  .diagrama-caja svg { max-width: 320px; margin-inline: auto; display: block; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+</style>
+</head>
+<body>
+<main>
+
+  <!-- ===================== 1. PORTADA ===================== -->
+  <section data-layout="portada" id="inicio">
+    <div class="rejilla">
+      <div>
+        <p class="antetitulo">Guía visual · nivel principiante</p>
+        <h1>Cómo funciona <span>git</span></h1>
+        <p class="lema">Git guarda tu proyecto como un hilo de fotos. Cada foto es un commit, y las ramas son etiquetas que cuelgan de ese hilo y avanzan cuando agregas fotos nuevas.</p>
+        <div class="cifras">
+          <div><strong>3</strong><span>zonas por las que pasa un cambio <a class="cita" href="#f1">[1]</a></span></div>
+          <div><strong>40</strong><span>caracteres en cada hash SHA-1 <a class="cita" href="#f1">[1]</a></span></div>
+          <div><strong>41</strong><span>bytes ocupa una rama <a class="cita" href="#f3">[3]</a></span></div>
+        </div>
+      </div>
+      <figure>
+        <svg viewBox="0 0 300 340" role="img" aria-labelledby="t-portada">
+          <title id="t-portada">Una tira de papel continuo con un hilo de commits. Del hilo principal sale una rama con dos commits. La etiqueta HEAD y main cuelga del commit más reciente y la etiqueta idea del último commit de la rama.</title>
+          <rect x="40" y="10" width="220" height="320" rx="2" class="f-sup l-borde" stroke-width="1.5"/>
+          <line x1="54" y1="26" x2="54" y2="318" class="l-gris" stroke-width="7" stroke-linecap="round" stroke-dasharray="0 24"/>
+          <line x1="246" y1="26" x2="246" y2="318" class="l-gris" stroke-width="7" stroke-linecap="round" stroke-dasharray="0 24"/>
+          <line x1="130" y1="96" x2="130" y2="292" class="l-tinta" stroke-width="2.5"/>
+          <path d="M130 238 C130 214 196 222 196 196 V140" class="f-no l-tinta" stroke-width="2.5"/>
+          <circle cx="130" cy="292" r="10" class="f-fondo l-tinta" stroke-width="2.5"/>
+          <circle cx="130" cy="238" r="10" class="f-fondo l-tinta" stroke-width="2.5"/>
+          <circle cx="130" cy="170" r="10" class="f-fondo l-tinta" stroke-width="2.5"/>
+          <circle cx="130" cy="96" r="12" class="f-acento l-tinta" stroke-width="2.5"/>
+          <circle cx="196" cy="190" r="10" class="f-fondo l-tinta" stroke-width="2.5"/>
+          <circle cx="196" cy="140" r="10" class="f-fondo l-tinta" stroke-width="2.5"/>
+          <text x="114" y="296" text-anchor="end" class="t-mono f-suave" font-size="10.5">0be6f21</text>
+          <text x="114" y="242" text-anchor="end" class="t-mono f-suave" font-size="10.5">002eea5</text>
+          <text x="114" y="174" text-anchor="end" class="t-mono f-suave" font-size="10.5">7c41a9e</text>
+          <text x="114" y="100" text-anchor="end" class="t-mono f-tinta" font-size="10.5" font-weight="600">d2438f4</text>
+          <line x1="130" y1="62" x2="130" y2="82" class="l-tinta" stroke-width="1.5"/>
+          <rect x="82" y="36" width="96" height="26" rx="2" class="f-tinta"/>
+          <text x="130" y="53.5" text-anchor="middle" class="t-mono f-fondo" font-size="11.5" font-weight="600">HEAD → main</text>
+          <line x1="196" y1="112" x2="196" y2="128" class="l-acento" stroke-width="1.5"/>
+          <rect x="170" y="88" width="52" height="24" rx="2" class="f-fondo l-acento" stroke-width="2"/>
+          <text x="196" y="104.5" text-anchor="middle" class="t-mono f-acento-t" font-size="11.5" font-weight="600">idea</text>
+        </svg>
+        <figcaption>Cada cuenta del hilo es un commit. Las etiquetas son ramas: apuntan a un commit y avanzan con él.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ===================== 2. COMPARACION ===================== -->
+  <section data-layout="comparacion" id="instantaneas">
+    <p class="antetitulo">01 · La idea central</p>
+    <h2>Git guarda fotos, no listas de cambios</h2>
+    <p>La mayoría de los sistemas anteriores guardaban, para cada archivo, la lista de cambios que fue recibiendo. Git piensa distinto: cada vez que haces un commit, toma una foto de cómo están todos tus archivos en ese momento <a class="cita" href="#f1">[1]</a>.</p>
+    <div class="enfrentadas">
+      <div>
+        <p class="etq">Otros sistemas: diferencias</p>
+        <svg viewBox="0 0 300 200" role="img" aria-labelledby="t-deltas">
+          <title id="t-deltas">Tres versiones de los archivos A, B y C. La versión 1 tiene los archivos completos; las versiones 2 y 3 solo guardan pequeñas diferencias de algunos archivos.</title>
+          <text x="50" y="18" text-anchor="middle" class="f-suave" font-size="11">Versión 1</text>
+          <text x="150" y="18" text-anchor="middle" class="f-suave" font-size="11">Versión 2</text>
+          <text x="250" y="18" text-anchor="middle" class="f-suave" font-size="11">Versión 3</text>
+          <rect x="15" y="32" width="70" height="40" rx="2" class="f-sup l-tinta" stroke-width="1.5"/><text x="50" y="57" text-anchor="middle" class="t-ser f-tinta" font-size="15">A</text>
+          <rect x="15" y="88" width="70" height="40" rx="2" class="f-sup l-tinta" stroke-width="1.5"/><text x="50" y="113" text-anchor="middle" class="t-ser f-tinta" font-size="15">B</text>
+          <rect x="15" y="144" width="70" height="40" rx="2" class="f-sup l-tinta" stroke-width="1.5"/><text x="50" y="169" text-anchor="middle" class="t-ser f-tinta" font-size="15">C</text>
+          <rect x="128" y="40" width="44" height="24" rx="2" class="f-fondo l-rojo" stroke-width="1.5"/><text x="150" y="56" text-anchor="middle" class="t-mono f-rojo" font-size="11">Δ1</text>
+          <rect x="128" y="152" width="44" height="24" rx="2" class="f-fondo l-rojo" stroke-width="1.5"/><text x="150" y="168" text-anchor="middle" class="t-mono f-rojo" font-size="11">Δ1</text>
+          <rect x="228" y="96" width="44" height="24" rx="2" class="f-fondo l-rojo" stroke-width="1.5"/><text x="250" y="112" text-anchor="middle" class="t-mono f-rojo" font-size="11">Δ1</text>
+          <rect x="228" y="152" width="44" height="24" rx="2" class="f-fondo l-rojo" stroke-width="1.5"/><text x="250" y="168" text-anchor="middle" class="t-mono f-rojo" font-size="11">Δ2</text>
+        </svg>
+        <p class="suave">Para ver la versión 3 de C, el sistema parte de C y le aplica Δ1 y luego Δ2.</p>
+      </div>
+      <div>
+        <p class="etq git">Git: instantáneas</p>
+        <svg viewBox="0 0 300 200" role="img" aria-labelledby="t-fotos">
+          <title id="t-fotos">Tres versiones como fotos completas. Los archivos que cambiaron se guardan de nuevo; los que no cambiaron aparecen punteados porque son solo un enlace a la copia anterior.</title>
+          <text x="50" y="18" text-anchor="middle" class="f-suave" font-size="11">Versión 1</text>
+          <text x="150" y="18" text-anchor="middle" class="f-suave" font-size="11">Versión 2</text>
+          <text x="250" y="18" text-anchor="middle" class="f-suave" font-size="11">Versión 3</text>
+          <rect x="15" y="32" width="70" height="40" rx="2" class="f-sup l-tinta" stroke-width="1.5"/><text x="50" y="57" text-anchor="middle" class="t-ser f-tinta" font-size="15">A</text>
+          <rect x="15" y="88" width="70" height="40" rx="2" class="f-sup l-tinta" stroke-width="1.5"/><text x="50" y="113" text-anchor="middle" class="t-ser f-tinta" font-size="15">B</text>
+          <rect x="15" y="144" width="70" height="40" rx="2" class="f-sup l-tinta" stroke-width="1.5"/><text x="50" y="169" text-anchor="middle" class="t-ser f-tinta" font-size="15">C</text>
+          <rect x="115" y="32" width="70" height="40" rx="2" class="f-sup l-acento" stroke-width="2.5"/><text x="150" y="57" text-anchor="middle" class="t-ser f-tinta" font-size="15">A1</text>
+          <rect x="115" y="88" width="70" height="40" rx="2" class="f-no l-gris punteada" stroke-width="1.5"/><text x="150" y="113" text-anchor="middle" class="t-ser f-suave" font-size="15">B</text>
+          <rect x="115" y="144" width="70" height="40" rx="2" class="f-sup l-acento" stroke-width="2.5"/><text x="150" y="169" text-anchor="middle" class="t-ser f-tinta" font-size="15">C1</text>
+          <rect x="215" y="32" width="70" height="40" rx="2" class="f-no l-gris punteada" stroke-width="1.5"/><text x="250" y="57" text-anchor="middle" class="t-ser f-suave" font-size="15">A1</text>
+          <rect x="215" y="88" width="70" height="40" rx="2" class="f-sup l-acento" stroke-width="2.5"/><text x="250" y="113" text-anchor="middle" class="t-ser f-tinta" font-size="15">B1</text>
+          <rect x="215" y="144" width="70" height="40" rx="2" class="f-sup l-acento" stroke-width="2.5"/><text x="250" y="169" text-anchor="middle" class="t-ser f-tinta" font-size="15">C2</text>
+        </svg>
+        <p class="suave">Cada versión es una foto completa. Si un archivo no cambió (punteado), Git no lo vuelve a guardar: deja un enlace a la copia idéntica que ya tenía <a class="cita" href="#f1">[1]</a>.</p>
+      </div>
+    </div>
+    <p class="nota-local"><strong>Todo el historial vive en tu disco.</strong> Como cada copia de un repositorio trae la historia completa, casi todas las operaciones (ver el historial, comparar versiones) no necesitan red y se sienten instantáneas <a class="cita" href="#f1">[1]</a>.</p>
+  </section>
+
+  <!-- ===================== 3. DIVIDIDO (oscuro) · diagrama ===================== -->
+  <section data-layout="dividido" data-tono="oscuro" id="zonas">
+    <div class="rejilla">
+      <div>
+        <p class="antetitulo">02 · El mapa</p>
+        <h2>Tres zonas en tu computadora y una en el servidor</h2>
+        <p>Un proyecto con git tiene tres secciones: el <strong>directorio de trabajo</strong>, el <strong>área de preparación</strong> y el <strong>directorio de git</strong> <a class="cita" href="#f1">[1]</a>. Un cambio viaja de una a otra con un comando.</p>
+        <p>Por eso un archivo puede estar en tres estados: <strong>modificado</strong> (lo cambiaste pero no lo has confirmado), <strong>preparado</strong> (lo marcaste para el próximo commit) y <strong>confirmado</strong> (ya está guardado en la base de datos local) <a class="cita" href="#f1">[1]</a>.</p>
+        <p class="suave">Toca cada zona del diagrama para ver qué vive ahí y con qué comando entra o sale un cambio.</p>
+      </div>
+      <div class="diagrama-caja" data-interaccion="diagrama" id="diagrama-zonas">
+        <svg viewBox="0 0 340 460" role="group" aria-labelledby="t-zonas">
+          <title id="t-zonas">Diagrama de las zonas de git: directorio de trabajo, área de preparación, repositorio local y repositorio remoto, unidas por los comandos add, commit, push, fetch y switch o restore.</title>
+          <g data-une="trabajo preparacion"><path d="M120 82 V126" marker-end="url(#punta)"/><text x="112" y="110" text-anchor="end">git add</text></g>
+          <g data-une="preparacion repositorio"><path d="M120 192 V236" marker-end="url(#punta)"/><text x="112" y="220" text-anchor="end">git commit</text></g>
+          <g data-une="repositorio remoto"><path d="M120 302 V366" marker-end="url(#punta)"/><text x="128" y="354">git push</text></g>
+          <g data-une="remoto repositorio"><path d="M220 366 V306" marker-end="url(#punta)"/><text x="228" y="354">git fetch</text></g>
+          <g data-une="repositorio trabajo"><path d="M262 270 H306 V52 H266" marker-end="url(#punta)"/><text x="324" y="162" transform="rotate(90 324 162)" text-anchor="middle">git switch · git restore</text></g>
+          <line x1="10" y1="322" x2="300" y2="322" class="l-gris punteada" stroke-width="1"/>
+          <text x="14" y="316" class="f-suave" font-size="10">tu computadora</text>
+          <text x="14" y="336" class="f-suave" font-size="10">otra máquina</text>
+          <g data-nodo="trabajo" tabindex="0" role="button" aria-label="Directorio de trabajo">
+            <rect x="60" y="20" width="200" height="62" rx="3"/>
+            <text x="160" y="47" text-anchor="middle" class="f-tinta" font-size="14" font-weight="600">Directorio de trabajo</text>
+            <text x="160" y="66" text-anchor="middle" class="t-mono f-suave" font-size="10.5">working tree</text>
+          </g>
+          <g data-nodo="preparacion" tabindex="0" role="button" aria-label="Área de preparación">
+            <rect x="60" y="130" width="200" height="62" rx="3"/>
+            <text x="160" y="157" text-anchor="middle" class="f-tinta" font-size="14" font-weight="600">Área de preparación</text>
+            <text x="160" y="176" text-anchor="middle" class="t-mono f-suave" font-size="10.5">staging area · index</text>
+          </g>
+          <g data-nodo="repositorio" tabindex="0" role="button" aria-label="Repositorio local">
+            <rect x="60" y="240" width="200" height="62" rx="3"/>
+            <text x="160" y="267" text-anchor="middle" class="f-tinta" font-size="14" font-weight="600">Repositorio local</text>
+            <text x="160" y="286" text-anchor="middle" class="t-mono f-suave" font-size="10.5">.git directory</text>
+          </g>
+          <g data-nodo="remoto" tabindex="0" role="button" aria-label="Repositorio remoto">
+            <rect x="60" y="370" width="200" height="62" rx="3"/>
+            <text x="160" y="397" text-anchor="middle" class="f-tinta" font-size="14" font-weight="600">Repositorio remoto</text>
+            <text x="160" y="416" text-anchor="middle" class="t-mono f-suave" font-size="10.5">remote · origin</text>
+          </g>
+          <defs><marker id="punta" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" class="m-gris"/></marker><marker id="punta-act" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0 L10 5 L0 10 z" class="f-acento"/></marker></defs>
+        </svg>
+        <div class="ficha" id="ficha-zonas" aria-live="polite"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 4. SECUENCIA · pasos ===================== -->
+  <section data-layout="secuencia" id="primer-commit">
+    <p class="antetitulo">03 · Manos en la terminal</p>
+    <h2>Tu primer repositorio, paso a paso</h2>
+    <p>Vamos a seguir un solo archivo, <code>receta.txt</code>, desde que nace hasta su segundo commit. Las salidas son las que imprime git 2.43; los hashes cambian en tu máquina.</p>
+    <div data-interaccion="pasos" id="pasos">
+      <ol class="etapas" id="etapas"></ol>
+      <div class="paso-cuerpo">
+        <figure>
+          <svg viewBox="0 0 360 236" role="img" aria-labelledby="t-pasos">
+            <title id="t-pasos">Las tres zonas locales con el archivo receta.txt y los commits que se van creando en cada paso.</title>
+            <text x="56" y="22" text-anchor="middle" class="f-tinta" font-size="11.5" font-weight="600">Trabajo</text>
+            <text x="180" y="22" text-anchor="middle" class="f-tinta" font-size="11.5" font-weight="600">Preparación</text>
+            <text x="304" y="22" text-anchor="middle" class="f-tinta" font-size="11.5" font-weight="600">Repositorio</text>
+            <rect id="z-trabajo" class="zona" x="8" y="32" width="96" height="196" rx="3"/>
+            <rect id="z-prep" class="zona" x="132" y="32" width="96" height="196" rx="3"/>
+            <rect id="z-repo" class="zona punteada" x="256" y="32" width="96" height="196" rx="3"/>
+            <path id="fl-add" class="flecha-p" d="M106 70 H128" marker-end="url(#punta2)"/>
+            <path id="fl-commit" class="flecha-p" d="M230 70 H252" marker-end="url(#punta2)"/>
+            <text x="304" y="214" text-anchor="middle" id="z-git" class="t-mono f-suave" font-size="10">sin .git</text>
+            <g id="chip-t" class="chip" data-estado="sin-seguimiento">
+              <rect x="13" y="90" width="86" height="46" rx="2"/>
+              <text x="56" y="109" text-anchor="middle" class="t-mono f-tinta" font-size="10.5">receta.txt</text>
+              <text x="56" y="126" text-anchor="middle" class="estado">sin seguimiento</text>
+            </g>
+            <g id="chip-p" class="chip" data-estado="nuevo">
+              <rect x="137" y="90" width="86" height="46" rx="2"/>
+              <text x="180" y="109" text-anchor="middle" class="t-mono f-tinta" font-size="10.5">receta.txt</text>
+              <text x="180" y="126" text-anchor="middle" class="estado">nuevo</text>
+            </g>
+            <line id="c-linea" x1="276" y1="140" x2="276" y2="178" class="l-tinta" stroke-width="2.5"/>
+            <g id="c1"><circle cx="276" cy="178" r="9" class="f-fondo l-tinta" stroke-width="2.5"/><text x="290" y="182" class="t-mono f-tinta" font-size="9.5">0be6f21</text></g>
+            <g id="c2"><circle cx="276" cy="134" r="9" class="f-acento l-tinta" stroke-width="2.5"/><text x="290" y="138" class="t-mono f-tinta" font-size="9.5">002eea5</text></g>
+            <g id="c-tag"><rect x="262" y="76" width="84" height="20" rx="2" class="f-tinta"/><text x="304" y="90" text-anchor="middle" class="t-mono f-fondo" font-size="9.5" font-weight="600">HEAD → main</text></g>
+            <defs><marker id="punta2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" class="m-gris"/></marker><marker id="punta2-act" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0 L10 5 L0 10 z" class="f-acento"/></marker></defs>
+          </svg>
+          <figcaption id="paso-leyenda">Borde punteado: git todavía no sigue el archivo. Verde: preparado. Rojo: modificado sin preparar.</figcaption>
+        </figure>
+        <div class="paso-texto">
+          <h3 id="paso-titulo"></h3>
+          <p id="paso-explicacion"></p>
+          <pre class="terminal" id="paso-terminal"></pre>
+          <div class="controles">
+            <button class="boton" id="paso-ant" type="button">Anterior</button>
+            <button class="boton principal" id="paso-sig" type="button">Siguiente</button>
+            <div class="progreso"><span id="paso-cuenta">Paso 1 de 6</span><div class="barra"><i id="paso-barra"></i></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="config">
+      <p><strong>Antes del primer commit</strong>, dile a git quién eres. Cada commit guarda este nombre y correo, y no se pueden cambiar después sin reescribir el commit <a class="cita" href="#f8">[8]</a>. Con <code>--global</code> lo haces una sola vez por computadora.</p>
+      <pre class="terminal"><span class="p">$</span> git config --global user.name "Ana López"
+<span class="p">$</span> git config --global user.email ana@ejemplo.com
+<span class="p">$</span> git config --global init.defaultBranch main</pre>
+    </div>
+  </section>
+
+  <!-- ===================== 5. DATO-HEROE · probador de hash ===================== -->
+  <section data-layout="dato-heroe" id="hash">
+    <div class="rejilla">
+      <div>
+        <p class="antetitulo">04 · La huella</p>
+        <div class="heroe-num" aria-hidden="true">40</div>
+        <p class="heroe-etq">caracteres hexadecimales identifican cada cosa que git guarda</p>
+        <p>Es el hash SHA-1: una huella de 40 caracteres (0 a 9 y a a f) calculada a partir del contenido <a class="cita" href="#f1">[1]</a>. Git guarda todo en su base de datos por el hash de su contenido, no por el nombre del archivo, así que no puedes cambiar un archivo sin que git lo note <a class="cita" href="#f1">[1]</a>.</p>
+      </div>
+      <div>
+        <p>Para un archivo, git antepone un encabezado (<code>blob</code>, un espacio, el tamaño en bytes y un byte nulo) y calcula el SHA-1 de todo junto <a class="cita" href="#f10">[10]</a>. Este probador hace exactamente eso en tu navegador. El texto inicial es el ejemplo del libro oficial; su hash debe dar <code>bd9dbf5a…</code> <a class="cita" href="#f10">[10]</a>.</p>
+        <div class="probador" data-interaccion="otra" id="probador-hash">
+          <label for="hash-entrada">Contenido del archivo</label>
+          <textarea id="hash-entrada" spellcheck="false">what is up, doc?</textarea>
+          <p class="hash" id="hash-salida" aria-live="polite"></p>
+          <div class="medidor" id="hash-medidor" aria-hidden="true"></div>
+          <p class="hash-meta" id="hash-cambios"></p>
+          <p class="hash-meta" id="hash-encabezado"></p>
+          <p class="hash-meta">Compruébalo en tu terminal: <code>echo -n "what is up, doc?" | git hash-object --stdin</code></p>
+        </div>
+        <p class="suave" style="margin-top:1rem">Cambia una sola letra: casi todos los caracteres del hash cambian. Por eso dos contenidos distintos nunca comparten huella en la práctica, y un archivo idéntico siempre da el mismo hash.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 6. MOSAICO (oscuro) · ramas ===================== -->
+  <section data-layout="mosaico" data-tono="oscuro" id="ramas">
+    <p class="antetitulo">05 · Ramas</p>
+    <h2>Una rama es solo una etiqueta que se mueve</h2>
+    <p>Cada commit guarda un apuntador a su foto, el autor, el mensaje y un apuntador al commit anterior (su padre) <a class="cita" href="#f3">[3]</a>. Así se forma el hilo. Una rama no copia archivos: es un apuntador ligero y movible a uno de esos commits <a class="cita" href="#f3">[3]</a>.</p>
+    <div class="mosaico">
+      <div class="grande">
+        <h3>El hilo, las etiquetas y HEAD</h3>
+        <svg viewBox="0 0 380 210" role="img" aria-labelledby="t-ramas">
+          <title id="t-ramas">Tres commits en fila, cada uno apuntando a su padre. Las ramas main e idea apuntan al mismo commit, el más reciente. HEAD apunta a main.</title>
+          <defs><marker id="punta3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" class="f-suave"/></marker><marker id="punta3a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" class="f-acento"/></marker></defs>
+          <path d="M172 150 H86" class="l-suave f-no" stroke-width="2" marker-end="url(#punta3)"/>
+          <path d="M292 150 H206" class="l-suave f-no" stroke-width="2" marker-end="url(#punta3)"/>
+          <circle cx="66" cy="150" r="20" class="f-sup l-tinta" stroke-width="2"/>
+          <circle cx="188" cy="150" r="20" class="f-sup l-tinta" stroke-width="2"/>
+          <circle cx="310" cy="150" r="20" class="f-acento l-tinta" stroke-width="2"/>
+          <text x="66" y="192" text-anchor="middle" class="t-mono f-suave" font-size="12">98ca9</text>
+          <text x="188" y="192" text-anchor="middle" class="t-mono f-suave" font-size="12">34ac2</text>
+          <text x="310" y="192" text-anchor="middle" class="t-mono f-tinta" font-size="12" font-weight="600">f30ab</text>
+          <rect x="226" y="82" width="62" height="26" rx="2" class="f-fondo l-acento" stroke-width="2"/>
+          <text x="257" y="99.5" text-anchor="middle" class="t-mono f-acento-t" font-size="12" font-weight="600">main</text>
+          <path d="M268 108 L296 132" class="l-acento f-no" stroke-width="2" marker-end="url(#punta3a)"/>
+          <rect x="314" y="82" width="56" height="26" rx="2" class="f-fondo l-suave" stroke-width="2"/>
+          <text x="342" y="99.5" text-anchor="middle" class="t-mono f-tinta" font-size="12" font-weight="600">idea</text>
+          <path d="M336 108 L322 130" class="l-suave f-no" stroke-width="2" marker-end="url(#punta3)"/>
+          <rect x="226" y="18" width="62" height="26" rx="2" class="f-acento"/>
+          <text x="257" y="35.5" text-anchor="middle" class="t-mono" font-size="12" font-weight="600" fill="#1D1B16">HEAD</text>
+          <path d="M257 44 V78" class="l-acento f-no" stroke-width="2" marker-end="url(#punta3a)"/>
+          <text x="20" y="40" class="f-suave" font-size="11">cada commit apunta</text>
+          <text x="20" y="55" class="f-suave" font-size="11">a su padre (←)</text>
+        </svg>
+        <p>Recién creaste <code>idea</code>: las dos etiquetas están sobre el mismo commit. <strong>HEAD</strong> es un apuntador especial que indica en qué rama local estás parado <a class="cita" href="#f3">[3]</a>. Cuando haces commit, la rama a la que apunta HEAD avanza sola al commit nuevo <a class="cita" href="#f3">[3]</a>.</p>
+      </div>
+      <div class="a">
+        <div class="cifra">41</div>
+        <p>bytes: eso cuesta crear una rama. Es un archivo con los 40 caracteres del hash del commit y un salto de línea <a class="cita" href="#f3">[3]</a>.</p>
+      </div>
+      <div class="b">
+        <h3><code>git branch idea</code></h3>
+        <p>Crea la etiqueta en el commit actual, pero <strong>no te cambia</strong> a ella <a class="cita" href="#f3">[3]</a>.</p>
+      </div>
+      <div class="c">
+        <div>
+          <h3><code>git switch idea</code></h3>
+          <p>Mueve HEAD a <code>idea</code>. Desde git 2.23 existe <code>switch</code>; <code>git switch -c idea</code> crea la rama y te cambia en un solo paso. El comando anterior, <code>git checkout</code>, sigue funcionando <a class="cita" href="#f3">[3]</a>.</p>
+        </div>
+        <pre class="terminal"><span class="p">$</span> git log --oneline --decorate
+<span class="v">f30ab</span> (<span class="p">HEAD -&gt; main</span>, idea) Add feature #32
+<span class="v">34ac2</span> Fix bug #1328
+<span class="v">98ca9</span> Initial commit</pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 7. LABORATORIO · simulador de fusión ===================== -->
+  <section data-layout="laboratorio" id="fusion">
+    <div class="cabeza">
+      <p class="antetitulo">06 · Laboratorio</p>
+      <h2>¿Qué pasa cuando fusionas una rama?</h2>
+      <p>Trabajaste en <code>idea</code> y ahora corres <code>git switch main</code> y <code>git merge idea</code>. El resultado depende de una sola pregunta: ¿alguien agregó commits a <code>main</code> mientras tanto? Mueve los controles y predice antes de mirar.</p>
+    </div>
+    <div class="lab" data-interaccion="simulador" id="simulador">
+      <div class="lab-lienzo">
+        <svg viewBox="0 0 460 270" role="img" aria-labelledby="t-sim" id="sim-svg">
+          <title id="t-sim">Grafo de commits después de git merge idea, que cambia según los controles.</title>
+          <g id="sim-grafo"></g>
+        </svg>
+      </div>
+      <div class="lab-controles">
+        <div>
+          <label for="sim-main">Commits nuevos en main</label>
+          <output id="sim-main-v" for="sim-main">0</output>
+          <input type="range" id="sim-main" min="0" max="3" step="1" value="0" list="marcas-main">
+          <div class="marcas"><span class="critico">0</span><span>1</span><span>2</span><span>3</span></div>
+        </div>
+        <div>
+          <label for="sim-idea">Commits en la rama idea</label>
+          <output id="sim-idea-v" for="sim-idea">2</output>
+          <input type="range" id="sim-idea" min="1" max="3" step="1" value="2">
+          <div class="marcas"><span>1</span><span>2</span><span>3</span></div>
+        </div>
+        <div>
+          <span style="font-weight:600;font-size:.95rem;display:block;margin-bottom:.2rem">Las dos ramas cambiaron…</span>
+          <label class="casilla" for="sim-conf"><input type="checkbox" id="sim-conf"> la misma línea del mismo archivo</label>
+          <p class="suave" style="font-size:.8rem;margin:0" id="sim-conf-nota"></p>
+        </div>
+      </div>
+      <div class="lab-resultado">
+        <div>
+          <span class="estado-sim" id="sim-estado" data-estado="ff"></span>
+          <p id="sim-explicacion" aria-live="polite"></p>
+        </div>
+        <pre class="terminal" id="sim-terminal"></pre>
+      </div>
+    </div>
+    <p class="suave" style="max-width:52rem;margin:1.25rem auto 0">El 0 está marcado: es el punto crítico. Con 0 commits nuevos en main hay <em>fast-forward</em> <a class="cita" href="#f4">[4]</a>; desde 1 en adelante, git necesita una fusión de tres vías con un commit de fusión de dos padres <a class="cita" href="#f4">[4]</a>.</p>
+  </section>
+
+  <!-- ===================== 8. LISTA-GRANDE (oscuro) · remotos ===================== -->
+  <section data-layout="lista-grande" data-tono="oscuro" id="remotos">
+    <p class="antetitulo">07 · Compartir</p>
+    <h2>Cuatro comandos para trabajar con un remoto</h2>
+    <p>Un repositorio remoto es otra copia de tu proyecto, alojada en internet o en una red <a class="cita" href="#f6">[6]</a>. Tu copia local guarda un marcador, <code>origin/main</code>, de dónde estaba la rama <code>main</code> del remoto la última vez que hablaste con él <a class="cita" href="#f5">[5]</a>.</p>
+    <figure class="remotos-fig">
+      <svg viewBox="0 0 380 230" role="img" aria-labelledby="t-remotos">
+        <title id="t-remotos">Arriba, el servidor origin tiene tres commits con main en el tercero. Abajo, tu computadora tiene solo dos commits; main y el marcador origin/main están en el segundo. Una flecha de git fetch baja el tercer commit.</title>
+        <defs><marker id="punta4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" class="f-acento"/></marker></defs>
+        <text x="16" y="24" class="f-suave" font-size="11">servidor · origin</text>
+        <line x1="70" y1="62" x2="250" y2="62" class="l-tinta" stroke-width="2.5"/>
+        <circle cx="70" cy="62" r="11" class="f-sup l-tinta" stroke-width="2.5"/>
+        <circle cx="160" cy="62" r="11" class="f-sup l-tinta" stroke-width="2.5"/>
+        <circle cx="250" cy="62" r="11" class="f-acento l-tinta" stroke-width="2.5"/>
+        <rect x="270" y="50" width="56" height="24" rx="2" class="f-fondo l-acento" stroke-width="2"/>
+        <text x="298" y="66.5" text-anchor="middle" class="t-mono f-acento-t" font-size="11.5" font-weight="600">main</text>
+        <line x1="12" y1="112" x2="368" y2="112" class="l-gris punteada" stroke-width="1"/>
+        <path d="M250 78 C250 120 250 130 250 156" class="l-acento f-no punteada" stroke-width="2" marker-end="url(#punta4)"/>
+        <text x="260" y="128" class="t-mono f-acento-t" font-size="11.5" font-weight="600">git fetch</text>
+        <text x="16" y="138" class="f-suave" font-size="11">tu computadora</text>
+        <line x1="70" y1="172" x2="160" y2="172" class="l-tinta" stroke-width="2.5"/>
+        <circle cx="70" cy="172" r="11" class="f-sup l-tinta" stroke-width="2.5"/>
+        <circle cx="160" cy="172" r="11" class="f-sup l-tinta" stroke-width="2.5"/>
+        <circle cx="250" cy="172" r="11" class="f-no l-gris punteada" stroke-width="2"/>
+        <rect x="96" y="194" width="56" height="24" rx="2" class="f-fondo l-tinta" stroke-width="1.5"/>
+        <text x="124" y="210.5" text-anchor="middle" class="t-mono f-tinta" font-size="11.5" font-weight="600">main</text>
+        <rect x="164" y="194" width="96" height="24" rx="2" class="f-fondo l-gris punteada" stroke-width="1.5"/>
+        <text x="212" y="210.5" text-anchor="middle" class="t-mono f-suave" font-size="11.5">origin/main</text>
+      </svg>
+      <figcaption>Antes de <code>git fetch</code>, tu copia no sabe del tercer commit. Fetch lo descarga y mueve <code>origin/main</code>; tu <code>main</code> no se toca.</figcaption>
+    </figure>
+    <ol class="lista-num">
+      <li>
+        <h3>git clone &lt;url&gt;</h3>
+        <p>Trae una copia completa: cada versión de cada archivo de toda la historia <a class="cita" href="#f9">[9]</a>. Git llama <code>origin</code> al remoto, crea el marcador <code>origin/main</code> y te da tu propia rama <code>main</code> en el mismo punto <a class="cita" href="#f5">[5]</a>.</p>
+      </li>
+      <li>
+        <h3>git fetch</h3>
+        <p>Pregunta al remoto qué tiene que tú no, lo descarga a tu base de datos local y mueve <code>origin/main</code> <a class="cita" href="#f5">[5]</a>. Solo descarga: no mezcla nada con tu trabajo <a class="cita" href="#f6">[6]</a>.</p>
+      </li>
+      <li>
+        <h3>git pull</h3>
+        <p>Corre <code>git fetch</code> y después integra la rama remota en la rama en la que estás <a class="cita" href="#f7">[7]</a>. Si las dos historias se separaron, git te pide elegir cómo integrarlas (fusión o rebase) <a class="cita" href="#f7">[7]</a>.</p>
+      </li>
+      <li>
+        <h3>git push origin main</h3>
+        <p>Calcula qué tiene tu base de datos que el remoto no y se lo envía; necesita permiso de escritura <a class="cita" href="#f11">[11]</a>. Si alguien empujó antes que tú, te lo rechaza: primero trae su trabajo, intégralo y vuelve a empujar <a class="cita" href="#f6">[6]</a>.</p>
+        <pre class="terminal"><span class="p">$</span> git push origin main
+<span class="r"> ! [rejected]        main -&gt; main (fetch first)</span>
+<span class="p">$</span> git pull
+<span class="p">$</span> git push origin main</pre>
+      </li>
+    </ol>
+  </section>
+
+  <!-- ===================== 9. REPASO · flashcards ===================== -->
+  <section data-layout="repaso" id="repaso">
+    <div style="max-width:40rem">
+      <p class="antetitulo">08 · Repaso</p>
+      <h2>Comprueba lo que recuerdas</h2>
+      <p>Lee la pregunta, responde en voz alta o en tus notas y después voltea la tarjeta. Las que marques como «Repasar» vuelven al final del mazo.</p>
+    </div>
+    <div class="mazo" data-interaccion="flashcards" id="mazo">
+      <div class="mazo-cabeza"><span id="mazo-progreso"></span><span id="mazo-dominadas"></span></div>
+      <div id="mazo-zona">
+        <button class="tarjeta" id="tarjeta" type="button" aria-live="polite">
+          <span class="cara-etq" id="tarjeta-etq">Pregunta</span>
+          <span class="texto" id="tarjeta-texto"></span>
+          <span class="pista" id="tarjeta-pista">Toca o presiona Enter para voltear</span>
+        </button>
+        <div class="mazo-botones">
+          <button class="boton" id="mazo-repasar" type="button" disabled>Repasar</button>
+          <button class="boton principal" id="mazo-sabia" type="button" disabled>Lo sabía</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== FUENTES ===================== -->
+  <section id="fuentes" data-layout="lista-grande">
+    <h2>Fuentes</h2>
+    <p class="suave">Todas son documentación oficial de git (el libro <em>Pro Git</em> y el manual, publicados en git-scm.com). Consultadas el 12 de noviembre de 2026.</p>
+    <ol>
+      <li id="f1"><a href="https://git-scm.com/book/en/v2/Getting-Started-What-is-Git%3F">Pro Git, 1.3 What is Git?</a> <span>· instantáneas, operaciones locales, SHA-1, tres estados y tres secciones</span></li>
+      <li id="f2"><a href="https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository">Pro Git, 2.2 Recording Changes to the Repository</a> <span>· archivos con y sin seguimiento, git status, git add</span></li>
+      <li id="f3"><a href="https://git-scm.com/book/en/v2/Git-Branching-Branches-in-a-Nutshell">Pro Git, 3.1 Branches in a Nutshell</a> <span>· objeto commit, ramas, HEAD, git switch</span></li>
+      <li id="f4"><a href="https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging">Pro Git, 3.2 Basic Branching and Merging</a> <span>· fast-forward, fusión de tres vías, conflictos</span></li>
+      <li id="f5"><a href="https://git-scm.com/book/en/v2/Git-Branching-Remote-Branches">Pro Git, 3.5 Remote Branches</a> <span>· origin/main, git fetch, git push</span></li>
+      <li id="f6"><a href="https://git-scm.com/book/en/v2/Git-Basics-Working-with-Remotes">Pro Git, 2.5 Working with Remotes</a> <span>· qué es un remoto, push rechazado</span></li>
+      <li id="f7"><a href="https://git-scm.com/docs/git-pull">Manual de git: git-pull</a> <span>· fetch seguido de integración</span></li>
+      <li id="f8"><a href="https://git-scm.com/book/en/v2/Getting-Started-First-Time-Git-Setup">Pro Git, 1.6 First-Time Git Setup</a> <span>· user.name, user.email, init.defaultBranch</span></li>
+      <li id="f9"><a href="https://git-scm.com/book/en/v2/Git-Basics-Getting-a-Git-Repository">Pro Git, 2.1 Getting a Git Repository</a> <span>· git init y git clone</span></li>
+      <li id="f10"><a href="https://git-scm.com/book/en/v2/Git-Internals-Git-Objects">Pro Git, 10.2 Git Objects</a> <span>· encabezado blob y cálculo del hash</span></li>
+      <li id="f11"><a href="https://git-scm.com/book/en/v2/Appendix-C:-Git-Commands-Sharing-and-Updating-Projects">Pro Git, Apéndice C: Sharing and Updating Projects</a> <span>· git fetch, git pull, git push</span></li>
+    </ol>
+  </section>
+
+</main>
+<script>
+/* ---------- 1. Diagrama de zonas ---------- */
+(function () {
+  try {
+    const caja = document.getElementById('diagrama-zonas');
+    const svg = caja.querySelector('svg');
+    const panel = document.getElementById('ficha-zonas');
+    const fichas = {
+      trabajo: '<h3>Directorio de trabajo</h3><p class="tec">working tree</p><p>Los archivos que ves y editas en tu carpeta: una versión del proyecto sacada de la base de datos de git y puesta en disco para que la uses <a class="cita" href="#f1">[1]</a>.</p><ul><li>Aquí un archivo puede estar <strong>sin seguimiento</strong> (git no lo conoce aún) o <strong>modificado</strong> <a class="cita" href="#f2">[2]</a>.</li><li>Sale hacia la preparación con <code>git add</code>.</li><li><code>git status</code> te dice qué cambió.</li></ul>',
+      preparacion: '<h3>Área de preparación</h3><p class="tec">staging area · index</p><p>Un archivo dentro de <code>.git</code> que anota qué entrará en tu próximo commit <a class="cita" href="#f1">[1]</a>. Te deja elegir qué cambios van juntos.</p><ul><li><code>git add</code> guarda el archivo <strong>tal como está en ese momento</strong>; si lo editas después, vuelve a correr <code>git add</code> <a class="cita" href="#f2">[2]</a>.</li><li>Sale hacia el repositorio con <code>git commit</code>.</li></ul>',
+      repositorio: '<h3>Repositorio local</h3><p class="tec">.git directory</p><p>La carpeta <code>.git</code>: los metadatos y la base de datos de objetos. Es la parte más importante y la que se copia cuando clonas <a class="cita" href="#f1">[1]</a>.</p><ul><li><code>git init</code> la crea en una carpeta existente <a class="cita" href="#f9">[9]</a>.</li><li>Guarda cada commit para siempre, con su hash.</li><li><code>git switch</code> cambia de rama y <code>git restore</code> recupera un archivo desde aquí hacia tu carpeta.</li></ul>',
+      remoto: '<h3>Repositorio remoto</h3><p class="tec">remote · origin</p><p>Otra copia del proyecto, en internet o en tu red <a class="cita" href="#f6">[6]</a>. Al clonar, git la llama <code>origin</code> <a class="cita" href="#f5">[5]</a>.</p><ul><li><code>git push</code> le envía tus commits.</li><li><code>git fetch</code> trae los suyos sin tocar tu trabajo.</li><li><code>git pull</code> = <code>git fetch</code> + integrar en tu rama <a class="cita" href="#f7">[7]</a>.</li></ul>'
+    };
+    const nodos = svg.querySelectorAll('[data-nodo]');
+    const activar = n => {
+      svg.classList.add('atenuado');
+      nodos.forEach(x => { x.classList.toggle('activo', x === n); x.setAttribute('aria-pressed', x === n ? 'true' : 'false'); });
+      svg.querySelectorAll('[data-une]').forEach(l => l.classList.toggle('activo', l.dataset.une.split(' ').includes(n.dataset.nodo)));
+      panel.innerHTML = fichas[n.dataset.nodo];
+    };
+    nodos.forEach(n => {
+      n.addEventListener('click', () => activar(n));
+      n.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); activar(n); } });
+    });
+    activar(svg.querySelector('[data-nodo="preparacion"]'));
+  } catch (e) { console.error('diagrama', e); }
+})();
+
+/* ---------- 2. Paso a paso ---------- */
+(function () {
+  try {
+    const P = '<span class="p">$</span> ';
+    const pasos = [
+      { nom: 'git init', titulo: 'Crea el repositorio',
+        texto: 'Entra a la carpeta del proyecto y corre <code>git init</code>. Crea la subcarpeta <code>.git</code> con el esqueleto del repositorio. Todavía no sigue ningún archivo <a class="cita" href="#f9">[9]</a>.',
+        term: P + 'cd receta\n' + P + 'git init\n<span class="s">Initialized empty Git repository in /home/ana/receta/.git/</span>',
+        chipT: null, chipP: false, commits: 0, repo: true, flecha: null },
+      { nom: 'crear archivo', titulo: 'Crea un archivo',
+        texto: 'Escribes <code>receta.txt</code>. Git lo ve, pero está <strong>sin seguimiento</strong>: no estaba en el último commit ni en la preparación, y git no lo incluirá hasta que se lo pidas <a class="cita" href="#f2">[2]</a>.',
+        term: P + 'git status\nOn branch main\n\nNo commits yet\n\nUntracked files:\n  (use "git add &lt;file&gt;..." to include in what will be committed)\n\t<span class="r">receta.txt</span>',
+        chipT: ['sin-seguimiento', 'sin seguimiento'], chipP: false, commits: 0, repo: true, flecha: null },
+      { nom: 'git add', titulo: 'Prepáralo',
+        texto: '<code>git add</code> copia el contenido actual del archivo a la preparación. Piensa en él como «agrega este contenido exacto al próximo commit», no como «agrega este archivo al proyecto» <a class="cita" href="#f2">[2]</a>.',
+        term: P + 'git add receta.txt\n' + P + 'git status\nOn branch main\n\nNo commits yet\n\nChanges to be committed:\n  (use "git rm --cached &lt;file&gt;..." to unstage)\n\t<span class="v">new file:   receta.txt</span>',
+        chipT: ['preparado', 'preparado'], chipP: ['nuevo', 'nuevo'], commits: 0, repo: true, flecha: 'add' },
+      { nom: 'git commit', titulo: 'Confírmalo con un commit',
+        texto: '<code>git commit</code> toma lo que hay en la preparación y lo guarda como una foto permanente en el directorio de git <a class="cita" href="#f1">[1]</a>. Nace el primer commit y <code>main</code> apunta a él. La preparación queda sin cambios pendientes.',
+        term: P + 'git commit -m "Primera versión de la receta"\n[main (root-commit) <span class="p">0be6f21</span>] Primera versión de la receta\n 1 file changed, 3 insertions(+)\n create mode 100644 receta.txt',
+        chipT: ['sin-cambios', 'sin cambios'], chipP: false, commits: 1, repo: true, flecha: 'commit' },
+      { nom: 'editar', titulo: 'Edita el archivo',
+        texto: 'Agregas «Azúcar» al final. Como cambió desde el último commit, git lo marca como <strong>modificado</strong> <a class="cita" href="#f2">[2]</a>. El commit anterior no se toca: sigue guardado tal como estaba.',
+        term: P + 'git status\nOn branch main\nChanges not staged for commit:\n  (use "git add &lt;file&gt;..." to update what will be committed)\n  (use "git restore &lt;file&gt;..." to discard changes in working directory)\n\t<span class="r">modified:   receta.txt</span>',
+        chipT: ['modificado', 'modificado'], chipP: false, commits: 1, repo: true, flecha: null },
+      { nom: 'otro commit', titulo: 'Prepara y confirma otra vez',
+        texto: 'El ciclo se repite: editas, preparas y confirmas <a class="cita" href="#f2">[2]</a>. El commit nuevo apunta a su padre y <code>main</code> avanza sola hasta él. <code>git log --oneline</code> muestra el hilo, del más nuevo al más viejo.',
+        term: P + 'git add receta.txt\n' + P + 'git commit -m "Agrega azúcar"\n[main <span class="p">002eea5</span>] Agrega azúcar\n 1 file changed, 1 insertion(+)\n' + P + 'git log --oneline\n<span class="p">002eea5</span> (HEAD -&gt; main) Agrega azúcar\n<span class="p">0be6f21</span> Primera versión de la receta',
+        chipT: ['sin-cambios', 'sin cambios'], chipP: false, commits: 2, repo: true, flecha: 'commit' }
+    ];
+    const $ = id => document.getElementById(id);
+    const etapas = $('etapas');
+    let i = 0;
+    pasos.forEach((p, n) => {
+      const li = document.createElement('li');
+      li.innerHTML = '<button type="button" aria-label="Paso ' + (n + 1) + ': ' + p.nom + '"><span class="num">' + (n + 1) + '</span><span class="nom">' + p.nom + '</span></button>';
+      li.querySelector('button').addEventListener('click', () => { i = n; pintar(); });
+      etapas.appendChild(li);
+    });
+    function pintar() {
+      const p = pasos[i];
+      $('paso-titulo').textContent = p.titulo;
+      $('paso-explicacion').innerHTML = p.texto;
+      $('paso-terminal').innerHTML = p.term;
+      $('paso-cuenta').textContent = 'Paso ' + (i + 1) + ' de ' + pasos.length;
+      $('paso-barra').style.width = ((i + 1) / pasos.length * 100) + '%';
+      $('paso-ant').disabled = i === 0;
+      $('paso-sig').textContent = i === pasos.length - 1 ? 'Volver a empezar' : 'Siguiente';
+      [...etapas.children].forEach((li, n) => { li.classList.toggle('hecho', n < i); li.classList.toggle('actual', n === i); });
+      const act = etapas.children[i];
+      if (act && etapas.scrollWidth > etapas.clientWidth) etapas.scrollTo({ left: act.offsetLeft - 16, behavior: 'smooth' });
+      // SVG
+      const ct = $('chip-t'), cp = $('chip-p');
+      ct.classList.toggle('oculto', !p.chipT);
+      if (p.chipT) { ct.dataset.estado = p.chipT[0]; ct.querySelector('.estado').textContent = p.chipT[1]; }
+      cp.classList.toggle('oculto', !p.chipP);
+      if (p.chipP) { cp.dataset.estado = p.chipP[0]; cp.querySelector('.estado').textContent = p.chipP[1]; }
+      $('z-repo').classList.toggle('punteada', !p.repo);
+      $('z-git').textContent = p.repo ? (p.commits ? p.commits + (p.commits === 1 ? ' commit' : ' commits') : '.git vacío') : 'sin .git';
+      $('c1').classList.toggle('oculto', p.commits < 1);
+      $('c2').classList.toggle('oculto', p.commits < 2);
+      $('c-linea').classList.toggle('oculto', p.commits < 2);
+      const tag = $('c-tag');
+      tag.classList.toggle('oculto', p.commits < 1);
+      tag.setAttribute('transform', p.commits === 1 ? 'translate(0 44)' : '');
+      $('c1').querySelector('circle').setAttribute('class', p.commits === 1 ? 'f-acento l-tinta' : 'f-fondo l-tinta');
+      $('z-trabajo').classList.toggle('viva', p.flecha === 'add' || (p.chipT && p.chipT[0] !== 'sin-cambios' && !p.flecha));
+      $('z-prep').classList.toggle('viva', p.flecha === 'add');
+      $('z-repo').classList.toggle('viva', i === 0 || p.flecha === 'commit');
+      $('fl-add').classList.toggle('viva', p.flecha === 'add');
+      $('fl-commit').classList.toggle('viva', p.flecha === 'commit');
+    }
+    const ir = d => { i = (i + d + pasos.length) % pasos.length; pintar(); };
+    $('paso-sig').addEventListener('click', () => ir(1));
+    $('paso-ant').addEventListener('click', () => { if (i > 0) ir(-1); });
+    $('pasos').addEventListener('keydown', e => {
+      if (e.target.closest('textarea, input')) return;
+      if (e.key === 'ArrowRight') { e.preventDefault(); if (i < pasos.length - 1) ir(1); }
+      if (e.key === 'ArrowLeft') { e.preventDefault(); if (i > 0) ir(-1); }
+    });
+    pintar();
+  } catch (e) { console.error('pasos', e); }
+})();
+
+/* ---------- 3. Probador de hash (SHA-1 de un blob, como git hash-object) ---------- */
+(function () {
+  try {
+    function sha1(bytes) {
+      const total = Math.ceil((bytes.length + 9) / 64) * 64;
+      const buf = new Uint8Array(total);
+      buf.set(bytes); buf[bytes.length] = 0x80;
+      const dv = new DataView(buf.buffer);
+      const bits = bytes.length * 8;
+      dv.setUint32(total - 8, Math.floor(bits / 4294967296));
+      dv.setUint32(total - 4, bits >>> 0);
+      let h0 = 0x67452301, h1 = 0xEFCDAB89, h2 = 0x98BADCFE, h3 = 0x10325476, h4 = 0xC3D2E1F0;
+      const w = new Uint32Array(80);
+      for (let o = 0; o < total; o += 64) {
+        for (let t = 0; t < 16; t++) w[t] = dv.getUint32(o + t * 4);
+        for (let t = 16; t < 80; t++) { const x = w[t - 3] ^ w[t - 8] ^ w[t - 14] ^ w[t - 16]; w[t] = (x << 1) | (x >>> 31); }
+        let a = h0, b = h1, c = h2, d = h3, e = h4;
+        for (let t = 0; t < 80; t++) {
+          let f, k;
+          if (t < 20) { f = (b & c) | (~b & d); k = 0x5A827999; }
+          else if (t < 40) { f = b ^ c ^ d; k = 0x6ED9EBA1; }
+          else if (t < 60) { f = (b & c) | (b & d) | (c & d); k = 0x8F1BBCDC; }
+          else { f = b ^ c ^ d; k = 0xCA62C1D6; }
+          const tmp = (((a << 5) | (a >>> 27)) + f + e + k + w[t]) >>> 0;
+          e = d; d = c; c = ((b << 30) | (b >>> 2)) >>> 0; b = a; a = tmp;
+        }
+        h0 = (h0 + a) >>> 0; h1 = (h1 + b) >>> 0; h2 = (h2 + c) >>> 0; h3 = (h3 + d) >>> 0; h4 = (h4 + e) >>> 0;
+      }
+      return [h0, h1, h2, h3, h4].map(h => h.toString(16).padStart(8, '0')).join('');
+    }
+    const enc = new TextEncoder();
+    function hashBlob(texto) {
+      const c = enc.encode(texto);
+      const cab = enc.encode('blob ' + c.length + '\0');
+      const todo = new Uint8Array(cab.length + c.length);
+      todo.set(cab); todo.set(c, cab.length);
+      return { hash: sha1(todo), tam: c.length };
+    }
+    window.__forjaHashBlob = hashBlob;
+    const entrada = document.getElementById('hash-entrada');
+    const salida = document.getElementById('hash-salida');
+    const medidor = document.getElementById('hash-medidor');
+    const cambios = document.getElementById('hash-cambios');
+    const cab = document.getElementById('hash-encabezado');
+    for (let n = 0; n < 40; n++) medidor.appendChild(document.createElement('i'));
+    let anterior = null;
+    function calcular() {
+      const r = hashBlob(entrada.value);
+      let distintos = 0;
+      salida.innerHTML = '';
+      [...r.hash].forEach((ch, n) => {
+        const s = document.createElement('span');
+        s.textContent = ch;
+        const cambio = anterior !== null && anterior[n] !== ch;
+        if (cambio) { s.className = 'cambio'; distintos++; }
+        medidor.children[n].classList.toggle('on', cambio);
+        salida.appendChild(s);
+      });
+      cambios.textContent = anterior === null
+        ? 'Escribe algo para ver cuántos caracteres del hash cambian.'
+        : (anterior === r.hash ? 'Mismo contenido, mismo hash: no cambió ningún carácter.' : 'Cambiaron ' + distintos + ' de 40 caracteres respecto al hash anterior.');
+      cab.innerHTML = 'Encabezado que git antepone: <code>blob ' + r.tam + '\\0</code> (' + r.tam + ' bytes de contenido)';
+      anterior = r.hash;
+    }
+    entrada.addEventListener('input', calcular);
+    calcular();
+  } catch (e) { console.error('hash', e); }
+})();
+
+/* ---------- 4. Simulador de fusión ---------- */
+(function () {
+  try {
+    const $ = id => document.getElementById(id);
+    const g = $('sim-grafo');
+    const rm = $('sim-main'), ri = $('sim-idea'), cf = $('sim-conf');
+    const YM = 80, YC = 145, YI = 210, X0 = 30, XB = 96, DX = 70;
+    const svgSim = document.getElementById('sim-svg');
+    const circ = (x, y, cls, txt, extra) => '<circle cx="' + x + '" cy="' + y + '" r="17" class="g-commit ' + cls + '"' + (extra || '') + '/>' +
+      (txt ? '<text x="' + x + '" y="' + (y + 4) + '" text-anchor="middle" class="g-txt f-tinta">' + txt + '</text>' : '');
+    const tag = (x, y, txt, tipo) => {
+      const w = txt.length * 8 + 16;
+      const cls = tipo === 'head' ? 'f-tinta' : (tipo === 'fantasma' ? 'f-fondo l-gris punteada' : (tipo === 'acento' ? 'f-fondo l-acento' : 'f-fondo l-tinta'));
+      const tcls = tipo === 'head' ? 'f-fondo' : (tipo === 'fantasma' ? 'f-suave' : (tipo === 'acento' ? 'f-acento-t' : 'f-tinta'));
+      return '<g class="g-tag"><rect x="' + (x - w / 2) + '" y="' + (y - 12) + '" width="' + w + '" height="22" rx="2" class="' + cls + '"/>' +
+        '<text x="' + x + '" y="' + (y + 3.5) + '" text-anchor="middle" class="g-txt ' + tcls + '">' + txt + '</text></g>';
+    };
+    const linea = d => '<path d="' + d + '" class="g-linea"/>';
+    function pintar() {
+      const m = Number(rm.value), r = Number(ri.value);
+      $('sim-main-v').textContent = m;
+      $('sim-idea-v').textContent = r;
+      cf.disabled = m === 0;
+      $('sim-conf-nota').textContent = m === 0 ? 'Con 0 commits nuevos en main no puede haber conflicto: no hay dos versiones que comparar.' : 'Solo pasa si las dos ramas tocaron las mismas líneas.';
+      const conflicto = m > 0 && cf.checked;
+      let s = '';
+      // Historia común: A y la base B
+      s += linea('M' + X0 + ' ' + YC + ' H' + XB);
+      let estado, texto, term;
+      if (m === 0) {
+        const xs = Array.from({ length: r }, (_, j) => XB + DX * (j + 1));
+        s += linea('M' + XB + ' ' + YC + ' H' + xs[xs.length - 1]);
+        s += circ(X0, YC, 'f-sup l-tinta', 'A') + circ(XB, YC, 'f-sup l-tinta', 'B');
+        xs.forEach((x, j) => { s += circ(x, YC, j === r - 1 ? 'f-acento l-tinta' : 'f-sup l-tinta', 'i' + (j + 1)); });
+        const xt = xs[xs.length - 1];
+        s += tag(XB, YC - 42, 'main', 'fantasma') + '<text x="' + XB + '" y="' + (YC - 60) + '" text-anchor="middle" class="g-cap">antes</text>';
+        s += tag(xt, YC - 42, 'main', 'acento') + tag(xt, YC + 42, 'idea', '');
+        s += tag(xt, YC - 76, 'HEAD', 'head');
+        s += '<text x="' + (XB + (xt - XB) / 2) + '" y="' + (YC + 85) + '" text-anchor="middle" class="g-txt f-acento-t">main avanza ' + r + (r === 1 ? ' commit' : ' commits') + ' →</text>';
+        estado = ['ff', 'Fast-forward · 0 commits nuevos'];
+        texto = 'main no avanzó desde que creaste idea, así que los commits de idea ya continúan su historia. Git no tiene nada que mezclar: solo mueve la etiqueta main ' + r + (r === 1 ? ' commit' : ' commits') + ' hacia adelante. No se crea ningún commit nuevo.';
+        term = '<span class="p">$</span> git merge idea\nUpdating <span class="p">002eea5..d2438f4</span>\nFast-forward\n receta.txt | ' + r + ' ' + '+'.repeat(r) + '\n 1 file changed, ' + r + (r === 1 ? ' insertion(+)' : ' insertions(+)');
+      } else {
+        const xm = Array.from({ length: m }, (_, j) => XB + DX * (j + 1));
+        const xi = Array.from({ length: r }, (_, j) => XB + DX * (j + 1));
+        const xM = XB + DX * (Math.max(m, r) + 1);
+        const tm = xm[m - 1], ti = xi[r - 1];
+        s += linea('M' + XB + ' ' + YC + ' C' + (XB + 30) + ' ' + YC + ' ' + (XB + 30) + ' ' + YM + ' ' + xm[0] + ' ' + YM + (m > 1 ? ' H' + tm : ''));
+        s += linea('M' + XB + ' ' + YC + ' C' + (XB + 30) + ' ' + YC + ' ' + (XB + 30) + ' ' + YI + ' ' + xi[0] + ' ' + YI + (r > 1 ? ' H' + ti : ''));
+        const dash = conflicto ? ' stroke-dasharray="5 4"' : '';
+        s += '<path d="M' + tm + ' ' + YM + ' H' + xM + '" class="g-linea"' + dash + '/>';
+        s += '<path d="M' + ti + ' ' + YI + ' C' + (xM - 30) + ' ' + YI + ' ' + (xM - 10) + ' ' + (YM + 40) + ' ' + xM + ' ' + (YM + 15) + '" class="g-linea"' + dash + '/>';
+        s += circ(X0, YC, 'f-sup l-tinta', 'A') + circ(XB, YC, 'f-sup l-acento', 'B', ' stroke-width="3"');
+        s += '<text x="' + (XB - 14) + '" y="' + (YC + 34) + '" text-anchor="middle" class="g-txt f-acento-t">ancestro</text>';
+        s += '<text x="' + (XB - 14) + '" y="' + (YC + 48) + '" text-anchor="middle" class="g-txt f-acento-t">común</text>';
+        xm.forEach((x, j) => { s += circ(x, YM, 'f-sup l-tinta', 'm' + (j + 1)); });
+        xi.forEach((x, j) => { s += circ(x, YI, 'f-sup l-tinta', 'i' + (j + 1)); });
+        s += tag(ti, YI + 34, 'idea', '');
+        if (conflicto) {
+          s += circ(xM, YM, 'f-no l-rojo', '?', ' stroke-dasharray="5 4"');
+          s += tag(tm, YM - 34, 'main', 'acento') + tag(tm, YM - 64, 'HEAD', 'head');
+          s += '<text x="' + xM + '" y="' + (YM - 26) + '" text-anchor="middle" class="g-txt f-rojo">pausado</text>';
+          estado = ['conflicto', 'Conflicto · fusión en pausa'];
+          texto = 'Las dos ramas cambiaron la misma parte del mismo archivo de forma distinta, así que git no puede mezclarlas solo. No crea el commit de fusión: pausa el proceso y marca el archivo como «both modified». Editas el archivo, borras los marcadores, corres git add para marcarlo como resuelto y luego git commit.';
+          term = '<span class="p">$</span> git merge idea\nAuto-merging receta.txt\n<span class="r">CONFLICT (content): Merge conflict in receta.txt</span>\nAutomatic merge failed; fix conflicts and then commit the result.\n<span class="p">$</span> cat receta.txt\nHarina\nHuevos\nLeche\n<span class="r">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</span>\nAzúcar morena\n<span class="r">=======</span>\nMiel\n<span class="r">&gt;&gt;&gt;&gt;&gt;&gt;&gt; idea</span>';
+        } else {
+          s += circ(xM, YM, 'f-acento l-tinta', 'M');
+          s += tag(tm, YM - 34, 'main', 'fantasma') + '<text x="' + tm + '" y="' + (YM - 52) + '" text-anchor="middle" class="g-cap">antes</text>';
+          s += tag(xM, YM - 34, 'main', 'acento') + tag(xM, YM - 64, 'HEAD', 'head');
+          estado = ['fusion', 'Fusión de tres vías · 1 commit nuevo'];
+          texto = 'Las dos ramas avanzaron por separado (main ' + m + ', idea ' + r + '). Git compara tres fotos: la punta de main, la punta de idea y su ancestro común B. Con eso crea un commit de fusión M que tiene 2 padres, y main avanza hasta él.';
+          term = '<span class="p">$</span> git merge idea\nMerge made by the \'ort\' strategy.\n receta.txt | 1 +\n 1 file changed, 1 insertion(+)';
+        }
+      }
+      g.innerHTML = s;
+      const xmax = m === 0 ? XB + DX * r : XB + DX * (Math.max(m, r) + 1);
+      svgSim.setAttribute('viewBox', '0 0 ' + Math.max(300, xmax + 50) + ' 270');
+      $('sim-estado').dataset.estado = estado[0];
+      $('sim-estado').textContent = estado[1];
+      $('sim-explicacion').textContent = texto;
+      $('sim-terminal').innerHTML = term;
+    }
+    [rm, ri, cf].forEach(el => el.addEventListener('input', pintar));
+    cf.addEventListener('change', pintar);
+    pintar();
+  } catch (e) { console.error('simulador', e); }
+})();
+
+/* ---------- 5. Flashcards ---------- */
+(function () {
+  try {
+    const cartas = [
+      ['¿Qué guarda git cada vez que haces un commit?', 'Una foto (instantánea) de todos tus archivos. Los que no cambiaron no se copian otra vez: quedan como enlace a la versión anterior.'],
+      ['¿Cuáles son las tres zonas de un proyecto en tu computadora?', 'Directorio de trabajo (working tree), área de preparación (staging area o index) y directorio de git (.git).'],
+      ['¿Qué hace git add?', 'Agrega el contenido exacto que tiene el archivo en ese momento al próximo commit.'],
+      ['Corres git add y luego vuelves a editar el archivo. ¿Qué versión entra al commit?', 'La de cuando corriste git add. Para incluir lo nuevo, vuelve a correr git add.'],
+      ['¿Qué significa que un archivo esté «untracked»?', 'Git lo ve en tu carpeta, pero no estaba en el último commit ni está preparado. No lo incluirá hasta que hagas git add.'],
+      ['¿Cuántos caracteres tiene un hash SHA-1 de git y de qué se calcula?', '40 caracteres hexadecimales (0-9, a-f), calculados a partir del contenido.'],
+      ['¿Qué es una rama en git?', 'Un apuntador ligero y movible a un commit: un archivo con los 40 caracteres del hash y un salto de línea (41 bytes).'],
+      ['¿Qué es HEAD?', 'El apuntador especial que indica en qué rama local estás. Al hacer commit, esa rama avanza.'],
+      ['¿git branch idea te cambia a la rama idea?', 'No: solo la crea. Para cambiarte usa git switch idea, o git switch -c idea para crearla y cambiarte a la vez.'],
+      ['¿Cuándo hace git un fast-forward?', 'Cuando la rama que fusionas solo continúa la historia de la tuya (tu rama no tuvo commits nuevos). Git solo mueve la etiqueta hacia adelante.'],
+      ['¿Qué tiene de especial un commit de fusión?', 'Tiene más de un padre: une las puntas de las dos ramas a partir de su ancestro común.'],
+      ['Hay un conflicto. ¿Cómo lo marcas como resuelto?', 'Editas el archivo, quitas los marcadores <<<<<<< ======= >>>>>>>, corres git add sobre el archivo y luego git commit.'],
+      ['¿Diferencia entre git fetch y git pull?', 'fetch solo descarga y mueve origin/main. pull hace fetch y además integra la rama remota en tu rama actual.'],
+      ['Tu git push fue rechazado. ¿Por qué y qué haces?', 'Alguien empujó antes que tú. Trae su trabajo (git pull), intégralo con el tuyo y vuelve a empujar.']
+    ];
+    const $ = id => document.getElementById(id);
+    const zona = $('mazo-zona');
+    const tarjeta = $('tarjeta'), etq = $('tarjeta-etq'), texto = $('tarjeta-texto'), pista = $('tarjeta-pista');
+    const bSabia = $('mazo-sabia'), bRep = $('mazo-repasar');
+    let cola, dominadas, vistas, volteada;
+    function reiniciar() {
+      cola = cartas.map((_, n) => n); dominadas = 0; vistas = 0; volteada = false;
+      if (!zona.contains(tarjeta)) { zona.innerHTML = ''; zona.append(tarjeta, bRep.parentElement); }
+      mostrar();
+    }
+    function mostrar() {
+      $('mazo-progreso').innerHTML = 'Tarjeta <strong>' + (vistas + 1) + '</strong> · quedan ' + cola.length;
+      $('mazo-dominadas').innerHTML = '<strong>' + dominadas + '</strong> de ' + cartas.length + ' dominadas';
+      if (!cola.length) {
+        const fin = document.createElement('div');
+        fin.className = 'fin-mazo';
+        fin.innerHTML = '<h3>Dominaste las ' + cartas.length + ' tarjetas</h3><p>Repetiste ' + (vistas - cartas.length) + (vistas - cartas.length === 1 ? ' tarjeta' : ' tarjetas') + ' antes de dominarlas.</p>';
+        const b = document.createElement('button');
+        b.className = 'boton principal'; b.type = 'button'; b.textContent = 'Volver a empezar';
+        b.addEventListener('click', reiniciar);
+        fin.appendChild(b);
+        zona.innerHTML = ''; zona.appendChild(fin);
+        $('mazo-progreso').textContent = 'Mazo terminado';
+        b.focus();
+        return;
+      }
+      const c = cartas[cola[0]];
+      tarjeta.classList.toggle('volteada', volteada);
+      etq.textContent = volteada ? 'Respuesta' : 'Pregunta';
+      texto.textContent = volteada ? c[1] : c[0];
+      pista.textContent = volteada ? '¿La sabías?' : 'Toca o presiona Enter para voltear';
+      bSabia.disabled = bRep.disabled = !volteada;
+    }
+    tarjeta.addEventListener('click', () => { volteada = !volteada; mostrar(); });
+    function responder(sabia) {
+      if (!volteada) return;
+      const n = cola.shift();
+      vistas++;
+      if (sabia) dominadas++; else cola.push(n);
+      volteada = false;
+      mostrar();
+      if (cola.length) tarjeta.focus();
+    }
+    bSabia.addEventListener('click', () => responder(true));
+    bRep.addEventListener('click', () => responder(false));
+    reiniciar();
+  } catch (e) { console.error('flashcards', e); }
+})();
+</script>
+</body>
+</html>

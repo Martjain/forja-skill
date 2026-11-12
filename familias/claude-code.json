@@ -34,6 +34,7 @@
   "motivos_por_tema": {
     "skills": "capas y carpetas que se abren (divulgación progresiva)",
     "hooks": "eventos y gatillos sobre una línea de tiempo de la sesión",
+    "hooks-v2": "garitas de control: una pluma que se abre o se cierra en el camino de cada acción",
     "subagentes": "ramas que se separan y vuelven con un resultado",
     "mcp": "conectores y enchufes entre sistemas",
     "plugins": "paquetes que agrupan piezas"

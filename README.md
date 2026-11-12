@@ -21,7 +21,11 @@ En construcción, siguiendo un proceso en el que las pruebas se escriben primero
 - [x] Paso 2: ficha de diseño
 - [x] Paso 3: línea base y pruebas (`evals/`, `scripts/validar.py`). Línea base: 9/16
 - [x] Paso 4: skill mínima (`SKILL.md`, `reference/`, scripts, hook de protección)
-- [ ] Paso 5: probar, comparar e iterar
+- [x] Paso 5: probar, comparar e iterar. Con forja: 16/16 (línea base: 9/16). Ver `evals/resultados.md`
+
+## Guías
+
+Abre `index.html`. Por ahora: hooks de Claude Code (v1 y v2) y cómo funciona git.
 
 ## Piezas de la skill
 
