@@ -1,0 +1,69 @@
+{
+  "skill": "forja",
+  "nota": "Casos escritos ANTES que la skill (Paso 3 de la guía). Los criterios marcados [script] los revisa scripts/validar.py; el resto se revisa a mano.",
+  "evals": [
+    {
+      "id": 1,
+      "nombre": "Tema dentro de una familia existente",
+      "query": "/forja hooks de Claude Code, nivel principiante",
+      "files": [],
+      "expected_behavior": [
+        "[script] Un solo archivo en guias/hooks-de-claude-code/index.html, sin CDN ni recursos externos",
+        "[script] Sección con id=\"fuentes\" con al menos 2 enlaces a documentación oficial",
+        "[script] Sin frases de relleno ni emojis decorativos",
+        "[script] Sin degradados morados",
+        "[script] Al menos 3 de 4 tipos de interacción marcados: diagrama, flashcards, simulador, pasos",
+        "[script] Si hay simulador, tiene un input type=range que cambia algo",
+        "[script] meta forja:familia = claude-code y meta forja:nivel = principiante",
+        "Usa la paleta y tipografía de familias/claude-code.json, con un motivo propio de hooks (eventos, gatillos)",
+        "No se ve igual a otras guías de la familia: el layout y el motivo cambian",
+        "Los eventos de hooks y su comportamiento coinciden con la documentación oficial",
+        "Cada concepto tiene una interacción que enseña algo; ninguna es un botón que solo muestra más texto",
+        "Cada sección tiene un layout distinto; no hay cuadrículas de tarjetas idénticas",
+        "Usa ilustraciones SVG propias y ningún logo ni marca",
+        "Se lee bien en el celular",
+        "Se agrega una entrada a index.html"
+      ]
+    },
+    {
+      "id": 2,
+      "nombre": "Tema nuevo sin nivel indicado",
+      "query": "Hazme una guía visual de cómo funciona git",
+      "files": [],
+      "expected_behavior": [
+        "Pregunta el nivel (principiante, intermedio o avanzado) ANTES de investigar o construir",
+        "Crea una familia nueva en familias/ porque git no pertenece a claude-code",
+        "La paleta sale del mundo de git (ramas, historial), no de la familia Claude Code",
+        "Investiga en fuentes oficiales (git-scm.com) y las cita",
+        "[script] Pasa el validador sin errores"
+      ]
+    },
+    {
+      "id": 3,
+      "nombre": "La guía ya existe",
+      "query": "/forja hooks de Claude Code",
+      "setup": "Ya existe guias/hooks-de-claude-code/index.html",
+      "files": [],
+      "expected_behavior": [
+        "No modifica ni borra guias/hooks-de-claude-code/index.html",
+        "Crea guias/hooks-de-claude-code-v2/index.html",
+        "Agrega la v2 a index.html sin quitar la versión anterior",
+        "Avisa que ya existía una versión y cuál creó"
+      ]
+    }
+  ],
+  "activacion": {
+    "debe_activar": [
+      "hazme una guía visual de los hooks de Claude Code",
+      "quiero aprender git, hazme una guía",
+      "/forja subagentes",
+      "créame una guía interactiva para estudiar control de pozos"
+    ],
+    "no_debe_activar": [
+      "explícame rápido qué es un hook",
+      "resume este PDF",
+      "hazme una presentación de ventas",
+      "corrige este archivo HTML"
+    ]
+  }
+}
