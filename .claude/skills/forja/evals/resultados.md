@@ -25,9 +25,16 @@ Fecha: 2026-11-12. Cada caso corrió en un subagente con contexto limpio. Todo l
 | 2 | Tema nuevo sin nivel (git) | ✓ 5/5 | Preguntó el nivel sin crear archivos; creó la familia `control-de-versiones` con una paleta del tema; 11 fuentes de git-scm.com y 47 citas |
 | 3 | La guía ya existe | ✓ 4/4 | La v1 quedó intacta (mismo hash y sin diff); creó `hooks-de-claude-code-v2` y avisó; agregó la v2 al índice sin quitar la v1; usó un motivo nuevo (`hooks-v2`) para que no se viera igual |
 
+| 4 | Segunda guía de una familia creada por la skill (git intermedio) | ✓ | Usó `control-de-versiones` sin cambiar la paleta ni la tipografía. Le agregó un motivo nuevo (cinta perforada horizontal en vez de cuentas en un hilo), cambió la secuencia de layouts y le dio otro significado a los colores (verde para copias del rebase, rojo para abandonados). Se ve de la misma familia sin ser igual |
+
 ## Fallas encontradas y corregidas
 
 1. **La ruta incluía el nivel.** `registrar.py` recibía el pedido completo (`$ARGUMENTS`), así que la carpeta quedó como `hooks-de-claude-code-nivel-principiante`. Corregido en SKILL.md (paso 2): se pasa solo el tema.
+
+## Observaciones del caso 4
+
+- **Ruta demasiado larga:** `git-ramas-merge-vs-rebase-y-resolucion-de-conflictos`. El subagente pasó el título completo como tema. Conviene pedirle un tema corto, por ejemplo `git-merge-rebase`.
+- **Avisó con honestidad de 2 datos sin fuente consultada:** la etiqueta de diff3 durante un rebase y un detalle del estilo `merge`. El criterio de "cada dato clave citado" se cumplió en parte. Conviene que la skill pida marcar en la guía los datos que no tienen fuente.
 
 ## Pendiente
 
