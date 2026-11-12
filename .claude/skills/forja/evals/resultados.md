@@ -41,3 +41,29 @@ Fecha: 2026-11-12. Cada caso corrió en un subagente con contexto limpio. Todo l
 - Pruebas de activación negativa (`activacion.no_debe_activar` en evals.json): falta comprobar que la skill no se dispare con "explícame rápido qué es un hook" y similares.
 - El hook de protección se probó con datos simulados, pero en los evals no llegó a dispararse porque `registrar.py` evitó la colisión antes. Para probarlo de verdad hay que pedir explícitamente que se edite una guía publicada.
 - Costo: cada guía toma de 9 a 14 minutos y entre 178k y 197k tokens. Vigilarlo si se agregan más pasos.
+
+---
+
+# forja v2, ronda 1: predecir, progreso y tipografía
+
+Misma petición (hooks de Claude Code, principiante), en un subagente limpio y sin ver las guías anteriores. Resultado: `guias/hooks-de-claude-code-v3/`.
+
+| | v1 | v2 |
+|---|---|---|
+| Validador v2 | 8 errores (no tiene núcleo, predicciones, retos ni fuentes) | OK |
+| Predicciones antes de ver | 0 | 3 (eventos, matcher, exit 1), con errores plausibles como distractores |
+| Retos | 0 | 9, que se cumplen haciendo |
+| Progreso, mapa y guardado | No | Barra, mapa en la portada con minutos, "Continuar donde ibas" |
+| Tipografía | Del sistema | Newsreader, Instrument Sans y JetBrains Mono incrustadas |
+| Color dominante | Crema + bloques oscuros | Además, una banda terracota a ancho completo ("exit 1 no bloquea.") |
+| Fondo | Plano | Patrón sutil de circuito (motivo "cable") |
+| Peso | 68 KB | 185 KB (las fuentes suman ~100 KB) |
+| Tokens / tiempo | 178k / 9 min | 230k / 15 min |
+
+Verificado a mano: el dato de que "Claude Code anula un Stop hook tras 8 bloqueos seguidos" viene de la guía oficial de hooks.
+
+## Por corregir en la ronda 2
+
+- **El borroso tapa demasiado.** En algunas secciones el diagrama completo queda ilegible antes de predecir y se ve como una zona muerta. Hay que difuminar solo el **resultado** y dejar visible la estructura y los controles.
+- **Ruta corta** (del caso 4) y **marcar los datos sin fuente** (del caso 4).
+- Siguen pendientes las mejoras 3 (repaso espaciado entre guías) y 4 (ejemplos que se desvanecen).
