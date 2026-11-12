@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>forja · guías</title>
+<style>
+:root { --fondo:#FAF9F5; --tinta:#141413; --suave:#5E5D59; --borde:#E8E6DC; --acento:#D97757; }
+* { box-sizing: border-box; }
+body { margin:0; background:var(--fondo); color:var(--tinta); font:400 1.0625rem/1.6 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; }
+main { max-width: 52rem; margin: 0 auto; padding: clamp(2rem, 8vw, 5rem) 1.25rem; }
+h1 { font: 600 clamp(2.5rem, 8vw, 4rem)/1 ui-serif, Georgia, serif; margin: 0 0 .5rem; }
+p.lema { color: var(--suave); margin: 0 0 3rem; }
+ol { list-style: none; padding: 0; margin: 0; counter-reset: g; }
+li { counter-increment: g; display: grid; grid-template-columns: 3.5rem 1fr; gap: .25rem 1rem; padding: 1.25rem 0; border-top: 1px solid var(--borde); }
+li::before { content: counter(g, decimal-leading-zero); grid-row: span 2; font: 600 1.75rem/1 ui-serif, Georgia, serif; color: var(--acento); }
+li a { font-weight: 600; font-size: 1.2rem; color: inherit; text-decoration-color: var(--acento); text-underline-offset: 4px; }
+li span { color: var(--suave); font-size: .9rem; }
+:focus-visible { outline: 3px solid var(--acento); outline-offset: 3px; }
+</style>
+</head>
+<body>
+<main>
+<h1>forja</h1>
+<p class="lema">Guías visuales para aprender haciendo.</p>
+<ol>
+<li><a href="guias/hooks-de-claude-code/index.html">Hooks de Claude Code</a><span>claude-code · principiante · 2026-11-12</span></li>
+<!-- forja:fin-lista -->
+</ol>
+</main>
+</body>
+</html>

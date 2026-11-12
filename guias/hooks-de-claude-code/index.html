@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="forja:familia" content="claude-code">
+<meta name="forja:nivel" content="principiante">
+<meta name="forja:fecha" content="2026-11-12">
+<title>Hooks de Claude Code · nivel principiante</title>
+<style>
+:root {
+  --fondo: #FAF9F5;
+  --superficie: #F0EEE6;
+  --borde: #E8E6DC;
+  --tinta: #141413;
+  --tinta-suave: #5E5D59;
+  --gris: #B0AEA5;
+  --acento: #D97757;
+  --acento-oscuro: #B4532F;
+  --azul: #6A9BCC;
+  --verde: #788C5D;
+  --oscuro-fondo: #141413;
+  --oscuro-tinta: #FAF9F5;
+  --oscuro-linea: #3A3936;
+  --f-titulos: ui-serif, Georgia, 'Times New Roman', serif;
+  --f-cuerpo: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --f-codigo: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  --ancho: 72rem;
+  /* Variables que cambian en bloques oscuros */
+  --t: var(--tinta);
+  --t-suave: var(--tinta-suave);
+  --linea: var(--borde);
+  --marca: var(--acento-oscuro);
+  --sup: var(--superficie);
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--fondo); color: var(--tinta); font: 400 1.0625rem/1.65 var(--f-cuerpo); overflow-wrap: anywhere; }
+img, svg { max-width: 100%; height: auto; }
+pre { overflow-x: auto; white-space: pre; font-family: var(--f-codigo); }
+code { font-family: var(--f-codigo); font-size: .92em; background: var(--sup); padding: .05em .35em; border-radius: 4px; overflow-wrap: anywhere; }
+section { padding: clamp(3rem, 8vw, 6rem) clamp(1.25rem, 5vw, 3rem); }
+section > * { max-width: var(--ancho); margin-inline: auto; }
+section[data-tono="oscuro"] {
+  background: var(--oscuro-fondo); color: var(--oscuro-tinta);
+  --t: var(--oscuro-tinta); --t-suave: var(--gris); --linea: var(--oscuro-linea);
+  --marca: var(--acento); --sup: #24231F;
+}
+h1, h2, h3 { font-family: var(--f-titulos); font-weight: 600; line-height: 1.15; margin: 0 0 .75rem; }
+h2 { font-size: clamp(2rem, 5vw, 2.75rem); }
+h3 { font-size: 1.3rem; }
+p { margin: 0 0 1rem; max-width: 68ch; }
+.etiqueta { font: 600 .78rem/1 var(--f-codigo); letter-spacing: .08em; text-transform: uppercase; color: var(--marca); margin: 0 0 1rem; }
+.suave { color: var(--t-suave); }
+a { color: inherit; text-decoration-color: var(--acento); text-underline-offset: 3px; }
+a.cita { font-size: .75em; vertical-align: super; text-decoration: none; color: var(--marca); font-weight: 600; padding: 0 .1em; }
+:focus-visible { outline: 3px solid var(--acento); outline-offset: 3px; }
+button, input { font: inherit; min-height: 44px; }
+button {
+  cursor: pointer; border: 1px solid var(--t); background: transparent; color: var(--t);
+  border-radius: 8px; padding: .5rem 1rem; font-weight: 600;
+}
+button.primario { background: var(--acento); border-color: var(--acento); color: var(--tinta); }
+button:disabled { opacity: .4; cursor: default; }
+.terminal {
+  background: var(--oscuro-fondo); color: var(--oscuro-tinta); border-radius: 10px;
+  padding: 1rem 1.1rem; font: 400 .9rem/1.6 var(--f-codigo); margin: 0;
+  border: 1px solid var(--oscuro-linea);
+}
+section[data-tono="oscuro"] .terminal { background: #24231F; }
+
+/* ---------- portada ---------- */
+[data-layout="portada"] { padding-top: clamp(3rem, 10vw, 7rem); }
+.portada { display: grid; gap: 2.5rem; grid-template-columns: 1.1fr 1fr; align-items: center; }
+.portada h1 { font-size: clamp(2.6rem, 8vw, 4.75rem); line-height: 1.02; margin-bottom: 1.25rem; }
+.portada h1 em { font-style: normal; color: var(--acento-oscuro); }
+.portada .lema { font-size: 1.2rem; color: var(--tinta-suave); }
+.cifras { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 2rem; border-top: 1px solid var(--borde); padding-top: 1.5rem; }
+.cifra b { display: block; font: 600 clamp(1.9rem, 5vw, 2.75rem)/1 var(--f-titulos); color: var(--acento-oscuro); margin-bottom: .35rem; }
+.cifra span { font-size: .9rem; color: var(--tinta-suave); line-height: 1.4; display: block; }
+
+/* ---------- dato-heroe ---------- */
+.heroe { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: clamp(2rem, 6vw, 4rem); align-items: start; }
+.heroe .enorme { font: 600 clamp(4rem, 11vw, 7rem)/.9 var(--f-titulos); overflow-wrap: normal; white-space: nowrap; color: var(--acento-oscuro); margin: 0 0 1rem; letter-spacing: -.02em; }
+.heroe svg { display: block; max-width: 440px; margin: 1rem 0; }
+.heroe .sub { font: 600 1.15rem/1.4 var(--f-titulos); max-width: 22ch; }
+
+/* ---------- secuencia ---------- */
+.desliza { overflow-x: auto; scroll-snap-type: x proximity; -webkit-overflow-scrolling: touch; padding-bottom: .5rem; margin-top: 1.5rem; }
+.desliza svg { min-width: 860px; width: 100%; display: block; scroll-snap-align: start; }
+.pista { font-size: .85rem; color: var(--t-suave); margin: .5rem 0 0; }
+#diagrama-eventos .linea { stroke: var(--gris); stroke-width: 2; transition: stroke .2s; }
+#diagrama-eventos .linea.activo { stroke: var(--acento); stroke-width: 4; }
+#diagrama-eventos [data-nodo] { cursor: pointer; outline: none; }
+#diagrama-eventos [data-nodo] circle { stroke: var(--oscuro-tinta); stroke-width: 2; transition: r .2s, opacity .2s; }
+#diagrama-eventos [data-nodo] circle.bloquea { fill: var(--acento); stroke: var(--acento); }
+#diagrama-eventos [data-nodo] circle.no-bloquea { fill: var(--oscuro-fondo); }
+#diagrama-eventos [data-nodo] text { fill: var(--oscuro-tinta); font: 600 13px var(--f-codigo); transition: opacity .2s; }
+#diagrama-eventos.hay-activo [data-nodo]:not(.activo) { opacity: .45; }
+#diagrama-eventos [data-nodo].activo circle { stroke: var(--acento); stroke-width: 4; }
+#diagrama-eventos [data-nodo]:focus-visible .aro { stroke: var(--acento); stroke-width: 3; }
+#diagrama-eventos .aro { fill: transparent; stroke: transparent; }
+.ficha { margin-top: 1.5rem; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: 1.5rem 2.5rem; border-top: 1px solid var(--linea); padding-top: 1.5rem; }
+.ficha h3 { font-family: var(--f-codigo); font-size: 1.5rem; color: var(--acento); }
+.ficha dl { margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: .5rem 1rem; }
+.ficha dt { font: 600 .78rem/1.8 var(--f-codigo); text-transform: uppercase; letter-spacing: .06em; color: var(--gris); }
+.ficha dd { margin: 0; }
+.leyenda { display: flex; flex-wrap: wrap; gap: 1.25rem; font-size: .9rem; color: var(--t-suave); margin-top: 1rem; }
+.leyenda span::before { content: ""; display: inline-block; width: .8rem; height: .8rem; border-radius: 50%; margin-right: .45rem; vertical-align: -1px; border: 2px solid var(--oscuro-tinta); }
+.leyenda .l-bloquea::before { background: var(--acento); border-color: var(--acento); }
+
+/* ---------- dividido (pasos) ---------- */
+.dividido { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); gap: clamp(2rem, 5vw, 3.5rem); align-items: start; }
+.pasos-caja { border: 1px solid var(--borde); border-radius: 14px; padding: 1.25rem; background: #fff; }
+.progreso { display: flex; align-items: center; gap: .75rem; font: 600 .85rem var(--f-codigo); color: var(--tinta-suave); margin-bottom: 1rem; }
+.barra { flex: 1; height: 6px; background: var(--borde); border-radius: 3px; overflow: hidden; }
+.barra i { display: block; height: 100%; background: var(--acento); width: 0; transition: width .25s; }
+.paso-texto h3 { font-size: 1.25rem; }
+.paso-texto p { min-height: 4.8em; }
+.pasos-vista { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 1rem; align-items: start; margin: 1rem 0; }
+.codigo-pasos { margin: 0; font-size: .82rem; line-height: 1.55; background: var(--oscuro-fondo); color: var(--oscuro-tinta); border-radius: 10px; padding: .9rem 0; }
+.codigo-pasos span { display: none; padding: 0 1rem; opacity: 0; transition: opacity .2s, background .2s; border-left: 3px solid transparent; }
+.codigo-pasos span.visible { display: block; opacity: .55; }
+.codigo-pasos span.nuevo { display: block; opacity: 1; background: rgba(217, 119, 87, .18); border-left-color: var(--acento); }
+.term-hooks { display: none; margin-top: .75rem; font-size: .82rem; }
+.term-hooks.visible { display: block; }
+#svg-anidado .capa rect { fill: transparent; stroke: var(--gris); stroke-width: 1.5; transition: opacity .2s, stroke .2s; }
+#svg-anidado .capa text { font: 600 13px var(--f-codigo); fill: var(--tinta-suave); }
+#svg-anidado .capa { opacity: .12; transition: opacity .25s; }
+#svg-anidado .capa.visible { opacity: 1; }
+#svg-anidado .capa.nuevo rect { stroke: var(--acento); stroke-width: 3; fill: rgba(217, 119, 87, .08); }
+#svg-anidado .capa.nuevo text { fill: var(--acento-oscuro); }
+.controles { display: flex; gap: .75rem; flex-wrap: wrap; }
+
+/* ---------- laboratorio (probador) ---------- */
+.lab-cabeza { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 2rem; align-items: center; margin-bottom: 2rem; }
+.probador { border: 1px solid var(--borde); border-radius: 16px; padding: clamp(1rem, 4vw, 2rem); background: var(--superficie); }
+.probador label { font: 600 .85rem var(--f-codigo); display: block; margin-bottom: .5rem; }
+.campo { display: flex; align-items: stretch; gap: 0; border: 2px solid var(--tinta); border-radius: 10px; background: #fff; overflow: hidden; }
+.campo span { font: 400 1rem var(--f-codigo); padding: .6rem .5rem .6rem .9rem; color: var(--tinta-suave); white-space: nowrap; align-self: center; }
+.campo input { flex: 1; min-width: 0; border: 0; font: 600 1.1rem var(--f-codigo); padding: .6rem .5rem; background: transparent; color: var(--tinta); }
+.campo input:focus-visible { outline: none; }
+.campo:focus-within { outline: 3px solid var(--acento); outline-offset: 2px; }
+.atajos { display: flex; flex-wrap: wrap; gap: .5rem; margin: 1rem 0 1.5rem; }
+.atajos button { font: 600 .85rem var(--f-codigo); padding: .35rem .75rem; border-color: var(--gris); background: #fff; }
+.herramientas { list-style: none; padding: 0; margin: 0 0 1.25rem; display: flex; flex-wrap: wrap; gap: .6rem; }
+.herramientas li { font: 600 .9rem var(--f-codigo); padding: .55rem .8rem; border-radius: 8px; border: 1.5px dashed var(--gris); color: var(--tinta-suave); background: transparent; transition: background .15s, color .15s; }
+.herramientas li.dispara { background: var(--tinta); color: var(--fondo); border: 1.5px solid var(--tinta); }
+.herramientas li.dispara::before { content: "✓ "; color: var(--acento); }
+.veredicto { border-top: 1px solid var(--borde); padding-top: 1rem; }
+.veredicto b { font-family: var(--f-codigo); }
+.modo { display: inline-block; font: 600 .78rem var(--f-codigo); text-transform: uppercase; letter-spacing: .06em; padding: .25rem .6rem; border-radius: 99px; background: var(--tinta); color: var(--fondo); margin-right: .5rem; }
+.modo[data-modo="error"] { background: var(--acento-oscuro); }
+
+/* ---------- comparacion + simulador ---------- */
+.frente { display: grid; grid-template-columns: minmax(0, 1fr) 2px minmax(0, 1fr); gap: clamp(1.25rem, 4vw, 3rem); margin: 2rem 0 3rem; }
+.frente .divisor { background: var(--acento); }
+.frente h3 { font-family: var(--f-codigo); font-size: 1.6rem; }
+.frente .lado-0 h3 { color: #A9BE8A; }
+.frente .lado-2 h3 { color: var(--acento); }
+.frente svg { max-width: 260px; display: block; margin-bottom: 1rem; }
+.sim { border: 1px solid var(--oscuro-linea); border-radius: 16px; padding: clamp(1rem, 4vw, 2rem); background: #1C1B18; }
+.sim h3 { margin-bottom: 1.25rem; }
+.deslizadores { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem 2rem; margin-bottom: 1.5rem; }
+.deslizador label { display: flex; justify-content: space-between; gap: 1rem; font: 600 .85rem var(--f-codigo); margin-bottom: .25rem; }
+.deslizador output { color: var(--acento); font-size: 1rem; }
+.deslizador input[type=range] { width: 100%; accent-color: var(--acento); }
+.marcas { display: flex; justify-content: space-between; font: 400 .72rem var(--f-codigo); color: var(--gris); }
+.marcas .critico { color: var(--acento); font-weight: 600; }
+#svg-compuerta { display: block; max-width: 560px; margin: 0 auto; }
+#svg-compuerta text { font: 600 15px var(--f-codigo); fill: var(--oscuro-tinta); }
+#svg-compuerta .caja { fill: #24231F; stroke: var(--gris); stroke-width: 1.5; }
+#svg-compuerta .flecha { stroke: var(--gris); stroke-width: 2; fill: none; }
+#svg-compuerta .barrera { transition: transform .3s; transform-origin: 200px 52px; }
+.sim[data-estado="pasa"] #svg-compuerta .barrera { transform: rotate(-80deg); }
+.sim[data-estado="pasa"] #svg-compuerta .barrera rect { fill: #A9BE8A; }
+.sim[data-estado="bloquea"] #svg-compuerta .barrera rect { fill: var(--acento); }
+.sim[data-estado="aviso"] #svg-compuerta .barrera { transform: rotate(-80deg); }
+.sim[data-estado="aviso"] #svg-compuerta .barrera rect { fill: var(--azul); }
+.sim[data-estado="bloquea"] #svg-compuerta .destino { stroke: var(--acento); stroke-dasharray: 6 5; }
+.resultado { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1rem 2rem; margin-top: 1rem; }
+.estado-chip { display: inline-block; font: 600 .85rem var(--f-codigo); text-transform: uppercase; letter-spacing: .06em; padding: .35rem .75rem; border-radius: 99px; margin-bottom: .75rem; }
+.estado-chip[data-estado="pasa"] { background: #A9BE8A; color: var(--tinta); }
+.estado-chip[data-estado="bloquea"] { background: var(--acento); color: var(--tinta); }
+.estado-chip[data-estado="aviso"] { background: var(--azul); color: var(--tinta); }
+.lector { font-size: .95rem; color: var(--gris); }
+.lector b { color: var(--oscuro-tinta); }
+
+/* ---------- mosaico ---------- */
+.mosaico { display: grid; grid-template-columns: 1.3fr 1fr 1fr; grid-template-rows: auto auto; gap: 1rem; margin-top: 2rem; }
+.pieza { border: 1px solid var(--borde); border-radius: 14px; padding: 1.5rem; background: #fff; }
+.pieza.grande { grid-row: span 2; background: var(--superficie); display: flex; flex-direction: column; justify-content: space-between; }
+.pieza.ancha { grid-column: span 2; background: transparent; border-style: dashed; }
+.pieza .ruta { font: 600 1rem var(--f-codigo); color: var(--acento-oscuro); display: block; margin-bottom: .5rem; overflow-wrap: anywhere; }
+.pieza.grande .ruta { font-size: clamp(1.1rem, 3vw, 1.45rem); }
+.pieza p { margin: 0; }
+.alcance { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .9rem; }
+.alcance i { font: normal 600 .75rem var(--f-codigo); padding: .2rem .55rem; border-radius: 99px; border: 1px solid var(--gris); color: var(--tinta-suave); }
+
+/* ---------- enfasis ---------- */
+.enfasis { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: clamp(2rem, 5vw, 4rem); align-items: center; }
+.enfasis .regla { font: 600 clamp(2.1rem, 6.5vw, 4rem)/1.08 var(--f-titulos); margin: 0 0 1.5rem; }
+.enfasis .regla em { font-style: normal; color: var(--acento); }
+.practicas { list-style: none; padding: 0; margin: 1.5rem 0 0; display: grid; gap: .6rem; }
+.practicas li { padding-left: 1.6rem; position: relative; }
+.practicas li::before { content: "→"; position: absolute; left: 0; color: var(--acento); font-weight: 600; }
+
+/* ---------- repaso ---------- */
+.repaso { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: clamp(2rem, 5vw, 4rem); align-items: start; }
+.mazo { display: grid; gap: 1rem; }
+.tarjeta {
+  width: 100%; min-height: 15rem; border: 2px solid var(--tinta); border-radius: 18px;
+  background: #fff; color: var(--tinta); text-align: left; padding: 1.75rem; display: flex; flex-direction: column; justify-content: space-between;
+  font-weight: 400; transition: background .2s;
+}
+.tarjeta.volteada { background: var(--tinta); color: var(--fondo); border-color: var(--tinta); }
+.tarjeta .cara { font: 600 .75rem var(--f-codigo); letter-spacing: .08em; text-transform: uppercase; color: var(--acento-oscuro); }
+.tarjeta.volteada .cara { color: var(--acento); }
+.tarjeta .contenido { font: 600 clamp(1.25rem, 3.5vw, 1.6rem)/1.3 var(--f-titulos); margin: 1rem 0; }
+.tarjeta.volteada .contenido { font: 400 1.1rem/1.5 var(--f-cuerpo); }
+.tarjeta .ayuda { font-size: .85rem; color: var(--tinta-suave); }
+.tarjeta.volteada .ayuda { color: var(--gris); }
+.estado-mazo { font: 600 .9rem var(--f-codigo); color: var(--tinta-suave); }
+.estado-mazo b { color: var(--acento-oscuro); }
+.puntos { display: flex; gap: 4px; flex-wrap: wrap; margin-top: .5rem; }
+.puntos i { width: 18px; height: 6px; border-radius: 3px; background: var(--borde); }
+.puntos i.ok { background: var(--verde); }
+
+/* ---------- fuentes ---------- */
+#fuentes { border-top: 1px solid var(--borde); }
+#fuentes ol { list-style: none; padding: 0; margin: 1.5rem auto 0; counter-reset: f; display: grid; gap: 1rem; }
+#fuentes li { counter-increment: f; display: grid; grid-template-columns: 3rem 1fr; gap: 1rem; align-items: baseline; }
+#fuentes li::before { content: "[" counter(f) "]"; font: 600 1.4rem var(--f-titulos); color: var(--acento-oscuro); }
+#fuentes li span { display: block; font-size: .9rem; color: var(--tinta-suave); }
+
+/* ---------- celular ---------- */
+@media (max-width: 720px) {
+  .portada, .heroe, .dividido, .lab-cabeza, .ficha, .enfasis, .repaso, .resultado, .deslizadores { grid-template-columns: minmax(0, 1fr); }
+  .pasos-vista { grid-template-columns: minmax(0, 1fr); }
+  .pasos-vista svg { max-width: 260px; margin: 0 auto; display: block; }
+  .cifras { grid-template-columns: minmax(0, 1fr); gap: 1.25rem; }
+  .frente { grid-template-columns: minmax(0, 1fr); }
+  .frente .divisor { height: 2px; }
+  .mosaico { grid-template-columns: minmax(0, 1fr); }
+  .pieza.grande { grid-row: auto; }
+  .pieza.ancha { grid-column: auto; }
+  .ficha dl { grid-template-columns: minmax(0, 1fr); gap: .15rem; }
+  .ficha dd { margin-bottom: .6rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+</style>
+</head>
+<body>
+<main>
+
+  <!-- 1. PORTADA -->
+  <section data-layout="portada" id="inicio">
+    <div class="portada">
+      <div>
+        <p class="etiqueta">Claude Code · nivel principiante</p>
+        <h1>Hooks: un comando que corre <em>solo</em>, en el momento exacto.</h1>
+        <p class="lema">Un hook es un comando de shell que tú defines y que Claude Code ejecuta en puntos fijos de su ciclo de vida: antes de usar una herramienta, después de editar un archivo, cuando necesita tu atención.<a class="cita" href="https://code.claude.com/docs/en/hooks-guide">[1]</a></p>
+        <div class="cifras">
+          <div class="cifra"><b>3</b><span>piezas: evento, matcher y comando</span></div>
+          <div class="cifra"><b>exit 2</b><span>bloquea la acción en los eventos que pueden bloquear<a class="cita" href="https://code.claude.com/docs/en/hooks#exit-code-2-behavior-per-event">[2]</a></span></div>
+          <div class="cifra"><b>600 s</b><span>tiempo límite por defecto de un hook <code>command</code><a class="cita" href="https://code.claude.com/docs/en/hooks">[2]</a></span></div>
+        </div>
+      </div>
+      <svg viewBox="0 0 420 300" role="img" aria-labelledby="t-portada">
+        <title id="t-portada">Una línea de tiempo de la sesión con cinco eventos; en uno se dispara un gatillo que ejecuta un comando</title>
+        <line x1="20" y1="120" x2="400" y2="120" stroke="var(--tinta)" stroke-width="3" stroke-linecap="round"/>
+        <polygon points="400,112 414,120 400,128" fill="var(--tinta)"/>
+        <circle cx="50" cy="120" r="10" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="3"/>
+        <circle cx="125" cy="120" r="10" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="3"/>
+        <circle cx="290" cy="120" r="10" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="3"/>
+        <circle cx="360" cy="120" r="10" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="3"/>
+        <circle cx="205" cy="120" r="18" fill="var(--acento)"/>
+        <circle cx="205" cy="120" r="30" fill="none" stroke="var(--acento)" stroke-width="2" opacity=".5"/>
+        <path d="M205 60 L205 90" stroke="var(--acento)" stroke-width="3"/>
+        <path d="M193 58 L205 40 L217 58 Z" fill="var(--acento)"/>
+        <text x="205" y="28" text-anchor="middle" font-family="ui-monospace, Menlo, monospace" font-size="14" font-weight="600" fill="var(--acento-oscuro)">evento</text>
+        <line x1="205" y1="150" x2="205" y2="190" stroke="var(--tinta)" stroke-width="2" stroke-dasharray="4 4"/>
+        <rect x="95" y="192" width="220" height="70" rx="10" fill="var(--tinta)"/>
+        <text x="115" y="222" font-family="ui-monospace, Menlo, monospace" font-size="15" fill="var(--acento)">$</text>
+        <text x="132" y="222" font-family="ui-monospace, Menlo, monospace" font-size="15" fill="var(--fondo)">tu-comando.sh</text>
+        <text x="115" y="248" font-family="ui-monospace, Menlo, monospace" font-size="13" fill="var(--gris)">exit 0 · exit 2</text>
+        <text x="50" y="155" text-anchor="middle" font-family="ui-monospace, Menlo, monospace" font-size="14" fill="var(--tinta-suave)">inicio</text>
+        <text x="360" y="155" text-anchor="middle" font-family="ui-monospace, Menlo, monospace" font-size="14" fill="var(--tinta-suave)">fin</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- 2. DATO HEROE -->
+  <section data-layout="dato-heroe" id="determinista">
+    <div class="heroe">
+      <div>
+        <p class="etiqueta">La idea central</p>
+        <p class="enorme">Siempre.</p>
+        <p class="sub">Un hook no depende de que el modelo se acuerde. Si ocurre el evento, el comando corre.</p>
+      </div>
+      <div>
+        <p>La documentación lo llama <strong>control determinista</strong>: ciertas acciones pasan siempre, en lugar de depender de que el modelo decida hacerlas.<a class="cita" href="https://code.claude.com/docs/en/hooks-guide">[1]</a></p>
+        <p>Compara dos formas de pedir lo mismo, "formatea cada archivo que edites":</p>
+        <svg viewBox="0 0 360 250" role="img" aria-labelledby="t-heroe">
+          <title id="t-heroe">Arriba, una instrucción en CLAUDE.md pasa por la decisión del modelo y puede no cumplirse. Abajo, un hook va directo del evento al comando.</title>
+          <text x="0" y="18" font-family="ui-monospace, Menlo, monospace" font-size="14" font-weight="600" fill="var(--tinta-suave)">CLAUDE.md</text>
+          <rect x="0" y="30" width="104" height="50" rx="8" fill="var(--superficie)" stroke="var(--gris)"/>
+          <text x="52" y="60" text-anchor="middle" font-family="ui-monospace, Menlo, monospace" font-size="14" fill="var(--tinta)">"formatea"</text>
+          <line x1="104" y1="55" x2="152" y2="55" stroke="var(--gris)" stroke-width="2" stroke-dasharray="5 5"/>
+          <circle cx="178" cy="55" r="26" fill="none" stroke="var(--gris)" stroke-width="2"/>
+          <text x="178" y="64" text-anchor="middle" font-family="ui-serif, Georgia, serif" font-size="24" font-weight="600" fill="var(--tinta-suave)">?</text>
+          <line x1="204" y1="55" x2="250" y2="55" stroke="var(--gris)" stroke-width="2" stroke-dasharray="5 5"/>
+          <rect x="250" y="30" width="110" height="50" rx="8" fill="none" stroke="var(--gris)" stroke-dasharray="5 5"/>
+          <text x="305" y="60" text-anchor="middle" font-family="ui-monospace, Menlo, monospace" font-size="14" fill="var(--tinta-suave)">a veces</text>
+          <text x="0" y="148" font-family="ui-monospace, Menlo, monospace" font-size="14" font-weight="600" fill="var(--acento-oscuro)">hook PostToolUse</text>
+          <rect x="0" y="160" width="104" height="50" rx="8" fill="var(--superficie)" stroke="var(--tinta)"/>
+          <text x="52" y="190" text-anchor="middle" font-family="ui-monospace, Menlo, monospace" font-size="14" fill="var(--tinta)">Edit|Write</text>
+          <line x1="104" y1="185" x2="240" y2="185" stroke="var(--acento)" stroke-width="4"/>
+          <polygon points="238,177 252,185 238,193" fill="var(--acento)"/>
+          <rect x="250" y="160" width="110" height="50" rx="8" fill="var(--tinta)"/>
+          <text x="305" y="182" text-anchor="middle" font-family="ui-monospace, Menlo, monospace" font-size="14" fill="var(--fondo)">prettier</text>
+          <text x="305" y="200" text-anchor="middle" font-family="ui-monospace, Menlo, monospace" font-size="12" fill="var(--acento)">siempre</text>
+          <text x="0" y="240" font-family="ui-monospace, Menlo, monospace" font-size="12" fill="var(--tinta-suave)">mismo pedido, dos garantías distintas</text>
+        </svg>
+        <p class="suave">Si la decisión necesita criterio, y no una regla fija, existen hooks de tipo <code>prompt</code> o <code>agent</code> que consultan a un modelo de Claude. Para empezar, basta con el tipo <code>command</code>.<a class="cita" href="https://code.claude.com/docs/en/hooks-guide#prompt-based-hooks">[1]</a></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. SECUENCIA: diagrama clicable -->
+  <section data-layout="secuencia" data-tono="oscuro" id="eventos">
+    <div>
+      <p class="etiqueta">Cuándo corre</p>
+      <h2>Siete eventos sobre una sesión</h2>
+      <p>La referencia lista más de 30 eventos.<a class="cita" href="https://code.claude.com/docs/en/hooks#hook-lifecycle">[2]</a> Para empezar, estos siete cubren casi todo. Toca cada uno para ver cuándo se dispara, qué filtra su matcher y si un <code>exit 2</code> lo detiene.</p>
+      <div class="desliza">
+        <svg id="diagrama-eventos" class="hay-activo" data-interaccion="diagrama" viewBox="0 0 960 230" role="group" aria-label="Línea de tiempo de eventos de una sesión de Claude Code">
+          <title>Línea de tiempo con siete eventos de hooks y el momento en que corre la herramienta</title>
+          <line class="linea" data-une="SessionStart UserPromptSubmit" x1="60" y1="115" x2="185" y2="115"/>
+          <line class="linea" data-une="UserPromptSubmit PreToolUse" x1="185" y1="115" x2="310" y2="115"/>
+          <line class="linea" data-une="PreToolUse PostToolUse" x1="310" y1="115" x2="380" y2="115"/>
+          <line class="linea" data-une="PreToolUse PostToolUse" x1="460" y1="115" x2="530" y2="115"/>
+          <line class="linea" data-une="PostToolUse Notification" x1="530" y1="115" x2="650" y2="115"/>
+          <line class="linea" data-une="Notification Stop" x1="650" y1="115" x2="770" y2="115"/>
+          <line class="linea" data-une="Stop SessionEnd" x1="770" y1="115" x2="890" y2="115"/>
+          <rect x="380" y="95" width="80" height="40" rx="6" fill="#24231F" stroke="#B0AEA5" stroke-dasharray="4 3"/>
+          <text x="420" y="113" text-anchor="middle" font-family="ui-monospace, Menlo, monospace" font-size="11" fill="#B0AEA5">la</text>
+          <text x="420" y="127" text-anchor="middle" font-family="ui-monospace, Menlo, monospace" font-size="11" fill="#B0AEA5">herramienta</text>
+          <g data-nodo="SessionStart" tabindex="0" role="button" aria-label="SessionStart">
+            <rect class="aro" x="5" y="60" width="110" height="110" rx="10"/>
+            <circle class="no-bloquea" cx="60" cy="115" r="14"/>
+            <text x="60" y="160" text-anchor="middle">SessionStart</text>
+          </g>
+          <g data-nodo="UserPromptSubmit" tabindex="0" role="button" aria-label="UserPromptSubmit">
+            <rect class="aro" x="115" y="55" width="140" height="80" rx="10"/>
+            <circle class="bloquea" cx="185" cy="115" r="14"/>
+            <text x="185" y="80" text-anchor="middle">UserPromptSubmit</text>
+          </g>
+          <g data-nodo="PreToolUse" tabindex="0" role="button" aria-label="PreToolUse">
+            <rect class="aro" x="255" y="95" width="110" height="80" rx="10"/>
+            <circle class="bloquea" cx="310" cy="115" r="14"/>
+            <text x="310" y="160" text-anchor="middle">PreToolUse</text>
+          </g>
+          <g data-nodo="PostToolUse" tabindex="0" role="button" aria-label="PostToolUse">
+            <rect class="aro" x="475" y="55" width="110" height="80" rx="10"/>
+            <circle class="no-bloquea" cx="530" cy="115" r="14"/>
+            <text x="530" y="80" text-anchor="middle">PostToolUse</text>
+          </g>
+          <g data-nodo="Notification" tabindex="0" role="button" aria-label="Notification">
+            <rect class="aro" x="595" y="95" width="110" height="80" rx="10"/>
+            <circle class="no-bloquea" cx="650" cy="115" r="14"/>
+            <text x="650" y="160" text-anchor="middle">Notification</text>
+          </g>
+          <g data-nodo="Stop" tabindex="0" role="button" aria-label="Stop">
+            <rect class="aro" x="725" y="55" width="90" height="80" rx="10"/>
+            <circle class="bloquea" cx="770" cy="115" r="14"/>
+            <text x="770" y="80" text-anchor="middle">Stop</text>
+          </g>
+          <g data-nodo="SessionEnd" tabindex="0" role="button" aria-label="SessionEnd">
+            <rect class="aro" x="835" y="95" width="110" height="80" rx="10"/>
+            <circle class="no-bloquea" cx="890" cy="115" r="14"/>
+            <text x="890" y="160" text-anchor="middle">SessionEnd</text>
+          </g>
+          <text x="60" y="210" font-family="ui-monospace, Menlo, monospace" font-size="12" fill="#B0AEA5">el prompt → la herramienta → la respuesta termina, y se repite por cada turno</text>
+        </svg>
+      </div>
+      <p class="pista">En celular, desliza el diagrama hacia los lados.</p>
+      <div class="leyenda"><span class="l-bloquea">exit 2 bloquea</span><span>exit 2 no bloquea</span></div>
+      <div class="ficha" id="ficha-evento" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- 4. DIVIDIDO: pasos -->
+  <section data-layout="dividido" id="primer-hook">
+    <div class="dividido">
+      <div>
+        <p class="etiqueta">Anatomía</p>
+        <h2>Tu primer hook, línea por línea</h2>
+        <p>Vas a crear el mismo hook con el que empieza la guía oficial: una notificación de escritorio cuando Claude Code espera tu respuesta.<a class="cita" href="https://code.claude.com/docs/en/hooks-guide#set-up-your-first-hook">[1]</a></p>
+        <p>Fíjate en el anidado. Siempre es igual: <code>hooks</code> → evento → grupo con <code>matcher</code> → lista de handlers.</p>
+        <p class="suave">El ejemplo usa <code>notify-send</code> de Linux. En macOS la guía usa <code>osascript</code> y en Windows, PowerShell.<a class="cita" href="https://code.claude.com/docs/en/hooks-guide#get-notified-when-claude-needs-input">[1]</a></p>
+      </div>
+      <div class="pasos-caja" data-interaccion="pasos" id="pasos" tabindex="-1">
+        <div class="progreso"><span id="paso-n">Paso 1 de 6</span><div class="barra"><i id="paso-barra"></i></div></div>
+        <div class="paso-texto" aria-live="polite">
+          <h3 id="paso-titulo"></h3>
+          <p id="paso-desc"></p>
+        </div>
+        <div class="pasos-vista">
+          <div>
+<pre class="codigo-pasos" id="codigo-pasos" aria-label="Contenido de settings.json"><span data-paso="1">{</span><span data-paso="2">  "hooks": {</span><span data-paso="3">    "Notification": [</span><span data-paso="4">      {</span><span data-paso="4">        "matcher": "",</span><span data-paso="5">        "hooks": [</span><span data-paso="5">          {</span><span data-paso="5">            "type": "command",</span><span data-paso="5">            "command": "notify-send 'Claude Code' 'Claude Code necesita tu atención'"</span><span data-paso="5">          }</span><span data-paso="5">        ]</span><span data-paso="4">      }</span><span data-paso="3">    ]</span><span data-paso="2">  }</span><span data-paso="1">}</span></pre>
+            <pre class="terminal term-hooks" id="term-hooks">&gt; /hooks
+  Notification
+    notify-send 'Claude Code' …   User settings</pre>
+          </div>
+          <svg id="svg-anidado" viewBox="0 0 300 330" role="img" aria-labelledby="t-anidado">
+            <title id="t-anidado">Cajas anidadas: archivo de settings, llave hooks, evento Notification, grupo con matcher y handler command</title>
+            <g class="capa" data-paso="1"><rect x="5" y="5" width="290" height="290" rx="12"/><text x="18" y="27">settings.json</text></g>
+            <g class="capa" data-paso="2"><rect x="22" y="40" width="256" height="240" rx="10"/><text x="35" y="62">"hooks"</text></g>
+            <g class="capa" data-paso="3"><rect x="39" y="75" width="222" height="190" rx="9"/><text x="52" y="97">"Notification"</text></g>
+            <g class="capa" data-paso="4"><rect x="56" y="110" width="188" height="140" rx="8"/><text x="69" y="132">matcher: ""</text></g>
+            <g class="capa" data-paso="5"><rect x="73" y="150" width="154" height="84" rx="7"/><text x="86" y="176">type: command</text><text x="86" y="200">command: …</text></g>
+            <g class="capa" data-paso="6"><rect x="5" y="302" width="150" height="26" rx="13"/><path d="M18 315 l5 5 l10 -11" fill="none" stroke="var(--verde)" stroke-width="3"/><text x="42" y="320">/hooks lo ve</text></g>
+          </svg>
+        </div>
+        <div class="controles">
+          <button type="button" id="paso-ant">Anterior</button>
+          <button type="button" class="primario" id="paso-sig">Siguiente</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. LABORATORIO: probador de matcher -->
+  <section data-layout="laboratorio" id="matchers">
+    <div>
+      <div class="lab-cabeza">
+        <div>
+          <p class="etiqueta">Filtrar</p>
+          <h2>¿A qué herramientas responde tu matcher?</h2>
+          <p>Sin matcher, el hook corre en cada ocurrencia de su evento. En <code>PreToolUse</code> y <code>PostToolUse</code>, el matcher compara contra el <strong>nombre de la herramienta</strong>.<a class="cita" href="https://code.claude.com/docs/en/hooks-guide#filter-hooks-with-matchers">[1]</a></p>
+          <p>Las reglas: <code>"*"</code>, <code>""</code> o sin matcher, todo. Si solo tiene letras, números, <code>_</code>, <code>-</code>, espacios, <code>,</code> o <code>|</code>, es una lista de nombres exactos. Cualquier otra cosa es una expresión regular de JavaScript sin anclar. Y distingue mayúsculas.<a class="cita" href="https://code.claude.com/docs/en/hooks#matcher-patterns">[2]</a></p>
+        </div>
+        <svg viewBox="0 0 300 240" role="img" aria-labelledby="t-embudo">
+          <title id="t-embudo">Varias herramientas entran a un embudo, el matcher, y solo las que coinciden llegan al hook</title>
+          <rect x="10" y="10" width="62" height="28" rx="6" fill="var(--superficie)" stroke="var(--gris)"/>
+          <text x="41" y="29" text-anchor="middle" font-family="ui-monospace, Menlo, monospace" font-size="12" fill="var(--tinta)">Bash</text>
+          <rect x="82" y="10" width="62" height="28" rx="6" fill="var(--tinta)"/>
+          <text x="113" y="29" text-anchor="middle" font-family="ui-monospace, Menlo, monospace" font-size="12" fill="var(--fondo)">Edit</text>
+          <rect x="154" y="10" width="62" height="28" rx="6" fill="var(--superficie)" stroke="var(--gris)"/>
+          <text x="185" y="29" text-anchor="middle" font-family="ui-monospace, Menlo, monospace" font-size="12" fill="var(--tinta)">Read</text>
+          <rect x="226" y="10" width="64" height="28" rx="6" fill="var(--tinta)"/>
+          <text x="258" y="29" text-anchor="middle" font-family="ui-monospace, Menlo, monospace" font-size="12" fill="var(--fondo)">Write</text>
+          <path d="M20 60 L280 60 L180 140 L180 175 L120 175 L120 140 Z" fill="none" stroke="var(--tinta)" stroke-width="2.5" stroke-linejoin="round"/>
+          <text x="150" y="98" text-anchor="middle" font-family="ui-monospace, Menlo, monospace" font-size="15" font-weight="600" fill="var(--acento-oscuro)">Edit|Write</text>
+          <line x1="150" y1="175" x2="150" y2="200" stroke="var(--acento)" stroke-width="3"/>
+          <rect x="95" y="200" width="110" height="34" rx="8" fill="var(--acento)"/>
+          <text x="150" y="222" text-anchor="middle" font-family="ui-monospace, Menlo, monospace" font-size="13" font-weight="600" fill="var(--tinta)">tu hook</text>
+        </svg>
+      </div>
+      <div class="probador" data-interaccion="otra" id="probador">
+        <label for="matcher-in">Escribe un matcher para un hook <code>PreToolUse</code></label>
+        <div class="campo"><span>"matcher": "</span><input id="matcher-in" type="text" value="Edit|Write" autocomplete="off" spellcheck="false" aria-describedby="veredicto"><span>"</span></div>
+        <div class="atajos" aria-label="Ejemplos">
+          <button type="button" data-m="Bash">Bash</button>
+          <button type="button" data-m="Edit|Write">Edit|Write</button>
+          <button type="button" data-m="Edit, Write">Edit, Write</button>
+          <button type="button" data-m="Edit">Edit</button>
+          <button type="button" data-m="bash">bash</button>
+          <button type="button" data-m="*">*</button>
+          <button type="button" data-m="^Notebook">^Notebook</button>
+          <button type="button" data-m="mcp__memory__.*">mcp__memory__.*</button>
+        </div>
+        <ul class="herramientas" id="lista-herr" aria-label="Herramientas que disparan el hook"></ul>
+        <div class="veredicto" id="veredicto" aria-live="polite"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. COMPARACION + simulador -->
+  <section data-layout="comparacion" data-tono="oscuro" id="exit">
+    <div>
+      <p class="etiqueta">Responder</p>
+      <h2>exit 0 o exit 2: qué le dice tu script a Claude Code</h2>
+      <p>El hook recibe los datos del evento como JSON por <code>stdin</code> y responde con su código de salida.<a class="cita" href="https://code.claude.com/docs/en/hooks-guide#read-input-and-return-output">[1]</a></p>
+      <div class="frente">
+        <div class="lado-0">
+          <svg viewBox="0 0 260 90" role="img" aria-labelledby="t-abierta">
+            <title id="t-abierta">Compuerta abierta: la acción sigue</title>
+            <rect x="10" y="30" width="16" height="55" rx="3" fill="#A9BE8A"/>
+            <rect x="234" y="30" width="16" height="55" rx="3" fill="#A9BE8A"/>
+            <rect x="22" y="2" width="14" height="40" rx="3" fill="#A9BE8A" transform="rotate(-10 29 22)"/>
+            <path d="M50 62 L200 62" stroke="#FAF9F5" stroke-width="3"/>
+            <polygon points="198,54 214,62 198,70" fill="#FAF9F5"/>
+          </svg>
+          <h3>exit 0</h3>
+          <p>Éxito, sin objeción. La acción sigue. En <code>PreToolUse</code> no aprueba la herramienta: sigue el flujo normal de permisos.<a class="cita" href="https://code.claude.com/docs/en/hooks-guide#hook-output">[1]</a></p>
+        </div>
+        <div class="divisor" aria-hidden="true"></div>
+        <div class="lado-2">
+          <svg viewBox="0 0 260 90" role="img" aria-labelledby="t-cerrada">
+            <title id="t-cerrada">Compuerta cerrada: la acción se detiene</title>
+            <rect x="10" y="30" width="16" height="55" rx="3" fill="#D97757"/>
+            <rect x="234" y="30" width="16" height="55" rx="3" fill="#D97757"/>
+            <rect x="26" y="40" width="208" height="14" rx="3" fill="#D97757"/>
+            <path d="M50 75 L110 75" stroke="#FAF9F5" stroke-width="3"/>
+            <path d="M120 66 l18 18 M138 66 l-18 18" stroke="#D97757" stroke-width="4"/>
+          </svg>
+          <h3>exit 2</h3>
+          <p>Error bloqueante. Lo que escribas en <code>stderr</code> es el motivo. Solo detiene la acción en eventos que pueden bloquear; en otros solo muestra el mensaje.<a class="cita" href="https://code.claude.com/docs/en/hooks#exit-code-2-behavior-per-event">[2]</a></p>
+        </div>
+      </div>
+
+      <div class="sim" data-interaccion="simulador" id="simulador" data-estado="bloquea">
+        <h3>Simulador: mismo código, distinto evento</h3>
+        <div class="deslizadores">
+          <div class="deslizador">
+            <label for="sim-evento"><span>Evento</span><output id="sim-evento-v" for="sim-evento">PreToolUse</output></label>
+            <input type="range" id="sim-evento" min="0" max="5" step="1" value="0">
+            <div class="marcas" aria-hidden="true"><span>Pre</span><span>Post</span><span>Prompt</span><span>Stop</span><span>Start</span><span>Notif</span></div>
+          </div>
+          <div class="deslizador">
+            <label for="sim-exit"><span>Código de salida</span><output id="sim-exit-v" for="sim-exit">exit 2</output></label>
+            <input type="range" id="sim-exit" min="0" max="3" step="1" value="2">
+            <div class="marcas" aria-hidden="true"><span>0</span><span>1</span><span class="critico">2 · bloquea</span><span>3</span></div>
+          </div>
+        </div>
+        <svg id="svg-compuerta" viewBox="0 0 400 124" role="img" aria-labelledby="t-compuerta">
+          <title id="t-compuerta">Tu script devuelve un código, la compuerta se abre o se cierra y la acción sigue o se detiene</title>
+          <rect class="caja" x="2" y="30" width="92" height="46" rx="8"/>
+          <text x="48" y="59" text-anchor="middle">script</text>
+          <path class="flecha" d="M94 53 L118 53"/>
+          <circle cx="144" cy="53" r="26" fill="#24231F" stroke="#D97757" stroke-width="2"/>
+          <text id="sim-codigo" x="144" y="60" text-anchor="middle" font-size="20">2</text>
+          <path class="flecha" d="M170 53 L190 53"/>
+          <rect x="190" y="34" width="10" height="44" rx="2" fill="#B0AEA5"/>
+          <g class="barrera"><rect x="200" y="46" width="62" height="12" rx="3" fill="#D97757"/></g>
+          <rect x="262" y="34" width="10" height="44" rx="2" fill="#B0AEA5"/>
+          <rect class="caja destino" x="280" y="30" width="118" height="46" rx="8"/>
+          <text id="sim-accion" x="339" y="59" text-anchor="middle" font-size="14">herramienta</text>
+          <text id="sim-pie" x="200" y="112" text-anchor="middle" font-size="14" fill="#B0AEA5"></text>
+        </svg>
+        <div class="resultado" aria-live="polite">
+          <div>
+            <span class="estado-chip" id="sim-chip" data-estado="bloquea">bloquea</span>
+            <p id="sim-texto"></p>
+          </div>
+          <p class="lector" id="sim-lector"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. MOSAICO -->
+  <section data-layout="mosaico" id="donde">
+    <div>
+      <p class="etiqueta">Dónde vive</p>
+      <h2>El archivo decide el alcance</h2>
+      <p>Un hook se escribe en un archivo de settings. Según cuál elijas, aplica a todos tus proyectos, a uno solo o a todo tu equipo. Los hooks de varios niveles se suman, no se reemplazan.<a class="cita" href="https://code.claude.com/docs/en/hooks-guide#configure-hook-location">[1]</a></p>
+      <div class="mosaico">
+        <div class="pieza grande">
+          <div>
+            <span class="ruta">~/.claude/settings.json</span>
+            <p>Todos tus proyectos. Se queda en tu máquina. Buen lugar para la notificación de escritorio.</p>
+            <div class="alcance"><i>global</i><i>solo tú</i></div>
+          </div>
+          <svg viewBox="0 0 280 170" role="img" aria-labelledby="t-arbol">
+            <title id="t-arbol">Árbol de carpetas: la carpeta personal con .claude y un proyecto con su propia carpeta .claude</title>
+            <path d="M20 22 L20 145 M20 50 L50 50 M20 120 L50 120 M70 135 L70 160 M70 148 L95 148" fill="none" stroke="var(--gris)" stroke-width="2"/>
+            <rect x="8" y="6" width="26" height="18" rx="3" fill="var(--tinta)"/>
+            <text x="42" y="20" font-family="ui-monospace, Menlo, monospace" font-size="13" fill="var(--tinta)">~ (tu carpeta)</text>
+            <rect x="52" y="40" width="22" height="16" rx="3" fill="var(--acento)"/>
+            <text x="82" y="53" font-family="ui-monospace, Menlo, monospace" font-size="13" font-weight="600" fill="var(--acento-oscuro)">.claude/settings.json</text>
+            <rect x="52" y="110" width="22" height="16" rx="3" fill="var(--tinta-suave)"/>
+            <text x="82" y="123" font-family="ui-monospace, Menlo, monospace" font-size="13" fill="var(--tinta)">mi-proyecto/</text>
+            <rect x="97" y="140" width="22" height="16" rx="3" fill="var(--azul)"/>
+            <text x="126" y="153" font-family="ui-monospace, Menlo, monospace" font-size="13" fill="var(--tinta)">.claude/</text>
+          </svg>
+        </div>
+        <div class="pieza">
+          <span class="ruta">.claude/settings.json</span>
+          <p>Un proyecto. Se puede commitear al repo y lo recibe todo el equipo.</p>
+          <div class="alcance"><i>proyecto</i><i>compartido</i></div>
+        </div>
+        <div class="pieza">
+          <span class="ruta">.claude/settings.local.json</span>
+          <p>Un proyecto, solo para ti. Queda en <code>.gitignore</code> cuando Claude Code guarda ahí un ajuste.</p>
+          <div class="alcance"><i>proyecto</i><i>privado</i></div>
+        </div>
+        <div class="pieza ancha">
+          <p><strong>También vienen hooks de:</strong> plugins (<code>hooks/hooks.json</code>), el frontmatter de skills y subagentes, y los ajustes administrados de tu organización. Para ver todos con su origen, escribe <code>/hooks</code>: es un navegador de solo lectura.<a class="cita" href="https://code.claude.com/docs/en/hooks#the-%2Fhooks-menu">[2]</a> Para quitar uno, borras su entrada del archivo.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. ENFASIS -->
+  <section data-layout="enfasis" data-tono="oscuro" id="seguridad">
+    <div class="enfasis">
+      <div>
+        <p class="etiqueta">La regla</p>
+        <p class="regla">Un hook corre con <em>todos tus permisos</em>. Léelo antes de pegarlo.</p>
+        <p>Un hook <code>command</code> puede modificar, borrar o leer cualquier archivo al que tu usuario tenga acceso. La documentación pide revisar y probar cada comando antes de agregarlo.<a class="cita" href="https://code.claude.com/docs/en/hooks#security-considerations">[2]</a></p>
+        <ul class="practicas">
+          <li>Pon comillas a las variables: <code>"$VAR"</code>, no <code>$VAR</code>.</li>
+          <li>Usa rutas absolutas o <code>"$CLAUDE_PROJECT_DIR"</code> para llamar a tus scripts.</li>
+          <li>No toques archivos sensibles: <code>.env</code>, <code>.git/</code>, llaves.</li>
+          <li>Prueba el script a mano antes de conectarlo:</li>
+        </ul>
+        <pre class="terminal">echo '{"tool_name":"Bash","tool_input":{"command":"ls"}}' | ./my-hook.sh
+echo $?</pre>
+        <p class="suave" style="margin-top:.75rem">Ese par de líneas viene de la sección de problemas comunes de la guía.<a class="cita" href="https://code.claude.com/docs/en/hooks-guide#hook-error-in-output">[1]</a></p>
+      </div>
+      <svg viewBox="0 0 260 260" role="img" aria-labelledby="t-permisos">
+        <title id="t-permisos">Un hook dentro de una terminal tiene acceso a las mismas carpetas que tu usuario</title>
+        <rect x="10" y="20" width="240" height="130" rx="12" fill="#24231F" stroke="#B0AEA5"/>
+        <circle cx="30" cy="38" r="5" fill="#B0AEA5"/>
+        <circle cx="46" cy="38" r="5" fill="#B0AEA5"/>
+        <text x="28" y="78" font-family="ui-monospace, Menlo, monospace" font-size="15" fill="#D97757">$</text>
+        <text x="46" y="78" font-family="ui-monospace, Menlo, monospace" font-size="15" fill="#FAF9F5">hook.sh</text>
+        <text x="28" y="106" font-family="ui-monospace, Menlo, monospace" font-size="12" fill="#B0AEA5">usuario: tú</text>
+        <text x="28" y="128" font-family="ui-monospace, Menlo, monospace" font-size="12" fill="#B0AEA5">permisos: los tuyos</text>
+        <path d="M60 150 L40 195 M130 150 L130 195 M200 150 L220 195" stroke="#D97757" stroke-width="2.5"/>
+        <rect x="8" y="195" width="68" height="44" rx="6" fill="none" stroke="#FAF9F5"/>
+        <text x="42" y="222" text-anchor="middle" font-family="ui-monospace, Menlo, monospace" font-size="12" fill="#FAF9F5">.env</text>
+        <rect x="96" y="195" width="68" height="44" rx="6" fill="none" stroke="#FAF9F5"/>
+        <text x="130" y="222" text-anchor="middle" font-family="ui-monospace, Menlo, monospace" font-size="12" fill="#FAF9F5">~/.ssh</text>
+        <rect x="184" y="195" width="68" height="44" rx="6" fill="none" stroke="#FAF9F5"/>
+        <text x="218" y="222" text-anchor="middle" font-family="ui-monospace, Menlo, monospace" font-size="12" fill="#FAF9F5">.git/</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- 9. REPASO -->
+  <section data-layout="repaso" id="repaso">
+    <div class="repaso">
+      <div>
+        <p class="etiqueta">Repaso</p>
+        <h2>Intenta recordar antes de voltear</h2>
+        <p>Lee la pregunta, responde en tu cabeza y después voltea la tarjeta. Las que marques como <strong>Repasar</strong> vuelven al final del mazo.</p>
+        <p class="estado-mazo" id="estado-mazo" aria-live="polite"></p>
+        <div class="puntos" id="puntos" aria-hidden="true"></div>
+      </div>
+      <div class="mazo" data-interaccion="flashcards" id="mazo">
+        <button type="button" class="tarjeta" id="tarjeta" aria-describedby="estado-mazo">
+          <span class="cara" id="tarjeta-cara">Pregunta</span>
+          <span class="contenido" id="tarjeta-texto"></span>
+          <span class="ayuda" id="tarjeta-ayuda">Toca, Enter o espacio para voltear</span>
+        </button>
+        <div class="controles" id="tarjeta-botones">
+          <button type="button" id="btn-sabia" disabled>Lo sabía</button>
+          <button type="button" id="btn-repasar" disabled>Repasar</button>
+          <button type="button" id="btn-reiniciar" hidden>Volver a empezar</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="fuentes" data-layout="lista-grande">
+    <h2>Fuentes</h2>
+    <ol>
+      <li><div><a href="https://code.claude.com/docs/en/hooks-guide">Automate actions with hooks</a><span>Guía oficial de Claude Code: primer hook, ejemplos, matchers, ubicación y problemas comunes. Consultada el 12 de noviembre de 2026.</span></div></li>
+      <li><div><a href="https://code.claude.com/docs/en/hooks">Hooks reference</a><span>Referencia oficial: eventos, patrones de matcher, códigos de salida por evento, tiempos límite, menú /hooks y seguridad. Consultada el 12 de noviembre de 2026.</span></div></li>
+    </ol>
+  </section>
+
+</main>
+<script>
+// ---------- 1. Diagrama clicable de eventos ----------
+(function () {
+  try {
+    const diagrama = document.getElementById('diagrama-eventos');
+    const panel = document.getElementById('ficha-evento');
+    const fichas = {
+      SessionStart: {
+        cuando: 'Cuando una sesión empieza o se reanuda.',
+        matcher: 'Cómo empezó: <code>startup</code>, <code>resume</code>, <code>clear</code>, <code>compact</code>, <code>fork</code>.',
+        exit2: 'No bloquea. Muestra <code>stderr</code> solo a ti.',
+        uso: 'Con matcher <code>compact</code>, volver a darle a Claude el contexto clave después de compactar. El texto que imprimes en stdout se agrega a su contexto.'
+      },
+      UserPromptSubmit: {
+        cuando: 'Al enviar un prompt, antes de que Claude lo procese.',
+        matcher: 'No admite matcher: corre con cada prompt.',
+        exit2: 'Bloquea. El prompt nunca llega a Claude.',
+        uso: 'Agregar a cada prompt un dato como la rama actual de git.'
+      },
+      PreToolUse: {
+        cuando: 'Antes de que se ejecute una llamada a herramienta.',
+        matcher: 'Nombre de la herramienta: <code>Bash</code>, <code>Edit|Write</code>, <code>mcp__.*</code>.',
+        exit2: 'Bloquea la llamada. Claude recibe tu <code>stderr</code> como explicación y puede cambiar de plan.',
+        uso: 'Impedir que Claude edite <code>.env</code> o algo dentro de <code>.git/</code>.'
+      },
+      PostToolUse: {
+        cuando: 'Después de que una herramienta termina con éxito.',
+        matcher: 'Nombre de la herramienta, igual que en PreToolUse.',
+        exit2: 'No bloquea: la herramienta ya corrió. Muestra <code>stderr</code> a Claude.',
+        uso: 'Correr Prettier sobre cada archivo que Claude edita con <code>Edit</code> o <code>Write</code>.'
+      },
+      Notification: {
+        cuando: 'Cuando Claude Code envía una notificación, por ejemplo al esperar tu permiso o tu respuesta.',
+        matcher: 'Tipo de notificación: <code>permission_prompt</code>, <code>idle_prompt</code> y otros. Vacío, todos.',
+        exit2: 'No bloquea. El código de salida y el <code>stderr</code> se ignoran.',
+        uso: 'Mandarte una notificación de escritorio para que no tengas que vigilar la terminal.'
+      },
+      Stop: {
+        cuando: 'Cuando Claude termina de responder. No corre si tú lo interrumpes.',
+        matcher: 'No admite matcher.',
+        exit2: 'Bloquea: impide que Claude se detenga y la conversación continúa. Tras 8 bloqueos seguidos sin una herramienta de por medio, Claude Code lo anula.',
+        uso: 'Revisar al final de cada turno que las pruebas pasen.'
+      },
+      SessionEnd: {
+        cuando: 'Cuando la sesión termina.',
+        matcher: 'Por qué terminó: <code>clear</code>, <code>resume</code>, <code>logout</code>, <code>prompt_input_exit</code>, <code>other</code>.',
+        exit2: 'No bloquea. Muestra <code>stderr</code> solo a ti.',
+        uso: 'Guardar un registro. Tiene poco tiempo: todos los hooks SessionEnd comparten 1.5 s por defecto.'
+      }
+    };
+    const pintar = nombre => {
+      const f = fichas[nombre];
+      panel.innerHTML = '<div><h3>' + nombre + '</h3><p>' + f.cuando + '</p></div>' +
+        '<dl><dt>Matcher</dt><dd>' + f.matcher + '</dd><dt>exit 2</dt><dd>' + f.exit2 + '</dd><dt>Para qué</dt><dd>' + f.uso + '</dd></dl>';
+    };
+    const nodos = diagrama.querySelectorAll('[data-nodo]');
+    nodos.forEach(n => {
+      const activar = () => {
+        nodos.forEach(x => {
+          x.classList.toggle('activo', x === n);
+          x.setAttribute('aria-pressed', x === n ? 'true' : 'false');
+        });
+        diagrama.querySelectorAll('[data-une]').forEach(l =>
+          l.classList.toggle('activo', l.dataset.une.split(' ').includes(n.dataset.nodo)));
+        pintar(n.dataset.nodo);
+      };
+      n.addEventListener('click', activar);
+      n.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); activar(); }
+      });
+      if (n.dataset.nodo === 'PreToolUse') activar();
+    });
+  } catch (e) { console.error('diagrama', e); }
+})();
+
+// ---------- 2. Paso a paso: primer hook ----------
+(function () {
+  try {
+    const pasos = [
+      { t: 'Abre tu settings de usuario', d: 'Abre ~/.claude/settings.json. Si no existe, créalo. Todo va dentro de un objeto JSON.' },
+      { t: 'Agrega la llave "hooks"', d: 'Un solo objeto "hooks" guarda todos tus hooks. Si ya existe, no lo reemplaces: agrega el evento junto a los que ya tiene.' },
+      { t: 'Elige el evento', d: 'Cada evento es una llave dentro de "hooks". "Notification" se dispara cuando Claude Code espera tu permiso o tu respuesta. Su valor es una lista de grupos.' },
+      { t: 'Escribe el matcher', d: 'El grupo lleva un "matcher". Vacío significa: todos los tipos de notificación. Con "permission_prompt" solo sonaría al pedir permiso.' },
+      { t: 'Define el handler', d: 'Dentro del grupo, otra lista "hooks" con lo que se ejecuta. "type": "command" corre un comando de shell; "command" es ese comando.' },
+      { t: 'Verifica con /hooks', d: 'En Claude Code escribe /hooks. Tu hook aparece bajo Notification, con su origen. Listo: la próxima vez que Claude espere, te avisará.' }
+    ];
+    const total = pasos.length;
+    let n = 1;
+    const caja = document.getElementById('pasos');
+    const lineas = document.querySelectorAll('#codigo-pasos span');
+    const capas = document.querySelectorAll('#svg-anidado .capa');
+    const ant = document.getElementById('paso-ant');
+    const sig = document.getElementById('paso-sig');
+    const term = document.getElementById('term-hooks');
+    const pintar = () => {
+      document.getElementById('paso-n').textContent = 'Paso ' + n + ' de ' + total;
+      document.getElementById('paso-barra').style.width = (n / total * 100) + '%';
+      document.getElementById('paso-titulo').textContent = pasos[n - 1].t;
+      document.getElementById('paso-desc').textContent = pasos[n - 1].d;
+      lineas.forEach(l => {
+        const p = Number(l.dataset.paso);
+        l.classList.toggle('visible', p <= n);
+        l.classList.toggle('nuevo', p === n);
+      });
+      capas.forEach(c => {
+        const p = Number(c.dataset.paso);
+        c.classList.toggle('visible', p <= n);
+        c.classList.toggle('nuevo', p === n);
+      });
+      term.classList.toggle('visible', n === total);
+      ant.disabled = n === 1;
+      sig.textContent = n === total ? 'Volver a empezar' : 'Siguiente';
+    };
+    const avanzar = () => { n = n === total ? 1 : n + 1; pintar(); };
+    const retroceder = () => { if (n > 1) { n -= 1; pintar(); } };
+    sig.addEventListener('click', avanzar);
+    ant.addEventListener('click', retroceder);
+    caja.addEventListener('keydown', e => {
+      if (e.key === 'ArrowRight') { e.preventDefault(); if (n < total) avanzar(); }
+      if (e.key === 'ArrowLeft') { e.preventDefault(); retroceder(); }
+    });
+    pintar();
+  } catch (e) { console.error('pasos', e); }
+})();
+
+// ---------- 3. Probador de matcher ----------
+(function () {
+  try {
+    const herramientas = ['Bash', 'Read', 'Edit', 'Write', 'Grep', 'Glob', 'WebFetch', 'NotebookEdit', 'mcp__memory__create_entities', 'mcp__github__create_issue'];
+    const input = document.getElementById('matcher-in');
+    const lista = document.getElementById('lista-herr');
+    const veredicto = document.getElementById('veredicto');
+    lista.innerHTML = herramientas.map(h => '<li data-h="' + h + '">' + h + '</li>').join('');
+    const items = lista.querySelectorAll('li');
+    const esc = s => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+    // Reglas de la referencia oficial (Matcher patterns)
+    const evaluar = m => {
+      if (m === '' || m === '*') return { modo: 'todas', prueba: () => true };
+      if (/^[A-Za-z0-9_\- ,|]+$/.test(m)) {
+        const nombres = m.split(/[|,]/).map(s => s.trim()).filter(Boolean);
+        return { modo: 'lista', nombres, prueba: t => nombres.includes(t) };
+      }
+      try {
+        const re = new RegExp(m);
+        return { modo: 'regex', prueba: t => re.test(t) };
+      } catch (e) {
+        return { modo: 'error', prueba: () => false };
+      }
+    };
+    const explicar = (m, r, cuantas) => {
+      const v = '<b>"' + esc(m) + '"</b>';
+      if (r.modo === 'todas') return '<span class="modo" data-modo="todas">todo</span>' + v + ' dispara con cualquier herramienta: ' + cuantas + ' de ' + herramientas.length + '.';
+      if (r.modo === 'lista') {
+        let t = '<span class="modo">nombres exactos</span>' + v + ' se lee como la lista ' + r.nombres.map(x => '<b>' + esc(x) + '</b>').join(', ') + '. ';
+        if (cuantas === 0) {
+          const parecida = herramientas.find(h => r.nombres.some(x => x.toLowerCase() === h.toLowerCase()));
+          t += parecida ? 'No dispara nada: el matcher distingue mayúsculas y la herramienta se llama <b>' + parecida + '</b>.' : 'Ninguna herramienta se llama así, así que no dispara nada.';
+        } else {
+          t += 'Dispara con ' + cuantas + '. Como es comparación exacta, <b>Edit</b> no incluye a <b>NotebookEdit</b>.';
+        }
+        return t;
+      }
+      if (r.modo === 'regex') return '<span class="modo">regex</span>' + v + ' tiene caracteres especiales, así que es una expresión regular sin anclar: basta con que aparezca en cualquier parte del nombre. Dispara con ' + cuantas + '. Para exigir el nombre completo, usa <b>^…$</b>.';
+      return '<span class="modo" data-modo="error">regex inválida</span>' + v + ' no es una expresión regular válida, así que no dispara con nada.';
+    };
+    const actualizar = () => {
+      const m = input.value;
+      const r = evaluar(m);
+      let cuantas = 0;
+      items.forEach(li => {
+        const si = r.prueba(li.dataset.h);
+        li.classList.toggle('dispara', si);
+        if (si) cuantas += 1;
+      });
+      veredicto.innerHTML = explicar(m, r, cuantas);
+    };
+    input.addEventListener('input', actualizar);
+    document.querySelectorAll('#probador [data-m]').forEach(b =>
+      b.addEventListener('click', () => { input.value = b.dataset.m; actualizar(); input.focus(); }));
+    actualizar();
+  } catch (e) { console.error('probador', e); }
+})();
+
+// ---------- 4. Simulador de códigos de salida ----------
+(function () {
+  try {
+    // Comportamiento por evento según la tabla "Exit code 2 behavior per event"
+    const eventos = [
+      { n: 'PreToolUse', accion: 'herramienta',
+        e0: 'La herramienta pasa al flujo normal de permisos. exit 0 no la aprueba: solo dice "sin objeción".',
+        e2: { estado: 'bloquea', t: 'La llamada a la herramienta se bloquea antes de correr.', lee: '<b>Claude</b> recibe tu stderr y puede ajustar lo que intentaba.' } },
+      { n: 'PostToolUse', accion: 'herramienta',
+        e0: 'La herramienta ya corrió y todo sigue igual.',
+        e2: { estado: 'aviso', t: 'No bloquea: la herramienta ya se ejecutó y no se puede deshacer.', lee: '<b>Claude</b> ve tu stderr.' } },
+      { n: 'UserPromptSubmit', accion: 'tu prompt',
+        e0: 'El prompt llega a Claude. Si imprimes texto en stdout, se agrega a su contexto.',
+        e2: { estado: 'bloquea', t: 'El prompt se bloquea y nunca llega a Claude.', lee: 'El motivo va en tu stderr.' } },
+      { n: 'Stop', accion: 'detenerse',
+        e0: 'Claude termina su respuesta normalmente.',
+        e2: { estado: 'bloquea', t: 'Claude no se detiene: la conversación continúa. Revisa stop_hook_active para no crear un ciclo.', lee: '<b>Claude</b> sigue trabajando con tu motivo.' } },
+      { n: 'SessionStart', accion: 'la sesión',
+        e0: 'La sesión arranca. El texto de stdout se agrega al contexto de Claude.',
+        e2: { estado: 'aviso', t: 'No bloquea: la sesión arranca igual.', lee: 'Solo <b>tú</b> ves el stderr.' } },
+      { n: 'Notification', accion: 'notificación',
+        e0: 'La notificación sigue su curso.',
+        e2: { estado: 'aviso', t: 'No bloquea. En este evento el código de salida y el stderr se ignoran.', lee: '<b>Nadie</b> lee el stderr.' } }
+    ];
+    const sim = document.getElementById('simulador');
+    const sEv = document.getElementById('sim-evento');
+    const sEx = document.getElementById('sim-exit');
+    const out = {
+      ev: document.getElementById('sim-evento-v'), ex: document.getElementById('sim-exit-v'),
+      codigo: document.getElementById('sim-codigo'), accion: document.getElementById('sim-accion'),
+      pie: document.getElementById('sim-pie'), chip: document.getElementById('sim-chip'),
+      texto: document.getElementById('sim-texto'), lector: document.getElementById('sim-lector')
+    };
+    const calcular = () => {
+      const ev = eventos[Number(sEv.value)];
+      const code = Number(sEx.value);
+      let estado, texto, lector, chip;
+      if (code === 0) {
+        estado = 'pasa'; chip = 'sigue'; texto = ev.e0;
+        lector = 'Nadie recibe un error. exit 0 es el código para "todo bien".';
+      } else if (code === 2) {
+        estado = ev.e2.estado; chip = estado === 'bloquea' ? 'bloquea' : 'no bloquea';
+        texto = ev.e2.t; lector = ev.e2.lee;
+      } else {
+        estado = 'aviso'; chip = 'error no bloqueante';
+        texto = 'La acción sigue. Ves un aviso "' + ev.n + ' hook error" con la primera línea de stderr.';
+        lector = 'Cualquier código distinto de 0 y 2, sin JSON en stdout, es un error que no detiene nada. Para bloquear hace falta exactamente <b>2</b>.';
+      }
+      sim.dataset.estado = estado;
+      out.ev.textContent = ev.n;
+      out.ex.textContent = 'exit ' + code;
+      out.codigo.textContent = String(code);
+      out.accion.textContent = ev.accion;
+      out.pie.textContent = ev.n + ' · exit ' + code + ' → ' + chip;
+      out.chip.dataset.estado = estado;
+      out.chip.textContent = chip;
+      out.texto.textContent = texto;
+      out.lector.innerHTML = lector;
+    };
+    sEv.addEventListener('input', calcular);
+    sEx.addEventListener('input', calcular);
+    calcular();
+  } catch (e) { console.error('simulador', e); }
+})();
+
+// ---------- 5. Flashcards ----------
+(function () {
+  try {
+    const tarjetas = [
+      ['¿Qué es un hook?', 'Un comando de shell que tú defines y que Claude Code ejecuta solo, en un punto fijo de su ciclo de vida.'],
+      ['¿Qué evento usas para frenar una herramienta antes de que corra?', 'PreToolUse.'],
+      ['¿Qué código de salida bloquea la acción?', 'exit 2, en los eventos que pueden bloquear. El motivo va en stderr.'],
+      ['¿exit 0 en PreToolUse aprueba la herramienta?', 'No. Solo dice "sin objeción"; la llamada sigue el flujo normal de permisos.'],
+      ['En PreToolUse y PostToolUse, ¿contra qué compara el matcher?', 'Contra el nombre de la herramienta: Bash, Edit|Write, mcp__.*'],
+      ['¿El matcher "bash" dispara con la herramienta Bash?', 'No. El matcher distingue mayúsculas.'],
+      ['¿Qué hace el matcher "" o "*"?', 'Dispara con todo: cada ocurrencia del evento.'],
+      ['¿Dónde pones un hook para todos tus proyectos?', 'En ~/.claude/settings.json'],
+      ['¿Dónde pones un hook que se comparte con el equipo en el repo?', 'En .claude/settings.json del proyecto.'],
+      ['¿Qué comando muestra los hooks configurados?', '/hooks, un navegador de solo lectura que dice de dónde viene cada uno.'],
+      ['¿Por dónde recibe el hook los datos del evento?', 'Como JSON por stdin: session_id, cwd, hook_event_name, tool_name, tool_input…'],
+      ['¿Puede un hook PostToolUse deshacer lo que hizo la herramienta?', 'No. La herramienta ya se ejecutó.'],
+      ['¿Con qué permisos corre un hook command?', 'Con todos los permisos de tu usuario. Revísalo antes de agregarlo.']
+    ];
+    const total = tarjetas.length;
+    let mazo = tarjetas.map((_, i) => i);
+    let dominadas = new Set();
+    let vistas = 0;
+    let volteada = false;
+    const btn = document.getElementById('tarjeta');
+    const cara = document.getElementById('tarjeta-cara');
+    const texto = document.getElementById('tarjeta-texto');
+    const ayuda = document.getElementById('tarjeta-ayuda');
+    const sabia = document.getElementById('btn-sabia');
+    const repasar = document.getElementById('btn-repasar');
+    const reiniciar = document.getElementById('btn-reiniciar');
+    const estado = document.getElementById('estado-mazo');
+    const puntos = document.getElementById('puntos');
+    puntos.innerHTML = tarjetas.map(() => '<i></i>').join('');
+    const pintar = () => {
+      const marcas = puntos.querySelectorAll('i');
+      marcas.forEach((m, i) => m.classList.toggle('ok', i < dominadas.size));
+      if (!mazo.length) {
+        btn.classList.add('volteada');
+        cara.textContent = 'Terminado';
+        texto.textContent = 'Dominaste las ' + total + ' tarjetas.';
+        ayuda.textContent = '';
+        btn.disabled = true;
+        sabia.hidden = true; repasar.hidden = true; reiniciar.hidden = false;
+        estado.innerHTML = '<b>' + total + ' de ' + total + '</b> dominadas · ' + vistas + ' respuestas';
+        return;
+      }
+      const [p, r] = tarjetas[mazo[0]];
+      btn.disabled = false;
+      btn.classList.toggle('volteada', volteada);
+      cara.textContent = volteada ? 'Respuesta' : 'Pregunta';
+      texto.textContent = volteada ? r : p;
+      ayuda.textContent = volteada ? '¿La recordaste? Elige abajo.' : 'Toca, Enter o espacio para voltear';
+      sabia.disabled = !volteada; repasar.disabled = !volteada;
+      sabia.hidden = false; repasar.hidden = false; reiniciar.hidden = true;
+      estado.innerHTML = 'Tarjeta ' + (Math.min(vistas + 1, 999)) + ' · quedan ' + mazo.length + ' · <b>' + dominadas.size + ' de ' + total + '</b> dominadas';
+    };
+    btn.addEventListener('click', () => { if (mazo.length) { volteada = !volteada; pintar(); } });
+    sabia.addEventListener('click', () => {
+      dominadas.add(mazo.shift()); vistas += 1; volteada = false; pintar(); btn.focus();
+    });
+    repasar.addEventListener('click', () => {
+      mazo.push(mazo.shift()); vistas += 1; volteada = false; pintar(); btn.focus();
+    });
+    reiniciar.addEventListener('click', () => {
+      mazo = tarjetas.map((_, i) => i); dominadas = new Set(); vistas = 0; volteada = false; pintar(); btn.focus();
+    });
+    pintar();
+  } catch (e) { console.error('flashcards', e); }
+})();
+</script>
+</body>
+</html>

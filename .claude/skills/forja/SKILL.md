@@ -33,9 +33,9 @@ Copia esta lista y márcala conforme avances:
 
 **1. Nivel.** Si el pedido no dice el nivel, pregunta *principiante, intermedio o avanzado* y espera la respuesta antes de seguir.
 
-**2. Ruta.**
+**2. Ruta.** Pasa **solo el tema**, sin el nivel ni otras palabras del pedido (de "/forja hooks de Claude Code, nivel principiante" el tema es "hooks de Claude Code"):
 ```bash
-python3 ${CLAUDE_SKILL_DIR}/scripts/registrar.py ruta "$ARGUMENTS"
+python3 ${CLAUDE_SKILL_DIR}/scripts/registrar.py ruta "<tema>"
 ```
 Usa exactamente la ruta que imprime. Si dice que ya existía una versión, avísale al usuario cuál creaste.
 
