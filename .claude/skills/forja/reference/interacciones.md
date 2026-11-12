@@ -2,6 +2,8 @@
 
 ## Contenido
 1. La prueba de una interacción real
+   - 1.1 Predecir antes de ver
+   - 1.2 Retos que guían la atención
 2. Diagrama clicable
 3. Flashcards
 4. Simulador con slider
@@ -23,6 +25,43 @@ Una interacción es real si el usuario **hace algo y ve una consecuencia que pue
 Una interacción por concepto. Si un concepto no gana nada con interacción, va sin ella.
 
 Cada interacción lleva `data-interaccion="<tipo>"` en su contenedor.
+
+### 1.1 Predecir antes de ver
+
+Cuando alguien adivina antes de ver la respuesta (aunque se equivoque) y recibe la corrección de inmediato, recuerda más que si solo lee. Por eso **al menos 2 interacciones por guía empiezan con una predicción**: normalmente el simulador y el diagrama o los pasos.
+
+- Una pregunta concreta sobre lo que va a pasar, con 2 a 4 opciones. Las opciones incorrectas deben ser errores **plausibles**, los que comete un principiante de verdad.
+- El resultado de la interacción lleva `data-tras-prediccion`: el núcleo lo deja borroso hasta que el usuario elige.
+- Al elegir, el núcleo muestra "Acertaste" o "Predijiste X; mira qué pasa en realidad", más la explicación de `data-explicacion` (una o dos frases con el **porqué**).
+- No escribas JS para esto: el núcleo del esqueleto lo resuelve con el marcado:
+
+```html
+<div data-interaccion="simulador">
+  <div data-prediccion id="pred-exit" data-correcta="b"
+       data-explicacion="Con exit 2, PreToolUse cancela la herramienta y Claude lee tu stderr.">
+    <p><strong>Antes de mover nada:</strong> si tu hook termina con exit 2 en PreToolUse, ¿qué pasa?</p>
+    <div class="opciones">
+      <button type="button" data-opcion="a">La herramienta corre igual</button>
+      <button type="button" data-opcion="b">La herramienta se cancela</button>
+      <button type="button" data-opcion="c">Claude Code se cierra</button>
+    </div>
+    <p class="veredicto" hidden></p>
+  </div>
+  <div data-tras-prediccion> … sliders y resultado … </div>
+</div>
+```
+
+### 1.2 Retos que guían la atención
+
+Una interacción sin dirección es un juguete. Cada interacción principal lleva **1 a 3 retos**: tareas concretas que llevan al usuario al fenómeno que importa ("Mueve el código a 2 en PostToolUse: ¿por qué ya no bloquea?"). **Mínimo 3 retos por guía.**
+
+```html
+<ul data-retos>
+  <li data-reto="reto-post">Encuentra un evento donde exit 2 <em>no</em> bloquea</li>
+</ul>
+```
+
+El JS de la interacción llama a `forja.reto('reto-post')` cuando el usuario llega a ese estado. El núcleo lo marca, lo guarda y actualiza el progreso. El reto se cumple haciendo, no con un botón de "listo".
 
 ## 2. Diagrama clicable — `data-interaccion="diagrama"`
 
@@ -53,6 +92,7 @@ Para memorizar términos, comandos y reglas. Va casi siempre en la sección `rep
 - Después de voltear, dos botones: "Lo sabía" y "Repasar". Las de "Repasar" vuelven al final del mazo.
 - Progreso visible: "7 de 12 · 5 dominadas".
 - De 8 a 15 tarjetas, con respuestas cortas.
+- Guarda el mazo y lo dominado con `forja.guardar('flashcards', estado)` y restáuralo con `forja.leer('flashcards')`, para que al volver no se empiece de cero.
 - Voltear con clic, Enter o barra espaciadora. Respeta `prefers-reduced-motion` (sin giro 3D: solo cambio de cara).
 
 ## 4. Simulador con slider — `data-interaccion="simulador"`
@@ -95,7 +135,8 @@ Siguen la prueba de la sección 1.
 
 ## 7. Reglas técnicas
 
-- JavaScript sin librerías, en un solo `<script>` al final del `<body>`.
+- JavaScript sin librerías, en un solo `<script>` al final del `<body>`, **después** del núcleo forja, que se copia sin cambios.
+- Usa la API del núcleo: `forja.reto(id)`, `forja.guardar(clave, valor)` y `forja.leer(clave)`. No uses `localStorage` directamente.
 - Cada interacción funciona de forma independiente; si una falla, las demás siguen.
 - Controles con elementos nativos (`<button>`, `<input>`), operables con teclado y con `:focus-visible`.
 - Nada depende de hover: en celular no existe.

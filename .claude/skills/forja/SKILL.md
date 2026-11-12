@@ -39,13 +39,19 @@ python3 ${CLAUDE_SKILL_DIR}/scripts/registrar.py ruta "<tema>"
 ```
 Usa exactamente la ruta que imprime. Si dice que ya existía una versión, avísale al usuario cuál creaste.
 
-**3. Familia visual.** Revisa `familias/`. Si el tema pertenece a una familia existente, usa su paleta y tipografía, y elige el motivo del tema en `motivos_por_tema` (agrégalo si falta). Si no pertenece a ninguna, crea `familias/<familia>.json` con el mismo esquema que `familias/claude-code.json`. Cómo derivar la paleta del tema: [diseno.md](reference/diseno.md), sección 1.
+**3. Familia visual.** Revisa `familias/`. Si el tema pertenece a una familia existente, usa su paleta y tipografía, y elige el motivo del tema en `motivos_por_tema` (agrégalo si falta). Si no pertenece a ninguna, crea `familias/<familia>.json` con el mismo esquema que `familias/claude-code.json`. Cómo derivar la paleta y elegir las fuentes del tema: [diseno.md](reference/diseno.md), secciones 1 y 3. Genera el CSS de las fuentes de la familia:
+```bash
+python3 ${CLAUDE_SKILL_DIR}/scripts/fuentes.py css --titulos <id> --cuerpo <id> --codigo <id>
+```
 
 **4. Investigar.** Solo fuentes oficiales (documentación oficial, estándares, sitios .gov/.edu, papers). Anota la URL de cada dato clave.
 
-**5. Plan de secciones.** Antes de escribir HTML, muéstrale al usuario una tabla corta con 5 a 9 secciones. Para cada una: concepto, layout del catálogo, interacción e ilustración SVG. Layouts e interacciones: [diseno.md](reference/diseno.md) sección 4 e [interacciones.md](reference/interacciones.md).
+**5. Plan de secciones.** Antes de escribir HTML, muéstrale al usuario una tabla corta con 5 a 9 secciones. Para cada una: concepto, layout del catálogo, interacción (con su predicción y sus retos, si los tiene), ilustración SVG y minutos. Layouts e interacciones: [diseno.md](reference/diseno.md) sección 4 e [interacciones.md](reference/interacciones.md).
 
-**6. Construir.** Parte de [esqueleto.html](assets/esqueleto.html). Reglas:
+**6. Construir.** Parte de [esqueleto.html](assets/esqueleto.html). Copia **sin cambios** los bloques "NÚCLEO FORJA" (progreso, mapa, predicciones, retos, guardado) y pega el CSS de las fuentes. Reglas:
+- **Predecir antes de ver:** al menos 2 interacciones empiezan con `data-prediccion` y su resultado lleva `data-tras-prediccion`.
+- **Retos:** al menos 3 `data-reto` en total, que se cumplen haciendo (tu JS llama a `forja.reto(id)`).
+- **Portada:** incluye el mapa (`<nav data-forja-mapa>`) y la entrada escalonada (`class="entra"` con `--i`). Cada `<section>` lleva `id` y `data-minutos`.
 - Cada `<section>` lleva `data-layout="<layout del catálogo>"`. No repitas un layout en secciones seguidas y usa al menos 5 distintos.
 - Al menos una sección con `data-tono="oscuro"` para alternar claro y oscuro.
 - Cada interacción lleva `data-interaccion="diagrama|flashcards|simulador|pasos|otra"`. Usa al menos 3 de los 4 tipos principales. Si el tema pide una interacción propia, como un probador, agrégala como `otra`.

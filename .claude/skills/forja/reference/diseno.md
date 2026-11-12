@@ -9,6 +9,7 @@
 6. Anti-slop: qué no hacer y qué hacer en su lugar
 7. Celular
 8. Accesibilidad mínima
+9. Ritmo y foco (para quien se distrae fácil)
 
 ---
 
@@ -26,7 +27,9 @@ La paleta sale de **los materiales y objetos reales del tema**, no de una paleta
 
 Reglas:
 - **Base clara + bloques oscuros.** El fondo general es claro y legible. Al menos una sección de cada 3 usa el fondo oscuro de la familia (`data-tono="oscuro"`) para dar ritmo.
+- **Comprométete con un color dominante.** Una paleta tímida y repartida en partes iguales se ve genérica. Además del fondo, al menos una sección de ancho completo usa el color fuerte de la familia (el oscuro, o una banda del acento) para que la guía tenga carácter.
 - **Un acento, dos secundarios como máximo.** El acento marca lo importante (un dato, la acción principal). Si todo es de color acento, nada lo es.
+- **Fondos con atmósfera, no planos por defecto.** Un patrón sutil sacado del motivo (líneas de una cuadrícula técnica, puntos de un hilo, curvas de nivel) con un SVG en `background-image` o capas de color de la misma familia, con una opacidad de 3 a 8%. Nunca morado, nunca ruido que compita con el texto, y como máximo 2 capas.
 - **El dato primero.** Cuando hay una cifra o un concepto central, va grande y con una etiqueta corta, no enterrado en un párrafo.
 - **Mucho espacio en blanco.** Márgenes generosos, líneas de 60 a 75 caracteres.
 
@@ -41,15 +44,17 @@ Una familia es la base que comparten los temas relacionados: paleta, tipografía
 
 ## 3. Tipografía
 
-Solo fuentes del sistema, para que funcione offline:
+Las fuentes del sistema (y Inter, Roboto, Arial) son una señal de AI slop. Las guías **incrustan** fuentes con carácter en base64, así que siguen funcionando offline.
 
-```css
---f-titulos: ui-serif, Georgia, "Times New Roman", serif;
---f-cuerpo: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
---f-codigo: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
-```
+1. La familia indica sus fuentes en `tipografia` (ids del catálogo). Para una familia nueva, elígelas con `python3 ${CLAUDE_SKILL_DIR}/scripts/fuentes.py lista` según el carácter del tema. Lo más seguro es combinar una fuente de títulos con personalidad con una de cuerpo legible.
+2. Genera el CSS y pégalo al inicio del `<style>`:
+   ```bash
+   python3 ${CLAUDE_SKILL_DIR}/scripts/fuentes.py css --titulos <id> --cuerpo <id> --codigo <id>
+   ```
+   Eso define `--f-titulos`, `--f-cuerpo` y `--f-codigo`. Añade unos 100 KB al archivo, lo cual está bien.
+3. Si un tema no tiene código, omite `--codigo`.
 
-Si la familia define otras pilas, úsalas. Escala sugerida: cuerpo 17-18px, h2 entre 32 y 44px con `clamp()`, cifras grandes entre 48 y 96px. Usa dos pesos: 400 y 600.
+Escala sugerida: cuerpo de 17 a 18px; h2 entre 32 y 48px con `clamp()`; cifras y títulos de portada entre 56 y 112px. **El contraste de tamaño es parte del diseño**: un título de portada grande de verdad junto a un cuerpo tranquilo. Usa dos pesos: 400 y 600.
 
 ## 4. Catálogo de layouts
 
@@ -86,7 +91,9 @@ Cada `<section>` declara uno con `data-layout`. No repitas el mismo en secciones
 | Emojis como decoración | Ilustraciones o íconos SVG propios |
 | Rejillas de tarjetas idénticas | Layouts distintos del catálogo |
 | "En el mundo actual…", "Sumérgete…", "¡Vamos allá!" | Empieza con el dato o la idea |
-| Animaciones que no explican nada | Animación solo cuando muestra el proceso (y respetando `prefers-reduced-motion`) |
+| Animaciones que no explican nada | Una sola entrada orquestada en la portada (clase `entra` con `--i` escalonado) y animación solo cuando muestra el proceso |
+| Fuentes del sistema, Inter, Roboto, Arial o Space Grotesk | Fuentes del catálogo, incrustadas con `fuentes.py` |
+| Paleta tímida (crema + detalles) | Un color dominante a ancho completo y un acento marcado |
 | Un botón que solo muestra más texto | Una interacción donde el usuario predice, prueba o compara (ver interacciones.md) |
 | Tema oscuro genérico de "herramienta para devs" | Base clara de la familia con bloques oscuros alternados |
 | Sombras grandes y difusas en todo | Bordes finos o cambio de fondo |
@@ -106,3 +113,14 @@ Cada `<section>` declara uno con `data-layout`. No repitas el mismo en secciones
 - `:focus-visible` con un contorno del color acento.
 - Todo lo interactivo funciona con teclado (`<button>`, `<input>`; no `<div onclick>`).
 - `@media (prefers-reduced-motion: reduce)` desactiva las animaciones.
+
+## 9. Ritmo y foco (para quien se distrae fácil)
+
+Las guías las lee alguien que aprende mejor viendo y haciendo, y que puede perder el hilo con bloques largos. El núcleo del esqueleto ya trae la barra de progreso, el mapa con checks, el guardado y el "Continuar donde ibas". Tú cuidas el contenido:
+
+- **El mapa va en la portada.** Que el recorrido completo se vea desde el inicio (el `<nav data-forja-mapa>` de la portada).
+- **Secciones de 3 a 8 minutos** (`data-minutos`). Si una pasa de 8, divídela.
+- **Cada sección abre con su idea en una frase**, visible antes de cualquier párrafo.
+- **Párrafos de 3 líneas como máximo** en celular. Si necesitas más, lo que falta es una ilustración o una interacción.
+- **Algo que hacer cada 1 o 2 pantallas**: una predicción, un reto o un control. Nunca más de 2 pantallas seguidas de solo leer.
+- **Feedback inmediato**: cada acción del usuario tiene una respuesta visible en menos de un segundo.

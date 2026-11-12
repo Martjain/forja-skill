@@ -23,9 +23,10 @@
     "rojo": "#F07A6A"
   },
   "tipografia": {
-    "titulos": "ui-serif, Georgia, 'Times New Roman', serif",
-    "cuerpo": "ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif",
-    "codigo": "ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace"
+    "titulos": "courier-prime",
+    "cuerpo": "ibm-plex-sans",
+    "codigo": "ibm-plex-mono",
+    "nota": "ids de assets/fuentes/catalogo.json; se incrustan con scripts/fuentes.py css"
   },
   "tono": "Paciente y concreto, como alguien que te enseña con la terminal abierta. Cada idea va con el comando real y la salida que vas a ver.",
   "rasgos": [

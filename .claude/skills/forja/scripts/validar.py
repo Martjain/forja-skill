@@ -35,10 +35,19 @@ MIN_LAYOUTS = 5
 MIN_SVG = 3
 # Citas junto al dato (a.cita fuera de #fuentes); menos de 3 significa que las fuentes quedaron solo al final.
 MIN_CITAS = 3
+# Predecir antes de ver: con menos de 2, la guía vuelve a ser de mostrar resultados.
+MIN_PREDICCIONES = 2
+# Retos que guían la atención en las interacciones.
+MIN_RETOS = 3
+# Secciones de más de 8 minutos pierden a quien se distrae fácil.
+MAX_MINUTOS_SECCION = 8
+# Fuentes que delatan una UI genérica si son la principal (reference/diseno.md, sección 3).
+FUENTES_GENERICAS = {"inter", "roboto", "arial", "helvetica", "open sans", "space grotesk", "poppins",
+                     "montserrat", "system-ui", "ui-sans-serif", "ui-serif", "-apple-system", "segoe ui", "sans-serif", "serif"}
 
-# Una guía de estudio con más de ~400 KB casi siempre trae algo incrustado de más
-# (fuentes, imágenes en base64) que no aporta al aprendizaje.
-TAMANO_MAX_KB = 400
+# Las fuentes incrustadas suman ~100-140 KB; por encima de ~500 KB casi siempre hay algo
+# incrustado de más (imágenes en base64, pesos de fuente extra) que no aporta al aprendizaje.
+TAMANO_MAX_KB = 500
 
 # Frases de relleno típicas de texto generado (expresiones regulares, sin
 # distinguir mayúsculas).
@@ -94,6 +103,12 @@ class Lector(HTMLParser):
         self.svgs = 0
         self.secciones = []  # (id, data-layout) en orden
         self.oscuras = 0
+        self.predicciones = 0
+        self.opciones = 0
+        self.tras_prediccion = 0
+        self.retos = 0
+        self.minutos = []  # (id, data-minutos o None)
+        self.atributos = set()  # atributos data-forja-* presentes
         self._pila = []
         self._ignorar = 0
 
@@ -135,6 +150,17 @@ class Lector(HTMLParser):
             self.secciones.append((a.get("id"), (a.get("data-layout") or "").strip().lower()))
             if (a.get("data-tono") or "").strip().lower() == "oscuro":
                 self.oscuras += 1
+            if a.get("id") != "fuentes":
+                self.minutos.append((a.get("id"), a.get("data-minutos")))
+        if "data-prediccion" in a and a.get("data-correcta"):
+            self.predicciones += 1
+        if "data-opcion" in a:
+            self.opciones += 1
+        if "data-tras-prediccion" in a:
+            self.tras_prediccion += 1
+        if "data-reto" in a:
+            self.retos += 1
+        self.atributos.update(k for k in a if k.startswith("data-forja-"))
         if tag not in ("br", "img", "meta", "input", "hr", "link"):
             self._pila.append(tag)
 
@@ -245,6 +271,37 @@ def validar(ruta: Path):
     if lector.citas < MIN_CITAS:
         errores.append(f'Solo {lector.citas} cita(s) junto a los datos (<a class="cita">); se esperan al menos {MIN_CITAS}')
 
+    # 7b. Núcleo forja: progreso, mapa, predicciones y retos
+    for attr in ("data-forja-progreso", "data-forja-mapa"):
+        if attr not in lector.atributos:
+            errores.append(f"Falta el elemento {attr} del núcleo (copia el núcleo del esqueleto sin cambios)")
+    if "NÚCLEO FORJA: JS" not in html:
+        errores.append("Falta el bloque «NÚCLEO FORJA: JS» del esqueleto")
+    if lector.predicciones < MIN_PREDICCIONES:
+        errores.append(f"Solo {lector.predicciones} predicción(es) con data-prediccion y data-correcta; se esperan al menos {MIN_PREDICCIONES}")
+    elif lector.opciones < 2 * lector.predicciones:
+        errores.append("Cada data-prediccion necesita al menos 2 botones data-opcion")
+    if lector.predicciones and lector.tras_prediccion < lector.predicciones:
+        errores.append("Cada predicción debe ocultar su resultado con data-tras-prediccion")
+    if lector.retos < MIN_RETOS:
+        errores.append(f"Solo {lector.retos} reto(s) con data-reto; se esperan al menos {MIN_RETOS}")
+    sin_min = [i or "?" for i, m in lector.minutos if not m]
+    if sin_min:
+        advertencias.append(f"Secciones sin data-minutos: {sin_min}")
+    largas = [f"{i}={m}" for i, m in lector.minutos if m and m.isdigit() and int(m) > MAX_MINUTOS_SECCION]
+    if largas:
+        advertencias.append(f"Secciones de más de {MAX_MINUTOS_SECCION} min (divídelas): {largas}")
+
+    # 7c. Tipografía incrustada y con carácter
+    if not re.search(r"@font-face\s*{[^}]*data:font/woff2;base64,", css):
+        errores.append("No hay fuentes incrustadas (@font-face con data:font/woff2): usa scripts/fuentes.py css")
+    for var in ("--f-titulos", "--f-cuerpo"):
+        m = re.search(rf"{var}\s*:\s*([^;]+);", css)
+        if m:
+            principal = m.group(1).split(",")[0].strip().strip("\"'").lower()
+            if principal in FUENTES_GENERICAS:
+                errores.append(f"{var} usa una fuente genérica como principal ({principal}); elige una del catálogo")
+
     # 8. Metadatos de forja
     if lector.lang is None or not lector.lang.lower().startswith("es"):
         errores.append('Falta lang="es" en <html>')
@@ -252,6 +309,8 @@ def validar(ruta: Path):
         errores.append("Falta <meta name=\"viewport\">: no se verá bien en el celular")
     if not lector.metas.get("forja:nivel"):
         errores.append('Falta <meta name="forja:nivel" content="principiante|intermedio|avanzado">')
+    if not lector.metas.get("forja:slug"):
+        advertencias.append('Falta <meta name="forja:slug">: el guardado del progreso usará la ruta del archivo')
     if not lector.metas.get("forja:familia"):
         errores.append('Falta <meta name="forja:familia" content="<familia>">')
     else:

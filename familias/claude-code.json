@@ -20,9 +20,10 @@
     "acento": "#D97757"
   },
   "tipografia": {
-    "titulos": "ui-serif, Georgia, 'Times New Roman', serif",
-    "cuerpo": "ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif",
-    "codigo": "ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace"
+    "titulos": "newsreader",
+    "cuerpo": "instrument-sans",
+    "codigo": "jetbrains-mono",
+    "nota": "ids de assets/fuentes/catalogo.json; se incrustan con scripts/fuentes.py css"
   },
   "tono": "Directo y cálido, como alguien que te enseña junto a la terminal. Frases cortas, ejemplos con comandos reales.",
   "rasgos": [
