@@ -38,6 +38,7 @@
     "hooks-v2": "garitas de control: una pluma que se abre o se cierra en el camino de cada acción",
     "subagentes": "ramas que se separan y vuelven con un resultado",
     "mcp": "conectores y enchufes entre sistemas",
-    "plugins": "paquetes que agrupan piezas"
+    "plugins": "paquetes que agrupan piezas",
+    "hooks-v3": "circuito de relés: la señal de cada evento corre por un cable, el matcher es un selector de vía y tu script es un relé que deja pasar la corriente o la corta"
   }
 }
