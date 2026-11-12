@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<!--
+  Esqueleto de una guía forja. Es la ESTRUCTURA mínima, no un estilo:
+  - Reemplaza todo lo que está entre {{ }} con los valores de la familia y la guía.
+  - El diseño (layouts, ilustraciones, interacciones) se construye encima
+    siguiendo reference/diseno.md y reference/interacciones.md.
+  - Borra este comentario en la guía final.
+-->
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="forja:familia" content="{{familia}}">
+<meta name="forja:nivel" content="{{principiante|intermedio|avanzado}}">
+<meta name="forja:fecha" content="{{AAAA-MM-DD}}">
+<title>{{Título de la guía}}</title>
+<style>
+:root {
+  /* Valores de familias/{{familia}}.json */
+  --fondo: {{paleta.fondo}};
+  --superficie: {{paleta.superficie}};
+  --borde: {{paleta.borde}};
+  --tinta: {{paleta.tinta}};
+  --tinta-suave: {{paleta.tinta_suave}};
+  --acento: {{paleta.acento}};
+  --oscuro-fondo: {{bloques_oscuros.fondo}};
+  --oscuro-tinta: {{bloques_oscuros.tinta}};
+  --f-titulos: {{tipografia.titulos}};
+  --f-cuerpo: {{tipografia.cuerpo}};
+  --f-codigo: {{tipografia.codigo}};
+  --ancho: 72rem;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--fondo); color: var(--tinta); font: 400 1.0625rem/1.65 var(--f-cuerpo); overflow-wrap: anywhere; }
+img, svg { max-width: 100%; height: auto; }
+pre { overflow-x: auto; white-space: pre; font-family: var(--f-codigo); }
+section { padding: clamp(3rem, 8vw, 6rem) clamp(1.25rem, 5vw, 3rem); }
+section > * { max-width: var(--ancho); margin-inline: auto; }
+section[data-tono="oscuro"] { background: var(--oscuro-fondo); color: var(--oscuro-tinta); }
+h1, h2, h3 { font-family: var(--f-titulos); font-weight: 600; line-height: 1.15; }
+a { color: inherit; text-decoration-color: var(--acento); text-underline-offset: 3px; }
+a.cita { font-size: .75em; vertical-align: super; text-decoration: none; color: var(--acento); }
+:focus-visible { outline: 3px solid var(--acento); outline-offset: 3px; }
+button, input { font: inherit; min-height: 44px; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+</style>
+</head>
+<body>
+<main>
+
+  <section data-layout="portada">
+    <!-- Título, una frase, 2-3 cifras clave y la ilustración SVG del motivo -->
+  </section>
+
+  <!-- 4 a 8 secciones más, cada una con data-layout del catálogo,
+       sin repetir el mismo layout en secciones seguidas.
+       Al menos una con data-tono="oscuro". -->
+
+  <section data-layout="repaso">
+    <!-- Flashcards (data-interaccion="flashcards") -->
+  </section>
+
+  <section id="fuentes" data-layout="lista-grande">
+    <h2>Fuentes</h2>
+    <ol>
+      <li><a href="{{URL}}">{{Título de la fuente}}</a></li>
+    </ol>
+  </section>
+
+</main>
+<script>
+// Un solo script, sin librerías. Cada interacción en su propio bloque
+// para que, si una falla, las demás sigan funcionando.
+</script>
+</body>
+</html>

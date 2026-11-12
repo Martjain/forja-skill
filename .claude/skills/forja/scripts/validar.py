@@ -20,9 +20,21 @@ from pathlib import Path
 # Tipos de interacción que forja usa. Cada bloque interactivo debe marcarse con
 # data-interaccion="<tipo>" para que este validador lo encuentre.
 TIPOS_INTERACCION = {"diagrama", "flashcards", "simulador", "pasos"}
+# "otra" se acepta (probadores, ordenar, etc.) pero no cuenta para el mínimo.
+TIPOS_EXTRA = {"otra"}
 # Mínimo de tipos distintos por guía: no todos los temas admiten los 4,
 # pero con menos de 3 la guía se vuelve lectura pasiva.
 MIN_TIPOS_INTERACCION = 3
+
+# Catálogo de layouts de reference/diseno.md, sección 4.
+LAYOUTS = {"portada", "dato-heroe", "dividido", "secuencia", "comparacion",
+           "lista-grande", "mosaico", "enfasis", "laboratorio", "repaso"}
+# Con menos de 5 layouts distintos la guía vuelve a verse como una plantilla repetida.
+MIN_LAYOUTS = 5
+# Una ilustración por sección clave; 3 es el mínimo para que la guía no sea solo cajas de texto.
+MIN_SVG = 3
+# Citas junto al dato (a.cita fuera de #fuentes); menos de 3 significa que las fuentes quedaron solo al final.
+MIN_CITAS = 3
 
 # Una guía de estudio con más de ~400 KB casi siempre trae algo incrustado de más
 # (fuentes, imágenes en base64) que no aporta al aprendizaje.
@@ -78,6 +90,10 @@ class Lector(HTMLParser):
         self.tiene_slider = False
         self.en_fuentes = 0
         self.links_fuentes = []
+        self.citas = 0
+        self.svgs = 0
+        self.secciones = []  # (id, data-layout) en orden
+        self.oscuras = 0
         self._pila = []
         self._ignorar = 0
 
@@ -111,6 +127,14 @@ class Lector(HTMLParser):
             self.en_fuentes += 1
         if self.en_fuentes and tag == "a" and re.match(r"https?://", a.get("href") or ""):
             self.links_fuentes.append(a["href"])
+        if tag == "a" and not self.en_fuentes and "cita" in (a.get("class") or "").split():
+            self.citas += 1
+        if tag == "svg":
+            self.svgs += 1
+        if tag == "section":
+            self.secciones.append((a.get("id"), (a.get("data-layout") or "").strip().lower()))
+            if (a.get("data-tono") or "").strip().lower() == "oscuro":
+                self.oscuras += 1
         if tag not in ("br", "img", "meta", "input", "hr", "link"):
             self._pila.append(tag)
 
@@ -187,7 +211,7 @@ def validar(ruta: Path):
 
     # 6. Interacciones reales
     tipos = {t for t in lector.interacciones if t in TIPOS_INTERACCION}
-    desconocidos = sorted({t for t in lector.interacciones if t not in TIPOS_INTERACCION})
+    desconocidos = sorted({t for t in lector.interacciones if t not in TIPOS_INTERACCION | TIPOS_EXTRA})
     if desconocidos:
         advertencias.append(f"Tipos de interacción no reconocidos: {desconocidos} (válidos: {sorted(TIPOS_INTERACCION)})")
     if len(tipos) < MIN_TIPOS_INTERACCION:
@@ -200,7 +224,28 @@ def validar(ruta: Path):
     if "simulador" in tipos and not lector.tiene_slider:
         errores.append('Hay data-interaccion="simulador" pero ningún <input type="range">')
 
-    # 7. Metadatos de forja
+    # 7. Layouts, tono, ilustraciones y citas
+    secciones = [(i, l) for i, l in lector.secciones if i != "fuentes"]
+    sin_layout = sum(1 for _, l in secciones if not l)
+    if sin_layout:
+        errores.append(f"{sin_layout} <section> sin data-layout (catálogo: {sorted(LAYOUTS)})")
+    raros = sorted({l for _, l in secciones if l and l not in LAYOUTS})
+    if raros:
+        errores.append(f"Layouts fuera del catálogo: {raros}")
+    seguidos = [l for (_, l), (_, s) in zip(secciones, secciones[1:]) if l and l == s]
+    if seguidos:
+        errores.append(f"Layout repetido en secciones seguidas: {sorted(set(seguidos))}")
+    distintos = {l for _, l in secciones if l in LAYOUTS}
+    if secciones and len(distintos) < MIN_LAYOUTS:
+        errores.append(f"Solo {len(distintos)} layouts distintos ({sorted(distintos)}); se esperan al menos {MIN_LAYOUTS}")
+    if secciones and not lector.oscuras:
+        errores.append('Ninguna sección con data-tono="oscuro": falta alternar bloques claros y oscuros')
+    if lector.svgs < MIN_SVG:
+        errores.append(f"Solo {lector.svgs} ilustración(es) SVG; se esperan al menos {MIN_SVG}")
+    if lector.citas < MIN_CITAS:
+        errores.append(f'Solo {lector.citas} cita(s) junto a los datos (<a class="cita">); se esperan al menos {MIN_CITAS}')
+
+    # 8. Metadatos de forja
     if lector.lang is None or not lector.lang.lower().startswith("es"):
         errores.append('Falta lang="es" en <html>')
     if not lector.tiene_viewport:
@@ -215,7 +260,7 @@ def validar(ruta: Path):
         if raiz and not (raiz / "familias" / f"{familia}.json").exists():
             advertencias.append(f"La familia '{familia}' no existe en familias/: créala o corrige el nombre")
 
-    # 8. Tamaño
+    # 9. Tamaño
     kb = len(html.encode("utf-8")) / 1024
     if kb > TAMANO_MAX_KB:
         advertencias.append(f"El archivo pesa {kb:.0f} KB (máximo sugerido {TAMANO_MAX_KB} KB)")
