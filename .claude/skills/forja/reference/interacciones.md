@@ -53,10 +53,13 @@ Cuando alguien adivina antes de ver la respuesta (aunque se equivoque) y recibe 
 </div>
 ```
 
-**La prueba de la fuga.** Tapa con la mano todo lo que está detrás de la predicción y pregúntate: con lo que queda a la vista en esa sección (el subtítulo, los párrafos, los dibujos, la tabla, la lista de abajo), ¿alguien puede contestar sin pensar? Si sí, hay una fuga. En las guías anteriores hubo 6 fugas, y casi todas estaban **en la misma sección, cerca de la pregunta**:
+**La prueba de la fuga.** Tapa con la mano todo lo que está detrás de la predicción y pregúntate: con lo que queda a la vista en esa sección (el subtítulo, los párrafos, los dibujos, la tabla, la lista de abajo), ¿alguien puede contestar sin pensar? Si sí, hay una fuga. Una revisión ciega de las 7 primeras guías encontró **20 fugas en 27 predicciones**, todas **en la misma sección que la pregunta**:
 - un subtítulo que ya dice la respuesta («Git solo mueve el puntero hacia adelante», «El que más te van a preguntar: convencer»);
 - un dibujo o una tabla debajo de la pregunta que muestra el resultado (el fast-forward ya hecho, la flecha resaltada hacia «Convencer»);
 - un texto explicativo junto a una animación que sí está borrosa («Primero la introducción, con la tesis en amarillo»).
+- el mismo ejemplo que se pregunta, ya anotado más arriba en la sección (el borrador literario con sus etiquetas «tono subjetivo», «intención estética»);
+- etiquetas de un diagrama que repiten las palabras de la opción correcta («el repositorio» en la caja `.git`);
+- un reto o un pie de figura que descarta las opciones incorrectas.
 
 Cómo corregirlas, en este orden:
 1. Reescribe el subtítulo o el párrafo para que plantee la pregunta en lugar de responderla.
