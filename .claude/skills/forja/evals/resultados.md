@@ -143,3 +143,11 @@ Las 3 pasan el validador y la revisión en celular.
 - **Matemáticas verificadas a mano:** pendiente de (0,5) a (2,1) = −2; f(x)=x²+3x da f′(x)=2x+3; simulador con a=1 y h=0.1 da Δy=0.21 y pendiente 2.1; f(x)=x²−2x tiene f′(1)=0 en su mínimo; la regla de la potencia maneja n=0.
 - **Distractores pedagógicos:** "f′(1) = −1, lo mismo que f(1)" (confundir altura con inclinación), "0/0" y "2x + h + 3" (olvidar el límite).
 - Validador: sin errores (1 advertencia †). Celular: OK. 234k tokens, 16.5 min.
+
+## "Explícamelo paso a paso" (pedido por el usuario)
+
+Botón en el núcleo para cuando el usuario no puede resolver algo. Muestra el razonamiento **un paso por clic**, con "Ya entendí, lo intento" para volver a intentarlo, y la respuesta solo al final. Si se abre antes de responder, el veredicto dice "Acertaste con ayuda.", sin castigo. Para ejercicios generados por JS existe `forja.ayuda(el, pasos, respuesta)`.
+
+- Núcleo propagado a las 5 guías.
+- **Derivadas:** ayuda escrita para las 6 predicciones y ayuda dinámica en el probador (cambia con cada ejercicio; para n = 0 explica la constante). Probado en Chrome: un paso por clic, cerrar y retomar ("Seguir con la explicación"), "Acertaste con ayuda", reinicio con "Otro ejercicio", sin errores de JS.
+- **Pendiente:** hooks, git, git-merge-rebase y subagentes tienen el botón en su núcleo, pero no tienen los pasos escritos. El validador ahora lo marca como error. Hay que escribir sus ayudas o regenerarlas.

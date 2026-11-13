@@ -4,6 +4,7 @@
 1. La prueba de una interacción real
    - 1.1 Predecir antes de ver
    - 1.2 Retos que guían la atención
+   - 1.3 "Explícamelo paso a paso"
 2. Diagrama clicable
 3. Flashcards
 4. Simulador con slider
@@ -63,6 +64,29 @@ Una interacción sin dirección es un juguete. Cada interacción principal lleva
 ```
 
 El JS de la interacción llama a `forja.reto('reto-post')` cuando el usuario llega a ese estado. El núcleo lo marca, lo guarda y actualiza el progreso. El reto se cumple haciendo, no con un botón de "listo".
+
+### 1.3 "Explícamelo paso a paso"
+
+Si alguien no puede resolver algo, no debe quedarse atorado ni adivinar al azar. **Cada predicción y cada ejercicio** lleva un botón "Explícamelo paso a paso" que muestra el razonamiento **un paso a la vez**. Después de cada paso, el usuario puede decir "Ya entendí, lo intento" y volver a intentarlo él mismo. La respuesta llega al final, solo si la pide.
+
+```html
+<div data-ayuda="pred-limite">
+  <ol>
+    <li>Fija a = 1. La pendiente de la secante es (f(1+h) − f(1)) / h.</li>
+    <li>Con f(x) = x²: (1 + 2h + h² − 1) / h = (2h + h²) / h.</li>
+    <li>Divide entre h (h no es 0, solo se acerca): queda 2 + h.</li>
+    <li data-respuesta>Cuando h se acerca a 0, 2 + h se acerca a <strong>2</strong>.</li>
+  </ol>
+</div>
+```
+
+Cómo escribir los pasos:
+- **De 2 a 5 pasos**, cada uno con **una sola** idea u operación. El primero arranca desde lo que el usuario ya sabe ("¿qué te piden?", "¿qué fórmula aplica?").
+- **Ningún paso antes del último dice la respuesta.** Cada uno acerca, pero deja que el usuario la termine.
+- **El que lleva `data-respuesta` cierra** con la respuesta y una frase del porqué.
+- **Va dentro del bloque `data-prediccion`**, después de `.veredicto`, y su valor es el id de la predicción. Si el usuario abre la ayuda antes de responder, el veredicto dice "Acertaste con ayuda.", sin castigo.
+- **Ejercicios que se generan con JS** (probadores, ejercicios al azar): pon `<div data-ayuda data-ayuda-dinamica></div>` en el ejercicio y, cada vez que cambie, llama a `forja.ayuda(div, ['paso 1', 'paso 2'], 'respuesta')` con los pasos de **ese** ejercicio.
+- Puedes cambiar el texto del botón con `data-ayuda-texto="…"` cuando otro encaje mejor, por ejemplo "¿Cómo se resuelve?".
 
 ## 2. Diagrama clicable — `data-interaccion="diagrama"`
 

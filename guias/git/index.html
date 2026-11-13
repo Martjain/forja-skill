@@ -81,6 +81,18 @@ button, input { font: inherit; min-height: 44px; }
 .fc-botones button { padding: .5rem 1.1rem; border-radius: 8px; border: 1.5px solid currentColor; background: transparent; color: inherit; cursor: pointer; }
 .fc-botones .fc-sabia { background: var(--acento); border-color: var(--acento); color: var(--fondo); }
 @media (prefers-reduced-motion: no-preference) { .fc-tarjeta .fc-texto { animation: forja-entra .35s ease both; } }
+[data-ayuda] { margin: .75rem 0 0; }
+[data-ayuda] > ol { display: none; } /* fuente de los pasos: el núcleo los muestra uno por uno */
+.ayuda-abrir { min-height: 40px; padding: .4rem .9rem; border-radius: 8px; border: 1.5px dashed currentColor; background: transparent; color: inherit; cursor: pointer; font-size: .9rem; opacity: .85; }
+.ayuda-abrir:hover { opacity: 1; }
+.ayuda-panel { margin-top: .6rem; padding: .9rem 1rem; border-radius: 10px; background: color-mix(in srgb, var(--acento) 10%, transparent); }
+.ayuda-panel ol { margin: 0 0 .75rem; padding-left: 1.4rem; display: grid; gap: .55rem; }
+.ayuda-panel li::marker { color: var(--acento); font-weight: 600; }
+.ayuda-panel li.respuesta { list-style: none; margin-left: -1.4rem; padding-top: .55rem; border-top: 1px solid color-mix(in srgb, currentColor 25%, transparent); font-weight: 600; }
+.ayuda-botones { display: flex; gap: .5rem; flex-wrap: wrap; }
+.ayuda-botones button { min-height: 40px; padding: .4rem .95rem; border-radius: 8px; border: 1.5px solid currentColor; background: transparent; color: inherit; cursor: pointer; font-size: .9rem; }
+.ayuda-botones .ayuda-siguiente { background: var(--acento); border-color: var(--acento); color: var(--fondo); }
+@media (prefers-reduced-motion: no-preference) { .ayuda-panel li { animation: forja-entra .35s ease both; } }
 [data-prediccion] .opciones { display: flex; flex-wrap: wrap; gap: .5rem; margin: .75rem 0; }
 [data-prediccion] [data-opcion] { cursor: pointer; padding: .5rem 1rem; border-radius: 8px; border: 1.5px solid currentColor; background: transparent; color: inherit; }
 [data-prediccion] [data-opcion]:disabled { cursor: default; opacity: .55; }
@@ -945,12 +957,60 @@ Switched to branch 'idea'</pre>
   }), { rootMargin: '-45% 0px -50% 0px' });
   secciones.forEach(s => obs.observe(s));
 
+  // --- Ayuda paso a paso: "Explícamelo paso a paso" ---
+  // Un paso por clic, "Ya entendí, lo intento" para volver a intentarlo, y la respuesta al final.
+  const ayudas = {}; // id de la predicción -> se pidió ayuda antes de responder
+  function montarAyuda(caja, pasos, respuesta) {
+    caja.querySelector(':scope > .ayuda-ui')?.remove();
+    if (!pasos.length && !respuesta) return;
+    const ui = document.createElement('div');
+    ui.className = 'ayuda-ui';
+    ui.innerHTML = `<button type="button" class="ayuda-abrir">${caja.dataset.ayudaTexto || 'Explícamelo paso a paso'}</button>
+      <div class="ayuda-panel" hidden aria-live="polite"><ol></ol>
+      <div class="ayuda-botones"><button type="button" class="ayuda-siguiente">Siguiente paso</button>
+      <button type="button" class="ayuda-cerrar">Ya entendí, lo intento</button></div></div>`;
+    caja.append(ui);
+    const abrir = ui.querySelector('.ayuda-abrir'), panel = ui.querySelector('.ayuda-panel');
+    const lista = panel.querySelector('ol'), sig = panel.querySelector('.ayuda-siguiente');
+    const total = pasos.length + (respuesta ? 1 : 0);
+    let n = 0;
+    const mostrar = () => {
+      const li = document.createElement('li');
+      if (n < pasos.length) li.innerHTML = pasos[n];
+      else { li.className = 'respuesta'; li.innerHTML = respuesta; }
+      lista.append(li);
+      n++;
+      sig.hidden = n >= total;
+      sig.textContent = n === pasos.length && respuesta ? 'Ver la respuesta' : 'Siguiente paso';
+    };
+    abrir.addEventListener('click', () => {
+      if (caja.dataset.ayuda) ayudas[caja.dataset.ayuda] = true;
+      panel.hidden = false; abrir.hidden = true;
+      if (!n) mostrar();
+      (sig.hidden ? panel.querySelector('.ayuda-cerrar') : sig).focus();
+    });
+    sig.addEventListener('click', mostrar);
+    panel.querySelector('.ayuda-cerrar').addEventListener('click', () => {
+      panel.hidden = true; abrir.hidden = false;
+      abrir.textContent = n >= total ? 'Ver la explicación' : 'Seguir con la explicación';
+      abrir.focus();
+    });
+  }
+
   // La API se define antes de dibujar nada: las flashcards y las predicciones restauradas pueden usarla.
   window.forja = {
     reto(id) { if (!estado.retos.includes(id)) { estado.retos.push(id); guardar(); pintar(); } },
     guardar(clave, valor) { estado.extra[clave] = valor; guardar(); },
     leer(clave) { return estado.extra[clave]; },
+    // Para ejercicios generados por JS: forja.ayuda(elemento, ['paso 1', 'paso 2'], 'respuesta')
+    ayuda(caja, pasos, respuesta) { montarAyuda(caja, pasos, respuesta); },
   };
+
+  document.querySelectorAll('[data-ayuda]').forEach(caja => {
+    const items = [...caja.querySelectorAll(':scope > ol > li')];
+    const resp = items.find(li => li.hasAttribute('data-respuesta'));
+    montarAyuda(caja, items.filter(li => li !== resp).map(li => li.innerHTML), resp?.innerHTML);
+  });
 
   predicciones.forEach((p, i) => {
     const id = p.id || `prediccion-${i + 1}`;
@@ -972,7 +1032,7 @@ Switched to branch 'idea'</pre>
       });
       if (veredicto) {
         veredicto.hidden = false;
-        veredicto.innerHTML = (acierto ? '<strong>Acertaste.</strong> ' : `<strong>Predijiste «${elegido?.textContent.trim()}».</strong> Mira qué pasa en realidad. `) +
+        veredicto.innerHTML = (acierto ? `<strong>${ayudas[id] ? 'Acertaste con ayuda.' : 'Acertaste.'}</strong> ` : `<strong>Predijiste «${elegido?.textContent.trim()}».</strong> Mira qué pasa en realidad. `) +
           (p.dataset.explicacion || '') + ' <button type="button" class="rehacer">Volver a predecir</button>';
         veredicto.querySelector('.rehacer').addEventListener('click', () => {
           delete estado.predicciones[id]; guardar();

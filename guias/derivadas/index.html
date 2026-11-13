@@ -80,6 +80,18 @@ button, input { font: inherit; min-height: 44px; }
 .fc-botones button { padding: .5rem 1.1rem; border-radius: 8px; border: 1.5px solid currentColor; background: transparent; color: inherit; cursor: pointer; }
 .fc-botones .fc-sabia { background: var(--acento); border-color: var(--acento); color: var(--fondo); }
 @media (prefers-reduced-motion: no-preference) { .fc-tarjeta .fc-texto { animation: forja-entra .35s ease both; } }
+[data-ayuda] { margin: .75rem 0 0; }
+[data-ayuda] > ol { display: none; } /* fuente de los pasos: el núcleo los muestra uno por uno */
+.ayuda-abrir { min-height: 40px; padding: .4rem .9rem; border-radius: 8px; border: 1.5px dashed currentColor; background: transparent; color: inherit; cursor: pointer; font-size: .9rem; opacity: .85; }
+.ayuda-abrir:hover { opacity: 1; }
+.ayuda-panel { margin-top: .6rem; padding: .9rem 1rem; border-radius: 10px; background: color-mix(in srgb, var(--acento) 10%, transparent); }
+.ayuda-panel ol { margin: 0 0 .75rem; padding-left: 1.4rem; display: grid; gap: .55rem; }
+.ayuda-panel li::marker { color: var(--acento); font-weight: 600; }
+.ayuda-panel li.respuesta { list-style: none; margin-left: -1.4rem; padding-top: .55rem; border-top: 1px solid color-mix(in srgb, currentColor 25%, transparent); font-weight: 600; }
+.ayuda-botones { display: flex; gap: .5rem; flex-wrap: wrap; }
+.ayuda-botones button { min-height: 40px; padding: .4rem .95rem; border-radius: 8px; border: 1.5px solid currentColor; background: transparent; color: inherit; cursor: pointer; font-size: .9rem; }
+.ayuda-botones .ayuda-siguiente { background: var(--acento); border-color: var(--acento); color: var(--fondo); }
+@media (prefers-reduced-motion: no-preference) { .ayuda-panel li { animation: forja-entra .35s ease both; } }
 [data-prediccion] .opciones { display: flex; flex-wrap: wrap; gap: .5rem; margin: .75rem 0; }
 [data-prediccion] [data-opcion] { cursor: pointer; padding: .5rem 1rem; border-radius: 8px; border: 1.5px solid currentColor; background: transparent; color: inherit; }
 [data-prediccion] [data-opcion]:disabled { cursor: default; opacity: .55; }
@@ -411,6 +423,14 @@ input[type="range"] { width: 100%; accent-color: var(--acento); }
           <button type="button" data-opcion="d">1/2</button>
         </div>
         <p class="veredicto" hidden></p>
+        <div data-ayuda="pred-pendiente">
+          <ol>
+          <li>La pendiente es <em>cuánto sube</em> entre <em>cuánto avanza</em>: m = Δy / Δx.</li>
+          <li>Avance: de x = 0 a x = 2, así que Δx = 2 − 0 = 2.</li>
+          <li>Subida: de y = 5 a y = 1, así que Δy = 1 − 5. Ojo: la recta bajó, el resultado va a ser negativo.</li>
+          <li data-respuesta>Δy = −4, entonces m = −4 / 2 = <strong>−2</strong>: baja 2 por cada 1 que avanza.</li>
+          </ol>
+        </div>
       </div>
       <p data-tras-prediccion="pred-pendiente" class="f">m = (1 − 5) / (2 − 0) = −4 / 2 = −2</p>
     </div>
@@ -435,6 +455,15 @@ input[type="range"] { width: 100%; accent-color: var(--acento); }
           <button type="button" data-opcion="d">A ninguno: se divide entre 0</button>
         </div>
         <p class="veredicto" hidden></p>
+        <div data-ayuda="pred-limite">
+          <ol>
+          <li>Con a = 1, la pendiente de la secante es (f(1 + h) − f(1)) / h.</li>
+          <li>Como f(x) = x²: f(1 + h) = 1 + 2h + h² y f(1) = 1. La resta da 2h + h².</li>
+          <li>Divide entre h (h no es 0, solo se acerca a 0): (2h + h²) / h = 2 + h.</li>
+          <li>Ahora haz h cada vez más chico: 2 + 0.1, luego 2 + 0.01, luego 2 + 0.001… ¿a qué número te acercas?</li>
+          <li data-respuesta>A <strong>2</strong>. Esa es la pendiente de la tangente en a = 1: f ′(1) = 2.</li>
+          </ol>
+        </div>
       </div>
 
       <div class="lab-grafica">
@@ -614,6 +643,14 @@ input[type="range"] { width: 100%; accent-color: var(--acento); }
                 <button type="button" data-opcion="c">h² + 3h</button>
               </div>
               <p class="veredicto" hidden></p>
+        <div data-ayuda="pred-paso3">
+          <ol>
+          <li>Escribe la resta con los dos paréntesis completos: (x² + 2xh + h² + 3x + 3h) − (x² + 3x).</li>
+          <li>El signo menos afecta a <em>todo</em> el segundo paréntesis: x² + 2xh + h² + 3x + 3h − x² − 3x.</li>
+          <li>Junta los términos iguales: x² − x² = 0 y 3x − 3x = 0.</li>
+          <li data-respuesta>Solo sobreviven los términos con h: <strong>2xh + h² + 3h</strong>.</li>
+          </ol>
+        </div>
             </div>
             <details class="porque" hidden>
               <summary>¿Por qué funciona? Piénsalo y luego ábrelo</summary>
@@ -633,6 +670,14 @@ input[type="range"] { width: 100%; accent-color: var(--acento); }
                 <button type="button" data-opcion="c">2x + h² + 3</button>
               </div>
               <p class="veredicto" hidden></p>
+        <div data-ayuda="pred-paso4">
+          <ol>
+          <li>Mira los tres términos de arriba: todos tienen una h.</li>
+          <li>Saca h como factor común: 2xh + h² + 3h = h · (2x + h + 3).</li>
+          <li>Queda h · (2x + h + 3) / h. Como h no es 0, la h de arriba se cancela con la de abajo.</li>
+          <li data-respuesta>Queda <strong>2x + h + 3</strong>.</li>
+          </ol>
+        </div>
             </div>
             <details class="porque" hidden>
               <summary>¿Por qué funciona? Piénsalo y luego ábrelo</summary>
@@ -652,6 +697,14 @@ input[type="range"] { width: 100%; accent-color: var(--acento); }
                 <button type="button" data-opcion="c">2x + h + 3</button>
               </div>
               <p class="veredicto" hidden></p>
+        <div data-ayuda="pred-paso5">
+          <ol>
+          <li>Ya simplificaste: el cociente vale 2x + h + 3 y ya no hay h dividiendo.</li>
+          <li>La derivada es el límite de esa expresión cuando h → 0.</li>
+          <li>Como ya no divides entre h, sustituir h = 0 no causa ningún 0/0.</li>
+          <li data-respuesta>2x + 0 + 3 = <strong>2x + 3</strong>. Por ejemplo, en x = 1 la pendiente de la tangente es 5.</li>
+          </ol>
+        </div>
             </div>
             <details class="porque" hidden>
               <summary>¿Por qué funciona? Piénsalo y luego ábrelo</summary>
@@ -726,6 +779,7 @@ input[type="range"] { width: 100%; accent-color: var(--acento); }
           <button type="button" class="btn primario" id="pr-ok">Comprobar</button>
           <button type="button" class="btn" id="pr-otro">Otro ejercicio</button>
         </div>
+        <div data-ayuda data-ayuda-dinamica id="pr-ayuda"></div>
         <p class="pr-fb" id="pr-fb" aria-live="polite">Escribe el coeficiente (el número de adelante) y el exponente de tu respuesta. Si la respuesta es un número solo, usa exponente 0.</p>
         <p class="racha">Racha: <span id="pr-racha">0</span> de 3</p>
         <ul data-retos>
@@ -761,6 +815,14 @@ input[type="range"] { width: 100%; accent-color: var(--acento); }
           <button type="button" data-opcion="c">1, lo mismo que x</button>
         </div>
         <p class="veredicto" hidden></p>
+        <div data-ayuda="pred-minimo">
+          <ol>
+          <li>f ′(1) no pregunta qué tan alta está la curva en x = 1; pregunta qué tan inclinada está su tangente ahí.</li>
+          <li>En el punto más bajo de un valle la curva ya dejó de bajar y todavía no empieza a subir: la tangente queda acostada.</li>
+          <li>Compruébalo con la regla: si f(x) = x² − 2x, entonces f ′(x) = 2x − 2. Sustituye x = 1.</li>
+          <li data-respuesta>f ′(1) = 2 · 1 − 2 = <strong>0</strong>. Pendiente 0 significa tangente horizontal.</li>
+          </ol>
+        </div>
       </div>
       <div class="comparar">
         <div>
@@ -954,12 +1016,60 @@ input[type="range"] { width: 100%; accent-color: var(--acento); }
   }), { rootMargin: '-45% 0px -50% 0px' });
   secciones.forEach(s => obs.observe(s));
 
+  // --- Ayuda paso a paso: "Explícamelo paso a paso" ---
+  // Un paso por clic, "Ya entendí, lo intento" para volver a intentarlo, y la respuesta al final.
+  const ayudas = {}; // id de la predicción -> se pidió ayuda antes de responder
+  function montarAyuda(caja, pasos, respuesta) {
+    caja.querySelector(':scope > .ayuda-ui')?.remove();
+    if (!pasos.length && !respuesta) return;
+    const ui = document.createElement('div');
+    ui.className = 'ayuda-ui';
+    ui.innerHTML = `<button type="button" class="ayuda-abrir">${caja.dataset.ayudaTexto || 'Explícamelo paso a paso'}</button>
+      <div class="ayuda-panel" hidden aria-live="polite"><ol></ol>
+      <div class="ayuda-botones"><button type="button" class="ayuda-siguiente">Siguiente paso</button>
+      <button type="button" class="ayuda-cerrar">Ya entendí, lo intento</button></div></div>`;
+    caja.append(ui);
+    const abrir = ui.querySelector('.ayuda-abrir'), panel = ui.querySelector('.ayuda-panel');
+    const lista = panel.querySelector('ol'), sig = panel.querySelector('.ayuda-siguiente');
+    const total = pasos.length + (respuesta ? 1 : 0);
+    let n = 0;
+    const mostrar = () => {
+      const li = document.createElement('li');
+      if (n < pasos.length) li.innerHTML = pasos[n];
+      else { li.className = 'respuesta'; li.innerHTML = respuesta; }
+      lista.append(li);
+      n++;
+      sig.hidden = n >= total;
+      sig.textContent = n === pasos.length && respuesta ? 'Ver la respuesta' : 'Siguiente paso';
+    };
+    abrir.addEventListener('click', () => {
+      if (caja.dataset.ayuda) ayudas[caja.dataset.ayuda] = true;
+      panel.hidden = false; abrir.hidden = true;
+      if (!n) mostrar();
+      (sig.hidden ? panel.querySelector('.ayuda-cerrar') : sig).focus();
+    });
+    sig.addEventListener('click', mostrar);
+    panel.querySelector('.ayuda-cerrar').addEventListener('click', () => {
+      panel.hidden = true; abrir.hidden = false;
+      abrir.textContent = n >= total ? 'Ver la explicación' : 'Seguir con la explicación';
+      abrir.focus();
+    });
+  }
+
   // La API se define antes de dibujar nada: las flashcards y las predicciones restauradas pueden usarla.
   window.forja = {
     reto(id) { if (!estado.retos.includes(id)) { estado.retos.push(id); guardar(); pintar(); } },
     guardar(clave, valor) { estado.extra[clave] = valor; guardar(); },
     leer(clave) { return estado.extra[clave]; },
+    // Para ejercicios generados por JS: forja.ayuda(elemento, ['paso 1', 'paso 2'], 'respuesta')
+    ayuda(caja, pasos, respuesta) { montarAyuda(caja, pasos, respuesta); },
   };
+
+  document.querySelectorAll('[data-ayuda]').forEach(caja => {
+    const items = [...caja.querySelectorAll(':scope > ol > li')];
+    const resp = items.find(li => li.hasAttribute('data-respuesta'));
+    montarAyuda(caja, items.filter(li => li !== resp).map(li => li.innerHTML), resp?.innerHTML);
+  });
 
   predicciones.forEach((p, i) => {
     const id = p.id || `prediccion-${i + 1}`;
@@ -981,7 +1091,7 @@ input[type="range"] { width: 100%; accent-color: var(--acento); }
       });
       if (veredicto) {
         veredicto.hidden = false;
-        veredicto.innerHTML = (acierto ? '<strong>Acertaste.</strong> ' : `<strong>Predijiste «${elegido?.textContent.trim()}».</strong> Mira qué pasa en realidad. `) +
+        veredicto.innerHTML = (acierto ? `<strong>${ayudas[id] ? 'Acertaste con ayuda.' : 'Acertaste.'}</strong> ` : `<strong>Predijiste «${elegido?.textContent.trim()}».</strong> Mira qué pasa en realidad. `) +
           (p.dataset.explicacion || '') + ' <button type="button" class="rehacer">Volver a predecir</button>';
         veredicto.querySelector('.rehacer').addEventListener('click', () => {
           delete estado.predicciones[id]; guardar();
@@ -1232,6 +1342,18 @@ const setLinea = (el, x1, y1, x2, y2) => { el.setAttribute('x1', x1); el.setAttr
     ic.value = ''; ie.value = '';
     dibujar(false);
     $('pr-racha').textContent = racha;
+    // "Explícamelo paso a paso" de ESTE ejercicio
+    const [a, n] = EJ[i];
+    if (n === 0) forja.ayuda($('pr-ayuda'), [
+      `${a} no tiene x: es una constante.`,
+      'La gráfica de una constante es una recta horizontal.',
+      'Una recta horizontal tiene la misma pendiente en todos sus puntos. ¿Cuál es?',
+    ], 'f ′(x) = <strong>0</strong>. Escribe 0 en el coeficiente.');
+    else forja.ayuda($('pr-ayuda'), [
+      `Identifica las dos piezas de ${texto(a, n)}: el coeficiente es ${a} y el exponente es ${n}.`,
+      `Regla de la potencia, primera parte: el exponente ${n} baja a multiplicar al coeficiente, ${n} · ${a}.`,
+      `Segunda parte: al exponente réstale 1, ${n} − 1.`,
+    ], `f ′(x) = ${texto(a * n, n - 1)}: coeficiente <strong>${a * n}</strong> y exponente <strong>${n - 1}</strong>.`);
   };
   const comprobar = () => {
     const [a, n] = EJ[i];

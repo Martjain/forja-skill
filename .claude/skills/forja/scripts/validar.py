@@ -119,6 +119,9 @@ class Lector(HTMLParser):
         self._abiertos = []  # (tag, dentro_de_tras, indice_de_pasos o None)
         self.tras_con_controles = []  # descripciones de controles escondidos tras una predicción
         self.pasos = []  # por cada data-interaccion="pasos": cuántas predicciones tiene dentro
+        self.pred_ids = []  # ids de las predicciones
+        self.ayudas = {}  # data-ayuda -> {"lis", "resp", "din"}
+        self.otras = []  # por cada data-interaccion="otra": cuántas ayudas tiene dentro
         self._pila = []
         self._ignorar = 0
 
@@ -174,6 +177,24 @@ class Lector(HTMLParser):
 
         tras_padre = self._abiertos[-1][1] if self._abiertos else False
         pasos_padre = self._abiertos[-1][2] if self._abiertos else None
+        ayuda_padre = self._abiertos[-1][3] if self._abiertos else None
+        otra_padre = self._abiertos[-1][4] if self._abiertos else None
+        if "data-prediccion" in a and a.get("id"):
+            self.pred_ids.append(a["id"])
+        ayuda = ayuda_padre
+        if "data-ayuda" in a:
+            ayuda = a.get("data-ayuda") or f"_dinamica_{len(self.ayudas)}"
+            self.ayudas[ayuda] = {"lis": 0, "resp": False, "din": "data-ayuda-dinamica" in a}
+            if otra_padre is not None:
+                self.otras[otra_padre] += 1
+        if tag == "li" and ayuda_padre:
+            self.ayudas[ayuda_padre]["lis"] += 1
+            if "data-respuesta" in a:
+                self.ayudas[ayuda_padre]["resp"] = True
+        otra = otra_padre
+        if (a.get("data-interaccion") or "").strip().lower() == "otra":
+            self.otras.append(0)
+            otra = len(self.otras) - 1
         if tras_padre and (tag in ("button", "input", "select", "textarea") or "data-nodo" in a):
             self.tras_con_controles.append(f"<{tag}{' data-nodo' if 'data-nodo' in a else ''}>")
         if "data-prediccion" in a and pasos_padre is not None:
@@ -184,7 +205,7 @@ class Lector(HTMLParser):
             self.pasos.append(0)
             pasos = len(self.pasos) - 1
         if tag not in VACIOS:
-            self._abiertos.append((tag, tras, pasos))
+            self._abiertos.append((tag, tras, pasos, ayuda, otra))
         if tag not in ("br", "img", "meta", "input", "hr", "link"):
             self._pila.append(tag)
 
@@ -322,6 +343,17 @@ def validar(ruta: Path):
     sin_hueco = [i + 1 for i, n in enumerate(lector.pasos) if n == 0]
     if sin_hueco:
         errores.append(f"Paso a paso sin huecos (#{sin_hueco}): desde el paso 3 el usuario completa con una data-prediccion")
+
+    # 7b''. "Explícamelo paso a paso"
+    sin_ayuda = [i for i in lector.pred_ids if i not in lector.ayudas]
+    if sin_ayuda:
+        errores.append(f'Predicciones sin "Explícamelo paso a paso" (data-ayuda="<id>"): {sin_ayuda}')
+    cortas = [k for k, v in lector.ayudas.items() if not v["din"] and (v["lis"] < 3 or not v["resp"])]
+    if cortas:
+        errores.append(f"Ayudas con menos de 2 pasos o sin <li data-respuesta> al final: {cortas}")
+    sin_ayuda_otra = sum(1 for n in lector.otras if n == 0)
+    if sin_ayuda_otra:
+        advertencias.append(f'{sin_ayuda_otra} interacción(es) "otra" sin ayuda paso a paso (usa data-ayuda-dinamica y forja.ayuda)')
 
     # 7b'. Flashcards del núcleo y repaso espaciado
     if "data-forja-flashcards" not in lector.atributos:

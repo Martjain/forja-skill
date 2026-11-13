@@ -50,6 +50,7 @@ python3 ${CLAUDE_SKILL_DIR}/scripts/fuentes.py css --titulos <id> --cuerpo <id> 
 
 **6. Construir.** Parte de [esqueleto.html](assets/esqueleto.html). Copia **sin cambios** los bloques "NÚCLEO FORJA" (progreso, mapa, predicciones, retos, guardado) y pega el CSS de las fuentes. Reglas:
 - **Predecir antes de ver:** al menos 2 interacciones empiezan con `data-prediccion`. **Solo el resultado** lleva `data-tras-prediccion="<id>"`; los controles y el diagrama quedan visibles.
+- **"Explícamelo paso a paso":** cada predicción lleva su `data-ayuda` con 2 a 5 pasos, y la respuesta solo en el último (`data-respuesta`). Los ejercicios generados por JS usan `forja.ayuda(...)`.
 - **Paso a paso que se desvanece:** los pasos 1 y 2 vienen resueltos, desde el 3 el usuario completa un hueco y después ve un "¿Por qué?".
 - **Flashcards:** solo el JSON `forja-tarjetas` (8 a 15 tarjetas) y `<div data-forja-flashcards>`. El núcleo las dibuja y las suma al repaso del índice.
 - **Retos:** al menos 3 `data-reto` en total, que se cumplen haciendo (tu JS llama a `forja.reto(id)`).
