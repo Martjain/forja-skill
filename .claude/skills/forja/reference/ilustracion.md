@@ -34,6 +34,13 @@ Según el tema, uno de estos (y mantenlo en toda la guía):
 - **Tres grosores, siempre los mismos:** contorno **2.5**, detalle **1.25**, guías y cotas **1**. Las piezas gruesas (una biela, un tubo) se dibujan como dos líneas superpuestas (contorno oscuro + relleno claro), no con un grosor arbitrario.
 - `stroke-linejoin="round"` y `stroke-linecap="round"` en contornos.
 - Ningún trazo flota: si una pieza está unida a otra (aletas a una pared, un cable a un borne), **se tocan**.
+- **En gráficas** el grosor solo no basta para ordenar las líneas. Jerarquía:
+  - la curva o línea protagonista: 2.5, continua;
+  - las líneas que se comparan con ella (secante, tangente): 2.5, cada una de su color; si se pueden encimar, una de ellas punteada (`stroke-dasharray="6 4"`) y dibujada encima;
+  - referencias y proyecciones a los ejes: 1, punteadas;
+  - ejes y marcas: 1.25;
+  - puntos: círculo de radio 4.5 con borde del color del fondo (`punto()` de `svg_kit`).
+- Los grosores que pongas en el CSS de la guía también cuentan.
 
 ## 3. Materiales, color y profundidad
 
@@ -42,10 +49,11 @@ Según el tema, uno de estos (y mantenlo en toda la guía):
 - **El color significa algo y no cambia** en toda la guía. Ejemplo: naranja = caliente, azul = frío; o verde = correcto, rojo = error. Declara el significado una vez (leyenda o texto).
 - **Degradado solo para una magnitud continua:** temperatura a lo largo de un gas, presión en un tubo, concentración. Nunca como decoración.
 - Una sombra de piso muy tenue (elipse, opacidad 0.06–0.08) asienta el objeto.
+- **Si el lenguaje no tiene materiales** (gráficas, diagramas de sistema), la profundidad sale de: rejilla tenue detrás, relleno translúcido (opacidad .1–.15) en las áreas que importan (un triángulo de pendiente, un área bajo la curva) y cajas con un fondo apenas distinto del de la página.
 
 ## 4. Geometría calculada, nunca a ojo
 
-**Genera los dibujos con código** (Python o JS) y calcula las coordenadas:
+**Genera los dibujos con código** y calcula las coordenadas. En Python usa [svg_kit.py](../scripts/svg_kit.py): `Lienzo` (registra cada texto, conoce la letra mínima y comprueba choques y márgenes con `comprobar()`), `Plano` (mundo → viewBox, `curva`, `recta`, `rejilla`, `ejes`, `marcas`, `en_curva`), `linea`, `punto` y `biela_manivela`. La ayuda está al inicio del archivo.
 - Mecanismos: usa `forja.kit.bielaManivela` o calcula la cinemática; la biela mide lo mismo en todas las posiciones.
 - Curvas de funciones: muestrea la función real (`for x … y = f(x)`), no dibujes "algo que se parece".
 - Proporciones reales cuando importan (un engrane de 20 dientes contra uno de 40 tiene el doble de diámetro).
@@ -54,7 +62,8 @@ Según el tema, uno de estos (y mantenlo en toda la guía):
 ## 5. Etiquetas y composición
 
 - **Etiqueta = título (13–14 px, peso 600) + frase corta (12 px, opacidad .75)**, con una **línea guía** de 1 px que termina en un punto sobre la pieza exacta.
-- Las etiquetas van **fuera** del dibujo, en los márgenes, alineadas entre sí. Nunca encima de trazos ni de otras etiquetas.
+- Las etiquetas van en **zonas vacías**, alineadas entre sí, nunca encima de trazos ni de otras etiquetas. En un corte o un diagrama, en los márgenes alrededor del dibujo. En una gráfica, dentro del plano donde no pasa ninguna curva (no reserves un margen que en el celular queda vacío).
+- **Piezas que se mueven** (un punto que sigue a un slider, el pistón): no les pongas `g.etiqueta`. Usa una letra corta (P, Q) que el JS mueve junto con la pieza, del tamaño mínimo, y explica las letras en una leyenda dentro del SVG o en el HTML.
 - El dibujo principal ocupa 60–70% del área; deja 24 px de margen en el viewBox.
 - **Cada etiqueta va en su grupo** para que el núcleo la adapte al celular:
   ```html
@@ -65,7 +74,7 @@ Según el tema, uno de estos (y mantenlo en toda la guía):
   </g>
   ```
   En pantallas de menos de 640 px el núcleo oculta las etiquetas, pone un número sobre cada pieza y arma la leyenda debajo del dibujo. Así el dibujo puede ser ancho y seguir legible en el celular.
-- El texto que no sea etiqueta (ejes, valores) no debe verse de menos de 11 px a 390 px de ancho.
+- El texto que no sea etiqueta (números de los ejes, valores, letras de puntos) no debe verse de menos de 11 px en el celular. **En unidades del viewBox: al menos 11 × ancho del viewBox ÷ 350.** Un viewBox de 480 pide 15.5; uno de 900, 28.5. `Lienzo.letra_min` lo calcula y `revisar_ilustraciones.py` lo imprime para cada SVG. Si en escritorio se ve demasiado grande, haz el viewBox más angosto (más vertical) en lugar de bajar la letra.
 
 ## 6. Formas orgánicas
 
@@ -82,10 +91,15 @@ Llamas, agua, órganos, hojas: curvas Bézier cúbicas **simétricas** y en **do
 - El núcleo pone los controles (Pausa, **Paso a paso**, velocidad), respeta "reducir movimiento" y pausa la animación fuera de pantalla. No los programes tú.
 - Contenedor: `<div data-anima id="anima-…">` con el SVG y la narración dentro.
 - **Una o dos animaciones por guía**: la del proceso central. Las demás ilustraciones pueden ser fijas.
+- **No reveles una predicción.** Si una sección pregunta "¿qué crees que pasa?", la animación va dentro de su `data-tras-prediccion` o después, o usa otros valores que no den la respuesta.
 
 ## 8. El kit
 
-[kit-svg.svg](../assets/kit-svg.svg) trae, listos para pegar en `<defs>`: achurados (neutro, caliente, frío), degradado de metal, puntas de flecha por color, la llama y la flecha ondulada. En JS: `forja.kit.onda()`, `forja.kit.bielaManivela()`, `forja.kit.mezcla()`.
+[kit-svg.svg](../assets/kit-svg.svg) trae achurados (neutro, caliente, frío), degradado de metal, puntas de flecha por color y la llama. En JS: `forja.kit.onda()` (flecha ondulada), `forja.kit.bielaManivela()`, `forja.kit.mezcla()`. En Python: [svg_kit.py](../scripts/svg_kit.py).
+
+- **Pega el kit una sola vez**, en un `<svg width="0" height="0" style="position:absolute" aria-hidden="true">` al inicio del `<body>`, y úsalo desde todos los SVG con `url(#id)`. Si cada SVG pega sus propios `<defs>`, los ids se repiten y el navegador usa el primero.
+- Los colores del kit se resuelven donde está definido, no donde se usa. En una sección oscura, define al lado una copia con sufijo (`pta-caliente-oscuro`) con los colores que se ven sobre fondo oscuro.
+- Las definiciones propias de un SVG (un `clipPath`, un degradado) llevan el prefijo del SVG: `motor-interior`, `pend-pta`.
 
 ## 9. Rúbrica (mínimo 8 de 10)
 
@@ -93,7 +107,7 @@ Llamas, agua, órganos, hojas: curvas Bézier cúbicas **simétricas** y en **do
 |---|---|
 | 2 | **Correcto:** la mecánica, la física o las matemáticas son reales (piezas unidas, proporciones, curvas de la función) |
 | 1 | **Trazo:** solo los tres grosores; nada flota |
-| 1 | **Materiales y profundidad:** achurado en cortes, volumen sutil en piezas |
+| 1 | **Materiales y profundidad:** achurado en cortes y volumen sutil en piezas; si el lenguaje no tiene materiales, rejilla tenue y rellenos translúcidos (sección 3) |
 | 1 | **Color con significado** y constante en la guía |
 | 1 | **Etiquetas limpias:** con guía, sin choques, alineadas |
 | 1 | **Composición:** proporciones, márgenes, foco claro |
@@ -103,7 +117,7 @@ Llamas, agua, órganos, hojas: curvas Bézier cúbicas **simétricas** y en **do
 
 ## 10. Proceso de trabajo
 
-1. Escribe un script (Python o JS) que genere cada SVG con geometría calculada y `assert` de lo imposible.
-2. Insértalos en la guía y corre `python3 ${CLAUDE_SKILL_DIR}/scripts/revisar_ilustraciones.py <ruta>`: renderiza cada ilustración en grande (4 cuadros si está animada) y marca choques de etiquetas y texto ilegible.
+1. Escribe un script que genere cada SVG con `svg_kit.py`, geometría calculada y `assert` de lo imposible. Guárdalo fuera de la guía (por ejemplo en `/tmp/forja-gen/<slug>.py`), para poder corregir y volver a generar.
+2. Insértalos en la guía y corre `python3 ${CLAUDE_SKILL_DIR}/scripts/revisar_ilustraciones.py <ruta>`: captura cada ilustración en grande (4 fases, cada una en su imagen, si está animada), revisa choques en escritorio en todas las fases, texto ilegible en el celular, e imprime la letra mínima de cada SVG.
 3. **Abre cada imagen con Read** y califícala con la rúbrica. Escribe la calificación.
 4. Si alguna saca menos de 8, corrígela y repite (máximo 3 vueltas).

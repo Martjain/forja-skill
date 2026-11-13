@@ -59,7 +59,7 @@ python3 ${CLAUDE_SKILL_DIR}/scripts/fuentes.py css --titulos <id> --cuerpo <id> 
 - Cada `<section>` lleva `data-layout="<layout del catálogo>"`. No repitas un layout en secciones seguidas y usa al menos 5 distintos.
 - Al menos una sección con `data-tono="oscuro"` para alternar claro y oscuro.
 - Cada interacción lleva `data-interaccion="diagrama|flashcards|simulador|pasos|otra"`. Usa al menos 3 de los 4 tipos principales. Si el tema pide una interacción propia, como un probador, agrégala como `otra`.
-- **Ilustraciones:** una SVG propia en cada sección clave (mínimo 3), generada con un script que calcula la geometría. Si el tema es un proceso, un mecanismo o un ciclo, su ilustración central se anima con `forja.animar`. Antes de dibujar, lee [ilustracion.md](reference/ilustracion.md) y usa [kit-svg.svg](assets/kit-svg.svg).
+- **Ilustraciones:** una SVG propia en cada sección clave (mínimo 3), generada con un script que calcula la geometría (con [svg_kit.py](scripts/svg_kit.py)). Si el tema es un proceso, un mecanismo o un ciclo, su ilustración central se anima con `forja.animar`. Antes de dibujar, lee [ilustracion.md](reference/ilustracion.md) y usa [kit-svg.svg](assets/kit-svg.svg).
 - Cita junto al dato: `<a class="cita" href="URL">[n]</a>`, con la lista completa en `<section id="fuentes">`.
 
 **7. Validar.**

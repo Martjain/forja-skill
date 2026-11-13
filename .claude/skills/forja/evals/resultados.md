@@ -170,3 +170,28 @@ Botón en el núcleo para cuando el usuario no puede resolver algo. Muestra el r
 - **Fuentes:** NASA (science.nasa.gov y NTRS), DOE, OpenStax, Ohio University, FAMU-FSU, Penn State, MSU, HyperPhysics y ASME. Dos datos con †: volumen ×1,600 del vapor y que bombear líquido cuesta menos que comprimir vapor.
 - **Física verificada a mano:** Carnot con T en kelvin (30 °C de lado frío: 47 % → 65 % al subir de 300 a 600 °C: "sube, pero no al doble"); regenerador con modelo de gas ideal (68 % = Carnot entre 850 y 90 °C; sin regenerador, 20 % con aire y 27 % con helio, reproducido con cv/R = 2.5 y 1.5). La guía aclara que son cálculos de modelo, no datos publicados.
 - Validador sin errores, celular OK, sin errores de JS.
+
+## Ilustraciones técnicas y animación
+
+- **Punto de partida:** el usuario calificó las ilustraciones de la guía del motor con **2/10**. Un redibujo técnico (corte con achurado, sistema de trazo, geometría calculada) llegó a **6/10**, y animado con la física real a **8/10**. El usuario aprobó integrarlo a la skill.
+- **Integrado:**
+  - `reference/ilustracion.md` con reglas y una rúbrica de 10 puntos (mínimo 8);
+  - `forja.animar` y `forja.kit` en el núcleo;
+  - etiquetas `g.etiqueta` que en el celular se cambian por números y leyenda;
+  - `assets/kit-svg.svg`, `scripts/svg_kit.py` y `scripts/revisar_ilustraciones.py`;
+  - nuevo paso 8 en SKILL.md y avisos en `validar.py`.
+- **Hallazgo del revisor nuevo:** en el celular, el ejemplo del motor mostraba el texto de unos 5 px. Por eso se agregaron las etiquetas adaptables.
+- **Prueba de generalización (derivadas, en una copia):** un subagente limpio rehízo los 9 SVG y agregó la animación de la secante que se vuelve tangente.
+  - Se calificó de 8 a 9 en cada dibujo.
+  - Matemáticas verificadas en el navegador: 0 px de error; la pendiente medida es 3 + h en cada fase.
+  - Corrigió 2 errores de los dibujos anteriores: las barras de f(a) y f(a+h) estaban corridas 18–20 px de P y Q, y el pico de |x| estaba fuera del eje.
+- **Mejoras a partir de los reportes de esa prueba:**
+  - Letra mínima en unidades del viewBox (11 × ancho ÷ 350), calculada por `Lienzo` e impresa por el revisor.
+  - Etiquetas en las zonas vacías del plano para gráficas; letras móviles para las piezas que se mueven.
+  - Profundidad alternativa cuando el lenguaje no tiene materiales.
+  - Jerarquía de líneas en gráficas.
+  - Kit pegado una sola vez, con prefijos por SVG y copia para secciones oscuras.
+  - La animación no debe revelar una predicción.
+  - El número de la etiqueta en el celular se corre para no tapar la pieza.
+  - El revisor guarda cada fase por separado y revisa choques en escritorio en las 4 fases.
+  - "Velocidad" ya no se parte en dos líneas.

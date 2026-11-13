@@ -117,7 +117,7 @@ button, input { font: inherit; min-height: 44px; }
 .anima-ctl button { min-height: 40px; padding: .4rem .95rem; border-radius: 8px; border: 1.5px solid currentColor; background: transparent; color: inherit; cursor: pointer; font: inherit; }
 .anima-ctl .anima-play { background: var(--acento); border-color: var(--acento); color: var(--fondo); min-width: 7.5rem; }
 .anima-ctl input { accent-color: var(--acento); }
-.anima-ctl label { display: inline-flex; gap: .5rem; align-items: center; }
+.anima-ctl label { display: inline-flex; gap: .5rem; align-items: center; white-space: nowrap; overflow-wrap: normal; }
 .anima-ctl .anima-vel { font-family: var(--f-codigo); min-width: 2.5rem; }
 .anima-fase { display: flex; gap: .75rem; align-items: baseline; min-height: 3rem; margin: .5rem 0 0; }
 .anima-fase b { flex: none; font-family: var(--f-codigo); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; padding: .15rem .5rem; border-radius: 4px; background: var(--acento); color: var(--fondo); }
@@ -1175,7 +1175,17 @@ Switched to branch 'idea'</pre>
     const ol = document.createElement('ol');
     ol.className = 'et-leyenda';
     ets.forEach((g, i) => {
-      const [x, y] = g.dataset.punto.split(/[ ,]+/).map(Number);
+      let [x, y] = g.dataset.punto.split(/[ ,]+/).map(Number);
+      // El número no tapa la pieza: se corre del punto hacia donde estaba el texto.
+      const t0 = g.querySelector('text');
+      if (t0) {
+        const dx = +t0.getAttribute('x') - x, dy = +t0.getAttribute('y') - y, d = Math.hypot(dx, dy) || 1;
+        x += dx / d * r * 1.6; y += dy / d * r * 1.6;
+      }
+      if (vb && vb.width) {
+        x = Math.min(Math.max(x, vb.x + r), vb.x + vb.width - r);
+        y = Math.min(Math.max(y, vb.y + r), vb.y + vb.height - r);
+      }
       const n = document.createElementNS(NS, 'g');
       n.setAttribute('class', 'et-num');
       n.innerHTML = `<circle cx="${x}" cy="${y}" r="${r}"/><text x="${x}" y="${y}" font-size="${r * 1.15}" text-anchor="middle" dominant-baseline="central">${i + 1}</text>`;

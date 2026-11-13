@@ -1,5 +1,6 @@
 <!--
-  KIT SVG DE FORJA. Copia a <defs> solo lo que uses. Reglas: reference/ilustracion.md.
+  KIT SVG DE FORJA. Pega este <svg> UNA sola vez al inicio del <body> (quita lo que no uses)
+  y úsalo desde todos los SVG con url(#id). Reglas: reference/ilustracion.md, sección 8.
   Los colores salen de variables CSS con un valor de respaldo. Defínelas en :root
   con la paleta de la familia (por ejemplo, --ach-caliente: #F6D2BC).
 
@@ -11,7 +12,7 @@
   Flecha ondulada:               d = forja.kit.onda(x, yInicio, yFin)  + class="flujo" para que avance.
   Trazos:                        contorno 2.5 · detalle 1.25 · guías 1
 -->
-<svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute">
+<svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute" aria-hidden="true">
 <defs>
   <pattern id="ach-neutro" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
     <rect width="7" height="7" style="fill:var(--ach-neutro, #CFC8BD)"/>

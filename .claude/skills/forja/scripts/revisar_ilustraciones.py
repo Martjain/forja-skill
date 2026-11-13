@@ -6,14 +6,13 @@ Uso:
 
 Qué hace:
   1. Captura cada <svg> de contenido en grande (escala 2x, a 1280 px de ancho).
-  2. En cada animación [data-anima] fija 4 fases (0, 0.25, 0.5, 0.75) y las junta en una hoja.
-  3. Detecta, a 390 px de ancho (celular):
-     - etiquetas <text> que se encimen entre sí,
-     - texto que se vea de menos de 11 px,
-     - texto que se salga del viewBox.
-  4. Advierte si un SVG usa más de 4 grosores de línea (el sistema es 2.5 / 1.25 / 1; las piezas
+  2. En cada animación [data-anima] captura 4 fases (0, 0.25, 0.5, 0.75), cada una en su imagen.
+  3. Detecta etiquetas encimadas y texto fuera del viewBox en escritorio, en las 4 fases.
+  4. En celular (390 px) detecta texto de menos de 11 px (fuera de g.etiqueta) e imprime la
+     letra mínima en unidades del viewBox de cada SVG.
+  5. Advierte si un SVG usa más de 4 grosores de línea (el sistema es 2.5 / 1.25 / 1; las piezas
      gruesas, de más de 4, no cuentan).
-  5. Guarda todo en /tmp/forja-ilustraciones/<carpeta de la guía>/ para abrirlo con Read.
+  6. Guarda todo en /tmp/forja-ilustraciones/<carpeta de la guía>/ para abrirlo con Read.
 
 Después: abre cada imagen y califícala con la rúbrica de reference/ilustracion.md (mínimo 8/10).
 
@@ -72,7 +71,9 @@ JS_REVISAR = """
       if (cs.stroke && cs.stroke !== 'none' && el.tagName !== 'text' && g <= 4
           && !el.closest('pattern, marker, .et-num')) grosores.add(g);
     }
-    res.push({ donde, chicos, fuera, choques, grosores: [...grosores].filter(g => g > 0).sort((a, b) => b - a),
+    const vbw = s.viewBox.baseVal && s.viewBox.baseVal.width;
+    const letraMin = vbw ? Math.ceil(minPx * vbw / caja.width * 2) / 2 : null;
+    res.push({ donde, chicos, fuera, choques, letraMin, grosores: [...grosores].filter(g => g > 0).sort((a, b) => b - a),
       anima: !!s.closest('[data-anima]') });
   }
   return res;
@@ -86,21 +87,6 @@ def buscar_navegador():
         if ruta:
             return ruta
     return None
-
-
-def hoja_fases(imagenes, destino: Path):
-    from PIL import Image, ImageDraw
-    ims = [Image.open(p) for p in imagenes]
-    w = max(i.width for i in ims)
-    h = sum(i.height for i in ims) + 34 * len(ims)
-    hoja = Image.new("RGB", (w, h), "white")
-    d = ImageDraw.Draw(hoja)
-    y = 0
-    for fase, im in zip(FASES, ims):
-        d.text((12, y + 10), f"fase {fase}", fill="black")
-        hoja.paste(im, (0, y + 34))
-        y += im.height + 34
-    hoja.save(destino)
 
 
 def main() -> int:
@@ -140,21 +126,22 @@ def main() -> int:
             caja_anima = svg.locator("xpath=ancestor::*[@data-anima][1]")
             if caja_anima.count():
                 n_anim += 1
-                cuadros = []
                 for f in FASES:
                     caja_anima.evaluate(f"c => c.__fijar && c.__fijar({f})")
                     pag.wait_for_timeout(120)
-                    destino = salida / f"ilus-{i:02d}-fase-{int(f * 100):02d}.png"
-                    caja_anima.screenshot(path=str(destino))
-                    cuadros.append(destino)
-                try:
-                    hoja_fases(cuadros, salida / f"ilus-{i:02d}-fases.png")
-                    for c in cuadros:
-                        c.unlink()
-                except ImportError:
-                    pass
+                    caja_anima.screenshot(path=str(salida / f"ilus-{i:02d}-fase-{int(f * 100):02d}.png"))
             else:
                 svg.screenshot(path=str(salida / f"ilus-{i:02d}.png"))
+        # Revisión en escritorio, en cada fase de las animaciones (ahí se ven las etiquetas completas)
+        escritorio = {}
+        for f in FASES:
+            for c in pag.locator("[data-anima]").all():
+                c.evaluate(f"c => c.__fijar && c.__fijar({f})")
+            pag.wait_for_timeout(80)
+            for r in pag.evaluate(JS_REVISAR, TEXTO_MIN_PX):
+                e = escritorio.setdefault(r["donde"], {"choques": set(), "fuera": set(), "grosores": r["grosores"]})
+                e["choques"].update(r["choques"])
+                e["fuera"].update(r["fuera"])
         pag.close()
 
         # 3 y 4. Revisión en celular
@@ -171,18 +158,24 @@ def main() -> int:
     if n_anim == 0:
         print("  AVISO: ninguna animación [data-anima]. Si el tema es un proceso, anima su ilustración central.")
     for r in informe:
+        e = escritorio.get(r["donde"], {"choques": set(), "fuera": set(), "grosores": []})
         avisos = []
+        if e["choques"]:
+            avisos.append("etiquetas encimadas (escritorio): " + "; ".join(sorted(e["choques"])[:5]))
         if r["choques"]:
-            avisos.append("etiquetas encimadas: " + "; ".join(r["choques"][:5]))
+            avisos.append("textos encimados (celular): " + "; ".join(r["choques"][:5]))
         if r["chicos"]:
-            avisos.append(f"texto < {TEXTO_MIN_PX} px en celular: " + ", ".join(r["chicos"][:5]))
-        if r["fuera"]:
-            avisos.append("texto fuera del viewBox: " + ", ".join(r["fuera"][:5]))
-        if len(r["grosores"]) > MAX_GROSORES:
-            avisos.append(f"{len(r['grosores'])} grosores de trazo {r['grosores']} (usa 2.5 / 1.25 / 1)")
+            avisos.append(f"texto < {TEXTO_MIN_PX} px en celular: " + ", ".join(r["chicos"][:5])
+                          + f" → usa al menos {r['letraMin']} unidades, o ponlo en un g.etiqueta")
+        fuera = sorted(e["fuera"] | set(r["fuera"]))
+        if fuera:
+            avisos.append("texto fuera del viewBox: " + ", ".join(fuera[:5]))
+        if len(e["grosores"]) > MAX_GROSORES:
+            avisos.append(f"{len(e['grosores'])} grosores de línea {e['grosores']} (usa 2.5 / 1.25 / 1)")
+        estado = "✗" if avisos else "✓"
+        print(f"  {estado} {r['donde']} · letra mínima en este viewBox: {r['letraMin']} unidades")
         if avisos:
             problemas += 1
-            print(f"  ✗ {r['donde']}")
             for a in avisos:
                 print(f"      {a}")
     if not problemas:
