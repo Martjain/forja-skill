@@ -173,6 +173,13 @@ slider.addEventListener('input', () => {
 
 Si el tema no tiene ninguna variable numérica, el simulador puede ser un selector de escenarios (`<input type="range">` con pasos discretos y etiquetas), pero sigue mostrando una consecuencia calculada.
 
+
+**Transiciones.** Cuando el usuario mueve un control o elige otro caso, las piezas **se deslizan** a su nuevo valor en lugar de saltar: así se ve qué cambió y cuánto. Usa el núcleo, no lo programes:
+- `forja.deslizar(el, { width: 120, y: 40 }, 450)` mueve atributos numéricos de un SVG (también propiedades CSS como `'--avance'`).
+- `forja.contar(elNumero, 15.2, { decimales: 2, sufijo: ' %' })` hace que un número cuente hasta su nuevo valor.
+- Entre 300 y 600 ms. Con un slider que se arrastra, usa un tiempo corto (150 ms) o ninguno; con botones que cargan un caso, el tiempo completo.
+- Ambas respetan «reducir movimiento»: ahí el cambio es inmediato.
+
 ## 5. Paso a paso guiado — `data-interaccion="pasos"`
 
 Para procedimientos: configurar algo, recorrer un proceso, resolver un problema.

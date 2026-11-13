@@ -1195,6 +1195,45 @@ section > .anima-caja { max-width: 46rem; margin-left: max(0px, calc((100% - var
     caja.__fijar = f => { corriendo = false; boton(); fase = f; dibujar(f); };  // lo usa revisar_ilustraciones.py
     boton(); dibujar(fase); requestAnimationFrame(bucle);
   }
+  // Transiciones: al cambiar el estado de un simulador o un diagrama, las piezas se deslizan
+  // en vez de saltar, para que se vea QUÉ cambió. Respetan "reducir movimiento".
+  //   forja.deslizar(el, { width: 120, x: 30, 'stroke-width': 2.5 }, 450)  atributos numéricos del SVG
+  //   forja.deslizar(el, { '--avance': 60 }, 450)                           propiedades CSS numéricas (style)
+  //   forja.contar(elTexto, 15.2, { decimales: 2, sufijo: ' %' })          un número que cuenta hasta su valor
+  const enCurso = new WeakMap();
+  const suave = t => t < .5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2;
+  function interpolar(el, desde, hasta, ms, aplicar) {
+    cancelAnimationFrame(enCurso.get(el) || 0);
+    if (reducir || !ms) { aplicar(hasta); return; }
+    let t0 = null;
+    const paso = ts => {
+      t0 ??= ts;
+      const t = Math.min(1, (ts - t0) / ms), k = suave(t);
+      aplicar(Object.fromEntries(Object.keys(hasta).map(c => [c, desde[c] + (hasta[c] - desde[c]) * k])));
+      if (t < 1) enCurso.set(el, requestAnimationFrame(paso)); else enCurso.delete(el);
+    };
+    enCurso.set(el, requestAnimationFrame(paso));
+  }
+  function deslizar(el, valores, ms = 450) {
+    if (!el) return;
+    const css = c => c.startsWith('--'), desde = {};
+    for (const c in valores) {
+      const actual = css(c) ? parseFloat(el.style.getPropertyValue(c)) : parseFloat(el.getAttribute(c));
+      desde[c] = Number.isFinite(actual) ? actual : valores[c];
+    }
+    interpolar(el, desde, valores, ms, v => {
+      for (const c in v) css(c) ? el.style.setProperty(c, v[c]) : el.setAttribute(c, +v[c].toFixed(2));
+    });
+  }
+  function contar(el, valor, { decimales = 0, sufijo = '', prefijo = '', ms = 450, miles = true } = {}) {
+    if (!el) return;
+    const previo = parseFloat(el.dataset.valor ?? valor);
+    el.dataset.valor = valor;
+    const fmt = n => prefijo + (miles ? n.toLocaleString('en-US', { minimumFractionDigits: decimales, maximumFractionDigits: decimales })
+      : n.toFixed(decimales)) + sufijo;
+    interpolar(el, { n: previo }, { n: valor }, ms, v => { el.textContent = fmt(v.n); });
+  }
+
   // Ayudas de dibujo calculado: úsalas en lugar de poner coordenadas a ojo.
   const kit = {
     // Flecha ondulada (calor, flujo): de (x, y0) a (x, y1), vertical.
@@ -1228,6 +1267,9 @@ section > .anima-caja { max-width: 46rem; margin-left: max(0px, calc((100% - var
     // forja.animar(caja, fase => {...}, { periodo: segundos por ciclo })
     animar,
     kit,
+    // forja.deslizar(el, {atributo: valor}, ms) y forja.contar(el, número, {decimales, sufijo})
+    deslizar,
+    contar,
   };
 
   // Etiquetas de ilustración: <g class="etiqueta" data-punto="x y"> con un título y una frase.

@@ -92,7 +92,8 @@ Llamas, agua, órganos, hojas: curvas Bézier cúbicas **simétricas** y en **do
 - **Flujos** con la clase `flujo` (líneas punteadas que avanzan) y **llamas** con `titila`. Nada se anima solo por adorno.
 - El núcleo pone los controles (Pausa, **Paso a paso**, velocidad), respeta "reducir movimiento" y pausa la animación fuera de pantalla. No los programes tú.
 - Contenedor: `<div data-anima id="anima-…">` con el SVG y la narración dentro.
-- **Una o dos animaciones por guía**: la del proceso central. Las demás ilustraciones pueden ser fijas.
+- **Una o dos animaciones por guía**: la del proceso central y, si el motivo de la portada es un proceso (algo que avanza, se llena o se corta), el motivo de la portada. Las demás ilustraciones pueden ser fijas.
+- **No animes comparaciones ni resultados** (barras de una tabla, perfiles de modelos): se leen mejor quietas. Lo que sí se anima ahí es el **cambio** cuando el usuario elige otro caso, con `forja.deslizar` y `forja.contar` (ver [interacciones.md](interacciones.md), sección 4).
 - **No reveles una predicción.** Si la animación (o cualquier dibujo) responde una pregunta de su sección, ponle `data-tras-prediccion` al SVG y a la narración `.anima-fase`, nunca al contenedor `[data-anima]` (los controles deben quedar a la vista); o usa otros valores que no den la respuesta. Revisa también el texto que acompaña al dibujo. La prueba de la fuga está en [interacciones.md](interacciones.md), sección 1.1. Si el JS reescribe el resultado con `innerHTML`, no la metas ahí: ponla después. Revisa también las ilustraciones fijas: un dibujo que muestra el resultado antes de responder también revela.
 - **Si el proceso central no tiene ilustración**, créala: es la que más enseña.
 - **Si la ilustración que animas ya es interactiva** (nodos clicables que se atenúan), pon las piezas que se mueven en una capa propia con `pointer-events: none`, fuera de los nodos, para que el atenuado no apague la animación.
