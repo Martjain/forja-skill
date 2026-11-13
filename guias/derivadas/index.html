@@ -136,6 +136,16 @@ button, input { font: inherit; min-height: 44px; }
   svg .et-num { display: inline; }
   .et-leyenda { display: grid; }
 }
+.forja-uso { margin: 1.25rem 0 0; border: 1px solid var(--borde); border-radius: 12px; background: color-mix(in srgb, var(--fondo) 85%, var(--tinta) 4%); }
+.forja-uso > summary { cursor: pointer; display: flex; flex-wrap: wrap; gap: .25rem .75rem; align-items: baseline; padding: .8rem 1rem; font-weight: 700; }
+.forja-uso > summary small { font-weight: 400; font-family: var(--f-codigo); font-size: .78rem; opacity: .75; }
+.forja-uso ul { list-style: none; margin: 0; padding: 0 1rem 1rem; display: grid; gap: .9rem; grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); }
+.forja-uso li { display: grid; grid-template-columns: 1.75rem 1fr; gap: .6rem; align-items: start; }
+.forja-uso li svg { width: 1.75rem; height: 1.75rem; color: var(--acento); }
+.forja-uso b { display: block; font-size: .95rem; }
+.forja-uso b em { font-style: normal; font-weight: 400; font-family: var(--f-codigo); font-size: .78rem; color: var(--acento); margin-left: .25rem; }
+.forja-uso p { margin: .2rem 0 .3rem; font-size: .88rem; line-height: 1.5; }
+.forja-uso a { font-size: .82rem; }
 /* ===== FIN NÚCLEO FORJA: CSS ===== */
 
 /* ===== Guía: derivadas (familia matematicas) ===== */
@@ -1369,6 +1379,70 @@ section > .anima-caja { max-width: 46rem; margin-left: max(0px, calc((100% - var
     location.hash = ''; location.reload();
   }));
   document.querySelectorAll('[data-forja-mapa] a').forEach(a => a.addEventListener('click', () => a.closest('details')?.removeAttribute('open')));
+  // "Cómo usar esta guía": se arma solo, contando lo que trae la guía. Va debajo del mapa de la portada.
+  (function instrucciones() {
+    const ancla = document.querySelector('nav.mapa-portada');
+    if (!ancla || document.querySelector('.forja-uso')) return;
+    const todos = sel => [...document.querySelectorAll(sel)];
+    const ir = els => { const s = els[0]?.closest('section[id]'); return s ? `<a href="#${s.id}">Ir a la primera ›</a>` : ''; };
+    const ico = d => `<svg viewBox="0 0 28 28" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
+    let nTarjetas = 0;
+    try { nTarjetas = JSON.parse(document.getElementById('forja-tarjetas')?.textContent || '[]').length; } catch {}
+    const minutos = todos('section[data-minutos]').reduce((a, s) => a + (+s.dataset.minutos || 0), 0);
+    const preds = todos('[data-prediccion][data-correcta]'), retos = todos('[data-reto]'), animas = todos('[data-anima]');
+    const ayudas = todos('[data-ayuda], [data-ayuda-dinamica], .ayuda-abrir');
+    const tipo = t => todos(`[data-interaccion="${t}"]`);
+    const items = [
+      [preds.length, 'pregunta', 'preguntas', 'Antes de ver, adivina',
+        'Elige lo que crees que pasa. Lo que está borroso se aclara y te dice si acertaste y por qué. Equivocarte también sirve: así se recuerda mejor. Puedes tocar «Volver a predecir».',
+        ico('<circle cx="14" cy="14" r="10"/><path d="M11 11a3 3 0 1 1 4 2.8c-.7.3-1 .9-1 1.6"/><circle cx="14" cy="19.5" r=".6" fill="currentColor"/>'), preds],
+      [ayudas.length ? 1 : 0, '', '', '¿Te atoraste?',
+        'Toca «Explícamelo paso a paso»: te da una pista a la vez. Con «Ya entendí, lo intento» vuelves a intentarlo tú. La respuesta solo aparece al final, si la pides.',
+        ico('<path d="M6 21h4l11-11-4-4L6 17z"/><path d="M15 8l4 4"/>'), []],
+      [retos.length, 'reto', 'retos', 'Retos',
+        'Las casillas se marcan solas cuando haces lo que piden (no hay que palomearlas). Cuentan para tu avance.',
+        ico('<rect x="5" y="5" width="18" height="18" rx="3"/><path d="M9.5 14.5l3 3 6-7"/>'), retos],
+      [animas.length, 'animación', 'animaciones', 'Animaciones',
+        'Se mueven solas. «Pausa» la detiene, «Paso a paso ›» avanza un momento a la vez y la barra cambia la velocidad. El texto de abajo dice qué pasa en cada momento.',
+        ico('<circle cx="14" cy="14" r="10"/><path d="M12 10l6 4-6 4z" fill="currentColor"/>'), animas],
+      [tipo('diagrama').length, 'diagrama', 'diagramas', 'Diagramas',
+        'Toca cada pieza del dibujo para ver qué es y para qué sirve.',
+        ico('<rect x="4" y="5" width="8" height="6" rx="1.5"/><rect x="16" y="17" width="8" height="6" rx="1.5"/><path d="M8 11v4a2 2 0 0 0 2 2h6"/>'), tipo('diagrama')],
+      [tipo('simulador').length, 'simulador', 'simuladores', 'Simuladores',
+        'Mueve el control o elige opciones y mira qué cambia. Prueba casos extremos: ahí se entiende la idea.',
+        ico('<path d="M5 9h18M5 19h18"/><circle cx="10" cy="9" r="2.5" fill="currentColor"/><circle cx="18" cy="19" r="2.5" fill="currentColor"/>'), tipo('simulador')],
+      [tipo('pasos').length, '', '', 'Paso a paso guiado',
+        'Los primeros pasos vienen resueltos; después completas tú lo que falta y ves el porqué.',
+        ico('<path d="M5 22h5v-5h5v-5h5V7h3"/>'), tipo('pasos')],
+      [tipo('otra').length, 'ejercicio', 'ejercicios', 'Ejercicios',
+        'Para practicar: responde y la guía te dice si vas bien y qué revisar.',
+        ico('<path d="M8 4h10l4 4v16H8z"/><path d="M12 13h6M12 17h6M12 9h3"/>'), tipo('otra')],
+      [nTarjetas, 'tarjeta', 'tarjetas', 'Tarjetas de repaso',
+        'Lee la pregunta, respóndela en tu cabeza y toca la tarjeta para voltearla. Luego «Lo sabía» o «Repasar». Las que repasas vuelven después de unos días (1, 3, 7…), para que no se olviden.',
+        ico('<rect x="4" y="8" width="16" height="12" rx="2"/><path d="M8 5h14a2 2 0 0 1 2 2v10"/>'), todos('[data-forja-flashcards]')],
+    ].filter(i => i[0] > 0);
+    const resumen = [
+      preds.length && `${preds.length} ${preds.length === 1 ? 'pregunta' : 'preguntas'}`,
+      retos.length && `${retos.length} retos`,
+      animas.length && `${animas.length} ${animas.length === 1 ? 'animación' : 'animaciones'}`,
+      nTarjetas && `${nTarjetas} tarjetas`,
+      minutos && `unos ${minutos} min`,
+    ].filter(Boolean);
+    const caja = document.createElement('details');
+    caja.className = 'forja-uso';
+    const nueva = !estado.vistas.length || (estado.vistas.length <= 1 && !Object.keys(estado.predicciones).length);
+    if (nueva) caja.open = true;
+    caja.innerHTML = `<summary><span>Cómo usar esta guía</span><small>${resumen.join(' · ')}</small></summary>
+      <ul>${items.map(([n, uno, varios, titulo, texto, icono, els]) => `<li>${icono}<div>
+        <b>${titulo}${n > 1 || uno ? ` <em>${n} ${n === 1 ? uno : varios}</em>` : ''}</b>
+        <p>${texto}</p>${ir(els)}</div></li>`).join('')}
+        <li>${ico('<path d="M4 7l6-2 8 3 6-2v15l-6 2-8-3-6 2z"/><path d="M10 5v15M18 8v15"/>')}<div>
+        <b>Mapa y avance</b><p>Arriba, «Mapa» muestra las secciones y tu porcentaje. Tu avance se guarda en este navegador: puedes cerrar y seguir después con «Continuar donde ibas». No necesitas cuenta.</p></div></li>
+      </ul>`;
+    const cont = ancla.nextElementSibling?.matches('[data-forja-continuar]') ? ancla.nextElementSibling : ancla;
+    cont.after(caja);
+  })();
+
   pintar();
 })();
 /* ===== FIN NÚCLEO FORJA: JS ===== */

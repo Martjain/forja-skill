@@ -56,6 +56,7 @@ python3 ${CLAUDE_SKILL_DIR}/scripts/fuentes.py css --titulos <id> --cuerpo <id> 
 - **Flashcards:** solo el JSON `forja-tarjetas` (8 a 15 tarjetas) y `<div data-forja-flashcards>`. El núcleo las dibuja y las suma al repaso del índice.
 - **Retos:** al menos 3 `data-reto` en total, que se cumplen haciendo (tu JS llama a `forja.reto(id)`).
 - **Portada:** incluye el mapa (`<nav data-forja-mapa>`) y la entrada escalonada (`class="entra"` con `--i`). Cada `<section>` lleva `id` y `data-minutos`.
+- **Instrucciones de uso:** no las escribas. El núcleo arma solo, debajo del mapa de la portada (`nav.mapa-portada`), un panel «Cómo usar esta guía» que cuenta las preguntas, retos, animaciones, diagramas, simuladores, ejercicios y tarjetas que trae la guía, explica cómo se usa cada uno y enlaza al primero. Por eso cada interacción debe llevar bien su `data-interaccion`, `data-prediccion`, `data-reto` o `data-anima`.
 - Cada `<section>` lleva `data-layout="<layout del catálogo>"`. No repitas un layout en secciones seguidas y usa al menos 5 distintos.
 - Al menos una sección con `data-tono="oscuro"` para alternar claro y oscuro.
 - Cada interacción lleva `data-interaccion="diagrama|flashcards|simulador|pasos|otra"`. Usa al menos 3 de los 4 tipos principales. Si el tema pide una interacción propia, como un probador, agrégala como `otra`.

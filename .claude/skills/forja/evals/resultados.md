@@ -240,3 +240,14 @@ Lo pidió el usuario. Un agente por guía, en paralelo, editando la guía origin
   - avisar del `min-width: 0` en cuadrículas;
   - que el revisor capture los diagramas después de responder la predicción;
   - revisar si el simulador debe exigir un control deslizante.
+
+## Instrucciones de uso en cada guía
+
+- **Pedido del usuario:** que cada guía explique cuántas preguntas tiene, cómo se contestan, qué hay que tocar y si tiene animaciones.
+- **Solución en el núcleo:** el panel «Cómo usar esta guía» se arma solo debajo del mapa de la portada.
+  - Cuenta las predicciones, retos, animaciones, diagramas, simuladores, pasos, ejercicios y tarjetas que trae la guía.
+  - Suma los minutos de las secciones.
+  - Explica cómo se usa cada cosa, con un ícono, y enlaza a la primera de cada tipo.
+  - Se abre la primera vez que se visita la guía y después queda cerrado.
+- **Por qué en el núcleo:** las cuentas siempre coinciden con la guía y ninguna guía tiene que escribir sus propias instrucciones.
+- Propagado a las 7 guías; todas pasan el validador y la revisión en celular.
