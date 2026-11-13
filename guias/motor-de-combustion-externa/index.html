@@ -115,7 +115,7 @@ button, input { font: inherit; min-height: 44px; }
 .anima-ctl { display: flex; flex-wrap: wrap; gap: .5rem 1rem; align-items: center; margin-top: .75rem; font-size: .875rem; }
 .anima-ctl button { min-height: 40px; padding: .4rem .95rem; border-radius: 8px; border: 1.5px solid currentColor; background: transparent; color: inherit; cursor: pointer; font: inherit; }
 .anima-ctl .anima-play { background: var(--acento); border-color: var(--acento); color: var(--fondo); min-width: 7.5rem; }
-.anima-ctl input { accent-color: var(--acento); }
+.anima-ctl input { accent-color: var(--acento); width: 7rem; }
 .anima-ctl label { display: inline-flex; gap: .5rem; align-items: center; white-space: nowrap; overflow-wrap: normal; }
 .anima-ctl .anima-vel { font-family: var(--f-codigo); min-width: 2.5rem; }
 .anima-fase { display: flex; gap: .75rem; align-items: baseline; min-height: 3rem; margin: .5rem 0 0; }
@@ -127,7 +127,7 @@ button, input { font: inherit; min-height: 44px; }
 .pausado .flujo, .pausado .titila { animation-play-state: paused; }
 @media (prefers-reduced-motion: reduce) { .flujo, .titila { animation: none; } }
 .et-num, .et-leyenda { display: none; }
-.et-num circle { fill: var(--tinta); stroke: var(--fondo); stroke-width: 2; }
+.et-num circle { fill: var(--tinta); stroke: var(--fondo); stroke-width: 2; vector-effect: non-scaling-stroke; }
 .et-num text { fill: var(--fondo); font-family: var(--f-codigo); font-weight: 700; }
 .et-leyenda { margin: .5rem 0 0; padding-left: 1.6rem; gap: .25rem; font-size: .9rem; }
 .et-leyenda b { font-weight: 600; }
@@ -151,7 +151,7 @@ h2 { font-size: clamp(2rem, 5vw, 3rem); margin: 0 0 .5rem; }
 h3 { font-size: clamp(1.25rem, 3vw, 1.6rem); margin: 0 0 .5rem; }
 p { margin: 0 0 1rem; max-width: 66ch; }
 .idea { font-family: var(--f-titulos); font-size: clamp(1.2rem, 3vw, 1.5rem); line-height: 1.35; color: var(--tinta-suave); max-width: 46ch; margin-bottom: 2rem; }
-.etiqueta { font-family: var(--f-codigo); font-size: .8rem; letter-spacing: .08em; text-transform: uppercase; color: var(--acento); margin-bottom: .75rem; display: block; }
+span.etiqueta { font-family: var(--f-codigo); font-size: .8rem; letter-spacing: .08em; text-transform: uppercase; color: var(--acento); margin-bottom: .75rem; display: block; }
 .parte { display: inline-block; font-family: var(--f-codigo); font-size: .8rem; padding: .2rem .6rem; border: 1.5px solid currentColor; border-radius: 4px; margin-bottom: 1rem; }
 .caliente { color: var(--caliente); }
 .frio { color: var(--frio); }
@@ -186,15 +186,17 @@ details > summary { cursor: pointer; min-height: 44px; display: flex; align-item
 
 /* diagramas clicables */
 .diagrama [data-nodo] { cursor: pointer; }
-.diagrama [data-nodo] rect { fill: var(--fondo); stroke: var(--tinta); stroke-width: 2; transition: fill .25s, stroke .25s; }
+.diagrama [data-nodo] rect { fill: var(--fondo); stroke: var(--tinta); stroke-width: 2.5; transition: fill .25s, stroke .25s; }
 .diagrama [data-nodo] text { fill: var(--tinta); font-size: 17px; font-weight: 600; text-anchor: middle; }
 .diagrama [data-nodo].activo rect { fill: var(--acento); stroke: var(--acento); }
 .diagrama [data-nodo].activo text { fill: var(--fondo); }
 .diagrama [data-nodo]:focus-visible { outline: none; }
 .diagrama [data-nodo]:focus-visible rect { stroke-width: 4; stroke: var(--acento); }
-.diagrama [data-une] { stroke: var(--gris); stroke-width: 4; fill: none; transition: stroke .25s, opacity .25s; }
+.diagrama [data-une] { stroke: var(--gris); stroke-width: 2.5; fill: none; marker-end: url(#pta-gris); transition: stroke .25s, opacity .25s; }
 .diagrama.con-activo [data-une]:not(.activo) { opacity: .35; }
-.diagrama [data-une].activo { stroke: var(--acento); }
+.diagrama [data-une].activo { stroke: var(--acento); marker-end: url(#pta-caliente); }
+.diagrama [data-nodo] .icono { transition: opacity .25s; }
+.diagrama [data-nodo].activo .icono { opacity: 0; }
 .diagrama.con-activo [data-nodo]:not(.activo) { opacity: .75; }
 .pista-toque { font-size: .85rem; color: var(--tinta-suave); margin: .5rem 0 0; }
 
@@ -255,10 +257,12 @@ input.r-frio { accent-color: var(--frio); }
 [data-paso] .resuelto { display: inline-block; font-family: var(--f-codigo); font-size: .75rem; padding: .1rem .5rem; border-radius: 4px; background: var(--superficie); margin-bottom: .5rem; }
 .linea-nueva { padding: .75rem 1rem; border-left: 4px solid var(--acento); background: var(--superficie); border-radius: 0 6px 6px 0; }
 #svg-pv { max-width: 19rem; margin-inline: auto; display: block; }
-.pv path.seg { stroke: var(--gris); stroke-width: 3; fill: none; }
-.pv path.seg.actual { stroke: var(--acento); stroke-width: 5; }
-.pv path.seg.hecho { stroke: var(--tinta); }
-.pv .area { fill: var(--acento); opacity: 0; transition: opacity .4s; }
+.pv path.seg { stroke: var(--gris); stroke-width: 2.5; fill: none; stroke-dasharray: 4 5; }
+.pv path.seg.actual { stroke: var(--tinta); stroke-width: 2.5; stroke-dasharray: none; }
+#seg-0.actual { stroke: var(--frio); }
+#seg-2.actual { stroke: var(--caliente); }
+.pv path.seg.hecho { stroke: var(--tinta-suave); stroke-dasharray: none; }
+.pv .area { fill: var(--laton); opacity: 0; transition: opacity .4s; }
 .pv .area.ver { opacity: .18; }
 
 /* --- dato-heroe --- */
@@ -310,17 +314,77 @@ input.r-frio { accent-color: var(--frio); }
 @media (min-width: 900px) { [data-layout="repaso"] .rejilla { grid-template-columns: 1fr 1.4fr; align-items: start; } }
 .fc-tarjeta { border-radius: 6px; border-width: 2px; }
 
-/* ilustraciones */
+/* ilustraciones: naranja = caliente, azul = frío, latón = trabajo (en todas) */
 .ilus { display: block; width: 100%; }
+:root { --gas: #EFE3D6; --gas-caliente: #F3C9AE; --gas-frio: #CFDDE8; --agua-caliente: #EDB48F; --agua-fria: #B9D0E0;
+  --met: #CFC8BD; --met-claro: #E6E0D6; --met-oscuro: #9C958B; --rejilla: rgb(30 27 24 / .08); }
+section[data-tono="oscuro"] { --gas: #3A332C; --gas-caliente: #5C3019; --gas-frio: #213A4B; --met-oscuro: #4A433C; --rejilla: rgb(242 233 218 / .08); }
+.anima-envoltura { max-width: 48rem; margin-top: 2.5rem; }
+.anima-envoltura svg, .anima-vapor svg { display: block; width: 100%; }
+.anima-vapor { margin-top: 1.5rem; }
+/* Watt: tras responder la predicción, el cilindro de Newcomen se calienta y se enfría en cada golpe; el de Watt sigue caliente */
+.newcomen-cil, .watt-cil { fill-opacity: .5; }
+li:has(.revelado[data-tras-prediccion="pred-watt"]) .watt-cil { fill: var(--caliente); }
 @media (prefers-reduced-motion: no-preference) {
-  .llama { transform-origin: 50% 100%; animation: titila 1.6s ease-in-out infinite alternate; }
-  @keyframes titila { from { transform: scaleY(1); } to { transform: scaleY(.88); } }
-  .newcomen-cil { animation: fria 2.4s steps(1) infinite; }
+  li:has(.revelado[data-tras-prediccion="pred-watt"]) .newcomen-cil { animation: fria 2.4s steps(1) infinite; }
   @keyframes fria { 0% { fill: var(--caliente); } 50% { fill: var(--frio); } }
+}
+@media (prefers-reduced-motion: reduce) {
+  li:has(.revelado[data-tras-prediccion="pred-watt"]) .newcomen-cil { fill: var(--frio); }
 }
 </style>
 </head>
 <body>
+<svg id="forja-kit" xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute" aria-hidden="true">
+<defs>
+  <pattern id="ach-neutro" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+    <rect width="7" height="7" style="fill:var(--ach-neutro, #CFC8BD)"/>
+    <line x1="0" y1="0" x2="0" y2="7" stroke-width="1.6" style="stroke:var(--ach-neutro-linea, #9C958B)"/>
+  </pattern>
+  <pattern id="ach-caliente" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+    <rect width="7" height="7" style="fill:var(--ach-caliente, #F6D2BC)"/>
+    <line x1="0" y1="0" x2="0" y2="7" stroke-width="1.6" style="stroke:var(--ach-caliente-linea, #E07A45)"/>
+  </pattern>
+  <pattern id="ach-frio" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+    <rect width="7" height="7" style="fill:var(--ach-frio, #D3E0EA)"/>
+    <line x1="0" y1="0" x2="0" y2="7" stroke-width="1.6" style="stroke:var(--ach-frio-linea, #7FA3BE)"/>
+  </pattern>
+
+  <linearGradient id="met" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" style="stop-color:var(--met-claro, #E6E0D6)"/>
+    <stop offset=".5" style="stop-color:var(--met, #CFC8BD)"/>
+    <stop offset="1" style="stop-color:var(--met-oscuro, #9C958B)"/>
+  </linearGradient>
+
+  <marker id="pta-caliente" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1 L8 5 L1 9 Z" style="fill:var(--caliente, #B23A0C)"/></marker>
+  <marker id="pta-frio" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1 L8 5 L1 9 Z" style="fill:var(--frio, #2E5A78)"/></marker>
+  <marker id="pta-neutro" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1 L8 5 L1 9 Z" style="fill:var(--tinta, #3A332C)"/></marker>
+  <marker id="pta-acento" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1 L8 5 L1 9 Z" style="fill:var(--acento, #A7832B)"/></marker>
+
+  <!-- Punto final de una línea guía de etiqueta -->
+  <marker id="punto-guia" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="4" markerHeight="4"><circle cx="5" cy="5" r="4" style="fill:var(--tinta, #3A332C)"/></marker>
+
+  <!-- Llama en dos capas: silueta + núcleo al 55% -->
+  <g id="llama">
+    <path d="M0 0 C-15 -10 -8.25 -24 -1.2 -40 C3.75 -26.4 11.25 -16.8 8.25 -7.2 C6.75 -2 3 0 0 0Z" style="fill:var(--llama, #E2632A)"/>
+    <path d="M1 0 C-7 -5.5 -3.4 -13.2 0.36 -22 C3 -14.52 7 -9.24 5.4 -3.96 C4.6 -1.1 2.6 0 1 0Z" style="fill:var(--llama-nucleo, #F2C14E)"/>
+  </g>
+
+  <!-- Copias para las secciones oscuras (los colores del kit se resuelven donde está definido) -->
+  <pattern id="ach-neutro-oscuro" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="7" height="7" fill="#2E2924"/><line x1="0" y1="0" x2="0" y2="7" stroke-width="1.6" stroke="#5A5249"/></pattern>
+  <pattern id="ach-caliente-oscuro" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="7" height="7" fill="#4A2412"/><line x1="0" y1="0" x2="0" y2="7" stroke-width="1.6" stroke="#C2622A"/></pattern>
+  <linearGradient id="met-osc" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8A8178"/><stop offset=".5" stop-color="#6B635A"/><stop offset="1" stop-color="#4A433C"/></linearGradient>
+  <marker id="pta-caliente-oscuro" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1 L8 5 L1 9 Z" fill="#FF8A3D"/></marker>
+  <marker id="pta-frio-oscuro" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1 L8 5 L1 9 Z" fill="#7FB6D9"/></marker>
+  <marker id="pta-neutro-oscuro" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1 L8 5 L1 9 Z" fill="#BCB09D"/></marker>
+  <marker id="pta-laton-oscuro" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1 L8 5 L1 9 Z" fill="#D9B45A"/></marker>
+  <!-- Propias de esta guía: trabajo (latón), conectores grises y la malla del regenerador -->
+  <marker id="pta-laton" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1 L8 5 L1 9 Z" style="fill:var(--laton, #A7832B)"/></marker>
+  <marker id="pta-gris" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1 L8 5 L1 9 Z" style="fill:var(--gris, #A39887)"/></marker>
+  <pattern id="malla-regen" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M0 0 L8 8 M8 0 L0 8" stroke-width="1" style="stroke:var(--tinta-suave, #5A5249)"/></pattern>
+  <pattern id="malla-regen-oscuro" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M0 0 L8 8 M8 0 L0 8" stroke-width="1" stroke="#BCB09D"/></pattern>
+</defs>
+</svg>
 <header class="forja-barra">
   <div data-forja-progreso role="progressbar" aria-label="Avance de la guía" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
   <details class="forja-mapa">
@@ -345,40 +409,7 @@ input.r-frio { accent-color: var(--frio); }
       <nav data-forja-mapa class="mapa-portada entra" style="--i:4" aria-label="Recorrido de la guía"></nav>
       <p data-forja-continuar hidden><a href="#">Continuar donde ibas</a> <button type="button" data-forja-reiniciar>Empezar de cero</button></p>
     </div>
-    <svg class="ilus entra" style="--i:2" viewBox="0 0 440 330" role="img" aria-labelledby="t-portada">
-      <title id="t-portada">Una llama fuera de una pared de metal calienta un gas encerrado; el gas empuja un pistón que hace girar un volante y el calor sobrante sale por unas aletas frías.</title>
-      <!-- cilindro -->
-      <rect x="96" y="120" width="210" height="96" fill="none" stroke="var(--tinta)" stroke-width="6"/>
-      <rect x="99" y="123" width="128" height="90" fill="var(--caliente)" opacity=".22"/>
-      <!-- pared caliente -->
-      <rect x="84" y="110" width="16" height="116" fill="var(--caliente)"/>
-      <!-- llama afuera -->
-      <path class="llama" d="M46 214 C 24 190, 40 162, 52 146 C 54 166, 66 168, 64 150 C 82 170, 86 196, 70 214 Z" fill="var(--caliente)"/>
-      <path class="llama" d="M52 214 C 44 200, 50 186, 58 178 C 60 192, 70 196, 66 214 Z" fill="var(--laton)"/>
-      <path d="M58 132 C 64 120, 72 116, 80 118" fill="none" stroke="var(--caliente)" stroke-width="3" marker-end="url(#pf-cal)"/>
-      <!-- pistón -->
-      <rect x="227" y="124" width="18" height="88" fill="var(--tinta)"/>
-      <line x1="245" y1="168" x2="352" y2="196" stroke="var(--tinta)" stroke-width="6" stroke-linecap="round"/>
-      <!-- volante -->
-      <circle cx="360" cy="168" r="58" fill="none" stroke="var(--tinta)" stroke-width="6"/>
-      <circle cx="360" cy="168" r="8" fill="var(--tinta)"/>
-      <line x1="360" y1="168" x2="352" y2="196" stroke="var(--tinta)" stroke-width="4"/>
-      <path d="M318 98 A 82 82 0 0 1 420 120" fill="none" stroke="var(--laton)" stroke-width="3" marker-end="url(#pf-lat)"/>
-      <!-- aletas frías -->
-      <g stroke="var(--frio)" stroke-width="5">
-        <line x1="250" y1="120" x2="250" y2="98"/><line x1="266" y1="120" x2="266" y2="98"/><line x1="282" y1="120" x2="282" y2="98"/><line x1="298" y1="120" x2="298" y2="98"/>
-      </g>
-      <path d="M274 92 V 52" fill="none" stroke="var(--frio)" stroke-width="3" marker-end="url(#pf-frio)"/>
-      <defs>
-        <marker id="pf-cal" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="var(--caliente)"/></marker>
-        <marker id="pf-frio" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="var(--frio)"/></marker>
-        <marker id="pf-lat" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="var(--laton)"/></marker>
-      </defs>
-      <text x="20" y="250" font-size="15" fill="var(--caliente)" font-weight="600">calor de afuera</text>
-      <text x="120" y="176" font-size="15" fill="var(--tinta)">gas encerrado</text>
-      <text x="226" y="40" font-size="15" fill="var(--frio)" font-weight="600">calor sobrante</text>
-      <text x="318" y="262" font-size="15" fill="var(--tinta)" font-weight="600">trabajo</text>
-    </svg>
+    <svg class="ilus entra" viewBox="0 0 480 340" role="img" style="--i:2" aria-labelledby="t-portada"><title id="t-portada">Una llama fuera de una pared de metal calienta un gas encerrado; el gas empuja un pistón que hace girar un volante y el calor sobrante sale por unas aletas frías.</title><defs><linearGradient id="portada-gas" x1="0" x2="1"><stop offset="0" stop-color="var(--gas-caliente)"/><stop offset=".55" stop-color="var(--gas)"/><stop offset="1" stop-color="var(--gas-frio)"/></linearGradient></defs><ellipse cx="286" cy="300" rx="180" ry="6" fill="var(--tinta)" opacity=".07"/><rect x="100" y="270" width="88" height="9" rx="2" fill="url(#met)" stroke="var(--tinta)" stroke-width="2.5"/><g class="titila" style="animation-delay:-0.00s"><use href="#llama" transform="translate(118 270) scale(0.85)"/></g><g class="titila" style="animation-delay:-0.23s"><use href="#llama" transform="translate(145 270) scale(1.05)"/></g><g class="titila" style="animation-delay:-0.46s"><use href="#llama" transform="translate(172 270) scale(0.9)"/></g><g><path d="M124 228 Q128 224.2 124 220.5 Q120 216.8 124 213 Q128 209.2 124 205.5 Q120 201.8 124 198 L124 194" fill="none" stroke="var(--caliente)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#pta-caliente)"/><path d="M145 228 Q149 224.2 145 220.5 Q141 216.8 145 213 Q149 209.2 145 205.5 Q141 201.8 145 198 L145 194" fill="none" stroke="var(--caliente)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#pta-caliente)"/><path d="M166 228 Q170 224.2 166 220.5 Q162 216.8 166 213 Q170 209.2 166 205.5 Q162 201.8 166 198 L166 194" fill="none" stroke="var(--caliente)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#pta-caliente)"/></g><rect x="116" y="110" width="202" height="10" fill="url(#ach-neutro)"/><rect x="116" y="180" width="202" height="10" fill="url(#ach-neutro)"/><rect x="116" y="110" width="52" height="10" fill="url(#ach-caliente)"/><rect x="116" y="180" width="52" height="10" fill="url(#ach-caliente)"/><rect x="174" y="110" width="52" height="10" fill="url(#ach-frio)"/><rect x="174" y="180" width="52" height="10" fill="url(#ach-frio)"/><rect x="116" y="110" width="10" height="80" fill="url(#ach-caliente)"/><rect x="126" y="120" width="106.5" height="60" fill="url(#portada-gas)"/><rect x="178" y="92" width="7" height="18" fill="url(#ach-frio)" stroke="var(--tinta)" stroke-width="1.25"/><rect x="192" y="92" width="7" height="18" fill="url(#ach-frio)" stroke="var(--tinta)" stroke-width="1.25"/><rect x="206" y="92" width="7" height="18" fill="url(#ach-frio)" stroke="var(--tinta)" stroke-width="1.25"/><rect x="178" y="190" width="7" height="18" fill="url(#ach-frio)" stroke="var(--tinta)" stroke-width="1.25"/><rect x="192" y="190" width="7" height="18" fill="url(#ach-frio)" stroke="var(--tinta)" stroke-width="1.25"/><rect x="206" y="190" width="7" height="18" fill="url(#ach-frio)" stroke="var(--tinta)" stroke-width="1.25"/><path d="M318 110 H116 V190 H318" fill="none" stroke="var(--tinta)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/><path d="M318 120 H126 V180 H318" fill="none" stroke="var(--tinta)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/><path d="M318 110 V120 M318 180 V190" fill="none" stroke="var(--tinta)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/><g><path d="M190 86 Q194 81.5 190 77 Q186 72.5 190 68 Q194 63.5 190 59 Q186 54.5 190 50 L190 46" fill="none" stroke="var(--frio)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#pta-frio)"/><path d="M212 86 Q216 81.5 212 77 Q208 72.5 212 68 Q216 63.5 212 59 Q208 54.5 212 50 L212 46" fill="none" stroke="var(--frio)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#pta-frio)"/></g><g transform="translate(252.5 150)"><rect x="-20" y="-28.5" width="40" height="57" rx="3" fill="url(#met)" stroke="var(--tinta)" stroke-width="2.5"/><line x1="-13" y1="-28.5" x2="-13" y2="28.5" stroke="var(--tinta)" stroke-width="1.25" opacity=".55"/><line x1="-7" y1="-28.5" x2="-7" y2="28.5" stroke="var(--tinta)" stroke-width="1.25" opacity=".55"/></g><circle cx="402" cy="150" r="50" fill="none" stroke="url(#met)" stroke-width="14"/><circle cx="402" cy="150" r="57" fill="none" stroke="var(--tinta)" stroke-width="2.5"/><circle cx="402" cy="150" r="43" fill="none" stroke="var(--tinta)" stroke-width="2.5"/><line x1="413.3" y1="154.1" x2="442.4" y2="164.7" stroke="var(--met-oscuro)" stroke-width="6" stroke-linecap="round"/><line x1="401.6" y1="162" x2="400.5" y2="193" stroke="var(--met-oscuro)" stroke-width="6" stroke-linecap="round"/><line x1="390.5" y1="153.3" x2="360.7" y2="161.9" stroke="var(--met-oscuro)" stroke-width="6" stroke-linecap="round"/><line x1="395.3" y1="140.1" x2="378" y2="114.4" stroke="var(--met-oscuro)" stroke-width="6" stroke-linecap="round"/><line x1="409.4" y1="140.5" x2="428.5" y2="116.1" stroke="var(--met-oscuro)" stroke-width="6" stroke-linecap="round"/><circle cx="402" cy="150" r="13" fill="url(#met)" stroke="var(--tinta)" stroke-width="2.5"/><line x1="402" y1="150" x2="383.6" y2="165.4" stroke="var(--tinta)" stroke-width="11" stroke-linecap="round"/><line x1="402" y1="150" x2="383.6" y2="165.4" stroke="var(--met-oscuro)" stroke-width="6" stroke-linecap="round"/><line x1="252.5" y1="150" x2="383.6" y2="165.4" stroke="var(--tinta)" stroke-width="10" stroke-linecap="round"/><line x1="252.5" y1="150" x2="383.6" y2="165.4" stroke="var(--met)" stroke-width="5" stroke-linecap="round"/><circle cx="252.5" cy="150" r="5" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="2.5"/><circle cx="383.6" cy="165.4" r="5" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="2.5"/><circle cx="402" cy="150" r="5" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="2.5"/><path d="M343.1 116 A68 68 0 0 1 455.6 108.1" fill="none" stroke="var(--laton)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#pta-laton)"/><g class="etiqueta" data-punto="112 279"><path d="M112 279 L112 294 L118 294" stroke="var(--caliente)" stroke-width="1" fill="none" opacity=".7"/><circle cx="112" cy="279" r="3" fill="var(--caliente)"/><text x="124" y="298.5" font-size="13.5" font-weight="600" fill="var(--caliente)">Fuego afuera</text><text x="124" y="315.5" font-size="12" fill="var(--tinta)" opacity=".75">nunca toca el gas</text></g><g class="etiqueta" data-punto="150 150"><path d="M150 150 L150 62 L144 62" stroke="var(--tinta)" stroke-width="1" fill="none" opacity=".7"/><circle cx="150" cy="150" r="3" fill="var(--tinta)"/><text x="138" y="66.5" font-size="13.5" font-weight="600" fill="var(--tinta)" text-anchor="end">Gas encerrado</text><text x="138" y="83.5" font-size="12" fill="var(--tinta)" opacity=".75" text-anchor="end">lo calienta la pared</text></g><g class="etiqueta" data-punto="217 92"><path d="M217 92 L236 62 L242 62" stroke="var(--frio)" stroke-width="1" fill="none" opacity=".7"/><circle cx="217" cy="92" r="3" fill="var(--frio)"/><text x="248" y="66.5" font-size="13.5" font-weight="600" fill="var(--frio)">Lado frío</text><text x="248" y="83.5" font-size="12" fill="var(--tinta)" opacity=".75">el calor que sobra</text></g><g class="etiqueta" data-punto="402 207"><path d="M402 207 L402 290 L396 290" stroke="var(--laton)" stroke-width="1" fill="none" opacity=".7"/><circle cx="402" cy="207" r="3" fill="var(--laton)"/><text x="390" y="294.5" font-size="13.5" font-weight="600" fill="var(--laton)" text-anchor="end">Trabajo</text><text x="390" y="311.5" font-size="12" fill="var(--tinta)" opacity=".75" text-anchor="end">el volante gira</text></g></svg>
   </div>
 </section>
 
@@ -394,27 +425,7 @@ input.r-frio { accent-color: var(--frio); }
       <div class="ficha" id="ficha-comun" aria-live="polite"></div>
     </div>
     <div data-interaccion="diagrama" class="diagrama marco" id="diag-comun">
-      <svg viewBox="0 0 400 440" role="img" aria-labelledby="t-comun">
-        <title id="t-comun">Ciclo de un motor de combustión externa: fuente de calor, lado caliente, pistón o turbina, lado frío y retorno, con el fluido encerrado en el centro.</title>
-        <defs>
-          <marker id="pc-g" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="var(--gris)"/></marker>
-        </defs>
-        <line data-une="fuente caliente" x1="100" y1="76" x2="100" y2="128" marker-end="url(#pc-g)"/>
-        <line data-une="caliente maquina fluido" x1="180" y1="156" x2="218" y2="156" marker-end="url(#pc-g)"/>
-        <line data-une="maquina frio fluido" x1="300" y1="182" x2="300" y2="298" marker-end="url(#pc-g)"/>
-        <line data-une="frio retorno fluido" x1="220" y1="326" x2="182" y2="326" marker-end="url(#pc-g)"/>
-        <line data-une="retorno caliente fluido" x1="100" y1="300" x2="100" y2="184" marker-end="url(#pc-g)"/>
-        <path d="M300 128 V 60 H 340" fill="none" stroke="var(--laton)" stroke-width="3" stroke-dasharray="6 5"/>
-        <text x="344" y="52" font-size="14" fill="var(--tinta-suave)">trabajo</text>
-        <path d="M300 352 V 410" fill="none" stroke="var(--frio)" stroke-width="3" stroke-dasharray="6 5"/>
-        <text x="290" y="420" font-size="14" fill="var(--frio)" text-anchor="end">al aire o agua fría</text>
-        <g data-nodo="fuente" tabindex="0" role="button" aria-label="Fuente de calor"><rect x="20" y="24" width="160" height="52" rx="6"/><text x="100" y="56">Fuente de calor</text></g>
-        <g data-nodo="caliente" tabindex="0" role="button" aria-label="Lado caliente"><rect x="20" y="130" width="160" height="52" rx="6"/><text x="100" y="162">Lado caliente</text></g>
-        <g data-nodo="maquina" tabindex="0" role="button" aria-label="Pistón o turbina"><rect x="220" y="130" width="160" height="52" rx="6"/><text x="300" y="162">Pistón o turbina</text></g>
-        <g data-nodo="frio" tabindex="0" role="button" aria-label="Lado frío"><rect x="220" y="300" width="160" height="52" rx="6"/><text x="300" y="332">Lado frío</text></g>
-        <g data-nodo="retorno" tabindex="0" role="button" aria-label="Retorno"><rect x="20" y="300" width="160" height="52" rx="6"/><text x="100" y="332">Retorno</text></g>
-        <g data-nodo="fluido" tabindex="0" role="button" aria-label="Fluido encerrado"><rect x="110" y="215" width="180" height="52" rx="26"/><text x="200" y="247">Fluido encerrado</text></g>
-      </svg>
+      <svg viewBox="0 0 400 440" role="img" aria-labelledby="t-comun"><title id="t-comun">Ciclo de un motor de combustión externa: fuente de calor, lado caliente, pistón o turbina, lado frío y retorno, con el fluido encerrado en el centro.</title><defs><linearGradient id="comun-fluido" gradientUnits="userSpaceOnUse" x1="132" x2="268" y1="0" y2="0"><stop offset="0" stop-color="var(--caliente)"/><stop offset="1" stop-color="var(--frio)"/></linearGradient></defs><rect x="70" y="116" width="260" height="236" rx="18" fill="var(--tinta)" opacity=".05"/><path data-une="fuente caliente" d="M100 78 Q104 83.8 100 89.5 Q96 95.2 100 101 Q104 106.8 100 112.5 Q96 118.2 100 124 L100 128"/><path data-une="caliente maquina fluido" d="M182 156 H216"/><path data-une="maquina frio fluido" d="M300 184 V296"/><path data-une="frio retorno fluido" d="M218 326 H184"/><path data-une="retorno caliente fluido" d="M100 298 V186"/><path d="M300 128 V70 H332" fill="none" stroke="var(--laton)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#pta-laton)"/><text x="340" y="75" font-size="14" fill="var(--laton)">trabajo</text><path d="M300 356 Q304 360.8 300 365.5 Q296 370.2 300 375 Q304 379.8 300 384.5 Q296 389.2 300 394 L300 398" fill="none" stroke="var(--frio)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#pta-frio)"/><text x="288" y="420" font-size="14" fill="var(--frio)" text-anchor="end">al aire o agua fría</text><g data-nodo="fuente" tabindex="0" role="button" aria-label="Fuente de calor"><rect x="20" y="24" width="160" height="52" rx="6"/><text x="100" y="53">Fuente de calor</text><path d="M30 67 H170" fill="none" stroke="var(--caliente)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" class="icono"/></g><g data-nodo="caliente" tabindex="0" role="button" aria-label="Lado caliente"><rect x="20" y="130" width="160" height="52" rx="6"/><text x="100" y="159">Lado caliente</text><path d="M30 173 H170" fill="none" stroke="var(--caliente)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" class="icono"/></g><g data-nodo="maquina" tabindex="0" role="button" aria-label="Pistón o turbina"><rect x="220" y="130" width="160" height="52" rx="6"/><text x="300" y="159">Pistón o turbina</text><path d="M230 173 H370" fill="none" stroke="var(--laton)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" class="icono"/></g><g data-nodo="frio" tabindex="0" role="button" aria-label="Lado frío"><rect x="220" y="300" width="160" height="52" rx="6"/><text x="300" y="329">Lado frío</text><path d="M230 343 H370" fill="none" stroke="var(--frio)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" class="icono"/></g><g data-nodo="retorno" tabindex="0" role="button" aria-label="Retorno"><rect x="20" y="300" width="160" height="52" rx="6"/><text x="100" y="329">Retorno</text><path d="M30 343 H170" fill="none" stroke="var(--tinta-suave)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" class="icono"/></g><g data-nodo="fluido" tabindex="0" role="button" aria-label="Fluido encerrado"><rect x="106" y="212" width="188" height="58" rx="29"/><text x="200" y="244">Fluido encerrado</text><path d="M132 259 H268" fill="none" stroke="url(#comun-fluido)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" class="icono"/></g></svg>
       <p class="pista-toque">Toca o enfoca una pieza y presiona Enter.</p>
     </div>
   </div>
@@ -427,30 +438,12 @@ input.r-frio { accent-color: var(--frio); }
   <div class="duo">
     <div>
       <h3>Combustión interna <span class="contra">gasolina, diésel</span></h3>
-      <svg viewBox="0 0 260 170" role="img" aria-labelledby="t-int">
-        <title id="t-int">Cilindro con la llama dentro: los mismos gases quemados empujan el pistón y salen por el escape.</title>
-        <rect x="20" y="40" width="160" height="90" fill="none" stroke="var(--tinta)" stroke-width="5"/>
-        <path d="M70 120 C 52 100, 64 80, 76 66 C 78 84, 90 86, 88 70 C 104 88, 106 108, 94 120 Z" fill="var(--caliente)"/>
-        <rect x="140" y="44" width="16" height="82" fill="var(--tinta)"/>
-        <line x1="156" y1="85" x2="240" y2="85" stroke="var(--tinta)" stroke-width="5"/>
-        <path d="M40 40 V 10" stroke="var(--tinta-suave)" stroke-width="3" fill="none" stroke-dasharray="5 4"/>
-        <text x="48" y="20" font-size="14" fill="var(--tinta-suave)">escape</text>
-        <text x="20" y="156" font-size="14" fill="var(--tinta)">el fuego empuja directo</text>
-      </svg>
+      <svg viewBox="0 0 300 214" role="img" aria-labelledby="t-int"><title id="t-int">Cilindro con la llama dentro: los mismos gases quemados empujan el pistón y salen por el escape.</title><rect x="65" y="63" width="157" height="9" fill="url(#ach-neutro-oscuro)"/><rect x="65" y="128" width="157" height="9" fill="url(#ach-neutro-oscuro)"/><rect x="65" y="63" width="9" height="74" fill="url(#ach-neutro-oscuro)"/><rect x="74" y="72" width="97" height="56" fill="var(--gas-caliente)"/><rect x="90" y="63" width="16" height="9" fill="var(--gas-caliente)"/><g class="titila" style="animation-delay:-0.00s"><use href="#llama" transform="translate(104 126) scale(1.1)"/></g><g class="titila" style="animation-delay:-0.23s"><use href="#llama" transform="translate(128 126) scale(0.8)"/></g><path d="M222 63 H106 V33 M90 33 V63 H65 V137 H222" fill="none" stroke="var(--tinta)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/><path d="M222 72 H106 M90 72 H74 V128 H222" fill="none" stroke="var(--tinta)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/><rect x="90" y="33" width="16" height="30" fill="var(--gas-caliente)" opacity=".55"/><path d="M98 57 Q101 50.5 98 44 Q95 37.5 98 31 Q101 24.5 98 18 L98 14" fill="none" stroke="var(--tinta-suave)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#pta-neutro-oscuro)"/><path d="M222 63 V72 M222 128 V137" fill="none" stroke="var(--tinta)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/><g transform="translate(184 100)"><rect x="-13" y="-26.5" width="26" height="53" rx="3" fill="url(#met-osc)" stroke="var(--tinta)" stroke-width="2.5"/><line x1="-6" y1="-26.5" x2="-6" y2="26.5" stroke="var(--tinta)" stroke-width="1.25" opacity=".55"/><line x1="0" y1="-26.5" x2="0" y2="26.5" stroke="var(--tinta)" stroke-width="1.25" opacity=".55"/></g><line x1="184" y1="100" x2="296" y2="100" stroke="var(--tinta)" stroke-width="10" stroke-linecap="round"/><line x1="184" y1="100" x2="296" y2="100" stroke="var(--met-oscuro)" stroke-width="5" stroke-linecap="round"/><circle cx="184" cy="100" r="4.5" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="2.5"/><path d="M246 78 H284" fill="none" stroke="var(--laton)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#pta-laton-oscuro)"/><g class="etiqueta" data-punto="108 30"><path d="M108 30 L124 30 L130 30" stroke="var(--tinta-suave)" stroke-width="1" fill="none" opacity=".7"/><circle cx="108" cy="30" r="3" fill="var(--tinta-suave)"/><text x="136" y="34.5" font-size="13.5" font-weight="600" fill="var(--tinta-suave)">Escape</text><text x="136" y="51.5" font-size="12" fill="var(--tinta)" opacity=".75">salen los gases</text></g><g class="etiqueta" data-punto="104 118"><path d="M104 118 L104 184 L110 184" stroke="var(--caliente)" stroke-width="1" fill="none" opacity=".7"/><circle cx="104" cy="118" r="3" fill="var(--caliente)"/><text x="116" y="188.5" font-size="13.5" font-weight="600" fill="var(--caliente)">Fuego adentro</text><text x="116" y="205.5" font-size="12" fill="var(--tinta)" opacity=".75">empuja directo al pistón</text></g></svg>
       <p>El combustible se quema <strong>dentro</strong> del cilindro y esos mismos gases empujan el pistón. Después salen por el escape y entra aire nuevo.</p>
     </div>
     <div>
       <h3>Combustión externa <span class="contra">Stirling, vapor</span></h3>
-      <svg viewBox="0 0 260 170" role="img" aria-labelledby="t-ext">
-        <title id="t-ext">Cilindro sellado con una llama afuera: el calor cruza la pared y el gas de adentro empuja el pistón.</title>
-        <rect x="40" y="40" width="160" height="90" fill="none" stroke="var(--tinta)" stroke-width="5"/>
-        <rect x="43" y="43" width="94" height="84" fill="var(--caliente)" opacity=".25"/>
-        <rect x="30" y="34" width="12" height="102" fill="var(--caliente)"/>
-        <path class="llama" d="M6 128 C -2 110, 6 96, 14 86 C 16 100, 24 102, 22 90 C 32 104, 32 118, 26 128 Z" fill="var(--caliente)"/>
-        <rect x="137" y="44" width="16" height="82" fill="var(--tinta)"/>
-        <line x1="153" y1="85" x2="250" y2="85" stroke="var(--tinta)" stroke-width="5"/>
-        <text x="40" y="156" font-size="14" fill="var(--tinta)">el calor cruza la pared</text>
-      </svg>
+      <svg viewBox="0 0 300 214" role="img" aria-labelledby="t-ext"><title id="t-ext">Cilindro sellado con una llama afuera: el calor cruza la pared y el gas de adentro empuja el pistón.</title><defs><linearGradient id="ext-gas" x1="0" x2="1"><stop offset="0" stop-color="var(--gas-caliente)"/><stop offset="1" stop-color="var(--gas)"/></linearGradient></defs><rect x="52" y="192" width="76" height="9" rx="2" fill="url(#met-osc)" stroke="var(--tinta)" stroke-width="2.5"/><g class="titila" style="animation-delay:-0.00s"><use href="#llama" transform="translate(66 192) scale(0.66)"/></g><g class="titila" style="animation-delay:-0.23s"><use href="#llama" transform="translate(90 192) scale(0.8)"/></g><g class="titila" style="animation-delay:-0.46s"><use href="#llama" transform="translate(114 192) scale(0.68)"/></g><g><path d="M72 160 Q75 157.5 72 155 Q69 152.5 72 150 Q75 147.5 72 145 L72 141" fill="none" stroke="var(--caliente)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#pta-caliente-oscuro)"/><path d="M94 160 Q97 157.5 94 155 Q91 152.5 94 150 Q97 147.5 94 145 L94 141" fill="none" stroke="var(--caliente)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#pta-caliente-oscuro)"/><path d="M116 160 Q119 157.5 116 155 Q113 152.5 116 150 Q119 147.5 116 145 L116 141" fill="none" stroke="var(--caliente)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#pta-caliente-oscuro)"/></g><rect x="65" y="63" width="157" height="9" fill="url(#ach-neutro-oscuro)"/><rect x="65" y="128" width="157" height="9" fill="url(#ach-neutro-oscuro)"/><rect x="65" y="63" width="75" height="9" fill="url(#ach-caliente-oscuro)"/><rect x="65" y="128" width="75" height="9" fill="url(#ach-caliente-oscuro)"/><rect x="65" y="63" width="9" height="74" fill="url(#ach-caliente-oscuro)"/><rect x="74" y="72" width="97" height="56" fill="url(#ext-gas)"/><path d="M222 63 H65 V137 H222" fill="none" stroke="var(--tinta)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/><path d="M222 72 H74 V128 H222" fill="none" stroke="var(--tinta)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/><path d="M222 63 V72 M222 128 V137" fill="none" stroke="var(--tinta)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/><g transform="translate(184 100)"><rect x="-13" y="-26.5" width="26" height="53" rx="3" fill="url(#met-osc)" stroke="var(--tinta)" stroke-width="2.5"/><line x1="-6" y1="-26.5" x2="-6" y2="26.5" stroke="var(--tinta)" stroke-width="1.25" opacity=".55"/><line x1="0" y1="-26.5" x2="0" y2="26.5" stroke="var(--tinta)" stroke-width="1.25" opacity=".55"/></g><line x1="184" y1="100" x2="296" y2="100" stroke="var(--tinta)" stroke-width="10" stroke-linecap="round"/><line x1="184" y1="100" x2="296" y2="100" stroke="var(--met-oscuro)" stroke-width="5" stroke-linecap="round"/><circle cx="184" cy="100" r="4.5" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="2.5"/><path d="M246 78 H284" fill="none" stroke="var(--laton)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#pta-laton-oscuro)"/><g class="etiqueta" data-punto="65 118"><path d="M65 118 L28 118 L28 30 L34 30" stroke="var(--caliente)" stroke-width="1" fill="none" opacity=".7"/><circle cx="65" cy="118" r="3" fill="var(--caliente)"/><text x="40" y="34.5" font-size="13.5" font-weight="600" fill="var(--caliente)">Pared caliente</text><text x="40" y="51.5" font-size="12" fill="var(--tinta)" opacity=".75">el calor la cruza</text></g><g class="etiqueta" data-punto="150 100"><path d="M150 100 L150 30 L156 30" stroke="var(--tinta)" stroke-width="1" fill="none" opacity=".7"/><circle cx="150" cy="100" r="3" fill="var(--tinta)"/><text x="162" y="34.5" font-size="13.5" font-weight="600" fill="var(--tinta)">Gas sellado</text><text x="162" y="51.5" font-size="12" fill="var(--tinta)" opacity=".75">nunca toca el fuego</text></g></svg>
       <p>El calor se produce <strong>afuera</strong> y entra a través de una pared de metal. El fluido de trabajo queda encerrado o da vueltas en un circuito: no sale por un escape <a class="cita" href="#f3">[3]</a> <a class="cita" href="#f7">[7]</a>.</p>
       <p>Por eso sirve cualquier fuente de calor: una caldera con gas, carbón o biomasa <a class="cita" href="#f8">[8]</a>, el sol <a class="cita" href="#f7">[7]</a> o una fuente radiactiva en una nave espacial <a class="cita" href="#f1">[1]</a>.</p>
     </div>
@@ -519,29 +512,11 @@ input.r-frio { accent-color: var(--frio); }
       </ul>
     </div>
     <div class="marco">
-      <svg viewBox="0 0 360 150" role="img" aria-labelledby="t-termo" id="termos">
-        <title id="t-termo">Dos termómetros, caliente y frío, cuya columna sube con la temperatura de cada lado.</title>
-        <rect x="40" y="10" width="26" height="110" rx="13" fill="none" stroke="var(--tinta)" stroke-width="3"/>
-        <circle cx="53" cy="128" r="16" fill="var(--caliente)"/>
-        <rect id="col-cal" x="47" y="60" width="12" height="62" fill="var(--caliente)"/>
-        <rect x="294" y="10" width="26" height="110" rx="13" fill="none" stroke="var(--tinta)" stroke-width="3"/>
-        <circle cx="307" cy="128" r="16" fill="var(--frio)"/>
-        <rect id="col-fri" x="301" y="100" width="12" height="22" fill="var(--frio)"/>
-        <text x="80" y="40" font-size="14" fill="var(--tinta)" class="t-mono" id="k-cal">573 K</text>
-        <text x="200" y="40" font-size="14" fill="var(--tinta)" class="t-mono" id="k-fri">303 K</text>
-        <path d="M80 80 H 280" stroke="var(--tinta-suave)" stroke-width="2" stroke-dasharray="4 4" marker-end="url(#pf-cal)"/>
-        <text x="110" y="104" font-size="13" fill="var(--tinta-suave)">el calor fluye de caliente a frío</text>
-      </svg>
+      <svg id="termos" viewBox="0 0 360 186" role="img" aria-labelledby="t-termo"><title id="t-termo">Dos termómetros, caliente y frío, cuya columna sube con la temperatura de cada lado. Entre los dos, un motor recibe calor del lado caliente, entrega trabajo y manda el resto al lado frío.</title><path d="M59 145.8 V37 A11 11 0 0 1 81 37 V145.8 A15 15 0 1 1 59 145.8 Z" fill="var(--fondo)"/><circle cx="70" cy="156" r="10" fill="var(--caliente)"/><rect x="64" y="136" width="12" height="14" fill="var(--caliente)"/><g transform="translate(0 16)"><rect id="col-cal" x="64" y="60" width="12" height="62" fill="var(--caliente)"/></g><path d="M59 145.8 V37 A11 11 0 0 1 81 37 V145.8 A15 15 0 1 1 59 145.8 Z" fill="none" stroke="var(--tinta)" stroke-width="2.5" stroke-linejoin="round"/><path d="M279 145.8 V37 A11 11 0 0 1 301 37 V145.8 A15 15 0 1 1 279 145.8 Z" fill="var(--fondo)"/><circle cx="290" cy="156" r="10" fill="var(--frio)"/><rect x="284" y="136" width="12" height="14" fill="var(--frio)"/><g transform="translate(0 16)"><rect id="col-fri" x="284" y="100" width="12" height="22" fill="var(--frio)"/></g><path d="M279 145.8 V37 A11 11 0 0 1 301 37 V145.8 A15 15 0 1 1 279 145.8 Z" fill="none" stroke="var(--tinta)" stroke-width="2.5" stroke-linejoin="round"/><path d="M57 136 H50M57 126 H53M57 116 H53M57 106 H53M57 96 H53M57 86 H50M57 76 H53M57 66 H53M57 56 H53M57 46 H53M57 36 H50" fill="none" stroke="var(--tinta-suave)" stroke-width="1.25" stroke-linejoin="round" stroke-linecap="round"/><text x="46" y="140.5" font-size="13" fill="var(--tinta-suave)" text-anchor="end" font-family="var(--f-codigo)">0</text><text x="46" y="90.5" font-size="13" fill="var(--tinta-suave)" text-anchor="end" font-family="var(--f-codigo)">500</text><text x="46" y="40.5" font-size="13" fill="var(--tinta-suave)" text-anchor="end" font-family="var(--f-codigo)">1000</text><text x="46" y="24" font-size="13" fill="var(--tinta-suave)" text-anchor="end" font-family="var(--f-codigo)">°C</text><path d="M303 136 H310M303 126 H307M303 116 H307M303 106 H307" fill="none" stroke="var(--tinta-suave)" stroke-width="1.25" stroke-linejoin="round" stroke-linecap="round"/><text x="88" y="40" font-size="14" fill="var(--tinta)" class="t-mono" id="k-cal">573 K</text><text x="272" y="40" font-size="14" fill="var(--tinta)" text-anchor="end" class="t-mono" id="k-fri">303 K</text><path d="M90 106 Q97.4 110 104.8 106 Q112.1 102 119.5 106 Q126.9 110 134.2 106 Q141.6 102 149 106 L153 106" fill="none" stroke="var(--caliente)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#pta-caliente)"/><path d="M207 106 Q214.4 110 221.8 106 Q229.1 102 236.5 106 Q243.9 110 251.2 106 Q258.6 102 266 106 L270 106" fill="none" stroke="var(--frio)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#pta-frio)"/><circle cx="180" cy="106" r="21" fill="url(#met)" stroke="var(--tinta)" stroke-width="2.5"/><line x1="184.9" y1="110.9" x2="192" y2="118" stroke="var(--tinta)" stroke-width="1.25"/><line x1="175.1" y1="110.9" x2="168" y2="118" stroke="var(--tinta)" stroke-width="1.25"/><line x1="175.1" y1="101.1" x2="168" y2="94" stroke="var(--tinta)" stroke-width="1.25"/><line x1="184.9" y1="101.1" x2="192" y2="94" stroke="var(--tinta)" stroke-width="1.25"/><circle cx="180" cy="106" r="4.5" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="2.5"/><path d="M180 81 V50" fill="none" stroke="var(--laton)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#pta-laton)"/><text x="188" y="62" font-size="13" fill="var(--laton)">trabajo</text><text x="180" y="178" font-size="13" fill="var(--tinta-suave)" text-anchor="middle">el calor fluye de caliente a frío</text></svg>
       <div class="lectura" data-tras-prediccion="pred-carnot">
         <span class="etiqueta">Eficiencia máxima posible</span>
         <span class="grande" id="ef-num">47 %</span>
-        <svg viewBox="0 0 360 54" role="img" aria-labelledby="t-barra">
-          <title id="t-barra">Barra de 100 unidades de calor que entran: la parte naranja es el trabajo máximo y la azul el calor que debe salir al lado frío.</title>
-          <rect x="0" y="6" width="360" height="26" fill="var(--frio)"/>
-          <rect id="barra-trab" x="0" y="6" width="170" height="26" fill="var(--caliente)"/>
-          <text x="0" y="50" font-size="13" fill="var(--tinta)" id="bt-trab">47 de cada 100 a trabajo</text>
-          <text x="360" y="50" font-size="13" fill="var(--frio)" text-anchor="end" id="bt-fri">53 al lado frío</text>
-        </svg>
+        <svg viewBox="0 0 360 58" role="img" aria-labelledby="t-barra"><title id="t-barra">Barra de 100 unidades de calor que entran: la parte dorada es el trabajo máximo y la azul el calor que debe salir al lado frío.</title><rect x="0" y="6" width="360" height="24" fill="var(--frio)"/><rect id="barra-trab" x="0" y="6" width="170" height="24" fill="var(--laton)"/><path d="M90 30 V35M180 30 V35M270 30 V35" fill="none" stroke="var(--tinta-suave)" stroke-width="1.25" stroke-linejoin="round" stroke-linecap="round"/><rect x="0.6" y="6" width="358.8" height="24" fill="none" stroke="var(--tinta)" stroke-width="1.25"/><text x="3" y="52" font-size="13" fill="var(--tinta)" id="bt-trab">47 de cada 100 a trabajo</text><text x="357" y="52" font-size="13" fill="var(--frio)" text-anchor="end" id="bt-fri">53 al lado frío</text></svg>
         <p class="frase" id="ef-frase" aria-live="polite"></p>
       </div>
     </div>
@@ -565,55 +540,8 @@ input.r-frio { accent-color: var(--frio); }
     </ol>
     <div class="tablero">
       <div class="figuras marco">
-        <svg viewBox="0 0 460 210" role="img" aria-labelledby="t-motor" id="svg-motor">
-          <title id="t-motor">Corte del motor: pistón caliente a la izquierda, espacio caliente, regenerador en medio, espacio frío y pistón frío a la derecha.</title>
-          <defs>
-            <pattern id="malla" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M0 0 L8 8 M8 0 L0 8" stroke="var(--tinta-suave)" stroke-width="1"/></pattern>
-            <marker id="pm-c" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="var(--caliente)"/></marker>
-            <marker id="pm-f" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="var(--frio)"/></marker>
-            <marker id="pm-l" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="var(--laton)"/></marker>
-          </defs>
-          <!-- gas -->
-          <rect id="gas-cal" x="130" y="62" width="70" height="76" fill="var(--caliente)" opacity=".45"/>
-          <rect id="gas-fri" x="260" y="62" width="70" height="76" fill="var(--frio)" opacity=".45"/>
-          <!-- regenerador -->
-          <rect id="regen-carga" x="200" y="60" width="60" height="80" fill="var(--caliente)" opacity=".5"/>
-          <rect x="200" y="60" width="60" height="80" fill="url(#malla)" stroke="var(--tinta)" stroke-width="2"/>
-          <!-- paredes -->
-          <path d="M20 58 H 440 M20 142 H 440" stroke="var(--tinta)" stroke-width="5"/>
-          <path d="M40 142 H 196" stroke="var(--caliente)" stroke-width="8"/>
-          <path d="M264 142 H 440" stroke="var(--frio)" stroke-width="8"/>
-          <!-- pistones -->
-          <g id="pist-cal"><rect x="-14" y="61" width="14" height="78" fill="var(--tinta)"/><line x1="-14" y1="100" x2="-60" y2="100" stroke="var(--tinta)" stroke-width="6"/></g>
-          <g id="pist-fri"><rect x="0" y="61" width="14" height="78" fill="var(--tinta)"/><line x1="14" y1="100" x2="60" y2="100" stroke="var(--tinta)" stroke-width="6"/></g>
-          <!-- flechas de calor y trabajo -->
-          <path id="fl-qin" d="M120 196 V 152" stroke="var(--caliente)" stroke-width="4" marker-end="url(#pm-c)"/>
-          <path id="fl-qout" d="M350 150 V 194" stroke="var(--frio)" stroke-width="4" marker-end="url(#pm-f)"/>
-          <path id="fl-regen-da" d="M215 100 H 150" stroke="var(--caliente)" stroke-width="3" stroke-dasharray="5 4" marker-end="url(#pm-c)"/>
-          <path id="fl-regen-guarda" d="M150 100 H 228" stroke="var(--caliente)" stroke-width="3" stroke-dasharray="5 4" marker-end="url(#pm-c)"/>
-          <path id="fl-trab" d="M70 30 H 24" stroke="var(--laton)" stroke-width="4" marker-end="url(#pm-l)"/>
-          <path id="fl-comp" d="M390 30 H 346" stroke="var(--tinta-suave)" stroke-width="4" marker-end="url(#pm-l)"/>
-          <text x="20" y="20" font-size="16" fill="var(--tinta)" id="tx-trab">trabajo</text>
-          <text x="440" y="20" font-size="16" fill="var(--tinta)" id="tx-comp" text-anchor="end">se empuja</text>
-          <text x="230" y="172" font-size="16" fill="var(--tinta)" text-anchor="middle">regenerador</text>
-          <text x="24" y="206" font-size="16" fill="var(--caliente)" font-weight="600">caliente</text>
-          <text x="440" y="206" font-size="16" fill="var(--frio)" font-weight="600" text-anchor="end">frío</text>
-          <text id="tx-q" x="230" y="44" font-size="22" fill="var(--acento)" font-weight="700" text-anchor="middle">?</text>
-        </svg>
-        <svg viewBox="0 0 220 165" role="img" aria-labelledby="t-pv" class="pv" id="svg-pv">
-          <title id="t-pv">Diagrama presión contra volumen del ciclo Stirling ideal: dos curvas de temperatura constante unidas por dos rectas verticales.</title>
-          <path class="area" id="pv-area" d=""/>
-          <path d="M30 150 H 210 M30 150 V 10" stroke="var(--tinta)" stroke-width="2" fill="none"/>
-          <text x="200" y="163" font-size="12" fill="var(--tinta-suave)">V</text>
-          <text x="14" y="18" font-size="12" fill="var(--tinta-suave)">p</text>
-          <path class="seg" id="seg-0"/>
-          <path class="seg" id="seg-1"/>
-          <path class="seg" id="seg-2"/>
-          <path class="seg" id="seg-3"/>
-          <g font-size="13" class="t-mono" fill="var(--tinta)">
-            <text id="pt-1">1</text><text id="pt-2">2</text><text id="pt-3">3</text><text id="pt-4">4</text>
-          </g>
-        </svg>
+        <svg id="svg-motor" viewBox="0 0 460 310" role="img" aria-labelledby="t-motor"><title id="t-motor">Corte del motor: pistón caliente a la izquierda, espacio caliente, regenerador en medio, espacio frío y pistón frío a la derecha.</title><defs><linearGradient id="pasos-regen" x1="0" x2="1"><stop offset="0" stop-color="var(--caliente)"/><stop offset="1" stop-color="var(--caliente)" stop-opacity=".25"/></linearGradient><linearGradient id="pasos-da" gradientUnits="userSpaceOnUse" x1="252" x2="140" y1="0" y2="0"><stop offset="0" stop-color="var(--frio)"/><stop offset="1" stop-color="var(--caliente)"/></linearGradient><linearGradient id="pasos-guarda" gradientUnits="userSpaceOnUse" x1="208" x2="320" y1="0" y2="0"><stop offset="0" stop-color="var(--caliente)"/><stop offset="1" stop-color="var(--frio)"/></linearGradient></defs><rect x="70" y="228" width="116" height="9" rx="2" fill="url(#met)" stroke="var(--tinta)" stroke-width="2.5"/><g class="titila" style="animation-delay:-0.00s"><use href="#llama" transform="translate(88 228) scale(0.75)"/></g><g class="titila" style="animation-delay:-0.23s"><use href="#llama" transform="translate(116 228) scale(0.9)"/></g><g class="titila" style="animation-delay:-0.46s"><use href="#llama" transform="translate(144 228) scale(0.8)"/></g><g class="titila" style="animation-delay:-0.69s"><use href="#llama" transform="translate(170 228) scale(0.7)"/></g><g id="fl-qin"><path d="M100 186 Q104 181.3 100 176.7 Q96 172 100 167.3 Q104 162.7 100 158 L100 154" fill="none" stroke="var(--caliente)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#pta-caliente)"/><path d="M130 186 Q134 181.3 130 176.7 Q126 172 130 167.3 Q134 162.7 130 158 L130 154" fill="none" stroke="var(--caliente)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#pta-caliente)"/><path d="M160 186 Q164 181.3 160 176.7 Q156 172 160 167.3 Q164 162.7 160 158 L160 154" fill="none" stroke="var(--caliente)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#pta-caliente)"/></g><rect x="20" y="50" width="20" height="12" fill="url(#ach-neutro)"/><rect x="20" y="138" width="20" height="12" fill="url(#ach-neutro)"/><rect x="40" y="50" width="160" height="12" fill="url(#ach-caliente)"/><rect x="40" y="138" width="160" height="12" fill="url(#ach-caliente)"/><rect x="200" y="50" width="60" height="12" fill="url(#ach-neutro)"/><rect x="200" y="138" width="60" height="12" fill="url(#ach-neutro)"/><rect x="260" y="50" width="160" height="12" fill="url(#ach-frio)"/><rect x="260" y="138" width="160" height="12" fill="url(#ach-frio)"/><rect x="420" y="50" width="20" height="12" fill="url(#ach-neutro)"/><rect x="420" y="138" width="20" height="12" fill="url(#ach-neutro)"/><rect x="282" y="150" width="8" height="18" fill="url(#ach-frio)" stroke="var(--tinta)" stroke-width="1.25"/><rect x="298" y="150" width="8" height="18" fill="url(#ach-frio)" stroke="var(--tinta)" stroke-width="1.25"/><rect x="314" y="150" width="8" height="18" fill="url(#ach-frio)" stroke="var(--tinta)" stroke-width="1.25"/><rect x="330" y="150" width="8" height="18" fill="url(#ach-frio)" stroke="var(--tinta)" stroke-width="1.25"/><rect x="346" y="150" width="8" height="18" fill="url(#ach-frio)" stroke="var(--tinta)" stroke-width="1.25"/><rect x="362" y="150" width="8" height="18" fill="url(#ach-frio)" stroke="var(--tinta)" stroke-width="1.25"/><rect x="378" y="150" width="8" height="18" fill="url(#ach-frio)" stroke="var(--tinta)" stroke-width="1.25"/><rect x="394" y="150" width="8" height="18" fill="url(#ach-frio)" stroke="var(--tinta)" stroke-width="1.25"/><rect id="gas-cal" x="130" y="62" width="70" height="76" fill="var(--gas-caliente)"/><rect id="gas-fri" x="260" y="62" width="70" height="76" fill="var(--gas-frio)"/><rect id="regen-carga" x="200" y="62" width="60" height="76" fill="url(#pasos-regen)" opacity=".5"/><rect x="200" y="62" width="60" height="76" fill="url(#malla-regen)"/><path d="M200 62 V138 M260 62 V138" fill="none" stroke="var(--tinta)" stroke-width="1.25" stroke-linejoin="round" stroke-linecap="round"/><path d="M20 50 H440 M20 62 H440 M20 138 H440 M20 150 H440" fill="none" stroke="var(--tinta)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/><path d="M20 50 V62 M20 138 V150 M440 50 V62 M440 138 V150" fill="none" stroke="var(--tinta)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/><g id="fl-qout"><path d="M305 172 Q309 178.3 305 184.7 Q301 191 305 197.3 Q309 203.7 305 210 L305 214" fill="none" stroke="var(--frio)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#pta-frio)"/><path d="M345 172 Q349 178.3 345 184.7 Q341 191 345 197.3 Q349 203.7 345 210 L345 214" fill="none" stroke="var(--frio)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#pta-frio)"/><path d="M385 172 Q389 178.3 385 184.7 Q381 191 385 197.3 Q389 203.7 385 210 L385 214" fill="none" stroke="var(--frio)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#pta-frio)"/></g><g id="pist-cal" transform="translate(130 0)"><g transform="translate(-11 100)"><rect x="-11" y="-36.5" width="22" height="73" rx="3" fill="url(#met)" stroke="var(--tinta)" stroke-width="2.5"/><line x1="4" y1="-36.5" x2="4" y2="36.5" stroke="var(--tinta)" stroke-width="1.25" opacity=".55"/><line x1="-2" y1="-36.5" x2="-2" y2="36.5" stroke="var(--tinta)" stroke-width="1.25" opacity=".55"/></g><line x1="-22" y1="100" x2="-210" y2="100" stroke="var(--tinta)" stroke-width="10" stroke-linecap="round"/><line x1="-22" y1="100" x2="-210" y2="100" stroke="var(--met)" stroke-width="5" stroke-linecap="round"/></g><g id="pist-fri" transform="translate(330 0)"><g transform="translate(11 100)"><rect x="-11" y="-36.5" width="22" height="73" rx="3" fill="url(#met)" stroke="var(--tinta)" stroke-width="2.5"/><line x1="-4" y1="-36.5" x2="-4" y2="36.5" stroke="var(--tinta)" stroke-width="1.25" opacity=".55"/><line x1="2" y1="-36.5" x2="2" y2="36.5" stroke="var(--tinta)" stroke-width="1.25" opacity=".55"/></g><line x1="22" y1="100" x2="210" y2="100" stroke="var(--tinta)" stroke-width="10" stroke-linecap="round"/><line x1="22" y1="100" x2="210" y2="100" stroke="var(--met)" stroke-width="5" stroke-linecap="round"/></g><path id="fl-regen-da" class="flujo" d="M252 100 H140" stroke="url(#pasos-da)" stroke-width="2.5" fill="none" stroke-linecap="round" marker-end="url(#pta-caliente)"/><path id="fl-regen-guarda" class="flujo" d="M208 100 H320" stroke="url(#pasos-guarda)" stroke-width="2.5" fill="none" stroke-linecap="round" marker-end="url(#pta-frio)"/><path d="M104 28 H40" fill="none" stroke="var(--laton)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" id="fl-trab" marker-end="url(#pta-laton)"/><text x="112" y="34" font-size="17" fill="var(--laton)" id="tx-trab">trabajo</text><path d="M420 28 H356" fill="none" stroke="var(--tinta-suave)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" id="fl-comp" marker-end="url(#pta-neutro)"/><text x="348" y="34" font-size="17" fill="var(--tinta-suave)" text-anchor="end" id="tx-comp">se empuja</text><text id="tx-q" x="230" y="108" font-size="26" font-weight="700" fill="var(--acento)" text-anchor="middle" stroke="var(--fondo)" stroke-width="5" paint-order="stroke">?</text><g class="etiqueta" data-punto="88 237"><path d="M88 237 L88 246 L94 246" stroke="var(--caliente)" stroke-width="1" fill="none" opacity=".7"/><circle cx="88" cy="237" r="3" fill="var(--caliente)"/><text x="100" y="250.5" font-size="13.5" font-weight="600" fill="var(--caliente)">Fuego afuera</text><text x="100" y="267.5" font-size="12" fill="var(--tinta)" opacity=".75">calienta la pared</text></g><g class="etiqueta" data-punto="230 150"><path d="M230 150 L230 280 L236 280" stroke="var(--tinta)" stroke-width="1" fill="none" opacity=".7"/><circle cx="230" cy="150" r="3" fill="var(--tinta)"/><text x="242" y="284.5" font-size="13.5" font-weight="600" fill="var(--tinta)">Regenerador</text><text x="242" y="301.5" font-size="12" fill="var(--tinta)" opacity=".75">malla de metal en medio</text></g><g class="etiqueta" data-punto="398 168"><path d="M398 168 L412 168 L412 238 L406 238" stroke="var(--frio)" stroke-width="1" fill="none" opacity=".7"/><circle cx="398" cy="168" r="3" fill="var(--frio)"/><text x="400" y="242.5" font-size="13.5" font-weight="600" fill="var(--frio)" text-anchor="end">Aletas</text><text x="400" y="259.5" font-size="12" fill="var(--tinta)" opacity=".75" text-anchor="end">sacan el calor sobrante</text></g></svg>
+        <svg class="pv" id="svg-pv" viewBox="0 0 220 172" role="img" aria-labelledby="t-pv"><title id="t-pv">Diagrama presión contra volumen del ciclo Stirling ideal: dos curvas de temperatura constante unidas por dos rectas verticales.</title><path class="area" id="pv-area" d=""/><path d="M50 14 V150M125 14 V150M200 14 V150M30 106 H206M30 62 H206M30 18 H206" fill="none" stroke="var(--rejilla)" stroke-width="1" stroke-linejoin="round" stroke-linecap="round"/><line x1="30" y1="150" x2="210" y2="150" stroke="var(--tinta-suave)" stroke-width="1.25" marker-end="url(#pta-neutro)"/><line x1="30" y1="150" x2="30" y2="10" stroke="var(--tinta-suave)" stroke-width="1.25" marker-end="url(#pta-neutro)"/><text x="206" y="166" font-size="13" fill="var(--tinta-suave)" text-anchor="end" font-style="italic">V</text><text x="14" y="22" font-size="13" fill="var(--tinta-suave)" font-style="italic">p</text><path class="seg" id="seg-0"/><path class="seg" id="seg-1"/><path class="seg" id="seg-2"/><path class="seg" id="seg-3"/><circle cx="200" cy="128" r="3.5" fill="var(--tinta)" stroke="var(--fondo)" stroke-width="1.25"/><circle cx="50" cy="106" r="3.5" fill="var(--tinta)" stroke="var(--fondo)" stroke-width="1.25"/><circle cx="50" cy="18" r="3.5" fill="var(--tinta)" stroke="var(--fondo)" stroke-width="1.25"/><circle cx="200" cy="84" r="3.5" fill="var(--tinta)" stroke="var(--fondo)" stroke-width="1.25"/><text x="122" y="51.8" font-size="11" fill="var(--caliente)">caliente</text><text x="110" y="135.6" font-size="11" fill="var(--frio)">frío</text><g font-size="13" class="t-mono" fill="var(--tinta)"><text id="pt-1">1</text><text id="pt-2">2</text><text id="pt-3">3</text><text id="pt-4">4</text></g></svg>
       </div>
 
       <div>
@@ -714,6 +642,13 @@ input.r-frio { accent-color: var(--frio); }
       </div>
     </div>
   </div>
+
+  <div class="anima-envoltura" data-tras-prediccion="pred-neto">
+    <div data-anima id="anima-stirling">
+<svg id="svg-anima-stirling" viewBox="0 0 720 520" role="img" aria-labelledby="t-anima-stirling"><title id="t-anima-stirling">Motor Stirling de dos pistones animado: un cilindro caliente con fuego afuera y otro frío con aletas, unidos por un tubo con el regenerador y movidos por la misma manivela, con un cuarto de vuelta de desfase.</title><defs><linearGradient id="st-tubo" gradientUnits="userSpaceOnUse" x1="326" x2="466" y1="0" y2="0"><stop offset="0" stop-color="var(--gas-caliente)"/><stop offset="1" stop-color="var(--gas-frio)"/></linearGradient><linearGradient id="st-regen" x1="0" x2="1"><stop offset="0" stop-color="var(--gas-caliente)"/><stop offset="1" stop-color="var(--gas-frio)"/></linearGradient><linearGradient id="st-g-fri" gradientUnits="userSpaceOnUse" x1="292" x2="500" y1="0" y2="0"><stop offset="0" stop-color="var(--caliente)"/><stop offset="1" stop-color="var(--frio)"/></linearGradient><linearGradient id="st-g-cal" gradientUnits="userSpaceOnUse" x1="500" x2="292" y1="0" y2="0"><stop offset="0" stop-color="var(--frio)"/><stop offset="1" stop-color="var(--caliente)"/></linearGradient></defs><ellipse cx="380" cy="498" rx="300" ry="6" fill="var(--tinta)" opacity=".07"/><rect x="280" y="478" width="122" height="9" rx="2" fill="url(#met)" stroke="var(--tinta)" stroke-width="2.5"/><g class="titila" style="animation-delay:-0.00s"><use href="#llama" transform="translate(296 478) scale(0.9)"/></g><g class="titila" style="animation-delay:-0.23s"><use href="#llama" transform="translate(326 478) scale(1.1)"/></g><g class="titila" style="animation-delay:-0.46s"><use href="#llama" transform="translate(356 478) scale(1)"/></g><g class="titila" style="animation-delay:-0.69s"><use href="#llama" transform="translate(384 478) scale(0.85)"/></g><g id="st-qin"><path d="M304 434 Q308 429 304 424 Q300 419 304 414 Q308 409 304 404 L304 400" fill="none" stroke="var(--caliente)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" class="flujo" marker-end="url(#pta-caliente)"/><path d="M340 434 Q344 429 340 424 Q336 419 340 414 Q344 409 340 404 L340 400" fill="none" stroke="var(--caliente)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" class="flujo" marker-end="url(#pta-caliente)"/><path d="M376 434 Q380 429 376 424 Q372 419 376 414 Q380 409 376 404 L376 400" fill="none" stroke="var(--caliente)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" class="flujo" marker-end="url(#pta-caliente)"/></g><path d="M262 350 H216 V84 H500 V112" fill="none" stroke="var(--tinta)" stroke-width="18" stroke-linejoin="round"/><path d="M262 350 H216 V84 H500 V112" fill="none" stroke="url(#st-tubo)" stroke-width="13" stroke-linejoin="round"/><rect x="326" y="66" width="140" height="36" rx="4" fill="url(#st-regen)" stroke="var(--tinta)" stroke-width="2.5"/><rect x="326" y="66" width="140" height="36" rx="4" fill="url(#malla-regen)"/><rect x="326" y="66" width="140" height="36" rx="4" fill="none" stroke="var(--tinta)" stroke-width="2.5"/><path id="st-al-fri" class="flujo" d="M292 84 H500" stroke="url(#st-g-fri)" stroke-width="2.5" fill="none" stroke-linecap="round" marker-end="url(#pta-frio)"/><path id="st-al-cal" class="flujo" d="M500 84 H292" stroke="url(#st-g-cal)" stroke-width="2.5" fill="none" stroke-linecap="round" marker-end="url(#pta-caliente)"/><rect x="262" y="304" width="160" height="12" fill="url(#ach-neutro)"/><rect x="262" y="384" width="160" height="12" fill="url(#ach-neutro)"/><rect x="262" y="304" width="122" height="12" fill="url(#ach-caliente)"/><rect x="262" y="384" width="122" height="12" fill="url(#ach-caliente)"/><rect x="262" y="304" width="12" height="92" fill="url(#ach-caliente)"/><rect id="st-c-gas" x="274" y="316" width="40" height="68" fill="var(--gas-caliente)"/><path d="M422 304 H262 V396 H422" fill="none" stroke="var(--tinta)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/><path d="M422 316 H274 V384 H422" fill="none" stroke="var(--tinta)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/><path d="M422 304 V316 M422 384 V396" fill="none" stroke="var(--tinta)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/><g id="st-c-pis" transform="translate(354 350)"><rect x="-27" y="-32.5" width="54" height="65" rx="3" fill="url(#met)" stroke="var(--tinta)" stroke-width="2.5"/><line x1="-20" y1="-32.5" x2="-20" y2="32.5" stroke="var(--tinta)" stroke-width="1.25" opacity=".55"/><line x1="-14" y1="-32.5" x2="-14" y2="32.5" stroke="var(--tinta)" stroke-width="1.25" opacity=".55"/></g><g transform="rotate(90 500 350)"><rect x="278" y="284" width="7" height="20" fill="url(#ach-frio)" stroke="var(--tinta)" stroke-width="1.25"/><rect x="293" y="284" width="7" height="20" fill="url(#ach-frio)" stroke="var(--tinta)" stroke-width="1.25"/><rect x="308" y="284" width="7" height="20" fill="url(#ach-frio)" stroke="var(--tinta)" stroke-width="1.25"/><rect x="323" y="284" width="7" height="20" fill="url(#ach-frio)" stroke="var(--tinta)" stroke-width="1.25"/><rect x="338" y="284" width="7" height="20" fill="url(#ach-frio)" stroke="var(--tinta)" stroke-width="1.25"/><rect x="353" y="284" width="7" height="20" fill="url(#ach-frio)" stroke="var(--tinta)" stroke-width="1.25"/><rect x="368" y="284" width="7" height="20" fill="url(#ach-frio)" stroke="var(--tinta)" stroke-width="1.25"/><rect x="278" y="396" width="7" height="20" fill="url(#ach-frio)" stroke="var(--tinta)" stroke-width="1.25"/><rect x="293" y="396" width="7" height="20" fill="url(#ach-frio)" stroke="var(--tinta)" stroke-width="1.25"/><rect x="308" y="396" width="7" height="20" fill="url(#ach-frio)" stroke="var(--tinta)" stroke-width="1.25"/><rect x="323" y="396" width="7" height="20" fill="url(#ach-frio)" stroke="var(--tinta)" stroke-width="1.25"/><rect x="338" y="396" width="7" height="20" fill="url(#ach-frio)" stroke="var(--tinta)" stroke-width="1.25"/><rect x="353" y="396" width="7" height="20" fill="url(#ach-frio)" stroke="var(--tinta)" stroke-width="1.25"/><rect x="368" y="396" width="7" height="20" fill="url(#ach-frio)" stroke="var(--tinta)" stroke-width="1.25"/><rect x="262" y="304" width="160" height="12" fill="url(#ach-neutro)"/><rect x="262" y="384" width="160" height="12" fill="url(#ach-neutro)"/><rect x="262" y="304" width="122" height="12" fill="url(#ach-frio)"/><rect x="262" y="384" width="122" height="12" fill="url(#ach-frio)"/><rect x="262" y="304" width="12" height="92" fill="url(#ach-frio)"/><rect id="st-f-gas" x="274" y="316" width="40" height="68" fill="var(--gas-frio)"/><path d="M422 304 H262 V396 H422" fill="none" stroke="var(--tinta)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/><path d="M422 316 H274 V384 H422" fill="none" stroke="var(--tinta)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/><path d="M422 304 V316 M422 384 V396" fill="none" stroke="var(--tinta)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/><g id="st-f-pis" transform="translate(354 350)"><rect x="-27" y="-32.5" width="54" height="65" rx="3" fill="url(#met)" stroke="var(--tinta)" stroke-width="2.5"/><line x1="-20" y1="-32.5" x2="-20" y2="32.5" stroke="var(--tinta)" stroke-width="1.25" opacity=".55"/><line x1="-14" y1="-32.5" x2="-14" y2="32.5" stroke="var(--tinta)" stroke-width="1.25" opacity=".55"/></g></g><g id="st-qout"><path d="M572 164 Q578 168 584 164 Q590 160 596 164 Q602 168 608 164 Q614 160 620 164 L624 164" fill="none" stroke="var(--frio)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" class="flujo" marker-end="url(#pta-frio)"/><path d="M572 194 Q578 198 584 194 Q590 190 596 194 Q602 198 608 194 Q614 190 620 194 L624 194" fill="none" stroke="var(--frio)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" class="flujo" marker-end="url(#pta-frio)"/><path d="M572 224 Q578 228 584 224 Q590 220 596 224 Q602 228 608 224 Q614 220 620 224 L624 224" fill="none" stroke="var(--frio)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" class="flujo" marker-end="url(#pta-frio)"/></g><circle cx="500" cy="350" r="64" fill="url(#met)" stroke="var(--tinta)" stroke-width="2.5"/><g id="st-disco"><path d="M450 372 A54 54 0 0 0 550 372 Z" fill="var(--met-oscuro)" opacity=".55"/><circle cx="500" cy="350" r="54" fill="none" stroke="var(--tinta)" stroke-width="1.25" opacity=".4"/></g><line id="st-bc-a" x1="500" y1="350" x2="500" y2="350" stroke="var(--tinta)" stroke-width="11" stroke-linecap="round"/><line id="st-bc-b" x1="500" y1="350" x2="500" y2="350" stroke="var(--met)" stroke-width="6" stroke-linecap="round"/><line id="st-bf-a" x1="500" y1="350" x2="500" y2="350" stroke="var(--tinta)" stroke-width="11" stroke-linecap="round"/><line id="st-bf-b" x1="500" y1="350" x2="500" y2="350" stroke="var(--met)" stroke-width="6" stroke-linecap="round"/><line id="st-man-a" x1="500" y1="350" x2="500" y2="350" stroke="var(--tinta)" stroke-width="14" stroke-linecap="round"/><line id="st-man-b" x1="500" y1="350" x2="500" y2="350" stroke="var(--met-oscuro)" stroke-width="9" stroke-linecap="round"/><circle id="st-pc" cx="500" cy="350" r="5.5" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="2.5"/><circle id="st-pf" cx="500" cy="350" r="5.5" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="2.5"/><circle id="st-pm" cx="500" cy="350" r="5.5" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="2.5"/><circle cx="500" cy="350" r="7" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="2.5"/><path d="M578.9 321.3 A84 84 0 0 1 528.7 428.9" fill="none" stroke="var(--laton)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" id="st-trab" marker-end="url(#pta-laton)"/><g class="etiqueta" data-punto="296 470"><path d="M296 470 L244 470 L244 488 L238 488" stroke="var(--caliente)" stroke-width="1" fill="none" opacity=".7"/><circle cx="296" cy="470" r="3" fill="var(--caliente)"/><text x="232" y="492.5" font-size="13.5" font-weight="600" fill="var(--caliente)" text-anchor="end">Fuego afuera</text><text x="232" y="509.5" font-size="12" fill="var(--tinta)" opacity=".75" text-anchor="end">calienta el lado caliente</text></g><g class="etiqueta" data-punto="278 336"><path d="M278 336 L150 336 L150 296 L144 296" stroke="var(--caliente)" stroke-width="1" fill="none" opacity=".7"/><circle cx="278" cy="336" r="3" fill="var(--caliente)"/><text x="138" y="300.5" font-size="13.5" font-weight="600" fill="var(--caliente)" text-anchor="end">Gas caliente</text><text x="138" y="317.5" font-size="12" fill="var(--tinta)" opacity=".75" text-anchor="end">se expande y empuja</text></g><g class="etiqueta" data-punto="396 66"><path d="M396 66 L396 40 L402 40" stroke="var(--tinta)" stroke-width="1" fill="none" opacity=".7"/><circle cx="396" cy="66" r="3" fill="var(--tinta)"/><text x="408" y="44.5" font-size="13.5" font-weight="600" fill="var(--tinta)">Regenerador</text><text x="408" y="61.5" font-size="12" fill="var(--tinta)" opacity=".75">guarda el calor y lo devuelve</text></g><g class="etiqueta" data-punto="566 128"><path d="M566 128 L616 128" stroke="var(--frio)" stroke-width="1" fill="none" opacity=".7"/><circle cx="566" cy="128" r="3" fill="var(--frio)"/><text x="622" y="132.5" font-size="13.5" font-weight="600" fill="var(--frio)">Aletas frías</text><text x="622" y="149.5" font-size="12" fill="var(--tinta)" opacity=".75">sacan el calor</text></g><g class="etiqueta" data-punto="480 127"><path d="M480 127 L380 127 L380 236 L374 236" stroke="var(--frio)" stroke-width="1" fill="none" opacity=".7"/><circle cx="480" cy="127" r="3" fill="var(--frio)"/><text x="368" y="240.5" font-size="13.5" font-weight="600" fill="var(--frio)" text-anchor="end">Gas frío</text><text x="368" y="257.5" font-size="12" fill="var(--tinta)" opacity=".75" text-anchor="end">cuesta poco comprimirlo</text></g><g class="etiqueta" data-punto="576.1 385.5"><path d="M576.1 385.5 L606.1 385.5 L606.1 452 L612.1 452" stroke="var(--laton)" stroke-width="1" fill="none" opacity=".7"/><circle cx="576.1" cy="385.5" r="3" fill="var(--laton)"/><text x="618.1" y="456.5" font-size="13.5" font-weight="600" fill="var(--laton)">Trabajo</text><text x="618.1" y="473.5" font-size="12" fill="var(--tinta)" opacity=".75">gira el eje</text></g></svg>
+      <p class="anima-fase"><b id="st-fase-et">1→2 · Compresión en frío</b><span id="st-fase-tx"></span></p>
+    </div>
+  </div>
 </section>
 
 <!-- ===================== 06 REGENERADOR / DATO HEROE ===================== -->
@@ -729,16 +664,7 @@ input.r-frio { accent-color: var(--frio); }
     <div data-interaccion="otra" id="sim-regen" class="marco">
       <h2>¿Cuánto ahorra el regenerador?</h2>
       <p class="idea" style="margin-bottom:1rem">Apágalo y mira cuánto calor más hay que comprarle a la fuente en cada vuelta.</p>
-      <svg viewBox="0 0 360 90" role="img" aria-labelledby="t-malla">
-        <title id="t-malla">Malla del regenerador: el gas caliente deja calor al pasar hacia el lado frío y lo recoge al volver.</title>
-        <rect x="130" y="15" width="100" height="60" fill="url(#malla)" stroke="var(--tinta)" stroke-width="2"/>
-        <rect id="malla-calor" x="130" y="15" width="100" height="60" fill="var(--caliente)" opacity=".4"/>
-        <path d="M20 35 H 120" stroke="var(--caliente)" stroke-width="4" marker-end="url(#pm-c)"/>
-        <path d="M240 35 H 340" stroke="var(--frio)" stroke-width="4" marker-end="url(#pm-f)"/>
-        <path d="M340 60 H 240" stroke="var(--frio)" stroke-width="4" marker-end="url(#pm-f)"/>
-        <path d="M120 60 H 20" stroke="var(--caliente)" stroke-width="4" marker-end="url(#pm-c)"/>
-        <text x="180" y="88" font-size="13" fill="var(--tinta)" text-anchor="middle" id="malla-tx">guarda y devuelve</text>
-      </svg>
+      <svg viewBox="0 0 360 132" role="img" aria-labelledby="t-malla"><title id="t-malla">Malla del regenerador: el gas caliente deja calor al pasar hacia el lado frío y lo recoge al volver.</title><defs><linearGradient id="malla-gas" x1="0" x2="1"><stop offset="0" stop-color="var(--gas-caliente)"/><stop offset="1" stop-color="var(--gas-frio)"/></linearGradient><linearGradient id="malla-guardado" x1="0" x2="1"><stop offset="0" stop-color="var(--caliente)"/><stop offset="1" stop-color="var(--caliente)" stop-opacity=".2"/></linearGradient></defs><rect x="0" y="30" width="360" height="8" fill="url(#ach-neutro-oscuro)"/><rect x="0" y="98" width="360" height="8" fill="url(#ach-neutro-oscuro)"/><rect x="0" y="38" width="360" height="60" fill="url(#malla-gas)"/><rect x="130" y="38" width="100" height="60" fill="url(#malla-regen-oscuro)"/><rect id="malla-calor" x="130" y="38" width="100" height="60" fill="url(#malla-guardado)" opacity=".4"/><path d="M130 38 V98 M230 38 V98" fill="none" stroke="var(--tinta)" stroke-width="1.25" stroke-linejoin="round" stroke-linecap="round"/><path d="M0 30 H360 M0 38 H360 M0 98 H360 M0 106 H360" fill="none" stroke="var(--tinta)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/><path d="M14 56 H118" fill="none" stroke="var(--caliente)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#pta-caliente-oscuro)"/><path d="M242 56 H346" fill="none" stroke="var(--frio)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#pta-frio-oscuro)"/><path d="M346 80 H242" fill="none" stroke="var(--frio)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#pta-frio-oscuro)"/><path d="M118 80 H14" fill="none" stroke="var(--caliente)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#pta-caliente-oscuro)"/><text x="4" y="20" font-size="14" fill="var(--caliente)">lado caliente</text><text x="356" y="20" font-size="14" fill="var(--frio)" text-anchor="end">lado frío</text><text x="180" y="126" font-size="14" fill="var(--tinta)" text-anchor="middle" id="malla-tx">guarda y devuelve</text></svg>
       <div class="regen-ctl" role="group" aria-label="Regenerador">
         <button type="button" data-regen="si" aria-pressed="true">Con regenerador</button>
         <button type="button" data-regen="no" aria-pressed="false">Sin regenerador</button>
@@ -771,24 +697,7 @@ input.r-frio { accent-color: var(--frio); }
     <div class="grande pieza" data-interaccion="diagrama" id="diag-vapor">
       <div class="vapor-rejilla">
         <div class="diagrama" id="diag-vapor-svg">
-          <svg viewBox="0 0 400 400" role="img" aria-labelledby="t-vapor">
-            <title id="t-vapor">Ciclo de vapor: la bomba manda agua a la caldera, el vapor mueve la turbina, el condensador lo vuelve líquido y regresa a la bomba.</title>
-            <defs>
-              <marker id="pv-g" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="var(--gris)"/></marker>
-            </defs>
-            <path data-une="caldera turbina" d="M95 150 V 75 H 226" marker-end="url(#pv-g)"/>
-            <path data-une="turbina condensador" d="M305 110 V 186" marker-end="url(#pv-g)"/>
-            <path data-une="condensador bomba" d="M305 270 V 348 H 279" marker-end="url(#pv-g)"/>
-            <path data-une="bomba caldera" d="M125 348 H 60 V 234" marker-end="url(#pv-g)"/>
-            <path d="M380 210 H 396 M380 250 H 396" stroke="var(--frio)" stroke-width="4"/>
-            <path d="M305 40 V 14" stroke="var(--laton)" stroke-width="3" stroke-dasharray="5 4"/>
-            <text x="314" y="22" font-size="13" fill="var(--tinta-suave)">electricidad</text>
-            <g data-nodo="caldera" tabindex="0" role="button" aria-label="Caldera"><rect x="20" y="150" width="150" height="80" rx="6"/><text x="95" y="182">Caldera</text>
-              <path class="llama" d="M86 222 C 76 210, 82 200, 90 192 C 92 202, 100 204, 98 194 C 108 204, 108 216, 102 222 Z" fill="var(--caliente)" pointer-events="none"/></g>
-            <g data-nodo="turbina" tabindex="0" role="button" aria-label="Turbina"><rect x="230" y="40" width="150" height="70" rx="6"/><text x="305" y="81">Turbina</text></g>
-            <g data-nodo="condensador" tabindex="0" role="button" aria-label="Condensador"><rect x="230" y="190" width="150" height="80" rx="6"/><text x="305" y="236">Condensador</text></g>
-            <g data-nodo="bomba" tabindex="0" role="button" aria-label="Bomba"><rect x="125" y="320" width="150" height="56" rx="28"/><text x="200" y="354">Bomba</text></g>
-          </svg>
+          <svg viewBox="0 0 400 400" role="img" aria-labelledby="t-vapor"><title id="t-vapor">Ciclo de vapor: la bomba manda agua a la caldera, el vapor mueve la turbina, el condensador lo vuelve líquido y regresa a la bomba.</title><rect x="60" y="75" width="245" height="273" rx="18" fill="var(--tinta)" opacity=".05"/><path data-une="caldera turbina" d="M95 148 V75 H226"/><path data-une="turbina condensador" d="M305 112 V186"/><path data-une="condensador bomba" d="M305 272 V348 H279"/><path data-une="bomba caldera" d="M123 348 H60 V234"/><path d="M398 212 H384" fill="none" stroke="var(--frio)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#pta-frio)"/><path d="M384 248 H398" fill="none" stroke="var(--caliente)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" opacity=".7" marker-end="url(#pta-caliente)"/><path d="M305 38 V14" fill="none" stroke="var(--laton)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="5 4"/><text x="296" y="26" font-size="15" fill="var(--tinta-suave)" text-anchor="end">electricidad</text><g data-nodo="caldera" tabindex="0" role="button" aria-label="Caldera"><rect x="20" y="150" width="150" height="80" rx="6"/><text x="95" y="193">Caldera</text><path d="M32 220 H158" fill="none" stroke="var(--caliente)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" class="icono"/></g><g data-nodo="turbina" tabindex="0" role="button" aria-label="Turbina"><rect x="230" y="40" width="150" height="70" rx="6"/><text x="305" y="78">Turbina</text><path d="M242 100 H368" fill="none" stroke="var(--laton)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" class="icono"/></g><g data-nodo="condensador" tabindex="0" role="button" aria-label="Condensador"><rect x="230" y="190" width="150" height="80" rx="6"/><text x="305" y="233">Condensador</text><path d="M242 260 H368" fill="none" stroke="var(--frio)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" class="icono"/></g><g data-nodo="bomba" tabindex="0" role="button" aria-label="Bomba"><rect x="125" y="320" width="150" height="56" rx="28"/><text x="200" y="351">Bomba</text><path d="M153 366 H247" fill="none" stroke="var(--tinta-suave)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" class="icono"/></g></svg>
           <p class="pista-toque">Toca cada pieza en el orden del agua.</p>
         </div>
         <div>
@@ -812,6 +721,12 @@ input.r-frio { accent-color: var(--frio); }
             </div>
           </div>
           <p class="linea-nueva" data-tras-prediccion="pred-condensar">El vapor se enfría hasta volver a ser líquido en el condensador, y la bomba manda esa agua otra vez a la caldera <a class="cita" href="#f7">[7]</a>. Bombear agua líquida cuesta <span class="sin-fuente">muchísimo menos trabajo que comprimir vapor</span>; por eso conviene condensar antes de bombear.</p>
+        </div>
+      </div>
+      <div class="anima-vapor" data-tras-prediccion="pred-condensar">
+        <div data-anima id="anima-vapor">
+<svg id="svg-anima-vapor" viewBox="0 0 720 494" role="img" aria-labelledby="t-anima-vapor"><title id="t-anima-vapor">Planta de vapor animada: el agua, empujada por la bomba, hierve en la caldera con el fuego afuera; el vapor hace girar la turbina, se vuelve líquido en el condensador y regresa a la bomba.</title><ellipse cx="360" cy="466" rx="300" ry="6" fill="var(--tinta)" opacity=".07"/><path d="M150 138 V90 H332.6" fill="none" stroke="var(--tinta)" stroke-width="15" stroke-linejoin="round"/><path d="M150 138 V90 H332.6" fill="none" stroke="var(--gas-caliente)" stroke-width="10" stroke-linejoin="round"/><path d="M380 192 V210 H510 V230" fill="none" stroke="var(--tinta)" stroke-width="15" stroke-linejoin="round"/><path d="M380 192 V210 H510 V230" fill="none" stroke="var(--gas)" stroke-width="10" stroke-linejoin="round"/><path d="M460 350 V424 H354" fill="none" stroke="var(--tinta)" stroke-width="15" stroke-linejoin="round"/><path d="M460 350 V424 H354" fill="none" stroke="var(--agua-fria)" stroke-width="10" stroke-linejoin="round"/><path d="M306 424 H48 V270 H80" fill="none" stroke="var(--tinta)" stroke-width="15" stroke-linejoin="round"/><path d="M306 424 H48 V270 H80" fill="none" stroke="var(--agua-fria)" stroke-width="10" stroke-linejoin="round"/><rect x="96" y="392" width="108" height="9" rx="2" fill="url(#met)" stroke="var(--tinta)" stroke-width="2.5"/><g class="titila" style="animation-delay:-0.00s"><use href="#llama" transform="translate(110 392) scale(0.95)"/></g><g class="titila" style="animation-delay:-0.23s"><use href="#llama" transform="translate(136 392) scale(1.15)"/></g><g class="titila" style="animation-delay:-0.46s"><use href="#llama" transform="translate(162 392) scale(1.05)"/></g><g class="titila" style="animation-delay:-0.69s"><use href="#llama" transform="translate(188 392) scale(0.9)"/></g><g id="va-qin"><path d="M122 344 Q126 340 122 336 Q118 332 122 328 Q126 324 122 320 L122 316" fill="none" stroke="var(--caliente)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" class="flujo" marker-end="url(#pta-caliente)"/><path d="M150 344 Q154 340 150 336 Q146 332 150 328 Q154 324 150 320 L150 316" fill="none" stroke="var(--caliente)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" class="flujo" marker-end="url(#pta-caliente)"/><path d="M178 344 Q182 340 178 336 Q174 332 178 328 Q182 324 178 320 L178 316" fill="none" stroke="var(--caliente)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" class="flujo" marker-end="url(#pta-caliente)"/></g><rect x="80" y="138" width="140" height="174" rx="10" fill="url(#ach-neutro)"/><rect x="80" y="300" width="140" height="12" fill="url(#ach-caliente)"/><rect x="92" y="150" width="116" height="80" rx="4" fill="var(--gas-caliente)"/><rect x="92" y="230" width="116" height="70" fill="var(--agua-caliente)"/><circle cx="112" cy="290" r="3" fill="var(--gas-caliente)" stroke="var(--caliente)" stroke-width="1.25"/><circle cx="128" cy="268" r="4" fill="var(--gas-caliente)" stroke="var(--caliente)" stroke-width="1.25"/><circle cx="176" cy="282" r="3.5" fill="var(--gas-caliente)" stroke="var(--caliente)" stroke-width="1.25"/><circle cx="194" cy="258" r="3" fill="var(--gas-caliente)" stroke="var(--caliente)" stroke-width="1.25"/><circle cx="140" cy="246" r="3.5" fill="var(--gas-caliente)" stroke="var(--caliente)" stroke-width="1.25"/><circle cx="168" cy="240" r="2.5" fill="var(--gas-caliente)" stroke="var(--caliente)" stroke-width="1.25"/><path d="M92 230 H208" fill="none" stroke="var(--caliente)" stroke-width="1.25" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="3 4"/><rect x="80" y="138" width="140" height="174" rx="10" fill="none" stroke="var(--tinta)" stroke-width="2.5"/><rect x="92" y="150" width="116" height="150" rx="4" fill="none" stroke="var(--tinta)" stroke-width="2.5"/><circle cx="380" cy="130" r="70" fill="url(#ach-neutro)"/><circle cx="380" cy="130" r="62" fill="var(--gas-caliente)"/><circle cx="380" cy="130" r="70" fill="none" stroke="var(--tinta)" stroke-width="2.5"/><circle cx="380" cy="130" r="62" fill="none" stroke="var(--tinta)" stroke-width="2.5"/><g id="va-rueda"><circle cx="380" cy="130" r="48" fill="url(#met)" stroke="var(--tinta)" stroke-width="2.5"/><path d="M396 130 Q409.8 130.6 425.6 145.1 M394.4 136.9 Q406.5 143.4 414.5 163.4 M390 142.5 Q398.1 153.6 396.6 175 M383.6 145.6 Q386 159.1 375.4 177.8 M376.4 145.6 Q372.8 158.9 355.1 171.1 M370 142.5 Q361 152.9 339.8 156.2 M365.6 136.9 Q352.9 142.4 332.4 136.2 M364 130 Q350.2 129.4 334.4 114.9 M365.6 123.1 Q353.5 116.6 345.5 96.6 M370 117.5 Q361.9 106.4 363.4 85 M376.4 114.4 Q374 100.9 384.6 82.2 M383.6 114.4 Q387.2 101.1 404.9 88.9 M390 117.5 Q399 107.1 420.2 103.8 M394.4 123.1 Q407.1 117.6 427.6 123.8" fill="none" stroke="var(--tinta)" stroke-width="1.25"/></g><circle cx="380" cy="130" r="14" fill="url(#met)" stroke="var(--tinta)" stroke-width="2.5"/><circle cx="380" cy="130" r="5" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="2.5"/><path d="M401.7 48.9 A84 84 0 0 1 461.1 151.7" fill="none" stroke="var(--laton)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" id="va-trab" marker-end="url(#pta-laton)"/><rect x="430" y="230" width="160" height="120" rx="8" fill="url(#ach-frio)"/><rect x="440" y="240" width="140" height="100" rx="4" fill="var(--gas)"/><rect x="440" y="322" width="140" height="18" fill="var(--agua-fria)"/><circle cx="458" cy="262" r="7" fill="var(--agua-fria)" stroke="var(--frio)" stroke-width="1.25"/><circle cx="479" cy="262" r="7" fill="var(--agua-fria)" stroke="var(--frio)" stroke-width="1.25"/><circle cx="500" cy="262" r="7" fill="var(--agua-fria)" stroke="var(--frio)" stroke-width="1.25"/><circle cx="521" cy="262" r="7" fill="var(--agua-fria)" stroke="var(--frio)" stroke-width="1.25"/><circle cx="542" cy="262" r="7" fill="var(--agua-fria)" stroke="var(--frio)" stroke-width="1.25"/><circle cx="563" cy="262" r="7" fill="var(--agua-fria)" stroke="var(--frio)" stroke-width="1.25"/><circle cx="468" cy="286" r="7" fill="var(--agua-fria)" stroke="var(--frio)" stroke-width="1.25"/><circle cx="489" cy="286" r="7" fill="var(--agua-fria)" stroke="var(--frio)" stroke-width="1.25"/><circle cx="510" cy="286" r="7" fill="var(--agua-fria)" stroke="var(--frio)" stroke-width="1.25"/><circle cx="531" cy="286" r="7" fill="var(--agua-fria)" stroke="var(--frio)" stroke-width="1.25"/><circle cx="552" cy="286" r="7" fill="var(--agua-fria)" stroke="var(--frio)" stroke-width="1.25"/><circle cx="458" cy="310" r="7" fill="var(--agua-fria)" stroke="var(--frio)" stroke-width="1.25"/><circle cx="479" cy="310" r="7" fill="var(--agua-fria)" stroke="var(--frio)" stroke-width="1.25"/><circle cx="500" cy="310" r="7" fill="var(--agua-fria)" stroke="var(--frio)" stroke-width="1.25"/><circle cx="521" cy="310" r="7" fill="var(--agua-fria)" stroke="var(--frio)" stroke-width="1.25"/><circle cx="542" cy="310" r="7" fill="var(--agua-fria)" stroke="var(--frio)" stroke-width="1.25"/><circle cx="563" cy="310" r="7" fill="var(--agua-fria)" stroke="var(--frio)" stroke-width="1.25"/><rect x="430" y="230" width="160" height="120" rx="8" fill="none" stroke="var(--tinta)" stroke-width="2.5"/><rect x="440" y="240" width="140" height="100" rx="4" fill="none" stroke="var(--tinta)" stroke-width="2.5"/><g id="va-qout"><path d="M642 310 H596" fill="none" stroke="var(--frio)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" class="flujo" marker-end="url(#pta-frio)"/><path d="M596 262 Q602 266 608 262 Q614 258 620 262 Q626 266 632 262 Q638 258 644 262 L648 262" fill="none" stroke="var(--caliente)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" class="flujo" marker-end="url(#pta-caliente)"/></g><circle cx="330" cy="424" r="31" fill="url(#met)" stroke="var(--tinta)" stroke-width="2.5"/><circle cx="330" cy="424" r="22" fill="var(--agua-fria)" stroke="var(--tinta)" stroke-width="1.25"/><g id="va-rodete"><path d="M335 424 L347.6 433.6 M332.5 428.3 L330.5 444 M327.5 428.3 L312.9 434.4 M325 424 L312.4 414.4 M327.5 419.7 L329.5 404 M332.5 419.7 L347.1 413.6" stroke="var(--tinta)" stroke-width="1.25" fill="none" stroke-linecap="round"/></g><circle cx="330" cy="424" r="4" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="1.25"/><path d="M330 352 V388" fill="none" stroke="var(--laton)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" id="va-wb" marker-end="url(#pta-laton)"/><g id="va-gotas"><circle class="va-gota" r="5" cx="0" cy="0"/><circle class="va-gota" r="5" cx="0" cy="0"/><circle class="va-gota" r="5" cx="0" cy="0"/><circle class="va-gota" r="5" cx="0" cy="0"/><circle class="va-gota" r="5" cx="0" cy="0"/><circle class="va-gota" r="5" cx="0" cy="0"/><circle class="va-gota" r="5" cx="0" cy="0"/><circle class="va-gota" r="5" cx="0" cy="0"/><circle class="va-gota" r="5" cx="0" cy="0"/><circle class="va-gota" r="5" cx="0" cy="0"/><circle class="va-gota" r="5" cx="0" cy="0"/><circle class="va-gota" r="5" cx="0" cy="0"/><circle class="va-gota" r="5" cx="0" cy="0"/><circle class="va-gota" r="5" cx="0" cy="0"/><circle class="va-gota" r="5" cx="0" cy="0"/><circle class="va-gota" r="5" cx="0" cy="0"/></g><circle id="va-sigue" r="10" fill="none" stroke="var(--tinta)" stroke-width="1.25"/><g class="etiqueta" data-punto="100 138"><path d="M100 138 L100 40 L106 40" stroke="var(--caliente)" stroke-width="1" fill="none" opacity=".7"/><circle cx="100" cy="138" r="3" fill="var(--caliente)"/><text x="112" y="44.5" font-size="13.5" font-weight="600" fill="var(--caliente)">Caldera</text><text x="112" y="61.5" font-size="12" fill="var(--tinta)" opacity=".75">el fuego, afuera, hierve el agua</text></g><g class="etiqueta" data-punto="450 110"><path d="M450 110 L482 110 L482 70 L488 70" stroke="var(--laton)" stroke-width="1" fill="none" opacity=".7"/><circle cx="450" cy="110" r="3" fill="var(--laton)"/><text x="494" y="74.5" font-size="13.5" font-weight="600" fill="var(--laton)">Turbina</text><text x="494" y="91.5" font-size="12" fill="var(--tinta)" opacity=".75">el vapor la hace girar</text></g><g class="etiqueta" data-punto="560 350"><path d="M560 350 L560 400 L566 400" stroke="var(--frio)" stroke-width="1" fill="none" opacity=".7"/><circle cx="560" cy="350" r="3" fill="var(--frio)"/><text x="572" y="404.5" font-size="13.5" font-weight="600" fill="var(--frio)">Condensador</text><text x="572" y="421.5" font-size="12" fill="var(--tinta)" opacity=".75">lo vuelve líquido</text></g><g class="etiqueta" data-punto="330 455"><path d="M330 455 L330 462 L286 462" stroke="var(--tinta)" stroke-width="1" fill="none" opacity=".7"/><circle cx="330" cy="455" r="3" fill="var(--tinta)"/><text x="280" y="466.5" font-size="13.5" font-weight="600" fill="var(--tinta)" text-anchor="end">Bomba</text><text x="280" y="483.5" font-size="12" fill="var(--tinta)" opacity=".75" text-anchor="end">regresa el agua a la caldera</text></g></svg>
+          <p class="anima-fase"><b id="va-fase-et">Bomba</b><span id="va-fase-tx"></span></p>
         </div>
       </div>
       <ul data-retos>
@@ -844,16 +759,7 @@ input.r-frio { accent-color: var(--frio); }
   <ol class="lista-num">
     <li><span class="num">01</span><div><span class="anio">1712 · Thomas Newcomen</span><h3>El aire hace el trabajo</h3><p>El vapor llenaba el cilindro y un chorro de agua fría lo condensaba. Quedaba un vacío, y la presión de la atmósfera empujaba el pistón hacia abajo <a class="cita" href="#f10">[10]</a>. Servía para sacar agua de las minas <a class="cita" href="#f9">[9]</a>.</p></div></li>
     <li><span class="num">02</span><div><span class="anio">1765 · James Watt</span><h3>El condensador separado</h3>
-      <svg viewBox="0 0 380 150" role="img" aria-labelledby="t-watt" style="max-width:26rem;display:block;margin:.5rem 0 1rem">
-        <title id="t-watt">Izquierda: cilindro de Newcomen que se calienta y se enfría en cada golpe. Derecha: cilindro de Watt siempre caliente, unido a un condensador frío aparte.</title>
-        <rect class="newcomen-cil" x="20" y="20" width="90" height="100" fill="var(--caliente)" opacity=".7" stroke="var(--tinta)" stroke-width="4"/>
-        <text x="65" y="142" font-size="13" text-anchor="middle" fill="var(--tinta)">Newcomen</text>
-        <rect x="200" y="20" width="90" height="100" fill="var(--caliente)" opacity=".7" stroke="var(--tinta)" stroke-width="4"/>
-        <path d="M290 100 H 316" stroke="var(--tinta)" stroke-width="6"/>
-        <rect x="316" y="70" width="50" height="50" fill="var(--frio)" opacity=".8" stroke="var(--tinta)" stroke-width="4"/>
-        <text x="245" y="142" font-size="13" text-anchor="middle" fill="var(--tinta)">Watt</text>
-        <text x="341" y="62" font-size="12" text-anchor="middle" fill="var(--frio)">frío</text>
-      </svg>
+      <svg viewBox="0 0 360 264" role="img" style="max-width:26rem;display:block;margin:.5rem 0 1rem" aria-labelledby="t-watt"><title id="t-watt">Izquierda: cilindro de Newcomen que se calienta y se enfría en cada golpe. Derecha: cilindro de Watt siempre caliente, unido a un condensador frío aparte.</title><rect x="36" y="66" width="8" height="118" fill="url(#ach-neutro)"/><rect x="120" y="66" width="8" height="118" fill="url(#ach-neutro)"/><rect x="44" y="176" width="76" height="8" fill="url(#ach-neutro)"/><rect class="newcomen-cil" x="36" y="66" width="8" height="118" fill="none"/><rect class="newcomen-cil" x="120" y="66" width="8" height="118" fill="none"/><rect class="newcomen-cil" x="44" y="176" width="76" height="8" fill="none"/><rect x="44" y="104" width="76" height="72" fill="var(--gas-caliente)"/><circle cx="70.3" cy="153.3" r="2.6" fill="var(--frio)"/><circle cx="64" cy="143.2" r="2.2" fill="var(--frio)"/><circle cx="57.6" cy="133" r="1.8" fill="var(--frio)"/><circle cx="75.9" cy="150.9" r="2.6" fill="var(--frio)"/><circle cx="72.6" cy="139.3" r="2.2" fill="var(--frio)"/><circle cx="69.3" cy="127.8" r="1.8" fill="var(--frio)"/><circle cx="82" cy="150" r="2.6" fill="var(--frio)"/><circle cx="82" cy="138" r="2.2" fill="var(--frio)"/><circle cx="82" cy="126" r="1.8" fill="var(--frio)"/><circle cx="88.1" cy="150.9" r="2.6" fill="var(--frio)"/><circle cx="91.4" cy="139.3" r="2.2" fill="var(--frio)"/><circle cx="94.7" cy="127.8" r="1.8" fill="var(--frio)"/><circle cx="93.7" cy="153.3" r="2.6" fill="var(--frio)"/><circle cx="100" cy="143.2" r="2.2" fill="var(--frio)"/><circle cx="106.4" cy="133" r="1.8" fill="var(--frio)"/><path d="M36 66 V184 H128 V66" fill="none" stroke="var(--tinta)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/><path d="M44 66 V176 H120 V66" fill="none" stroke="var(--tinta)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/><rect x="45.5" y="90" width="73" height="14" rx="2" fill="url(#met)" stroke="var(--tinta)" stroke-width="2.5"/><line x1="82" y1="90" x2="82" y2="40" stroke="var(--tinta)" stroke-width="10" stroke-linecap="round"/><line x1="82" y1="90" x2="82" y2="40" stroke="var(--met)" stroke-width="5" stroke-linecap="round"/><path d="M82.0 184 V206" fill="none" stroke="var(--frio)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/><path d="M58 184 V198 H14" fill="none" stroke="var(--caliente)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/><text x="82" y="22" font-size="16" fill="var(--tinta)" text-anchor="middle" font-weight="600">Newcomen</text><rect x="178" y="58" width="8" height="126" fill="url(#ach-neutro)"/><rect x="262" y="58" width="8" height="126" fill="url(#ach-neutro)"/><rect x="186" y="176" width="76" height="8" fill="url(#ach-neutro)"/><rect x="186" y="58" width="76" height="8" fill="url(#ach-neutro)"/><rect class="watt-cil" x="178" y="58" width="8" height="126" fill="none"/><rect class="watt-cil" x="262" y="58" width="8" height="126" fill="none"/><rect class="watt-cil" x="186" y="176" width="76" height="8" fill="none"/><rect class="watt-cil" x="186" y="58" width="76" height="8" fill="none"/><rect x="186" y="110" width="76" height="66" fill="var(--gas-caliente)"/><rect x="186" y="66" width="76" height="30" fill="var(--gas-caliente)"/><path d="M178 58 V184 H270 V58 Z" fill="none" stroke="var(--tinta)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/><path d="M186 66 V176 H262 V66 H186 Z" fill="none" stroke="var(--tinta)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/><rect x="187.5" y="96" width="73" height="14" rx="2" fill="url(#met)" stroke="var(--tinta)" stroke-width="2.5"/><line x1="224" y1="96" x2="224" y2="40" stroke="var(--tinta)" stroke-width="10" stroke-linecap="round"/><line x1="224" y1="96" x2="224" y2="40" stroke="var(--met)" stroke-width="5" stroke-linecap="round"/><line x1="268" y1="164" x2="286" y2="164" stroke="var(--tinta)" stroke-width="11" stroke-linecap="round"/><line x1="268" y1="164" x2="286" y2="164" stroke="var(--gas-caliente)" stroke-width="6" stroke-linecap="round"/><rect x="284" y="124" width="54" height="58" fill="url(#ach-frio)"/><rect x="290" y="130" width="42" height="46" fill="var(--gas-frio)"/><circle cx="305.8" cy="160" r="2.6" fill="var(--frio)"/><circle cx="302" cy="150.7" r="2.2" fill="var(--frio)"/><circle cx="311" cy="159" r="2.6" fill="var(--frio)"/><circle cx="311" cy="149" r="2.2" fill="var(--frio)"/><circle cx="316.2" cy="160" r="2.6" fill="var(--frio)"/><circle cx="320" cy="150.7" r="2.2" fill="var(--frio)"/><path d="M284 124 H338 V182 H284 Z M290 130 H332 V176 H290 Z" fill="none" stroke="var(--tinta)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/><text x="224" y="22" font-size="16" fill="var(--tinta)" text-anchor="middle" font-weight="600">Watt</text><g class="etiqueta" data-punto="104 152"><path d="M104 152 L142 152 L142 206 L148 206" stroke="var(--frio)" stroke-width="1" fill="none" opacity=".7"/><circle cx="104" cy="152" r="3" fill="var(--frio)"/><text x="154" y="210.5" font-size="13.5" font-weight="600" fill="var(--frio)">Chorro frío</text><text x="154" y="227.5" font-size="12" fill="var(--tinta)" opacity=".75">adentro</text></g><g class="etiqueta" data-punto="338 153"><path d="M338 153 L346 153 L346 236 L340 236" stroke="var(--frio)" stroke-width="1" fill="none" opacity=".7"/><circle cx="338" cy="153" r="3" fill="var(--frio)"/><text x="334" y="240.5" font-size="13.5" font-weight="600" fill="var(--frio)" text-anchor="end">Condensador</text><text x="334" y="257.5" font-size="12" fill="var(--tinta)" opacity=".75" text-anchor="end">aparte</text></g></svg>
       <div data-interaccion="otra">
       <div data-prediccion id="pred-watt" data-correcta="a"
            data-explicacion="En la máquina de Newcomen el mismo cilindro se calentaba y se enfriaba en cada golpe, y había que recalentar el metal cada vez. Con el condensador aparte, el cilindro de Watt seguía caliente todo el tiempo.">
@@ -1025,7 +931,7 @@ input.r-frio { accent-color: var(--frio); }
     ctl.className = 'anima-ctl';
     ctl.innerHTML = `<button type="button" class="anima-play"></button>
       <button type="button" class="anima-paso">Paso a paso ›</button>
-      <label>Velocidad <input type="range" min="0.25" max="2" step="0.25" value="1"></label><span class="anima-vel">1×</span>`;
+      <label>Velocidad <input type="range" min="0.25" max="2" step="0.25" value="1"><span class="anima-vel">1×</span></label>`;
     caja.append(ctl);
     const play = ctl.querySelector('.anima-play');
     const boton = () => { play.textContent = corriendo ? 'Pausa' : 'Reproducir'; caja.classList.toggle('pausado', !corriendo); };
@@ -1075,29 +981,27 @@ input.r-frio { accent-color: var(--frio); }
 
   // Etiquetas de ilustración: <g class="etiqueta" data-punto="x y"> con un título y una frase.
   // En pantallas angostas se ocultan y quedan un número sobre la pieza + una leyenda debajo del dibujo.
+  // El número se mide con el ancho REAL del SVG para que siempre se vea de ~13 px.
   const NS = 'http://www.w3.org/2000/svg';
+  const numeros = [];
   document.querySelectorAll('svg').forEach(svg => {
     const ets = [...svg.querySelectorAll('g.etiqueta[data-punto]')];
     if (!ets.length) return;
-    const vb = svg.viewBox.baseVal, r = (vb && vb.width ? vb.width : 600) / 36;
     const ol = document.createElement('ol');
     ol.className = 'et-leyenda';
     ets.forEach((g, i) => {
-      let [x, y] = g.dataset.punto.split(/[ ,]+/).map(Number);
-      // El número no tapa la pieza: se corre del punto hacia donde estaba el texto.
+      const [x, y] = g.dataset.punto.split(/[ ,]+/).map(Number);
       const t0 = g.querySelector('text');
+      let ux = 0, uy = 0;
       if (t0) {
         const dx = +t0.getAttribute('x') - x, dy = +t0.getAttribute('y') - y, d = Math.hypot(dx, dy) || 1;
-        x += dx / d * r * 1.6; y += dy / d * r * 1.6;
-      }
-      if (vb && vb.width) {
-        x = Math.min(Math.max(x, vb.x + r), vb.x + vb.width - r);
-        y = Math.min(Math.max(y, vb.y + r), vb.y + vb.height - r);
+        ux = dx / d; uy = dy / d;
       }
       const n = document.createElementNS(NS, 'g');
       n.setAttribute('class', 'et-num');
-      n.innerHTML = `<circle cx="${x}" cy="${y}" r="${r}"/><text x="${x}" y="${y}" font-size="${r * 1.15}" text-anchor="middle" dominant-baseline="central">${i + 1}</text>`;
+      n.innerHTML = `<circle/><text text-anchor="middle" dominant-baseline="central">${i + 1}</text>`;
       svg.appendChild(n);
+      numeros.push({ svg, n, x, y, ux, uy });
       const [t, ...resto] = g.querySelectorAll('text');
       const li = document.createElement('li');
       li.innerHTML = `<b>${t ? t.textContent : ''}</b> ${resto.map(e => e.textContent).join(' ')}`;
@@ -1106,6 +1010,24 @@ input.r-frio { accent-color: var(--frio); }
     const tras = svg.closest('[data-anima]') ? svg : (svg.closest('figure') || svg);
     tras.after(ol);
   });
+  function colocarNumeros() {
+    for (const { svg, n, x, y, ux, uy } of numeros) {
+      const vb = svg.viewBox.baseVal, ancho = svg.getBoundingClientRect().width;
+      if (!vb || !vb.width || !ancho) continue;
+      const r = 12 * vb.width / ancho;   // radio de 12 px en pantalla
+      // El número no tapa la pieza: se corre del punto hacia donde estaba el texto, sin salir del viewBox.
+      const cx = Math.min(Math.max(x + ux * r * 1.6, vb.x + r), vb.x + vb.width - r);
+      const cy = Math.min(Math.max(y + uy * r * 1.6, vb.y + r), vb.y + vb.height - r);
+      const [c, t] = n.children;
+      c.setAttribute('cx', cx); c.setAttribute('cy', cy); c.setAttribute('r', r);
+      t.setAttribute('x', cx); t.setAttribute('y', cy); t.setAttribute('font-size', r * 1.1);
+    }
+  }
+  if (numeros.length) {
+    colocarNumeros();
+    addEventListener('resize', colocarNumeros);
+    if ('ResizeObserver' in window) new ResizeObserver(colocarNumeros).observe(document.body);
+  }
 
   document.querySelectorAll('[data-ayuda]').forEach(caja => {
     const items = [...caja.querySelectorAll(':scope > ol > li')];
@@ -1508,6 +1430,121 @@ function montarDiagrama(raiz, panel, fichas, inicial, alVisitar) {
     vistos.add('caldera');
   } catch (e) { console.error(e); }
 })();
+// ---------- Animación: el Stirling de dos pistones ----------
+// Todo sale de la fase: fase -> ángulo de la manivela -> posición de cada pistón (biela-manivela) ->
+// volumen caliente y frío -> presión (modelo de Schmidt) -> calor que entra, calor que sale y gas que cruza.
+(() => {
+  try {
+    const caja = document.getElementById('anima-stirling'); if (!caja) return;
+    const $ = id => caja.querySelector('#' + id);
+    const set = (el, o) => Object.entries(o).forEach(([a, v]) => el.setAttribute(a, v));
+    const CX = 500, CY = 350, R = 38, L = 150, PW = 54, DH = 226;
+    const TH = 3.0, TC = 1.0, VD = 40.0, TR = (TH - TC) / Math.log(TH / TC);
+    const QIN = 0.006957, QOUT = 0.005289, FL = 0.002561;          // máximos del ciclo (calculados en Python)
+    const s = (a, fi) => { const b = a - fi; return R * Math.cos(b) + Math.sqrt(L * L - (R * Math.sin(b)) ** 2); };
+    const estado = th => {
+      const a = th + Math.PI, sh = s(a, Math.PI), sc = s(a, 1.5 * Math.PI);
+      const vh = DH - sh - PW / 2, vc = DH - sc - PW / 2;
+      const p = 1 / (vh / TH + vc / TC + VD / TR);
+      return { a, sh, sc, vh, vc, p, mh: p * vh / TH };
+    };
+    const TIEMPOS = [
+      ['1→2 · Compresión en frío', 'El pistón frío sube y aprieta el gas, que está casi todo del lado frío. Las aletas sacan el calor de la compresión: esto cuesta un poco de trabajo.', true],
+      ['2→3 · Al lado caliente', 'El pistón frío termina de subir mientras el caliente retrocede: el gas cruza el regenerador, que le devuelve el calor que guardó.', false],
+      ['3→4 · Expansión en caliente', 'Casi todo el gas está del lado caliente. El fuego le da calor a través de la pared y el gas empuja el pistón caliente: aquí sale el trabajo.', false],
+      ['4→1 · Al lado frío', 'El pistón caliente regresa y el frío baja: el gas cruza el regenerador hacia el lado frío y le deja su calor para la siguiente vuelta.', true],
+    ];
+    forja.animar(caja, fase => {
+      const g = (315 + 360 * fase) % 360, th = g * Math.PI / 180;
+      const e = estado(th), e2 = estado(th + 0.0087);
+      const px = CX + R * Math.cos(e.a), py = CY + R * Math.sin(e.a);
+      const hx = CX - e.sh, fy = CY - e.sc;                 // pernos de los pistones
+      // pistones y gas (el cilindro frío está girado 90°: se mueve sobre su eje local igual que el caliente)
+      $('st-c-pis').setAttribute('transform', `translate(${CX - e.sh} ${CY})`);
+      $('st-f-pis').setAttribute('transform', `translate(${CX - e.sc} ${CY})`);
+      $('st-c-gas').setAttribute('width', e.vh);
+      $('st-f-gas').setAttribute('width', e.vc);
+      for (const id of ['st-bc-a', 'st-bc-b']) set($(id), { x1: hx, y1: CY, x2: px, y2: py });
+      for (const id of ['st-bf-a', 'st-bf-b']) set($(id), { x1: CX, y1: fy, x2: px, y2: py });
+      for (const id of ['st-man-a', 'st-man-b']) set($(id), { x1: CX, y1: CY, x2: px, y2: py });
+      set($('st-pc'), { cx: hx, cy: CY }); set($('st-pf'), { cx: CX, cy: fy }); set($('st-pm'), { cx: px, cy: py });
+      $('st-disco').setAttribute('transform', `rotate(${e.a * 180 / Math.PI - 90} ${CX} ${CY})`);
+      // calor: entra cuando el gas caliente se expande, sale cuando el frío se comprime; el gas cruza según su masa
+      const qin = Math.max(0, e.p * (e2.vh - e.vh)) / QIN, qout = Math.max(0, -e.p * (e2.vc - e.vc)) / QOUT;
+      const fl = (e2.mh - e.mh) / FL;                       // > 0: el gas va al lado caliente
+      $('st-qin').style.opacity = (.1 + .9 * Math.min(1, 1.3 * qin)).toFixed(2);
+      $('st-qout').style.opacity = (.1 + .9 * Math.min(1, 1.3 * qout)).toFixed(2);
+      $('st-al-cal').style.opacity = Math.max(0, Math.min(1, fl * 1.4)).toFixed(2);
+      $('st-al-fri').style.opacity = Math.max(0, Math.min(1, -fl * 1.4)).toFixed(2);
+      const w = e.p * ((e2.vh + e2.vc) - (e.vh + e.vc));
+      $('st-trab').style.opacity = w > 0 ? 1 : .25;
+      const [et, tx, frio] = TIEMPOS[Math.floor(((g - 270 + 360) % 360) / 90)];
+      $('st-fase-et').textContent = et;
+      $('st-fase-et').style.background = frio ? 'var(--frio)' : 'var(--acento)';
+      $('st-fase-tx').textContent = tx;
+    }, { periodo: 8 });
+  } catch (e) { console.error(e); }
+})();
+
+// ---------- Animación: la planta de vapor ----------
+// Todo sale de la fase: cada gota recorre el circuito (un cuarto de la fase por pieza) y su estado
+// (líquida o vapor, fría o caliente) depende de dónde está. La narración sigue a la gota marcada.
+(() => {
+  try {
+    const caja = document.getElementById('anima-vapor'); if (!caja) return;
+    const $ = id => caja.querySelector('#' + id);
+    const ZONAS = [[[460,340],[460,424],[330,424],[48,424],[48,270],[92,270]],[[92,270],[150,270],[150,230],[150,150],[150,138]],[[150,138],[150,90],[332.6,90],[338.7,95.2],[357,81.2],[379.4,76],[401.9,80.6],[420.4,94.2],[431.7,114.3],[433.5,137.2],[425.7,158.8],[409.6,175.2],[388.1,183.4],[365.2,181.9],[344.9,171.1],[331,152.7],[326,130.3],[330.8,107.8],[344.4,89.4],[364.6,78.3],[387.5,76.5],[409,84.5],[425.3,100.7],[433.4,122.2],[431.8,145.1],[420.8,165.3],[402.5,179.1],[380,184],[380,192]],[[380,192],[380,210],[510,210],[510,240],[510,326],[460,326],[460,340]]];
+    const U_HIERVE = 0.5158, U_CONDENSA = 0.8049;
+    const largos = ZONAS.map(pl => { const c = [0]; for (let i = 1; i < pl.length; i++) c.push(c[i - 1] + Math.hypot(pl[i][0] - pl[i - 1][0], pl[i][1] - pl[i - 1][1])); return c; });
+    const sobre = (z, u) => {          // punto a la fracción u del largo de la zona z
+      const pl = ZONAS[z], c = largos[z], d = u * c[c.length - 1];
+      let i = 1; while (i < c.length - 1 && c[i] < d) i++;
+      const k = (d - c[i - 1]) / ((c[i] - c[i - 1]) || 1);
+      return [pl[i - 1][0] + (pl[i][0] - pl[i - 1][0]) * k, pl[i - 1][1] + (pl[i][1] - pl[i - 1][1]) * k];
+    };
+    // temperatura (0 fría, 1 caliente) y fase del agua según la zona
+    const estado = (z, u) => {
+      if (z === 0) return { t: 0, vapor: false };
+      if (z === 1) return u < U_HIERVE ? { t: u / U_HIERVE, vapor: false } : { t: 1, vapor: true };
+      if (z === 2) return { t: 1 - .3 * u, vapor: true };
+      return u < U_CONDENSA ? { t: .7 - .2 * u / U_CONDENSA, vapor: true } : { t: .5 * (1 - Math.min(1, (u - U_CONDENSA) / .08)), vapor: false };
+    };
+    const FRIO = '#2E5A78', CALIENTE = '#B23A0C', TIBIO = '#A39887';
+    // de frío a caliente pasando por un gris neutro (sin tonos lodosos a media temperatura)
+    const color = t => t < .5 ? forja.kit.mezcla(FRIO, TIBIO, t * 2) : forja.kit.mezcla(TIBIO, CALIENTE, (t - .5) * 2);
+    const gotas = [...caja.querySelectorAll('.va-gota')], N = gotas.length;
+    const TEXTOS = [
+      ['Bomba', 'La bomba toma el agua líquida que sale del condensador y la empuja, a alta presión, de vuelta a la caldera.', 'var(--frio)'],
+      ['Caldera', 'El fuego, afuera de la caldera, calienta el agua a través de la pared hasta que hierve. El vapor ocupa mucho más lugar que el agua.', 'var(--acento)'],
+      ['Turbina', 'El vapor a alta presión se expande entre los álabes y hace girar la turbina: aquí sale el trabajo que mueve el generador.', 'var(--acento)'],
+      ['Condensador', 'El agua fría que corre por los tubos le quita calor al vapor: se vuelve líquido otra vez y cae al fondo.', 'var(--frio)'],
+    ];
+    forja.animar(caja, fase => {
+      let zonaSigue = 0;
+      gotas.forEach((c, i) => {
+        const g = ((fase + .125 + i / N) % 1) * 4, z = Math.floor(g), u = g - z;
+        const [x, y] = sobre(z, u), e = estado(z, u), col = color(e.t);
+        c.setAttribute('cx', x.toFixed(1)); c.setAttribute('cy', y.toFixed(1));
+        c.setAttribute('r', e.vapor ? 7.5 : 4.5);                  // el vapor ocupa más
+        c.setAttribute('fill', col); c.setAttribute('fill-opacity', e.vapor ? .45 : 1);
+        c.setAttribute('stroke', col); c.setAttribute('stroke-width', e.vapor ? 1.25 : 0);
+        if (i === 0) { zonaSigue = z; $('va-sigue').setAttribute('cx', x.toFixed(1)); $('va-sigue').setAttribute('cy', y.toFixed(1)); $('va-sigue').setAttribute('r', e.vapor ? 11 : 8); }
+      });
+      // lo que entra o sale se enciende cuando la gota que seguimos pasa por ahí
+      $('va-wb').style.opacity = zonaSigue === 0 ? 1 : .2;
+      $('va-qin').style.opacity = zonaSigue === 1 ? 1 : .2;
+      $('va-trab').style.opacity = zonaSigue === 2 ? 1 : .2;
+      $('va-qout').style.opacity = zonaSigue === 3 ? 1 : .2;
+      // la turbina y la bomba giran sin parar: la planta trabaja en todas sus piezas a la vez
+      $('va-rueda').setAttribute('transform', `rotate(${(fase * 720).toFixed(1)} 380 130)`);
+      $('va-rodete').setAttribute('transform', `rotate(${(fase * 1080).toFixed(1)} 330 424)`);
+      const [et, tx, col] = TEXTOS[zonaSigue];
+      $('va-fase-et').textContent = et; $('va-fase-et').style.background = col;
+      $('va-fase-tx').textContent = tx;
+    }, { periodo: 12 });
+  } catch (e) { console.error(e); }
+})();
+
 </script>
 </body>
 </html>
