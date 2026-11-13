@@ -41,11 +41,11 @@ Para verlas, abre `index.html` o cualquier `guias/<guía>/index.html` en el nave
 
 ![Una predicción antes y después de contestar](docs/capturas/prediccion-antes-despues.png)
 
-**Animaciones con la física real.** Todo se calcula desde la fase del ciclo: los pistones a 90°, el calor que entra y sale en el momento justo. Tiene Pausa, Paso a paso y velocidad:
+**Animaciones con la física real.** Todo se calcula desde la fase del ciclo: los pistones a 90°, el calor que entra y sale en el momento justo. En la guía tienen Pausa, Paso a paso y velocidad; aquí, un ciclo completo:
 
 | Motor Stirling | Derivadas | Flujo de un repo |
 |---|---|---|
-| ![](docs/capturas/animacion-stirling.png) | ![](docs/capturas/animacion-derivadas.png) | ![](docs/capturas/animacion-text-to-cad.png) |
+| ![Animación del motor Stirling](docs/capturas/animacion-stirling.gif) | ![La secante se vuelve tangente](docs/capturas/animacion-derivadas.gif) | ![Un pedido viaja por los archivos del repo](docs/capturas/animacion-text-to-cad.gif) |
 
 **Cada familia de temas tiene su propio estilo.** Los temas relacionados se parecen sin ser iguales. Los colores salen del propio tema y significan algo (en el ensayo, amarillo = tesis y azul = argumentos):
 
