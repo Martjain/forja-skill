@@ -6,6 +6,7 @@
 /forja el ensayo, nivel secundaria
 /forja derivadas
 /forja https://github.com/earthtojake/text-to-cad
+/forja https://arxiv.org/abs/2602.09805
 ```
 
 ![Portada de la guía de text-to-cad](docs/capturas/portada-text-to-cad.png)
@@ -32,6 +33,7 @@ Leer una explicación larga no es la mejor forma de aprender, sobre todo si apre
 | [Hooks de Claude Code](guias/hooks-de-claude-code/) | Claude Code | principiante | claude-code | El ciclo de una sesión con sus eventos |
 | [Subagentes de Claude Code](guias/subagentes-de-claude-code/) | Claude Code | principiante | claude-code | Cómo se delega una tarea |
 | [text-to-cad, por dentro](guias/text-to-cad/) | Un repositorio de GitHub | principiante | diseno-cad | Un pedido que viaja por los 8 archivos reales hasta el visor |
+| [¿En qué se van los tokens de un modelo que razona?](guias/descomponer-eficiencia-tokens/) | Un paper en inglés (arXiv, 2026) | principiante | aprendizaje-automatico | Tres tandas de tareas con la misma eficiencia y tres fallas distintas |
 
 Para verlas, abre `index.html` o cualquier `guias/<guía>/index.html` en el navegador. Si activas GitHub Pages (Settings → Pages → rama `main`, carpeta raíz), cada guía queda en `https://<usuario>.github.io/forja-skill/guias/<guía>/`.
 

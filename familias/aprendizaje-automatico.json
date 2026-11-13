@@ -1,0 +1,42 @@
+{
+  "familia": "aprendizaje-automatico",
+  "descripcion": "Guías sobre aprendizaje automático e inteligencia artificial: modelos de lenguaje (LLM), cómo se entrenan y cómo se evalúan, y papers del campo.",
+  "origen": "Paleta tomada de los objetos con que se hace aprendizaje automático: el papel cálido de la bitácora de experimentos donde se anotan corridas y resultados, el grafito de la terminal, el cobre de las pistas de una tarjeta aceleradora (y el calor de una GPU a carga plena), el azul de la curva de una gráfica de entrenamiento y el verde de la máscara de soldadura de una placa. Los bloques oscuros son el gabinete de un rack de servidores apagado, con los leds y las pistas como acentos. No sale del estilo de arXiv ni de logos de laboratorios o empresas.",
+  "paleta": {
+    "fondo": "#F5F3EE",
+    "superficie": "#EAE6DD",
+    "borde": "#D6D0C3",
+    "tinta": "#1B1D1F",
+    "tinta_suave": "#565A5E",
+    "gris_medio": "#A7A398",
+    "acento": "#A84A1F",
+    "acento_oscuro": "#7E3412",
+    "secundario_azul": "#1F5A8C",
+    "secundario_verde": "#2D6A4A"
+  },
+  "bloques_oscuros": {
+    "fondo": "#121619",
+    "tinta": "#E9E6DF",
+    "tinta_suave": "#A9B0B4",
+    "acento": "#E8925A",
+    "azul": "#8DB8E0",
+    "verde": "#7CC29A"
+  },
+  "tipografia": {
+    "titulos": "instrument-serif",
+    "cuerpo": "ibm-plex-sans",
+    "codigo": "jetbrains-mono",
+    "nota": "ids de assets/fuentes/catalogo.json; se incrustan con scripts/fuentes.py css. Instrument Serif solo tiene peso 400: los títulos van en 400 (sin negrita sintética). IBM Plex Sans es la letra precisa de sistemas; JetBrains Mono para tokens, conteos y lecturas numéricas."
+  },
+  "tono": "Claro y concreto, como un colega que te explica un paper junto a la terminal: primero el ejemplo con números, luego el término en inglés y su traducción. Cada cifra con su tabla de origen.",
+  "rasgos": [
+    "Fondo de papel de bitácora con una rejilla de puntos tenue (una matriz de activaciones) al 5% de opacidad",
+    "Los tokens se dibujan como fichas rectangulares en fila: una respuesta es una cinta de fichas",
+    "Colores con significado fijo: cobre = presupuesto y cortes, verde = correcto, azul = longitud y tokens",
+    "Bloques oscuros de rack de servidores con acentos de cobre claro",
+    "Cifras y nombres de variables en monoespaciada, alineadas como en una tabla de resultados"
+  ],
+  "motivos_por_tema": {
+    "descomponer-eficiencia-tokens": "la cinta de tokens y la pared del presupuesto: cada respuesta es una fila de fichas que crece hacia una pared de cobre; la que la toca se corta, la que termina recibe su palomita o su tache, y un contador suma fichas y aciertos"
+  }
+}

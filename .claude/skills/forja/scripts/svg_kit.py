@@ -194,6 +194,9 @@ def conector(puntos, radio=8):
     """Path ortogonal por `puntos` [(x, y), ...] con esquinas redondeadas (diagramas de sistema).
     Ponle marker-end para la flecha. Los tramos deben ser horizontales o verticales."""
     assert len(puntos) >= 2
+    # Quita puntos repetidos (un tramo de largo cero rompería el redondeo de esquinas)
+    puntos = [p for i, p in enumerate(puntos) if i == 0 or p != puntos[i - 1]]
+    assert len(puntos) >= 2, "el conector necesita dos puntos distintos"
     for (x1, y1), (x2, y2) in zip(puntos, puntos[1:]):
         assert x1 == x2 or y1 == y2, f"tramo no ortogonal: {(x1, y1)} → {(x2, y2)}"
     d = f"M{r1(puntos[0][0])} {r1(puntos[0][1])}"

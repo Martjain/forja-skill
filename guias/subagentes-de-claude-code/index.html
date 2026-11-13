@@ -121,7 +121,7 @@ button, input { font: inherit; min-height: 44px; }
 .anima-ctl label { display: inline-flex; gap: .5rem; align-items: center; white-space: nowrap; overflow-wrap: normal; }
 .anima-ctl .anima-vel { font-family: var(--f-codigo); min-width: 2.5rem; }
 .anima-fase { display: flex; gap: .75rem; align-items: baseline; min-height: 3rem; margin: .5rem 0 0; }
-.anima-fase b { flex: none; font-family: var(--f-codigo); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; padding: .15rem .5rem; border-radius: 4px; background: var(--acento); color: var(--fondo); }
+.anima-fase > b:first-child { flex: none; font-family: var(--f-codigo); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; padding: .15rem .5rem; border-radius: 4px; background: var(--acento); color: var(--fondo); }
 .flujo { stroke-dasharray: 6 5; animation: forja-flujo 1s linear infinite; }
 @keyframes forja-flujo { to { stroke-dashoffset: -22; } }
 .titila { transform-box: fill-box; transform-origin: 50% 100%; animation: forja-titila .9s ease-in-out infinite alternate; }
