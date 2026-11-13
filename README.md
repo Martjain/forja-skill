@@ -157,7 +157,3 @@ docs/capturas/          las imágenes de este README
 index.html              índice de guías con el repaso de hoy
 .env.example            configuración local (cópialo a .env)
 ```
-
-## Contribuir
-
-Los cambios van en ramas y llegan a `main` con un pull request. Antes de dar por buena una guía, corre `validar.py`, `probar_guia.py` y `revisar_movil.py`. Las reglas del repo están en [CLAUDE.md](CLAUDE.md).
