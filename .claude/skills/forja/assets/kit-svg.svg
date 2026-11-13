@@ -1,5 +1,5 @@
 <!--
-  KIT SVG DE FORJA. Pega este <svg> UNA sola vez al inicio del <body> (quita lo que no uses)
+  KIT SVG DE FORJA. Pega el elemento svg de abajo UNA sola vez al inicio del <body> (quita lo que no uses)
   y úsalo desde todos los SVG con url(#id). Reglas: reference/ilustracion.md, sección 8.
   Los colores salen de variables CSS con un valor de respaldo. Defínelas en :root
   con la paleta de la familia (por ejemplo, --ach-caliente: #F6D2BC).

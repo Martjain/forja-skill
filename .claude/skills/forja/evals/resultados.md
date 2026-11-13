@@ -195,3 +195,25 @@ Botón en el núcleo para cuando el usuario no puede resolver algo. Muestra el r
   - El número de la etiqueta en el celular se corre para no tapar la pieza.
   - El revisor guarda cada fase por separado y revisa choques en escritorio en las 4 fases.
   - "Velocidad" ya no se parte en dos líneas.
+
+## Redibujo de las 6 guías con la skill nueva
+
+Lo pidió el usuario. Un agente por guía, en paralelo, editando la guía original y cambiando solo las ilustraciones (más su JS/CSS). Las 6 pasan el validador, la revisión en celular y el revisor de ilustraciones, sin errores de JS.
+
+| Guía | SVG | Animación | Calificación |
+|---|---|---|---|
+| derivadas | 9 + 1 nueva | la secante se vuelve tangente (h → 0) | 8–9 |
+| git | 8 | editar → git add → git commit (tres zonas) | 8–9 |
+| git-merge-rebase | 8 | merge (dos padres) contra rebase (copias con hash nuevo) | 8–9 |
+| hooks | 7 | ciclo de una sesión con el bucle agéntico | 8–9 |
+| subagentes | 7 + 1 nueva | delegación: elegir por description → trabajar aparte → solo vuelve el resultado | 8–9 |
+| motor | 13 | Stirling de dos pistones a 90° y ciclo de vapor | 8–9 |
+
+- **Errores encontrados al calcular la geometría:**
+  - en derivadas, barras desalineadas y el pico de |x| fuera del eje;
+  - en hooks, Notification aparecía entre PostToolUse y Stop.
+- **Respuestas que se revelaban antes de tiempo** (las 4 se corrigieron):
+  - en hooks, "exit 1 → sigue + aviso";
+  - en merge-rebase, el laboratorio dibujaba el rebase y el fast-forward se veía;
+  - en motor, dos etiquetas.
+- **Mejoras a la skill a partir de los reportes:** el número de etiqueta en el celular se mide con el ancho real; `svg_kit` suma `registrar`, `conector`, `color_sub`, `em` y atributos del svg; el revisor tiene `data-fases` y captura sin el desenfoque; `onda` termina recta; se documentaron la clase `.etiqueta` reservada, `ancho_movil` con min-width, cómo animar ilustraciones interactivas y los degradados con `userSpaceOnUse`.

@@ -1172,9 +1172,11 @@ section > .anima-caja { max-width: 46rem; margin-left: max(0px, calc((100% - var
   const kit = {
     // Flecha ondulada (calor, flujo): de (x, y0) a (x, y1), vertical.
     onda(x, y0, y1, amp = 5, n = 4) {
-      let d = `M${x} ${y0}`; const s = (y0 - y1) / n;
+      // Termina con un tramo recto para que la punta de flecha quede derecha.
+      const cola = Math.min(6, Math.abs(y0 - y1) * .15) * (Math.sign(y0 - y1) || 1);
+      let d = `M${x} ${y0}`; const s = (y0 - y1 - cola) / n;
       for (let k = 0; k < n; k++) d += ` Q${x + (k % 2 ? -amp : amp)} ${y0 - s * (k + .5)} ${x} ${y0 - s * (k + 1)}`;
-      return d;
+      return d + ` L${x} ${y1}`;
     },
     // Biela-manivela: centro (cx, cy), radio de manivela r, largo de biela L, ángulo a (rad), eje horizontal en y = cy.
     // Devuelve el perno de la manivela {px, py} y la posición del perno del pistón {wx}. La biela mide L siempre.

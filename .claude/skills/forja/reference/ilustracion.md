@@ -109,6 +109,7 @@ Llamas, agua, órganos, hojas: curvas Bézier cúbicas **simétricas** y en **do
 - Los nombres del kit (caliente, frío) son de ejemplo. Agrega las flechas que pida el significado de tu guía con el mismo marcador y otro color (`pta-gris`, `pta-azul`).
 - Para un SVG que dibuja el JS, replica su geometría en el script de Python para comprobarla con `assert`, y registra con `Lienzo.registrar()` el texto más largo que el JS pueda poner.
 - Diagramas de sistema: `conector([(x, y), ...])` de `svg_kit` traza líneas en ángulo recto con esquinas redondeadas.
+- Un degradado sobre una línea perfectamente horizontal o vertical no se ve con las unidades por omisión (la caja de la línea mide 0 de alto o de ancho): usa `gradientUnits="userSpaceOnUse"` con coordenadas reales.
 
 ## 9. Rúbrica (mínimo 8 de 10)
 
