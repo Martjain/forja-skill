@@ -134,3 +134,12 @@ Las 3 pasan el validador y la revisión en celular.
 
 1. **Bug en el núcleo:** la API `forja` se definía después de dibujar las flashcards. Con el reto `flashcards` cumplido, al recargar fallaba todo el núcleo. Corregido en el esqueleto y propagado a las 4 guías con el script nuevo `scripts/actualizar_nucleo.py`, que solo reemplaza los bloques del núcleo. Probado: dominar el mazo y recargar ya no da errores.
 2. **`revisar_movil.py` compartía la carpeta de capturas** entre procesos paralelos. Ahora usa una carpeta por guía.
+
+## Prueba fuera de Claude Code: derivadas (Cálculo I, principiante)
+
+- **Familia nueva `matematicas`:** papel milimétrico crema con cuadrícula, grafito para el texto, rojo de profesor como acento, azul de bolígrafo para las curvas y pizarrón verde con gis en los bloques oscuros. Fuentes: Source Serif 4 (libro de texto), Atkinson Hyperlegible (distingue 1, l e I en texto con símbolos) e IBM Plex Mono.
+- **Motivo:** la secante que gira hasta volverse tangente.
+- **Fuentes:** OpenStax Calculus Vol. 1 (Rice University), Paul's Online Notes (Lamar University), MAA Convergence y MacTutor (St Andrews). Un dato sin fuente: el consejo de no "tachar las d" en dy/dx.
+- **Matemáticas verificadas a mano:** pendiente de (0,5) a (2,1) = −2; f(x)=x²+3x da f′(x)=2x+3; simulador con a=1 y h=0.1 da Δy=0.21 y pendiente 2.1; f(x)=x²−2x tiene f′(1)=0 en su mínimo; la regla de la potencia maneja n=0.
+- **Distractores pedagógicos:** "f′(1) = −1, lo mismo que f(1)" (confundir altura con inclinación), "0/0" y "2x + h + 3" (olvidar el límite).
+- Validador: sin errores (1 advertencia †). Celular: OK. 234k tokens, 16.5 min.

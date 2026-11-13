@@ -1,0 +1,43 @@
+{
+  "familia": "matematicas",
+  "descripcion": "Guías de matemáticas de bachillerato y primeros semestres (cálculo, límites, derivadas, integrales, álgebra, funciones).",
+  "origen": "Paleta tomada de los objetos con que se estudia matemáticas: el papel milimétrico crema con su cuadrícula verde pálida, el grafito del lápiz, el rojo del bolígrafo con que el profesor corrige y el azul del bolígrafo con que se traza la curva. Los bloques oscuros son el pizarrón verde con gis blanco y gis amarillo. Sin logos ni marcas.",
+  "paleta": {
+    "fondo": "#F4F1E6",
+    "superficie": "#E8E4D4",
+    "borde": "#D3CDB8",
+    "tinta": "#23262B",
+    "tinta_suave": "#55595F",
+    "gris_medio": "#A5A493",
+    "cuadricula": "#9DBFA8",
+    "acento": "#B8321F",
+    "acento_oscuro": "#8C2414",
+    "secundario_azul": "#24548F",
+    "secundario_verde": "#2F6B4F"
+  },
+  "bloques_oscuros": {
+    "fondo": "#1C2B25",
+    "tinta": "#ECEADF",
+    "tinta_suave": "#AFB8AE",
+    "acento": "#F2C14E",
+    "azul": "#8EC3E6",
+    "rojo": "#F08F7A"
+  },
+  "tipografia": {
+    "titulos": "source-serif-4",
+    "cuerpo": "atkinson-hyperlegible",
+    "codigo": "ibm-plex-mono",
+    "nota": "ids de assets/fuentes/catalogo.json; se incrustan con scripts/fuentes.py css. Source Serif 4 recuerda a un libro de texto y sirve también para escribir las fórmulas; Atkinson Hyperlegible distingue 1, l e I, cosa que importa cuando el texto está lleno de símbolos; IBM Plex Mono para lecturas numéricas y tablas de valores."
+  },
+  "tono": "Paciente y concreto, como un buen asesor en la biblioteca: primero el dibujo, luego la fórmula. Cada símbolo se dice en palabras la primera vez que aparece. Números pequeños y fáciles de verificar a mano.",
+  "rasgos": [
+    "Fondo de papel milimétrico: cuadrícula verde pálida al 5% de opacidad",
+    "Las curvas se trazan en azul de bolígrafo; lo importante (la pendiente, la tangente, el resultado) en rojo de corrección",
+    "Bloques oscuros de pizarrón con gis blanco y gis amarillo",
+    "Fórmulas en serif con las variables en cursiva, nunca como imagen",
+    "Lecturas numéricas en monoespaciada, alineadas como en una tabla de valores"
+  ],
+  "motivos_por_tema": {
+    "derivadas": "la secante que gira hasta volverse tangente: dos puntos sobre una curva en papel milimétrico que se acercan hasta tocarse, y la recta roja que los une se queda con la inclinación de la curva en ese punto"
+  }
+}
