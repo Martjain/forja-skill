@@ -53,6 +53,20 @@ Cuando alguien adivina antes de ver la respuesta (aunque se equivoque) y recibe 
 </div>
 ```
 
+**La prueba de la fuga.** Tapa con la mano todo lo que está detrás de la predicción y pregúntate: con lo que queda a la vista en esa sección (el subtítulo, los párrafos, los dibujos, la tabla, la lista de abajo), ¿alguien puede contestar sin pensar? Si sí, hay una fuga. En las guías anteriores hubo 6 fugas, y casi todas estaban **en la misma sección, cerca de la pregunta**:
+- un subtítulo que ya dice la respuesta («Git solo mueve el puntero hacia adelante», «El que más te van a preguntar: convencer»);
+- un dibujo o una tabla debajo de la pregunta que muestra el resultado (el fast-forward ya hecho, la flecha resaltada hacia «Convencer»);
+- un texto explicativo junto a una animación que sí está borrosa («Primero la introducción, con la tesis en amarillo»).
+
+Cómo corregirlas, en este orden:
+1. Reescribe el subtítulo o el párrafo para que plantee la pregunta en lugar de responderla.
+2. Pon **también** detrás de la predicción (`data-tras-prediccion`) el dibujo, la tabla o el texto que la responden. Sigue sin tapar controles: en un `[data-anima]`, el atributo va en el SVG y en la narración `.anima-fase`, no en el contenedor, para que los controles queden a la vista.
+3. Si el bloque es grande y quedaría una zona muerta, cambia la pregunta por otra que ese bloque no responda.
+
+Mostrar la **estructura** (las piezas, el orden de las etapas) no es fuga si la pregunta es sobre el **comportamiento** (qué pasa, cuánto da, qué gana). Sí es fuga si la pregunta es justamente sobre esa estructura.
+
+`probar_guia.py` marca los dibujos, tablas y bloques de código que quedan a la vista después de una pregunta y guarda una captura de cada sección antes de contestar. Revísalas con esta prueba.
+
 ### 1.2 Retos que guían la atención
 
 Una interacción sin dirección es un juguete. Cada interacción principal lleva **1 a 3 retos**: tareas concretas que llevan al usuario al fenómeno que importa ("Mueve el código a 2 en PostToolUse: ¿por qué ya no bloquea?"). **Mínimo 3 retos por guía.**
@@ -134,6 +148,8 @@ Cómo escribir buenas tarjetas:
 
 ## 4. Simulador con slider — `data-interaccion="simulador"`
 
+Un simulador cambia un resultado al mover sus controles. Lo normal es un `<input type="range">`, pero si el tema no tiene una magnitud continua (elegir argumentos, prender y apagar piezas), valen 2 o más botones, casillas o un `select`: no inventes un slider sin sentido.
+
 Para relaciones de causa y efecto: "si cambio X, ¿qué pasa con Y?".
 
 - Uno a tres `<input type="range">` con su valor visible y unidades.
@@ -187,3 +203,6 @@ Siguen la prueba de la sección 1.
 - Controles con elementos nativos (`<button>`, `<input>`), operables con teclado y con `:focus-visible`.
 - Nada depende de hover: en celular no existe.
 - Estado inicial con contenido: nunca una interacción que empiece vacía.
+- Cada reto `data-reto="x"` necesita un `forja.reto('x')` en el JS, con el id escrito tal cual: `probar_guia.py` marca como error un reto que ningún código cumple.
+- En una cuadrícula (`display: grid`) con una columna que se desplaza de lado (una fila de pasos, un SVG con `min-width`), pon `min-width: 0` en esa columna: sin eso desborda en el celular.
+- Los botones con fondo de acento los resuelve el núcleo (elige texto claro u oscuro según el contraste). Si haces tus propios botones de color, comprueba el contraste: `probar_guia.py` avisa cuando el texto queda por debajo de 4.5:1.

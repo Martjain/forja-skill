@@ -53,7 +53,10 @@ class Lienzo:
 
     def registrar(self, x, y, txt, size, anchor="start", mono=False, em=None):
         """Registra la caja de un texto que no generó este Lienzo (uno que cambia el JS, un título con
-        otra fuente) para que comprobar() lo tome en cuenta. Usa el texto más largo que pueda mostrar."""
+        otra fuente) para que comprobar() lo tome en cuenta. Si el JS lo cambia, pasa una lista con
+        todos los valores posibles: se registra solo el más largo (el que más espacio ocupa)."""
+        if isinstance(txt, (list, tuple)):
+            txt = max(txt, key=len)
         self._caja(x, y, txt, size, anchor, mono, em)
 
     def _caja(self, x, y, txt, size, anchor, mono, em=None):

@@ -28,8 +28,9 @@ Copia esta lista y márcala conforme avances:
 - [ ] 6. Construir
 - [ ] 7. Validar
 - [ ] 8. Revisar ilustraciones
-- [ ] 9. Revisar en celular
-- [ ] 10. Registrar en el índice
+- [ ] 9. Probar la guía (y revisar fugas)
+- [ ] 10. Revisar en celular
+- [ ] 11. Registrar en el índice
 ```
 
 **1. Nivel.** Si el pedido no dice el nivel, pregunta *principiante, intermedio o avanzado* y espera la respuesta antes de seguir.
@@ -75,13 +76,23 @@ python3 ${CLAUDE_SKILL_DIR}/scripts/revisar_ilustraciones.py <ruta>
 ```
 Corrige lo que reporte. Después abre con Read cada imagen y califícala con la rúbrica de [ilustracion.md](reference/ilustracion.md) sección 9. Escribe la calificación de cada una. Si alguna saca menos de 8, corrígela y repite (máximo 3 vueltas).
 
-**9. Revisar en celular.**
+**9. Probar la guía.** `validar.py` cuenta lo que hay; este paso comprueba que funcione y que enseñe:
+```bash
+python3 ${CLAUDE_SKILL_DIR}/scripts/probar_guia.py <ruta>
+```
+Recorre la guía como una persona: contesta cada predicción (mal, «Volver a predecir» y bien), abre cada ayuda hasta la respuesta, toca cada pieza de los diagramas, mueve cada control, avanza los pasos y las animaciones y voltea tarjetas. **Corrige todos sus errores.** De sus advertencias, revisa sobre todo dos:
+- **Fugas:** abre con Read cada `antes-<predicción>.png` y aplica la prueba de la fuga de [interacciones.md](reference/interacciones.md) sección 1.1. Si la respuesta ya se ve (en un subtítulo, un dibujo, una tabla o un texto junto a la animación), corrígelo. Si puedes lanzar un subagente, pídele esta revisión sin decirle las respuestas: así no se califica a sí mismo.
+- **Contraste y muros de texto:** corrígelos.
+
+Los retos que el recorrido no cumple son normales si piden algo concreto; compruébalos tú.
+
+**10. Revisar en celular.**
 ```bash
 python3 ${CLAUDE_SKILL_DIR}/scripts/revisar_movil.py <ruta>
 ```
 Abre con Read las capturas que genera y revisa que se lea bien. Corrige cualquier desbordamiento que reporte.
 
-**10. Registrar.**
+**11. Registrar.**
 ```bash
 python3 ${CLAUDE_SKILL_DIR}/scripts/registrar.py indice <ruta> --titulo "<título>" --familia <familia> --nivel <nivel>
 ```

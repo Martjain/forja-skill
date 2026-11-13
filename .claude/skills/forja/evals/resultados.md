@@ -251,3 +251,32 @@ Lo pidió el usuario. Un agente por guía, en paralelo, editando la guía origin
   - Se abre la primera vez que se visita la guía y después queda cerrado.
 - **Por qué en el núcleo:** las cuentas siempre coinciden con la guía y ninguna guía tiene que escribir sus propias instrucciones.
 - Propagado a las 7 guías; todas pasan el validador y la revisión en celular.
+
+## Auditoría: ¿el validador revisa lo que importa?
+
+- **Lo que revisaba:** solo estructura (que existan predicciones, retos, citas, layouts y SVG; offline; fuentes; relleno).
+- **Lo que no revisaba**, y en 6 guías ya había causado problemas:
+  - predicciones con la respuesta a la vista: 4 fugas encontradas a mano por los agentes y 2 más al probar esta herramienta en el ensayo;
+  - interacciones que no hacen nada;
+  - retos que ningún código cumple;
+  - contraste insuficiente (botones de respuesta correcta a 3:1 en hooks).
+- **Nuevo `scripts/probar_guia.py` (paso 9 de SKILL.md):**
+  - recorre la guía como una persona: predicciones (mal, «Volver a predecir» y bien), ayudas hasta la respuesta, piezas de diagrama, controles, pasos, animaciones y tarjetas;
+  - marca errores de JS, resultados que no se ocultan o no se revelan, controles que no cambian nada y retos sin `forja.reto`;
+  - avisa de dibujos, tablas y código a la vista después de una pregunta, guarda una captura de cada sección antes de contestar, y revisa contraste WCAG y muros de texto.
+  - Calibrado con las 7 guías y con las versiones viejas de hooks y merge-rebase: detecta las fugas de pred-ff y pred-rebase que antes encontraron los agentes.
+- **Fugas reales confirmadas en el ensayo:**
+  - pred-tesis: el texto junto a la animación dice «Primero la introducción, con la tesis en amarillo»;
+  - pred-proposito: el subtítulo dice «El que más te van a preguntar: convencer» y el diagrama resalta Argumentativo → Convencer.
+  - Quedan 18 avisos de posibles fugas en las 7 guías, pendientes de revisión.
+- **Núcleo:** `contrastar()` elige texto claro u oscuro sobre los botones de acento (respuesta correcta y Reproducir).
+- **Validador:**
+  - el simulador acepta 2 o más controles en lugar de exigir un slider;
+  - avisa de citas que no están en la lista de fuentes.
+- **Reglas que estaban confusas, ya documentadas:**
+  - la prueba de la fuga y cómo corregirla (`data-tras-prediccion` en el SVG y la narración, no en el contenedor de la animación);
+  - cuándo mostrar la estructura no cuenta como fuga;
+  - cada reto necesita su `forja.reto('id')` literal;
+  - `min-width: 0` en cuadrículas;
+  - el simulador sin slider;
+  - `Lienzo.registrar` con varios valores.

@@ -106,6 +106,9 @@ class Lector(HTMLParser):
         self.en_fuentes = 0
         self.links_fuentes = []
         self.citas = 0
+        self.hrefs_citas = []
+        self.controles_sim = 0
+        self.en_sim = 0
         self.svgs = 0
         self.secciones = []  # (id, data-layout) en orden
         self.oscuras = 0
@@ -157,6 +160,13 @@ class Lector(HTMLParser):
             self.links_fuentes.append(a["href"])
         if tag == "a" and not self.en_fuentes and "cita" in (a.get("class") or "").split():
             self.citas += 1
+            self.hrefs_citas.append(a.get("href") or "")
+        if a.get("data-interaccion") == "simulador":
+            self.en_sim = 1
+        elif self.en_sim and tag not in ("br", "img", "meta", "input", "hr"):
+            self.en_sim += 1
+        if self.en_sim and (tag in ("button", "select") or (tag == "input" and a.get("type") in ("range", "checkbox", "radio", "number"))):
+            self.controles_sim += 1
         if tag == "svg":
             self.svgs += 1
         if tag == "section":
@@ -219,6 +229,8 @@ class Lector(HTMLParser):
             self._ignorar = max(0, self._ignorar - 1)
         if self.en_fuentes and tag not in ("br", "img", "meta", "input", "hr"):
             self.en_fuentes -= 1
+        if self.en_sim and tag not in ("br", "img", "meta", "input", "hr"):
+            self.en_sim -= 1
 
     def handle_data(self, data):
         if self._ignorar:
@@ -299,8 +311,15 @@ def validar(ruta: Path):
         )
     elif len(tipos) < len(TIPOS_INTERACCION):
         advertencias.append(f"Faltan tipos de interacción: {sorted(TIPOS_INTERACCION - tipos)}")
-    if "simulador" in tipos and not lector.tiene_slider:
-        errores.append('Hay data-interaccion="simulador" pero ningún <input type="range">')
+    if "simulador" in tipos and not lector.tiene_slider and lector.controles_sim < 2:
+        errores.append('Hay data-interaccion="simulador" sin controles: necesita un <input type="range"> '
+                       'o al menos 2 controles (botones, casillas, select) que cambien el resultado')
+    # Cada cita apunta a una fuente de la lista
+    sin_ancla = lambda u: u.split("#")[0].rstrip("/")
+    lista = {sin_ancla(u) for u in lector.links_fuentes}
+    fuera = sorted({h for h in lector.hrefs_citas if h.startswith("http") and sin_ancla(h) not in lista})
+    if fuera:
+        advertencias.append(f"Citas que no están en la sección de fuentes: {fuera[:4]}")
 
     # 7. Layouts, tono, ilustraciones y citas
     secciones = [(i, l) for i, l in lector.secciones if i != "fuentes"]

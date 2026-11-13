@@ -1113,6 +1113,20 @@ section > .anima-caja { max-width: 46rem; margin-left: max(0px, calc((100% - var
   }), { rootMargin: '-45% 0px -50% 0px' });
   secciones.forEach(s => obs.observe(s));
 
+  // Texto legible sobre un fondo de acento: elige claro u oscuro según el contraste (WCAG).
+  function contrastar(el) {
+    const rgb = c => (c.match(/[\d.]+/g) || [255, 255, 255]).slice(0, 3).map(Number);
+    const lum = c => { const [r, g, b] = c.map(v => { v /= 255; return v <= .03928 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4; });
+      return .2126 * r + .7152 * g + .0722 * b; };
+    const ratio = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((m, n) => n - m); return (x + .05) / (y + .05); };
+    el.style.color = '';
+    const fondo = rgb(getComputedStyle(el).backgroundColor), raiz = getComputedStyle(document.documentElement);
+    const claro = getComputedStyle(document.body).backgroundColor, oscuro = raiz.getPropertyValue('--tinta').trim() || '#111';
+    const prueba = document.createElement('span'); prueba.style.color = oscuro; document.body.append(prueba);
+    const cOscuro = rgb(getComputedStyle(prueba).color); prueba.remove();
+    el.style.color = ratio(fondo, rgb(claro)) >= ratio(fondo, cOscuro) ? claro : `rgb(${cOscuro.join(',')})`;
+  }
+
   // --- Ayuda paso a paso: "Explícamelo paso a paso" ---
   // Un paso por clic, "Ya entendí, lo intento" para volver a intentarlo, y la respuesta al final.
   const ayudas = {}; // id de la predicción -> se pidió ayuda antes de responder
@@ -1166,7 +1180,7 @@ section > .anima-caja { max-width: 46rem; margin-left: max(0px, calc((100% - var
       <label>Velocidad <input type="range" min="0.25" max="2" step="0.25" value="1"><span class="anima-vel">1×</span></label>`;
     caja.append(ctl);
     const play = ctl.querySelector('.anima-play');
-    const boton = () => { play.textContent = corriendo ? 'Pausa' : 'Reproducir'; caja.classList.toggle('pausado', !corriendo); };
+    const boton = () => { play.textContent = corriendo ? 'Pausa' : 'Reproducir'; caja.classList.toggle('pausado', !corriendo); contrastar(play); };
     play.addEventListener('click', () => { corriendo = !corriendo; boton(); });
     ctl.querySelector('.anima-paso').addEventListener('click', () => { corriendo = false; boton(); fase = (Math.round(fase * pasos) + 1) % pasos / pasos; dibujar(fase); });
     ctl.querySelector('input').addEventListener('input', e => { vel = +e.target.value; ctl.querySelector('.anima-vel').textContent = vel + '×'; });
@@ -1286,6 +1300,7 @@ section > .anima-caja { max-width: 46rem; margin-left: max(0px, calc((100% - var
         b.disabled = true;
         b.classList.toggle('elegida', b === elegido);
         b.classList.toggle('correcta', b.dataset.opcion === p.dataset.correcta);
+        if (b.classList.contains('correcta')) contrastar(b); else b.style.color = '';
       });
       if (veredicto) {
         veredicto.hidden = false;
@@ -1293,7 +1308,7 @@ section > .anima-caja { max-width: 46rem; margin-left: max(0px, calc((100% - var
           (p.dataset.explicacion || '') + ' <button type="button" class="rehacer">Volver a predecir</button>';
         veredicto.querySelector('.rehacer').addEventListener('click', () => {
           delete estado.predicciones[id]; guardar();
-          botones.forEach(b => { b.disabled = false; b.classList.remove('elegida', 'correcta'); });
+          botones.forEach(b => { b.disabled = false; b.classList.remove('elegida', 'correcta'); b.style.color = ''; });
           veredicto.hidden = true; objetivos().forEach(o => o.classList.remove('revelado')); pintar();
         });
       }
@@ -1391,7 +1406,7 @@ section > .anima-caja { max-width: 46rem; margin-left: max(0px, calc((100% - var
     const minutos = todos('section[data-minutos]').reduce((a, s) => a + (+s.dataset.minutos || 0), 0);
     const preds = todos('[data-prediccion][data-correcta]'), retos = todos('[data-reto]'), animas = todos('[data-anima]');
     const ayudas = todos('[data-ayuda], [data-ayuda-dinamica], .ayuda-abrir');
-    const tipo = t => todos(`[data-interaccion="${t}"]`);
+    const tipo = t => todos(`[data-interaccion="${t}"]:not([data-prediccion])`);
     const items = [
       [preds.length, 'pregunta', 'preguntas', 'Antes de ver, adivina',
         'Elige lo que crees que pasa. Lo que está borroso se aclara y te dice si acertaste y por qué. Equivocarte también sirve: así se recuerda mejor. Puedes tocar «Volver a predecir».',
