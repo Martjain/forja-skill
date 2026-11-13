@@ -221,15 +221,15 @@ section[data-tono="oscuro"] .terminal { background: #0E0D09; border: 1px solid v
 .diagrama-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; margin-bottom: 1rem; }
 #diag-zonas svg { min-width: 600px; display: block; }
 [data-nodo] { cursor: pointer; }
-[data-nodo] .caja { fill: var(--fondo); stroke: var(--tinta); stroke-width: 1.5; transition: fill .2s; }
-[data-nodo] .etq { fill: var(--superficie); stroke: var(--tinta); stroke-width: 1.2; }
-[data-nodo].activo .caja, [data-nodo].activo .etq { fill: var(--ambar); }
+[data-nodo] .caja { fill: var(--fondo); stroke: var(--tinta); stroke-width: 2.5; transition: fill .2s; }
+[data-nodo] .etq { fill: var(--superficie); stroke: var(--tinta); stroke-width: 1.25; }
+[data-nodo].activo .caja, [data-nodo].activo .etq { fill: color-mix(in srgb, var(--ambar) 28%, var(--fondo)); }
 [data-nodo]:focus-visible { outline: none; }
 [data-nodo]:focus-visible .caja, [data-nodo]:focus-visible .etq { stroke: var(--acento); stroke-width: 3; }
 svg.enfocado [data-nodo]:not(.activo) { opacity: .55; }
-[data-une] { stroke: var(--gris); stroke-width: 2; fill: none; transition: stroke .2s, opacity .2s; }
+[data-une] { stroke: var(--gris); stroke-width: 2.5; fill: none; transition: stroke .2s, opacity .2s; }
 svg.enfocado [data-une]:not(.activo) { opacity: .35; }
-[data-une].activo { stroke: var(--acento); stroke-width: 3; }
+[data-une].activo { stroke: var(--acento); }
 .ficha-nodo { min-height: 9rem; padding: 1rem 1.1rem; background: var(--superficie); border-left: 3px solid var(--acento); border-radius: 2px; margin-bottom: 1rem; }
 .ficha-nodo h3 { font-size: 1.2rem; }
 .ficha-nodo p:last-child, .ficha-nodo pre:last-child { margin-bottom: 0; }
@@ -375,37 +375,7 @@ input[type="range"] { width: 100%; accent-color: var(--acento); }
         <h1 class="entra" style="--i:1">Cómo funciona git</h1>
         <p class="bajada entra" style="--i:2">Git guarda tu proyecto como un hilo de fotos. Cada foto es un commit, y cada rama es una etiqueta que cuelga de una de ellas y avanza cuando el hilo crece.</p>
       </div>
-      <svg class="entra" style="--i:3" viewBox="0 0 520 280" role="img" aria-labelledby="t-portada">
-        <title id="t-portada">Un hilo de papel continuo con cuatro commits como cuentas. De la última cuelga la etiqueta main y sobre ella el marcador HEAD.</title>
-        <defs>
-          <pattern id="perf" width="32" height="14" patternUnits="userSpaceOnUse"><circle cx="16" cy="7" r="4" class="s-fondo"/></pattern>
-        </defs>
-        <rect x="0" y="50" width="520" height="190" class="s-sup"/>
-        <rect x="0" y="50" width="520" height="14" fill="url(#perf)"/>
-        <rect x="0" y="226" width="520" height="14" fill="url(#perf)"/>
-        <line x1="0" y1="136" x2="470" y2="136" class="l-tinta"/>
-        <line x1="400" y1="136" x2="500" y2="136" class="l-gris punteada"/>
-        <circle cx="70" cy="136" r="17" class="s-tinta"/>
-        <circle cx="170" cy="136" r="17" class="s-tinta"/>
-        <circle cx="270" cy="136" r="17" class="s-tinta"/>
-        <circle cx="370" cy="136" r="19" class="s-ambar"/>
-        <circle cx="370" cy="136" r="19" class="l-tinta"/>
-        <circle cx="470" cy="136" r="15" class="l-gris punteada"/>
-        <text x="70" y="104" class="tx-s tx-c">98ca9</text>
-        <text x="170" y="104" class="tx-s tx-c">34ac2</text>
-        <text x="270" y="104" class="tx-s tx-c">f30ab</text>
-        <text x="370" y="104" class="tx tx-c">c2b9e</text>
-        <text x="470" y="104" class="tx-s tx-c">próximo</text>
-        <line x1="370" y1="155" x2="370" y2="178" class="l-tinta"/>
-        <rect x="336" y="178" width="68" height="26" rx="2" class="s-fondo"/>
-        <rect x="336" y="178" width="68" height="26" rx="2" class="l-tinta"/>
-        <text x="370" y="196" class="tx tx-c">main</text>
-        <rect x="418" y="178" width="58" height="26" rx="2" class="s-ambar"/>
-        <polygon points="410,191 418,184 418,198" class="s-ambar"/>
-        <text x="447" y="196" class="tx tx-c">HEAD</text>
-        <text x="20" y="30" class="tx-s">el hilo crece hacia la derecha</text>
-        <polygon points="230,22 240,26 230,30" class="s-tinta"/>
-      </svg>
+      <svg class="entra" style="--i:3" viewBox="0 0 520 280" role="img" aria-labelledby="t-portada" xmlns="http://www.w3.org/2000/svg"><title id="t-portada">Un hilo de papel continuo con cuatro commits; cada uno apunta con una flecha a su padre. Del último, en ámbar, cuelga la etiqueta main, y HEAD apunta a main. A la derecha, punteado, el próximo commit.</title><defs><pattern id="portada-perf" width="32" height="16" patternUnits="userSpaceOnUse"><circle cx="16" cy="8" r="4" fill="var(--fondo)"/></pattern><marker id="portada-pta" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1 L8 5 L1 9 Z" style="fill:var(--tinta)"/></marker><marker id="portada-pta-g" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1 L8 5 L1 9 Z" style="fill:var(--gris)"/></marker></defs><rect x="0" y="20" width="520" height="240" fill="var(--superficie)"/><rect x="0" y="24" width="520" height="16" fill="url(#portada-perf)"/><rect x="0" y="240" width="520" height="16" fill="url(#portada-perf)"/><line x1="145" y1="150" x2="85" y2="150" stroke="var(--tinta)" stroke-width="2.5" marker-end="url(#portada-pta)"/><line x1="245" y1="150" x2="185" y2="150" stroke="var(--tinta)" stroke-width="2.5" marker-end="url(#portada-pta)"/><line x1="345" y1="150" x2="285" y2="150" stroke="var(--tinta)" stroke-width="2.5" marker-end="url(#portada-pta)"/><line x1="447" y1="150" x2="383.8" y2="150" stroke="var(--gris)" stroke-width="1.25" marker-end="url(#portada-pta-g)" stroke-dasharray="5 4"/><circle cx="64" cy="150" r="18" fill="var(--tinta)" stroke="var(--tinta)" stroke-width="2.5"/><text x="64" y="118" font-size="16.5" fill="var(--tinta-suave)" text-anchor="middle" font-family="var(--f-codigo)">98ca9</text><circle cx="164" cy="150" r="18" fill="var(--tinta)" stroke="var(--tinta)" stroke-width="2.5"/><text x="164" y="118" font-size="16.5" fill="var(--tinta-suave)" text-anchor="middle" font-family="var(--f-codigo)">34ac2</text><circle cx="264" cy="150" r="18" fill="var(--tinta)" stroke="var(--tinta)" stroke-width="2.5"/><text x="264" y="118" font-size="16.5" fill="var(--tinta-suave)" text-anchor="middle" font-family="var(--f-codigo)">f30ab</text><circle cx="364" cy="150" r="18" fill="var(--ambar)" stroke="var(--tinta)" stroke-width="2.5"/><text x="364" y="118" font-size="16.5" fill="var(--tinta)" text-anchor="middle" font-family="var(--f-codigo)" font-weight="600">c2b9e</text><circle cx="464" cy="150" r="16" fill="none" stroke="var(--gris)" stroke-width="1.25" stroke-dasharray="5 4"/><line x1="364" y1="168" x2="364" y2="184" stroke="var(--tinta)" stroke-width="2.5"/><rect x="331.0" y="184" width="66" height="28" rx="2" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="2.5"/><text x="364" y="204" font-size="16.5" fill="var(--tinta)" text-anchor="middle" font-family="var(--f-codigo)">main</text><path d="M403 198.0 L412 190 V206 Z" fill="var(--ambar)"/><rect x="412" y="184" width="66" height="28" rx="2" fill="var(--ambar)"/><text x="445" y="204" font-size="16.5" fill="#1D1B16" text-anchor="middle" font-family="var(--f-codigo)" font-weight="600">HEAD</text><g class="etiqueta" data-punto="114 150"><path d="M114 150 L114 62" stroke="var(--tinta)" stroke-width="1" fill="none" opacity=".7"/><circle cx="114" cy="150" r="3" fill="var(--tinta)"/><text x="120" y="66.5" font-size="13.5" font-weight="600" fill="var(--tinta)">Apunta a su padre</text><text x="120" y="83.5" font-size="12" fill="var(--tinta)" opacity=".75">cada uno, al anterior</text></g><g class="etiqueta" data-punto="464 134"><path d="M464 134 L464 62" stroke="var(--acento)" stroke-width="1" fill="none" opacity=".7"/><circle cx="464" cy="134" r="3" fill="var(--acento)"/><text x="458" y="66.5" font-size="13.5" font-weight="600" fill="var(--acento)" text-anchor="end">Próximo commit</text><text x="458" y="83.5" font-size="12" fill="var(--tinta)" opacity=".75" text-anchor="end">main y HEAD lo siguen</text></g></svg>
     </div>
     <dl class="cifras entra" style="--i:4">
       <div><dt>3</dt><dd>zonas por las que pasa cada cambio <a class="cita" href="https://git-scm.com/book/en/v2/Getting-Started-What-is-Git%3F">[1]</a></dd></div>
@@ -426,22 +396,7 @@ input[type="range"] { width: 100%; accent-color: var(--acento); }
         <p class="rotulo">02 · La pieza básica</p>
         <p class="termino">commit</p>
         <p class="termino-def">una foto de todos tus archivos, con un nombre que nadie más tiene</p>
-        <svg viewBox="0 0 320 210" role="img" aria-labelledby="t-commit">
-          <title id="t-commit">Un commit es una cuenta del hilo. De ella sale un hilo hacia la foto de tres archivos y otro hacia su padre, el commit anterior.</title>
-          <line x1="40" y1="160" x2="130" y2="160" class="l-gris"/>
-          <circle cx="40" cy="160" r="13" class="s-gris"/>
-          <text x="40" y="196" class="tx-s tx-c">padre</text>
-          <circle cx="130" cy="160" r="19" class="s-ambar"/>
-          <text x="130" y="200" class="tx tx-c">463dc4f</text>
-          <path d="M140 144 C160 110, 170 100, 186 92" class="l-ambar punteada"/>
-          <rect x="180" y="18" width="128" height="104" rx="2" class="l-tinta"/>
-          <text x="244" y="38" class="tx-s tx-c">foto</text>
-          <rect x="196" y="50" width="26" height="34" class="s-sup"/><rect x="196" y="50" width="26" height="34" class="l-tinta"/>
-          <rect x="231" y="50" width="26" height="34" class="s-sup"/><rect x="231" y="50" width="26" height="34" class="l-tinta"/>
-          <rect x="266" y="50" width="26" height="34" class="s-sup"/><rect x="266" y="50" width="26" height="34" class="l-tinta"/>
-          <text x="244" y="108" class="tx-s tx-c">todos los archivos</text>
-          <polygon points="58,160 68,155 68,165" class="s-gris"/>
-        </svg>
+        <svg viewBox="0 0 320 210" role="img" aria-labelledby="t-commit" xmlns="http://www.w3.org/2000/svg"><title id="t-commit">El commit 463dc4f, en ámbar, apunta a dos cosas: a la foto de todos los archivos y, con una flecha, a su padre, el commit anterior.</title><defs><marker id="commit-pta" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1 L8 5 L1 9 Z" style="fill:var(--tinta)"/></marker><marker id="commit-pta-a" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1 L8 5 L1 9 Z" style="fill:var(--ambar)"/></marker></defs><rect x="176" y="26" width="128" height="104" rx="3" fill="var(--superficie)" stroke="var(--tinta)" stroke-width="2.5"/><text x="188" y="48" font-size="14" fill="var(--tinta)" font-family="var(--f-titulos)" font-weight="700">foto</text><path d="M191 60 H210 L217 67 V94 H191 Z M210 60 V67 H217" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="1.25" stroke-linejoin="round" stroke-linecap="round"/><line x1="196" y1="74" x2="212" y2="74" stroke="var(--gris)" stroke-width="1"/><line x1="196" y1="80" x2="212" y2="80" stroke="var(--gris)" stroke-width="1"/><line x1="196" y1="86" x2="206" y2="86" stroke="var(--gris)" stroke-width="1"/><path d="M227 60 H246 L253 67 V94 H227 Z M246 60 V67 H253" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="1.25" stroke-linejoin="round" stroke-linecap="round"/><line x1="232" y1="74" x2="248" y2="74" stroke="var(--gris)" stroke-width="1"/><line x1="232" y1="80" x2="248" y2="80" stroke="var(--gris)" stroke-width="1"/><line x1="232" y1="86" x2="242" y2="86" stroke="var(--gris)" stroke-width="1"/><path d="M263 60 H282 L289 67 V94 H263 Z M282 60 V67 H289" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="1.25" stroke-linejoin="round" stroke-linecap="round"/><line x1="268" y1="74" x2="284" y2="74" stroke="var(--gris)" stroke-width="1"/><line x1="268" y1="80" x2="284" y2="80" stroke="var(--gris)" stroke-width="1"/><line x1="268" y1="86" x2="278" y2="86" stroke="var(--gris)" stroke-width="1"/><text x="240" y="118" font-size="12" fill="var(--tinta-suave)" text-anchor="middle">todos los archivos</text><path d="M138 136 V77 H172" fill="none" stroke="var(--ambar)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#commit-pta-a)"/><line x1="118" y1="156" x2="64" y2="156" stroke="var(--tinta)" stroke-width="2.5" marker-end="url(#commit-pta)"/><circle cx="48" cy="156" r="13" fill="var(--gris)" stroke="var(--tinta)" stroke-width="2.5"/><circle cx="138" cy="156" r="19" fill="var(--ambar)" stroke="var(--tinta)" stroke-width="2.5"/><text x="48" y="198" font-size="12" fill="var(--tinta-suave)" text-anchor="middle" font-family="var(--f-codigo)">padre</text><text x="138" y="198" font-size="12" fill="var(--tinta)" text-anchor="middle" font-family="var(--f-codigo)" font-weight="600">463dc4f</text></svg>
       </div>
       <div class="heroe-texto">
         <h2>Un commit es una foto de todo tu proyecto</h2>
@@ -518,48 +473,11 @@ input[type="range"] { width: 100%; accent-color: var(--acento); }
             </ol>
           </div>
         </div>
-        <div class="diagrama-scroll">
-          <svg viewBox="0 0 640 290" role="img" aria-labelledby="t-zonas">
-            <title id="t-zonas">Tres cajas de izquierda a derecha: working tree, staging area y directorio .git. Flecha git add de la primera a la segunda, git commit de la segunda a la tercera y git switch de vuelta del repositorio a la carpeta.</title>
-            <path data-une="wt staging add" d="M172 120 H236"/>
-            <polygon points="236,114 246,120 236,126" class="s-gris"/>
-            <path data-une="staging repo commit" d="M402 120 H466"/>
-            <polygon points="466,114 476,120 466,126" class="s-gris"/>
-            <path data-une="repo wt switch" d="M555 182 C555 262, 90 262, 90 192"/>
-            <polygon points="84,194 90,182 96,194" class="s-gris"/>
-
-            <g data-nodo="wt" tabindex="0" role="button" aria-label="Working tree">
-              <rect class="caja" x="10" y="58" width="162" height="124" rx="3"/>
-              <text x="91" y="84" class="tx-t tx-c">Working tree</text>
-              <text x="91" y="102" class="tx-s tx-c">tu carpeta</text>
-              <path d="M52 120 h22 l6 7 h30 v38 h-58 z" class="l-tinta"/>
-            </g>
-            <g data-nodo="staging" tabindex="0" role="button" aria-label="Staging area">
-              <rect class="caja" x="240" y="58" width="162" height="124" rx="3"/>
-              <text x="321" y="84" class="tx-t tx-c">Staging area</text>
-              <text x="321" y="102" class="tx-s tx-c">el index</text>
-              <path d="M281 138 v22 h80 v-22 M281 138 h18 l6 8 h32 l6 -8 h18" class="l-tinta"/>
-            </g>
-            <g data-nodo="repo" tabindex="0" role="button" aria-label="Directorio .git">
-              <rect class="caja" x="470" y="58" width="162" height="124" rx="3"/>
-              <text x="551" y="84" class="tx-t tx-c">.git</text>
-              <text x="551" y="102" class="tx-s tx-c">el repositorio</text>
-              <line x1="504" y1="146" x2="598" y2="146" class="l-tinta"/>
-              <circle cx="510" cy="146" r="8" class="s-tinta"/><circle cx="551" cy="146" r="8" class="s-tinta"/><circle cx="592" cy="146" r="8" class="s-ambar"/>
-            </g>
-            <g data-nodo="add" tabindex="0" role="button" aria-label="git add">
-              <rect class="etq" x="171" y="18" width="70" height="26" rx="2"/>
-              <text x="206" y="35" class="tx tx-c">git add</text>
-            </g>
-            <g data-nodo="commit" tabindex="0" role="button" aria-label="git commit">
-              <rect class="etq" x="393" y="18" width="86" height="26" rx="2"/>
-              <text x="436" y="35" class="tx tx-c">git commit</text>
-            </g>
-            <g data-nodo="switch" tabindex="0" role="button" aria-label="git switch">
-              <rect class="etq" x="273" y="232" width="96" height="26" rx="2"/>
-              <text x="321" y="249" class="tx tx-c">git switch</text>
-            </g>
-          </svg>
+        <div data-anima id="anima-zonas">
+          <div class="diagrama-scroll">
+          <svg viewBox="0 0 640 290" role="img" aria-labelledby="t-zonas" xmlns="http://www.w3.org/2000/svg"><title id="t-zonas">Tres cajas de izquierda a derecha: working tree, staging area y directorio .git, con el hilo de commits y la etiqueta main. Flecha git add de la primera a la segunda, git commit de la segunda a la tercera y git switch de vuelta del repositorio a la carpeta. Una copia de README.md viaja por las flechas.</title><defs><marker id="zonas-pta" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1 L8 5 L1 9 Z" style="fill:var(--tinta)"/></marker><clipPath id="zonas-hilo"><rect x="451" y="64" width="170" height="132"/></clipPath></defs><path data-une="wt staging add" d="M172 114 H230 M222 107 L230 114 L222 121" stroke-linejoin="round" stroke-linecap="round"/><path data-une="staging repo commit" d="M388 114 H446 M438 107 L446 114 L438 121" stroke-linejoin="round" stroke-linecap="round"/><path data-une="repo wt switch" d="M536 196 V240 Q536 248 528 248 H367 M263 248 H102 Q94 248 94 240 V199 M87 207 L94 199 L101 207" stroke-linejoin="round" stroke-linecap="round"/><line x1="202" y1="46" x2="202" y2="105" stroke="var(--gris)" stroke-width="1" stroke-dasharray="2 3"/><line x1="418" y1="46" x2="418" y2="105" stroke="var(--gris)" stroke-width="1" stroke-dasharray="2 3"/><g pointer-events="none"><path id="zn-f-add" class="flujo" d="M175 114 H220" stroke="var(--ambar)" stroke-width="2.5" fill="none" opacity="0"/><path id="zn-f-commit" class="flujo" d="M391 114 H436" stroke="var(--ambar)" stroke-width="2.5" fill="none" opacity="0"/></g><g data-nodo="wt" tabindex="0" role="button" aria-label="Working tree"><rect class="caja" x="16" y="64" width="156" height="132" rx="3"/><text x="94" y="90" font-size="17" fill="var(--tinta)" text-anchor="middle" font-family="var(--f-titulos)" font-weight="700">Working tree</text><text x="94" y="110" font-size="13" fill="var(--tinta-suave)" text-anchor="middle" font-family="var(--f-codigo)">tu carpeta</text></g><g data-nodo="staging" tabindex="0" role="button" aria-label="Staging area"><rect class="caja" x="232" y="64" width="156" height="132" rx="3"/><text x="310" y="90" font-size="17" fill="var(--tinta)" text-anchor="middle" font-family="var(--f-titulos)" font-weight="700">Staging area</text><text x="310" y="110" font-size="13" fill="var(--tinta-suave)" text-anchor="middle" font-family="var(--f-codigo)">el index</text></g><g data-nodo="repo" tabindex="0" role="button" aria-label="Directorio .git"><rect class="caja" x="448" y="64" width="176" height="132" rx="3"/><text x="536" y="90" font-size="17" fill="var(--tinta)" text-anchor="middle" font-family="var(--f-titulos)" font-weight="700">.git</text><text x="536" y="110" font-size="13" fill="var(--tinta-suave)" text-anchor="middle" font-family="var(--f-codigo)">el repositorio</text></g><g pointer-events="none"><rect x="30" y="134" width="128" height="32" rx="2" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="1.25"/><rect id="zn-wt-barra" x="30" y="134" width="5" height="32" fill="var(--rojo)"/><text x="43" y="155" font-size="13" fill="var(--tinta)" font-family="var(--f-codigo)">README.md</text><text x="148" y="155" font-size="13" fill="var(--rojo)" text-anchor="end" font-family="var(--f-codigo)" font-weight="700" id="zn-wt-m">M</text><rect x="246" y="134" width="128" height="32" rx="2" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="1.25"/><rect id="zn-ix-barra" x="246" y="134" width="5" height="32" fill="var(--gris)"/><text x="259" y="155" font-size="13" fill="var(--tinta)" font-family="var(--f-codigo)">README.md</text><text x="364" y="155" font-size="13" fill="var(--verde)" text-anchor="end" font-family="var(--f-codigo)" font-weight="700" id="zn-ix-m">M</text><g clip-path="url(#zonas-hilo)" pointer-events="none"><line id="zn-l1" x1="499" y1="150" x2="482" y2="150" stroke="var(--tinta)" stroke-width="1.25" marker-end="url(#zonas-pta)"/><line id="zn-l2" x1="539" y1="150" x2="522" y2="150" stroke="var(--tinta)" stroke-width="1.25" marker-end="url(#zonas-pta)"/><line id="zn-l3" x1="579" y1="150" x2="562" y2="150" stroke="var(--tinta)" stroke-width="1.25" marker-end="url(#zonas-pta)" opacity="0"/><circle id="zn-b0" cx="470" cy="150" r="10" fill="var(--tinta)" stroke="var(--tinta)" stroke-width="1.25"/><circle id="zn-b1" cx="510" cy="150" r="10" fill="var(--tinta)" stroke="var(--tinta)" stroke-width="1.25"/><circle id="zn-b2" cx="550" cy="150" r="10" fill="var(--ambar)" stroke="var(--tinta)" stroke-width="1.25"/><circle id="zn-b3" cx="590" cy="150" r="10" fill="var(--tinta)" stroke="var(--tinta)" stroke-width="1.25" opacity="0"/><g id="zn-main"><line x1="550" y1="160" x2="550" y2="166" stroke="var(--tinta)" stroke-width="1.25"/><rect x="528.0" y="166" width="44" height="20" rx="2" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="1.25"/><text x="550" y="181" font-size="12" fill="var(--tinta)" text-anchor="middle" font-family="var(--f-codigo)">main</text></g></g></g><g data-nodo="add" tabindex="0" role="button" aria-label="git add"><rect class="etq" x="163.7" y="22" width="76.6" height="24" rx="2"/><text x="202" y="39" font-size="13" fill="var(--tinta)" text-anchor="middle" font-family="var(--f-codigo)">git add</text></g><g data-nodo="commit" tabindex="0" role="button" aria-label="git commit"><rect class="etq" x="368" y="22" width="100" height="24" rx="2"/><text x="418" y="39" font-size="13" fill="var(--tinta)" text-anchor="middle" font-family="var(--f-codigo)">git commit</text></g><g data-nodo="switch" tabindex="0" role="button" aria-label="git switch"><rect class="etq" x="265" y="236" width="100" height="24" rx="2"/><text x="315" y="253" font-size="13" fill="var(--tinta)" text-anchor="middle" font-family="var(--f-codigo)">git switch</text></g><g id="zn-viaje" pointer-events="none" opacity="0"><g id="zn-viaje-in"><rect x="-64.0" y="-16.0" width="128" height="32" rx="2" fill="var(--fondo)" stroke="var(--ambar)" stroke-width="2.5"/><rect x="-64.0" y="-16.0" width="5" height="32" fill="var(--ambar)"/><text x="-51" y="5" font-size="13" fill="var(--tinta)" font-family="var(--f-codigo)">README.md</text></g></g></svg>
+          </div>
+          <p class="anima-fase"><b>Editas</b><span>Cambias README.md en tu carpeta. Solo cambió el working tree.</span></p>
         </div>
         <div class="ficha-nodo" aria-live="polite"></div>
         <p class="resultado" data-tras-prediccion="pred-clon">Al clonar se copia el <strong>directorio .git</strong>: la parte más importante, con todos los commits <a class="cita" href="https://git-scm.com/book/en/v2/Getting-Started-What-is-Git%3F">[1]</a>. Tu working tree y tu staging area son locales: los de la otra persona se arman desde esa copia.</p>
@@ -678,12 +596,12 @@ input[type="range"] { width: 100%; accent-color: var(--acento); }
       <div class="comparacion">
         <figure class="lado">
           <figcaption>Otros sistemas: una lista de cambios</figcaption>
-          <svg id="svg-deltas" viewBox="0 0 300 200" role="img" aria-labelledby="t-deltas"><title id="t-deltas">Versión 1 con los 8 archivos y, debajo, la versión 2 que solo guarda los cambios de los archivos que tocaste.</title><g data-dibujo></g></svg>
+          <svg id="svg-deltas" viewBox="0 0 300 200" role="img" aria-labelledby="t-deltas" xmlns="http://www.w3.org/2000/svg"><title id="t-deltas">Versión 1 con los 8 archivos y, debajo, la versión 2, que solo guarda un Δ por cada archivo que cambiaste.</title><defs><marker id="deltas-pta" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1 L8 5 L1 9 Z" style="fill:var(--gris)"/></marker></defs><text x="12" y="16" font-size="12" fill="var(--tinta-suave)" font-family="var(--f-codigo)">versión 1: todo</text><rect x="8" y="24" width="284" height="52" rx="3" fill="var(--superficie)" stroke="var(--tinta)" stroke-width="2.5"/><path d="M16 33 H35 L42 40 V67 H16 Z M35 33 V40 H42" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="1.25" stroke-linejoin="round" stroke-linecap="round"/><path d="M50.5 33 H69.5 L76.5 40 V67 H50.5 Z M69.5 33 V40 H76.5" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="1.25" stroke-linejoin="round" stroke-linecap="round"/><path d="M85 33 H104 L111 40 V67 H85 Z M104 33 V40 H111" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="1.25" stroke-linejoin="round" stroke-linecap="round"/><path d="M119.5 33 H138.5 L145.5 40 V67 H119.5 Z M138.5 33 V40 H145.5" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="1.25" stroke-linejoin="round" stroke-linecap="round"/><path d="M154 33 H173 L180 40 V67 H154 Z M173 33 V40 H180" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="1.25" stroke-linejoin="round" stroke-linecap="round"/><path d="M188.5 33 H207.5 L214.5 40 V67 H188.5 Z M207.5 33 V40 H214.5" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="1.25" stroke-linejoin="round" stroke-linecap="round"/><path d="M223 33 H242 L249 40 V67 H223 Z M242 33 V40 H249" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="1.25" stroke-linejoin="round" stroke-linecap="round"/><path d="M257.5 33 H276.5 L283.5 40 V67 H257.5 Z M276.5 33 V40 H283.5" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="1.25" stroke-linejoin="round" stroke-linecap="round"/><g data-dibujo></g></svg>
         </figure>
         <div class="divisor" aria-hidden="true"><span>vs</span></div>
         <figure class="lado git">
           <figcaption>Git: una foto completa con enlaces</figcaption>
-          <svg id="svg-fotos" viewBox="0 0 300 200" role="img" aria-labelledby="t-fotos"><title id="t-fotos">Commit 1 con 8 archivos y commit 2 con 8 lugares: los archivos que cambiaste son copias nuevas en ámbar y los demás son enlaces punteados al commit 1.</title><g data-dibujo></g></svg>
+          <svg id="svg-fotos" viewBox="0 0 300 200" role="img" aria-labelledby="t-fotos" xmlns="http://www.w3.org/2000/svg"><title id="t-fotos">Commit 1 con 8 archivos y commit 2 con 8 lugares: los archivos que cambiaste son copias nuevas en ámbar y los demás son enlaces punteados al archivo idéntico del commit 1.</title><defs><marker id="fotos-pta" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1 L8 5 L1 9 Z" style="fill:var(--gris)"/></marker></defs><text x="12" y="16" font-size="12" fill="var(--tinta-suave)" font-family="var(--f-codigo)">commit 1</text><rect x="8" y="24" width="284" height="52" rx="3" fill="var(--superficie)" stroke="var(--tinta)" stroke-width="2.5"/><path d="M16 33 H35 L42 40 V67 H16 Z M35 33 V40 H42" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="1.25" stroke-linejoin="round" stroke-linecap="round"/><path d="M50.5 33 H69.5 L76.5 40 V67 H50.5 Z M69.5 33 V40 H76.5" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="1.25" stroke-linejoin="round" stroke-linecap="round"/><path d="M85 33 H104 L111 40 V67 H85 Z M104 33 V40 H111" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="1.25" stroke-linejoin="round" stroke-linecap="round"/><path d="M119.5 33 H138.5 L145.5 40 V67 H119.5 Z M138.5 33 V40 H145.5" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="1.25" stroke-linejoin="round" stroke-linecap="round"/><path d="M154 33 H173 L180 40 V67 H154 Z M173 33 V40 H180" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="1.25" stroke-linejoin="round" stroke-linecap="round"/><path d="M188.5 33 H207.5 L214.5 40 V67 H188.5 Z M207.5 33 V40 H214.5" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="1.25" stroke-linejoin="round" stroke-linecap="round"/><path d="M223 33 H242 L249 40 V67 H223 Z M242 33 V40 H249" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="1.25" stroke-linejoin="round" stroke-linecap="round"/><path d="M257.5 33 H276.5 L283.5 40 V67 H257.5 Z M276.5 33 V40 H283.5" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="1.25" stroke-linejoin="round" stroke-linecap="round"/><g data-dibujo></g></svg>
           <p class="leyenda"><span class="ln">copia nueva</span><span class="le">enlace a la copia anterior</span></p>
         </figure>
       </div>
@@ -725,7 +643,7 @@ input[type="range"] { width: 100%; accent-color: var(--acento); }
       <p class="pasos-cuenta" aria-live="polite">Paso 1 de 6</p>
       <div class="pasos-cuerpo">
         <div class="diagrama-scroll">
-          <svg id="svg-ramas" viewBox="0 0 480 190" role="img" aria-labelledby="t-ramas"><title id="t-ramas">El hilo de commits del paso actual, con las etiquetas de rama main e idea y el marcador HEAD.</title><g data-dibujo></g></svg>
+          <svg id="svg-ramas" viewBox="0 0 480 190" role="img" aria-labelledby="t-ramas" xmlns="http://www.w3.org/2000/svg"><title id="t-ramas">El hilo de commits del paso actual: cada commit apunta a su padre, las etiquetas de rama main e idea cuelgan de un commit y HEAD apunta a la rama en la que estás.</title><defs><marker id="ramas-pta" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1 L8 5 L1 9 Z" style="fill:var(--tinta)"/></marker></defs><line x1="20" y1="58" x2="460" y2="58" stroke="var(--gris)" stroke-width="1" stroke-dasharray="2 5" opacity=".6"/><line x1="20" y1="120" x2="460" y2="120" stroke="var(--gris)" stroke-width="1" stroke-dasharray="2 5" opacity=".6"/><g data-dibujo></g></svg>
         </div>
         <div>
           <div class="paso" data-paso="0">
@@ -867,18 +785,7 @@ Switched to branch 'idea'</pre>
     <div class="enfasis">
       <p class="rotulo">07 · La regla que no se olvida</p>
       <h2 class="enfasis-frase">Una rama no es una copia de tu proyecto. Es un papelito con el hash de un commit.</h2>
-      <svg viewBox="0 0 460 150" role="img" aria-labelledby="t-regla">
-        <title id="t-regla">Una etiqueta colgada de una cuenta del hilo. Dice refs/heads/main y lleva escrito un hash de 40 caracteres seguido de un salto de línea: 41 bytes.</title>
-        <circle cx="30" cy="70" r="16" class="s-tinta"/>
-        <path d="M46 70 C58 70, 62 62, 76 62" class="l-tinta"/>
-        <path d="M76 30 H448 V110 H76 L60 70 Z" class="s-fondo"/>
-        <path d="M76 30 H448 V110 H76 L60 70 Z" class="l-tinta"/>
-        <circle cx="84" cy="70" r="5" class="s-ambar"/>
-        <text x="100" y="54" class="tx-s">refs/heads/main</text>
-        <text x="100" y="80" class="tx" style="font-size:12.5px">24b9da6552252987aa493b52f8696cd6d3b00373</text>
-        <text x="420" y="80" class="tx" style="fill:var(--rojo)">\n</text>
-        <text x="100" y="100" class="tx-s">40 caracteres + 1 salto de línea = 41 bytes</text>
-      </svg>
+      <svg viewBox="0 0 460 216" role="img" aria-labelledby="t-regla" xmlns="http://www.w3.org/2000/svg"><title id="t-regla">La rama main es el archivo refs/heads/main: dentro solo tiene los 40 caracteres del hash del commit al que apunta y un salto de línea. 40 + 1 = 41 bytes.</title><defs><marker id="regla-pta" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1 L8 5 L1 9 Z" style="fill:var(--tinta)"/></marker></defs><path d="M96 134 V30 H244 V54 H436 V134 Z" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/><text x="105" y="47" font-size="14.5" fill="var(--tinta)" font-family="var(--f-codigo)">refs/heads/main</text><rect x="108" y="64" width="290.0" height="26" fill="var(--superficie)" stroke="var(--gris)" stroke-width="1"/><path d="M122.5 64V90M137 64V90M151.5 64V90M166 64V90M180.5 64V90M195 64V90M209.5 64V90M224 64V90M238.5 64V90M253 64V90M267.5 64V90M282 64V90M296.5 64V90M311 64V90M325.5 64V90M340 64V90M354.5 64V90M369 64V90M383.5 64V90" stroke="var(--gris)" stroke-width="1" opacity=".6"/><text x="115.2" y="82" font-size="14.5" fill="var(--tinta)" text-anchor="middle" font-family="var(--f-codigo)">2</text><text x="129.8" y="82" font-size="14.5" fill="var(--tinta)" text-anchor="middle" font-family="var(--f-codigo)">4</text><text x="144.2" y="82" font-size="14.5" fill="var(--tinta)" text-anchor="middle" font-family="var(--f-codigo)">b</text><text x="158.8" y="82" font-size="14.5" fill="var(--tinta)" text-anchor="middle" font-family="var(--f-codigo)">9</text><text x="173.2" y="82" font-size="14.5" fill="var(--tinta)" text-anchor="middle" font-family="var(--f-codigo)">d</text><text x="187.8" y="82" font-size="14.5" fill="var(--tinta)" text-anchor="middle" font-family="var(--f-codigo)">a</text><text x="202.2" y="82" font-size="14.5" fill="var(--tinta)" text-anchor="middle" font-family="var(--f-codigo)">6</text><text x="216.8" y="82" font-size="14.5" fill="var(--tinta)" text-anchor="middle" font-family="var(--f-codigo)">5</text><text x="231.2" y="82" font-size="14.5" fill="var(--tinta)" text-anchor="middle" font-family="var(--f-codigo)">5</text><text x="245.8" y="82" font-size="14.5" fill="var(--tinta)" text-anchor="middle" font-family="var(--f-codigo)">2</text><text x="260.2" y="82" font-size="14.5" fill="var(--tinta)" text-anchor="middle" font-family="var(--f-codigo)">2</text><text x="274.8" y="82" font-size="14.5" fill="var(--tinta)" text-anchor="middle" font-family="var(--f-codigo)">5</text><text x="289.2" y="82" font-size="14.5" fill="var(--tinta)" text-anchor="middle" font-family="var(--f-codigo)">2</text><text x="303.8" y="82" font-size="14.5" fill="var(--tinta)" text-anchor="middle" font-family="var(--f-codigo)">9</text><text x="318.2" y="82" font-size="14.5" fill="var(--tinta)" text-anchor="middle" font-family="var(--f-codigo)">8</text><text x="332.8" y="82" font-size="14.5" fill="var(--tinta)" text-anchor="middle" font-family="var(--f-codigo)">7</text><text x="347.2" y="82" font-size="14.5" fill="var(--tinta)" text-anchor="middle" font-family="var(--f-codigo)">a</text><text x="361.8" y="82" font-size="14.5" fill="var(--tinta)" text-anchor="middle" font-family="var(--f-codigo)">a</text><text x="376.2" y="82" font-size="14.5" fill="var(--tinta)" text-anchor="middle" font-family="var(--f-codigo)">4</text><text x="390.8" y="82" font-size="14.5" fill="var(--tinta)" text-anchor="middle" font-family="var(--f-codigo)">9</text><rect x="108" y="96" width="290.0" height="26" fill="var(--superficie)" stroke="var(--gris)" stroke-width="1"/><path d="M122.5 96V122M137 96V122M151.5 96V122M166 96V122M180.5 96V122M195 96V122M209.5 96V122M224 96V122M238.5 96V122M253 96V122M267.5 96V122M282 96V122M296.5 96V122M311 96V122M325.5 96V122M340 96V122M354.5 96V122M369 96V122M383.5 96V122" stroke="var(--gris)" stroke-width="1" opacity=".6"/><text x="115.2" y="114" font-size="14.5" fill="var(--tinta)" text-anchor="middle" font-family="var(--f-codigo)">3</text><text x="129.8" y="114" font-size="14.5" fill="var(--tinta)" text-anchor="middle" font-family="var(--f-codigo)">b</text><text x="144.2" y="114" font-size="14.5" fill="var(--tinta)" text-anchor="middle" font-family="var(--f-codigo)">5</text><text x="158.8" y="114" font-size="14.5" fill="var(--tinta)" text-anchor="middle" font-family="var(--f-codigo)">2</text><text x="173.2" y="114" font-size="14.5" fill="var(--tinta)" text-anchor="middle" font-family="var(--f-codigo)">f</text><text x="187.8" y="114" font-size="14.5" fill="var(--tinta)" text-anchor="middle" font-family="var(--f-codigo)">8</text><text x="202.2" y="114" font-size="14.5" fill="var(--tinta)" text-anchor="middle" font-family="var(--f-codigo)">6</text><text x="216.8" y="114" font-size="14.5" fill="var(--tinta)" text-anchor="middle" font-family="var(--f-codigo)">9</text><text x="231.2" y="114" font-size="14.5" fill="var(--tinta)" text-anchor="middle" font-family="var(--f-codigo)">6</text><text x="245.8" y="114" font-size="14.5" fill="var(--tinta)" text-anchor="middle" font-family="var(--f-codigo)">c</text><text x="260.2" y="114" font-size="14.5" fill="var(--tinta)" text-anchor="middle" font-family="var(--f-codigo)">d</text><text x="274.8" y="114" font-size="14.5" fill="var(--tinta)" text-anchor="middle" font-family="var(--f-codigo)">6</text><text x="289.2" y="114" font-size="14.5" fill="var(--tinta)" text-anchor="middle" font-family="var(--f-codigo)">d</text><text x="303.8" y="114" font-size="14.5" fill="var(--tinta)" text-anchor="middle" font-family="var(--f-codigo)">3</text><text x="318.2" y="114" font-size="14.5" fill="var(--tinta)" text-anchor="middle" font-family="var(--f-codigo)">b</text><text x="332.8" y="114" font-size="14.5" fill="var(--tinta)" text-anchor="middle" font-family="var(--f-codigo)">0</text><text x="347.2" y="114" font-size="14.5" fill="var(--tinta)" text-anchor="middle" font-family="var(--f-codigo)">0</text><text x="361.8" y="114" font-size="14.5" fill="var(--tinta)" text-anchor="middle" font-family="var(--f-codigo)">3</text><text x="376.2" y="114" font-size="14.5" fill="var(--tinta)" text-anchor="middle" font-family="var(--f-codigo)">7</text><text x="390.8" y="114" font-size="14.5" fill="var(--tinta)" text-anchor="middle" font-family="var(--f-codigo)">3</text><rect x="398" y="96" width="26" height="26" fill="var(--fondo)" stroke="var(--rojo)" stroke-width="1.25"/><text x="411" y="114" font-size="14.5" fill="var(--rojo)" text-anchor="middle" font-family="var(--f-codigo)" font-weight="700">\n</text><line x1="95" y1="109" x2="59" y2="109" stroke="var(--tinta)" stroke-width="2.5" marker-end="url(#regla-pta)"/><circle cx="40" cy="109" r="16" fill="var(--tinta)" stroke="var(--tinta)" stroke-width="2.5"/><text x="40" y="83" font-size="14.5" fill="var(--tinta)" text-anchor="middle" font-family="var(--f-codigo)">24b9da6</text><text x="266" y="174" font-size="14.5" fill="var(--tinta)" text-anchor="middle" font-family="var(--f-codigo)" font-weight="600">40 + 1 = 41 bytes</text><g class="etiqueta" data-punto="411 122"><path d="M411 122 L411 188" stroke="var(--tinta)" stroke-width="1" fill="none" opacity=".7"/><circle cx="411" cy="122" r="3" fill="var(--tinta)"/><text x="405" y="192.5" font-size="13.5" font-weight="600" fill="var(--tinta)" text-anchor="end">Salto de línea</text><text x="405" y="209.5" font-size="12" fill="var(--tinta)" opacity=".75" text-anchor="end">el byte 41</text></g><g class="etiqueta" data-punto="40 125"><path d="M40 125 L40 188" stroke="var(--tinta)" stroke-width="1" fill="none" opacity=".7"/><circle cx="40" cy="125" r="3" fill="var(--tinta)"/><text x="46" y="192.5" font-size="13.5" font-weight="600" fill="var(--tinta)">El commit</text><text x="46" y="209.5" font-size="12" fill="var(--tinta)" opacity=".75">al que apunta main</text></g></svg>
       <p>Por dentro, una rama es un archivo que contiene los 40 caracteres del hash del commit al que apunta. Crearla es escribir 41 bytes, y por eso crear y borrar ramas es barato <a class="cita" href="https://git-scm.com/book/en/v2/Git-Branching-Branches-in-a-Nutshell">[2]</a>.</p>
       <p>Para nombrar un commit no necesitas los 40: bastan los primeros, si son al menos 4 y ningún otro objeto empieza igual. <code>git log --abbrev-commit</code> muestra 7 <a class="cita" href="https://git-scm.com/book/id/v2/Git-Tools-Revision-Selection">[9]</a>.</p>
     </div>
@@ -893,28 +800,7 @@ Switched to branch 'idea'</pre>
     </div>
     <div class="mosaico">
       <figure class="m-grande">
-        <svg viewBox="0 0 420 250" role="img" aria-labelledby="t-remotos">
-          <title id="t-remotos">Dos hilos: arriba el de origin, el servidor, con tres commits; abajo el tuyo, con cuatro. En el tuyo, un marcador origin/main recuerda dónde estaba el servidor. Una flecha git push sube el cuarto commit y otra git fetch baja lo nuevo del servidor.</title>
-          <text x="20" y="28" class="tx-t">origin</text><text x="82" y="28" class="tx-s">el servidor</text>
-          <line x1="40" y1="62" x2="240" y2="62" class="l-tinta"/>
-          <line x1="240" y1="62" x2="300" y2="62" class="l-gris punteada"/>
-          <circle cx="60" cy="62" r="12" class="s-tinta"/><circle cx="140" cy="62" r="12" class="s-tinta"/><circle cx="220" cy="62" r="12" class="s-tinta"/>
-          <circle cx="300" cy="62" r="12" class="l-gris punteada"/>
-          <text x="20" y="150" class="tx-t">tu máquina</text>
-          <line x1="40" y1="182" x2="300" y2="182" class="l-tinta"/>
-          <circle cx="60" cy="182" r="12" class="s-tinta"/><circle cx="140" cy="182" r="12" class="s-tinta"/><circle cx="220" cy="182" r="12" class="s-tinta"/>
-          <circle cx="300" cy="182" r="13" class="s-ambar"/>
-          <line x1="220" y1="194" x2="220" y2="206" class="l-gris punteada"/>
-          <rect x="178" y="206" width="84" height="22" rx="2" class="l-gris punteada"/>
-          <text x="220" y="221" class="tx-s tx-c">origin/main</text>
-          <line x1="300" y1="195" x2="300" y2="206" class="l-tinta"/>
-          <rect x="272" y="206" width="56" height="22" rx="2" class="s-fondo"/><rect x="272" y="206" width="56" height="22" rx="2" class="l-tinta"/>
-          <text x="300" y="221" class="tx tx-c">main</text>
-          <path d="M300 168 V82" class="l-ambar"/><polygon points="294,84 300,74 306,84" class="s-ambar"/>
-          <text x="312" y="128" class="tx">git push</text>
-          <path d="M100 76 V164" class="l-gris"/><polygon points="94,162 100,172 106,162" class="s-gris"/>
-          <text x="108" y="128" class="tx-s">git fetch</text>
-        </svg>
+        <svg viewBox="0 0 420 312" role="img" aria-labelledby="t-remotos" xmlns="http://www.w3.org/2000/svg"><title id="t-remotos">Dos repositorios. Arriba origin, el servidor, con los commits A, B y C y su rama main en C. Abajo tu máquina, con A, B, C y tu commit nuevo D, en ámbar, donde está tu main; el marcador origin/main recuerda que el servidor estaba en C. git push sube D al servidor; git fetch baja lo nuevo y mueve origin/main.</title><defs><marker id="remotos-pta" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1 L8 5 L1 9 Z" style="fill:var(--tinta)"/></marker><marker id="remotos-pta-a" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1 L8 5 L1 9 Z" style="fill:var(--ambar)"/></marker><marker id="remotos-pta-s" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1 L8 5 L1 9 Z" style="fill:var(--tinta-suave)"/></marker></defs><rect x="16" y="16" width="388" height="124" rx="3" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="1.25"/><rect x="16" y="166" width="388" height="130" rx="3" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="1.25"/><text x="30" y="42" font-size="17" fill="var(--tinta)" font-family="var(--f-titulos)" font-weight="700">origin</text><text x="96" y="42" font-size="15" fill="var(--tinta-suave)" font-family="var(--f-codigo)">el servidor</text><text x="30" y="192" font-size="17" fill="var(--tinta)" font-family="var(--f-titulos)" font-weight="700">tu máquina</text><line x1="130" y1="82" x2="94" y2="82" stroke="var(--tinta)" stroke-width="2.5" marker-end="url(#remotos-pta)"/><line x1="200" y1="82" x2="164" y2="82" stroke="var(--tinta)" stroke-width="2.5" marker-end="url(#remotos-pta)"/><circle cx="76" cy="82" r="15" fill="var(--tinta)" stroke="var(--tinta)" stroke-width="2.5"/><text x="76" y="87.5" font-size="15" fill="var(--fondo)" text-anchor="middle" font-family="var(--f-codigo)" font-weight="700">A</text><circle cx="146" cy="82" r="15" fill="var(--tinta)" stroke="var(--tinta)" stroke-width="2.5"/><text x="146" y="87.5" font-size="15" fill="var(--fondo)" text-anchor="middle" font-family="var(--f-codigo)" font-weight="700">B</text><circle cx="216" cy="82" r="15" fill="var(--tinta)" stroke="var(--tinta)" stroke-width="2.5"/><text x="216" y="87.5" font-size="15" fill="var(--fondo)" text-anchor="middle" font-family="var(--f-codigo)" font-weight="700">C</text><line x1="270" y1="82" x2="232.8" y2="82" stroke="var(--gris)" stroke-width="1.25" marker-end="url(#remotos-pta)" stroke-dasharray="4 4" opacity=".8"/><circle cx="286" cy="82" r="15" fill="none" stroke="var(--gris)" stroke-width="1.25" stroke-dasharray="4 4"/><line x1="130" y1="242" x2="94" y2="242" stroke="var(--tinta)" stroke-width="2.5" marker-end="url(#remotos-pta)"/><line x1="200" y1="242" x2="164" y2="242" stroke="var(--tinta)" stroke-width="2.5" marker-end="url(#remotos-pta)"/><line x1="270" y1="242" x2="234" y2="242" stroke="var(--tinta)" stroke-width="2.5" marker-end="url(#remotos-pta)"/><circle cx="76" cy="242" r="15" fill="var(--tinta)" stroke="var(--tinta)" stroke-width="2.5"/><text x="76" y="247.5" font-size="15" fill="var(--fondo)" text-anchor="middle" font-family="var(--f-codigo)" font-weight="700">A</text><circle cx="146" cy="242" r="15" fill="var(--tinta)" stroke="var(--tinta)" stroke-width="2.5"/><text x="146" y="247.5" font-size="15" fill="var(--fondo)" text-anchor="middle" font-family="var(--f-codigo)" font-weight="700">B</text><circle cx="216" cy="242" r="15" fill="var(--tinta)" stroke="var(--tinta)" stroke-width="2.5"/><text x="216" y="247.5" font-size="15" fill="var(--fondo)" text-anchor="middle" font-family="var(--f-codigo)" font-weight="700">C</text><circle cx="286" cy="242" r="15" fill="var(--ambar)" stroke="var(--tinta)" stroke-width="2.5"/><text x="286" y="247.5" font-size="15" fill="#1D1B16" text-anchor="middle" font-family="var(--f-codigo)" font-weight="700">D</text><line x1="216" y1="97" x2="216" y2="104" stroke="var(--tinta)" stroke-width="2.5"/><rect x="186.0" y="104" width="60" height="24" rx="2" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="2.5"/><text x="216" y="121" font-size="15" fill="var(--tinta)" text-anchor="middle" font-family="var(--f-codigo)">main</text><line x1="216" y1="227" x2="216" y2="220" stroke="var(--gris)" stroke-width="1.25" stroke-dasharray="4 3"/><rect x="160.0" y="196" width="112" height="24" rx="2" fill="var(--superficie)" stroke="var(--gris)" stroke-width="1.25" stroke-dasharray="4 3"/><text x="216" y="213" font-size="15" fill="var(--tinta-suave)" text-anchor="middle" font-family="var(--f-codigo)">origin/main</text><line x1="286" y1="257" x2="286" y2="264" stroke="var(--tinta)" stroke-width="2.5"/><rect x="256.0" y="264" width="60" height="24" rx="2" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="2.5"/><text x="286" y="281" font-size="15" fill="var(--tinta)" text-anchor="middle" font-family="var(--f-codigo)">main</text><line x1="216" y1="129" x2="216" y2="193" stroke="var(--tinta-suave)" stroke-width="2.5" marker-end="url(#remotos-pta-s)"/><text x="206" y="158" font-size="15" fill="var(--tinta-suave)" text-anchor="end" font-family="var(--f-codigo)">git fetch</text><line x1="286" y1="226" x2="286" y2="101" stroke="var(--ambar)" stroke-width="2.5" marker-end="url(#remotos-pta-a)"/><text x="296" y="158" font-size="15" fill="var(--tinta)" font-family="var(--f-codigo)" font-weight="600">git push</text></svg>
         <figcaption>El marcador <code>origin/main</code> recuerda dónde estaba la rama del servidor la última vez que te conectaste; git lo mueve solo cuando hablas con el servidor <a class="cita" href="https://git-scm.com/book/en/v2/Git-Branching-Remote-Branches">[11]</a>.</figcaption>
       </figure>
       <article class="m-a">
@@ -1359,6 +1245,71 @@ Switched to branch 'idea'</pre>
   activar(caja.querySelector('[data-nodo="wt"]'), false);
 })();
 
+// ---------- 03 · Animación: un cambio viaja working tree → staging area → .git ----------
+// Todo sale de la fase (0 a 1). La geometría es la del SVG (generada por /tmp/forja-gen/git/generar.py).
+// Colores: rojo = cambio sin añadir, verde = listo en el staging area, ámbar = commit nuevo.
+(() => {
+  const caja = document.getElementById('anima-zonas');
+  if (!caja) return;
+  const $ = id => caja.querySelector('#' + id);
+  const set = (el, o) => Object.entries(o).forEach(([k, v]) => el.setAttribute(k, v));
+  const G = {"cy": 150, "x0": 470, "dx": 40, "r": 10, "tagw": 44, "tagy": 166, "tagh": 20, "wt": {"x": 16, "w": 156}, "ix": {"x": 232, "w": 156}, "git": {"x": 448, "w": 176}, "top": 64, "alto": 132, "card_y": 134, "card_h": 32, "flecha_y": 114};
+  const suave = t => t <= 0 ? 0 : t >= 1 ? 1 : t * t * (3 - 2 * t);
+  const tramo = (f, a, b) => suave((f - a) / (b - a));
+  const centro = z => [z.x + z.w / 2, G.card_y + G.card_h / 2];
+  const [wx, wy] = centro(G.wt), [ix, iy] = centro(G.ix);
+  const FASES = [
+    [0.18, 'Editas', 'var(--rojo)', 'Cambias README.md en tu carpeta. Solo cambió el working tree: <code>git status -s</code> muestra <code style="white-space:pre"> M README.md</code>, con la M en la columna derecha.'],
+    [0.42, 'git add', 'var(--verde)', '<code>git add</code> copia el contenido de este momento al staging area. El archivo sigue en tu carpeta. <code>git status -s</code> muestra <code style="white-space:pre">M  README.md</code>, con la M en la columna izquierda.'],
+    [0.68, 'git commit', 'var(--acento)', '<code>git commit</code> guarda en .git una foto de lo que hay en el staging area: un commit nuevo que apunta a su padre. main avanza hasta él.'],
+    [1.01, 'Guardado', 'var(--tinta-suave)', 'Las tres zonas coinciden: <code>nothing to commit, working tree clean</code>. El staging area no se vacía: queda igual al último commit.'],
+  ];
+  forja.animar(caja, f => {
+    const add = tramo(f, 0.18, 0.34), llegoAdd = f >= 0.34;
+    const com = tramo(f, 0.44, 0.58), llegoCom = f >= 0.58;
+    const tag = tramo(f, 0.58, 0.66), corre = tramo(f, 0.84, 1);
+    // Working tree: modificado (rojo) hasta que git add copia el contenido.
+    const mod = !llegoAdd;
+    $('zn-wt-barra').setAttribute('fill', mod ? 'var(--rojo)' : 'var(--gris)');
+    $('zn-wt-m').setAttribute('opacity', mod ? 1 : 0);
+    // Staging area: distinto del último commit (verde) entre git add y git commit.
+    const listo = llegoAdd && !llegoCom;
+    $('zn-ix-barra').setAttribute('fill', listo ? 'var(--verde)' : 'var(--gris)');
+    $('zn-ix-m').setAttribute('opacity', listo ? 1 : 0);
+    // Hilo en .git: la cuarta cuenta nace con el commit; al final todo corre un lugar a la izquierda.
+    const xs = [0, 1, 2, 3].map(i => G.x0 + (i - corre) * G.dx);
+    const op = [1 - corre, 1, 1, tramo(f, 0.58, 0.62)];
+    xs.forEach((x, i) => {
+      const b = $('zn-b' + i);
+      set(b, { cx: x.toFixed(1), opacity: op[i].toFixed(2), r: (i === 3 ? G.r * (0.4 + 0.6 * op[3]) : G.r).toFixed(1) });
+      b.setAttribute('fill', (i === 3 || (i === 2 && !llegoCom)) ? 'var(--ambar)' : 'var(--tinta)');
+    });
+    for (let i = 1; i < 4; i++) {
+      set($('zn-l' + i), { x1: (xs[i] - G.r - 1).toFixed(1), x2: (xs[i - 1] + G.r + 2).toFixed(1),
+        opacity: Math.min(op[i], op[i - 1]).toFixed(2) });
+    }
+    const tx = xs[2] + (xs[3] - xs[2]) * tag;
+    $('zn-main').setAttribute('transform', `translate(${(tx - (G.x0 + 2 * G.dx)).toFixed(1)} 0)`);
+    // La copia que viaja: de la carpeta al staging area (add) y del staging area al hilo (commit).
+    const v = $('zn-viaje'), vin = $('zn-viaje-in');
+    if (f >= 0.18 && f < 0.34) {
+      set(v, { opacity: 1, transform: `translate(${(wx + (ix - wx) * add).toFixed(1)} ${(wy - 18 * Math.sin(Math.PI * add)).toFixed(1)})` });
+      vin.setAttribute('transform', 'scale(1)');
+    } else if (f >= 0.44 && f < 0.58) {
+      const gx = G.x0 + 3 * G.dx, gy = G.cy;
+      set(v, { opacity: 1, transform: `translate(${(ix + (gx - ix) * com).toFixed(1)} ${(iy + (gy - iy) * com - 18 * Math.sin(Math.PI * com)).toFixed(1)})` });
+      vin.setAttribute('transform', `scale(${(1 - 0.75 * com).toFixed(3)})`);
+    } else v.setAttribute('opacity', 0);
+    $('zn-f-add').setAttribute('opacity', f >= 0.18 && f < 0.34 ? 1 : 0);
+    $('zn-f-commit').setAttribute('opacity', f >= 0.44 && f < 0.58 ? 1 : 0);
+    // Narración
+    const [, et, color, texto] = FASES.find(([fin]) => f < fin);
+    const b = caja.querySelector('.anima-fase b');
+    b.textContent = et; b.style.background = color;
+    caja.querySelector('.anima-fase span').innerHTML = texto;
+  }, { periodo: 10, pasos: 20 });
+})();
+
 // ---------- 04 · Mesa de trabajo (probador de add y commit) ----------
 (() => {
   const caja = document.getElementById('mesa-lab');
@@ -1510,23 +1461,27 @@ Switched to branch 'idea'</pre>
   const gF = caja.querySelector('#svg-fotos [data-dibujo]');
   const expl = caja.querySelector('#fotos-expl');
   const term = caja.querySelector('[data-term]');
-  const x = i => 14 + i * 35;
+  // Geometría de los dos SVG (la misma que generar.py): marco del commit 2 en y = f2, archivos de w × h.
+  const G = {"x0": 16, "dx": 34.5, "w": 26, "h": 34, "f1": 24, "f2": 118, "fh": 52, "fx": 8, "fw": 284};
+  const x = i => G.x0 + i * G.dx;
+  const doc = (xx, y, relleno, borde, extra = '') =>
+    `<path d="M${xx} ${y} H${xx + G.w - 7} L${xx + G.w} ${y + 7} V${y + G.h} H${xx} Z M${xx + G.w - 7} ${y} V${y + 7} H${xx + G.w}" fill="${relleno}" stroke="${borde}" stroke-width="1.25" stroke-linejoin="round"${extra}/>`;
+  const marco = (solido) => `<rect x="${G.fx}" y="${G.f2}" width="${G.fw}" height="${G.fh}" rx="3" fill="${solido ? 'var(--superficie)' : 'none'}" stroke="${solido ? 'var(--tinta)' : 'var(--gris)'}" stroke-width="${solido ? 2.5 : 1.25}"${solido ? '' : ' stroke-dasharray="5 4"'}/>`;
+  const rotulo = t => `<text x="12" y="190" font-size="12" fill="var(--tinta-suave)" font-family="var(--f-codigo)">${t}</text>`;
+  const yd = G.f2 + 9;
 
   const dibujar = n => {
-    // Lista de cambios
-    let d = '<text x="14" y="20" class="tx-s">versión 1: todo</text>';
-    for (let i = 0; i < TOTAL; i++) d += `<rect x="${x(i)}" y="30" width="27" height="34" class="s-sup"/><rect x="${x(i)}" y="30" width="27" height="34" class="l-tinta" style="stroke-width:1.5"/>`;
-    d += '<text x="14" y="196" class="tx-s">versión 2: solo lo cambiado</text>';
-    for (let i = 0; i < n; i++) d += `<rect x="${x(i)}" y="142" width="27" height="14" class="s-rojo"/><text x="${x(i) + 13.5}" y="174" class="tx-s tx-c">Δ</text>`;
-    if (!n) d += '<text x="14" y="158" class="tx-s">(nada)</text>';
+    // Lista de cambios: la versión 2 guarda solo un Δ por archivo cambiado.
+    let d = marco(true) + rotulo('versión 2: solo lo cambiado');
+    for (let i = 0; i < n; i++) d += `<rect x="${x(i)}" y="${yd + 8}" width="${G.w}" height="18" rx="2" fill="var(--rojo)"/><text x="${x(i) + G.w / 2}" y="${yd + 21.5}" font-size="12" fill="var(--fondo)" text-anchor="middle" font-family="var(--f-codigo)" font-weight="700">Δ</text>`;
+    if (!n) d += `<text x="150" y="${G.f2 + G.fh / 2 + 4}" font-size="12" fill="var(--tinta-suave)" text-anchor="middle" font-family="var(--f-codigo)">(nada)</text>`;
     gD.innerHTML = d;
-    // Fotos con enlaces
-    let f = '<text x="14" y="20" class="tx-s">commit 1</text>';
-    for (let i = 0; i < TOTAL; i++) f += `<rect x="${x(i)}" y="30" width="27" height="34" class="s-sup"/><rect x="${x(i)}" y="30" width="27" height="34" class="l-tinta" style="stroke-width:1.5"/>`;
-    f += `<text x="14" y="196" class="tx-s">${n ? 'commit 2: foto completa' : 'sin commit 2: nada que guardar'}</text>`;
-    if (n) for (let i = 0; i < TOTAL; i++) {
-      if (i < n) f += `<rect x="${x(i)}" y="142" width="27" height="34" class="s-ambar"/><rect x="${x(i)}" y="142" width="27" height="34" class="l-tinta" style="stroke-width:1.5"/>`;
-      else f += `<line x1="${x(i) + 13.5}" y1="141" x2="${x(i) + 13.5}" y2="66" class="l-gris punteada" style="stroke-width:1.5"/><rect x="${x(i)}" y="142" width="27" height="34" class="l-tinta punteada" style="stroke-width:1.5"/>`;
+    // Git: el commit 2 es una foto completa; lo que no cambió es un enlace al archivo idéntico del commit 1.
+    let f = marco(n > 0) + rotulo(n ? 'commit 2: foto completa' : 'sin commit 2: nada que guardar');
+    if (n) for (let i = 0; i < 8; i++) {
+      if (i < n) f += doc(x(i), yd, 'var(--ambar)', 'var(--tinta)');
+      else f += `<line x1="${x(i) + G.w / 2}" y1="${yd - 2}" x2="${x(i) + G.w / 2}" y2="${G.f1 + 9 + G.h + 4}" stroke="var(--gris)" stroke-width="1.25" stroke-dasharray="3 3" marker-end="url(#fotos-pta)"/>` +
+        doc(x(i), yd, 'none', 'var(--gris)', ' stroke-dasharray="3 3"');
     }
     gF.innerHTML = f;
 
@@ -1570,8 +1525,11 @@ Switched to branch 'idea'</pre>
     { c: ['A', 'B', 'C', 'D', 'E'], main: 'E', idea: 'D', head: 'main' },
     { c: ['A', 'B', 'C', 'D', 'E', 'F'], main: 'F', idea: 'D', head: 'main' },
   ];
-  const POS = { A: [50, 105], B: [130, 105], C: [210, 105], D: [300, 50], E: [300, 105], F: [390, 105] };
-  const ARISTAS = [['A', 'B'], ['B', 'C'], ['C', 'D'], ['C', 'E'], ['E', 'F'], ['D', 'F']];
+  // Geometría (la misma que generar.py, que comprueba todos los pasos): fila de main y fila de idea.
+  const G = {"R": 14, "YM": 120, "YI": 58, "POS": {"A": [40, 120], "B": [112, 120], "C": [184, 120], "D": [268, 58], "E": [268, 120], "F": [352, 120]}, "tagw": 52, "tagh": 20};
+  const R = G.R, POS = G.POS;
+  // Cada commit apunta a su(s) padre(s): la flecha sale del hijo y la punta toca al padre.
+  const PADRES = { B: ['A'], C: ['B'], D: ['C'], E: ['C'], F: ['E', 'D'] };
   let actual = Math.min(pasos.length - 1, Math.max(0, Number(forja.leer('paso')) || 0));
 
   const revelado = i => {
@@ -1579,38 +1537,43 @@ Switched to branch 'idea'</pre>
     if (!p) return true;
     return !!document.querySelector(`[data-tras-prediccion="${p.id}"]`)?.classList.contains('revelado');
   };
-  const etiqueta = (nombre, commit, arriba, movida) => {
+  const f1 = v => Math.round(v * 10) / 10;
+  const flecha = (h, p) => {
+    const [hx, hy] = POS[h], [px, py] = POS[p], k = Math.SQRT1_2;
+    const a = ' stroke="var(--tinta)" stroke-width="2.5" fill="none" marker-end="url(#ramas-pta)"';
+    if (hy === py) return `<line x1="${hx - R - 1}" y1="${hy}" x2="${px + R + 3}" y2="${py}"${a}/>`;
+    if (hy < py)   // el hijo está arriba (D → C): sale horizontal y entra en diagonal
+      return `<path d="M${hx - R - 1} ${hy} C${hx - R - 30} ${hy}, ${px + 22} ${py - 22}, ${f1(px + (R + 3) * k)} ${f1(py - (R + 3) * k)}"${a}/>`;
+    // el hijo está abajo (F → D): sale en diagonal y entra horizontal
+    return `<path d="M${f1(hx - (R + 1) * k)} ${f1(hy - (R + 1) * k)} C${hx - 22} ${hy - 22}, ${px + R + 30} ${py}, ${px + R + 3} ${py}"${a}/>`;
+  };
+  const etiqueta = (nombre, commit, arriba, movida, head) => {
     const [x, y] = POS[commit];
-    const y0 = arriba ? y - 13 : y + 13, y1 = arriba ? y - 26 : y + 26, ry = arriba ? y - 46 : y + 26;
-    return `<g class="${movida ? 'etq-mov' : ''}"><line x1="${x}" y1="${y0}" x2="${x}" y2="${y1}" class="l-tinta"/>` +
-      `<rect x="${x - 26}" y="${ry}" width="52" height="20" rx="2" class="s-fondo"/><rect x="${x - 26}" y="${ry}" width="52" height="20" rx="2" class="l-tinta" style="stroke-width:1.5"/>` +
-      `<text x="${x}" y="${ry + 14}" class="tx tx-c">${nombre}</text></g>`;
+    const ty = arriba ? y - R - 8 - G.tagh : y + R + 8;
+    let s = `<line x1="${x}" y1="${arriba ? y - R : y + R}" x2="${x}" y2="${arriba ? ty + G.tagh : ty}" stroke="var(--tinta)" stroke-width="2.5"/>` +
+      `<rect x="${x - G.tagw / 2}" y="${ty}" width="${G.tagw}" height="${G.tagh}" rx="2" fill="${movida ? 'var(--ambar)' : 'var(--fondo)'}" stroke="var(--tinta)" stroke-width="2.5"/>` +
+      `<text x="${x}" y="${ty + 14.5}" font-size="12" text-anchor="middle" font-family="var(--f-codigo)" fill="${movida ? '#1D1B16' : 'var(--tinta)'}">${nombre}</text>`;
+    // HEAD apunta a la rama (no al commit): va pegado a su etiqueta, con la punta hacia ella.
+    if (head) s += `<path d="M${x + 28} ${ty + 10} L${x + 37} ${ty + 3} V${ty + 17} Z" fill="var(--ambar)"/>` +
+      `<rect x="${x + 37}" y="${ty}" width="49" height="${G.tagh}" rx="2" fill="var(--ambar)"/>` +
+      `<text x="${x + 61.5}" y="${ty + 14.5}" font-size="12" text-anchor="middle" font-family="var(--f-codigo)" font-weight="${head === 'movio' ? 700 : 600}" fill="#1D1B16">HEAD</text>`;
+    return s;
   };
   const dibujar = () => {
     const idx = revelado(actual) ? actual : actual - 1;
     const e = ESTADOS[idx], prev = ESTADOS[idx - 1] || { c: [] };
     let h = '';
-    ARISTAS.forEach(([a, b]) => {
-      if (!e.c.includes(a) || !e.c.includes(b)) return;
-      const [ax, ay] = POS[a], [bx, by] = POS[b];
-      h += ay === by ? `<line x1="${ax}" y1="${ay}" x2="${bx}" y2="${by}" class="l-tinta"/>`
-        : `<path d="M${ax} ${ay} C${ax + 45} ${ay}, ${bx - 45} ${by}, ${bx} ${by}" class="l-tinta"/>`;
-    });
+    e.c.forEach(c => (PADRES[c] || []).forEach(p => { if (e.c.includes(p)) h += flecha(c, p); }));
     e.c.forEach(c => {
       const [x, y] = POS[c], nuevo = idx > 0 && !prev.c.includes(c);
-      h += `<circle cx="${x}" cy="${y}" r="13" class="${nuevo ? 's-ambar' : 's-tinta'}"/>` +
-        `<text x="${x}" y="${y + 4}" class="tx tx-c ${nuevo ? '' : 'tx-inv'}" style="font-weight:600">${c}</text>`;
+      h += `<circle cx="${x}" cy="${y}" r="${R}" fill="${nuevo ? 'var(--ambar)' : 'var(--tinta)'}" stroke="var(--tinta)" stroke-width="2.5"/>` +
+        `<text x="${x}" y="${y + 4.5}" font-size="13" text-anchor="middle" font-family="var(--f-codigo)" font-weight="700" fill="${nuevo ? '#1D1B16' : 'var(--fondo)'}">${c}</text>`;
     });
-    if (e.main) h += etiqueta('main', e.main, false, idx > 0 && prev.main !== e.main);
-    if (e.idea) h += etiqueta('idea', e.idea, true, idx > 0 && prev.idea !== e.idea);
-    // HEAD a la derecha de la etiqueta a la que apunta
-    const [hx, hy] = POS[e[e.head]];
-    const ry = e.head === 'idea' ? hy - 46 : hy + 26;
-    const movio = idx > 0 && (prev.head !== e.head);
-    h += `<polygon points="${hx + 28},${ry + 10} ${hx + 36},${ry + 4} ${hx + 36},${ry + 16}" class="s-ambar"/>` +
-      `<rect x="${hx + 36}" y="${ry}" width="46" height="20" rx="2" class="s-ambar"/>` +
-      `<text x="${hx + 59}" y="${ry + 14}" class="tx tx-c" style="fill:#1D1B16;font-weight:${movio ? 700 : 400}">HEAD</text>`;
-    if (!revelado(actual)) h += `<text x="470" y="182" class="tx-s" style="text-anchor:end">completa el hueco para ver el paso ${actual + 1}</text>`;
+    const movio = idx > 0 && prev.head !== e.head;
+    const head = rama => e.head === rama ? (movio ? 'movio' : 'si') : '';
+    if (e.main) h += etiqueta('main', e.main, false, idx > 0 && prev.main !== e.main, head('main'));
+    if (e.idea) h += etiqueta('idea', e.idea, true, idx > 0 && prev.idea !== e.idea, head('idea'));
+    if (!revelado(actual)) h += `<text x="464" y="184" font-size="12" fill="var(--tinta-suave)" text-anchor="end" font-family="var(--f-codigo)">completa el hueco para ver el paso ${actual + 1}</text>`;
     g.innerHTML = h;
   };
   const ir = i => {
