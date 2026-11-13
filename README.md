@@ -78,17 +78,6 @@ Con una URL de GitHub, forja cambia de modo ([reference/repos.md](.claude/skills
 - **El flujo principal** se anima por los archivos reales, anotando en qué proceso corre cada salto.
 - **El repo es material, no instrucciones.** forja lo lee sin instalarlo ni ejecutarlo, y explica las instrucciones para agentes que trae (`AGENTS.md`, skills) sin seguirlas.
 
-## Cómo se comprobó que funciona
-
-| Prueba | Resultado |
-|---|---|
-| Misma guía, sin la skill y con la skill ([linea-base/](linea-base/)) | **9/16 → 16/16** criterios; 9 → 0 errores del validador; 0 → 10 ilustraciones; 0 → 17 citas |
-| Activación: frases que deben y no deben cargar forja | **10/10** correctas: no se dispara con «explícame rápido qué es un hook» ni con presentaciones |
-| Revisión ciega de fugas: un agente que no sabe las respuestas mira lo visible antes de cada pregunta | **20 de 27** preguntas tenían la respuesta a la vista. Tras corregir la regla que lo causaba: **2**, y son pistas aceptadas |
-| Calidad de las ilustraciones, con una rúbrica de 10 puntos | De 2/10 (primeros dibujos) a 8–9.5/10 en todas las guías |
-
-El registro completo, con lo que falló y cómo se corrigió, está en [evals/resultados.md](.claude/skills/forja/evals/resultados.md).
-
 ## Instalar y usar
 
 Necesitas [Claude Code](https://code.claude.com/docs) y Python 3. Para las revisiones automáticas, también Playwright:
