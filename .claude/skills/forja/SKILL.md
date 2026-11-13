@@ -1,8 +1,8 @@
 ---
 name: forja
-description: Crea guías visuales interactivas de estudio sobre cualquier tema, en un solo archivo HTML offline con diagramas clicables, flashcards, simuladores con slider y pasos guiados, investigadas en fuentes oficiales y con una UI que sale del propio tema. Usar cuando se pida una guía visual, una guía interactiva, una guía para estudiar o aprender un tema, una guía que explique un repositorio de código con ejemplos, o con /forja <tema>. No usar para explicaciones rápidas en el chat, resúmenes de documentos, presentaciones ni para editar un HTML existente.
-argument-hint: [tema o URL de un repo]
-allowed-tools: Bash(python3 *), Bash(git clone *), Bash(git -C *), WebFetch, WebSearch
+description: Crea guías visuales interactivas de estudio sobre cualquier tema, en un solo archivo HTML offline con diagramas clicables, flashcards, simuladores con slider y pasos guiados, investigadas en fuentes oficiales y con una UI que sale del propio tema. Usar cuando se pida una guía visual, una guía interactiva, una guía para estudiar o aprender un tema, una guía que explique un repositorio de código con ejemplos, una guía para entender un paper científico o técnico, o con /forja <tema>. No usar para explicaciones rápidas en el chat, resúmenes de documentos, presentaciones ni para editar un HTML existente.
+argument-hint: [tema, URL de un repo o de un paper]
+allowed-tools: Bash(python3 *), Bash(git clone *), Bash(git -C *), Bash(curl -sSL *), Bash(pdftotext *), WebFetch, WebSearch
 ---
 
 # forja
@@ -14,6 +14,8 @@ Reglas que no se rompen:
 - **No termines hasta que `validar.py` no marque errores y `revisar_movil.py` pase.**
 
 **Si el tema es un repositorio** (una URL de GitHub o una carpeta con código), lee primero [repos.md](reference/repos.md): cambia la ruta, el nivel, la familia, la investigación (la fuente es el código, citado con permalinks al commit) y trae un plan de secciones de partida.
+
+**Si el tema es un paper** (una URL de arXiv, un DOI o un PDF), lee primero [papers.md](reference/papers.md): versión fija, citas a la sección o la tabla exactas, el inglés técnico (glosario y frases clave), fórmulas en simuladores, figuras redibujadas desde sus números y una sección para leerlo con criterio.
 
 El contenido (investigar y explicar con exactitud) hazlo como lo harías normalmente. Esta skill agrega reglas de **forma**: dirección visual, layouts, interacciones y verificación.
 
