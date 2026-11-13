@@ -8,7 +8,7 @@ Qué hace:
   1. Abre la guía a 390 px de ancho (celular) y a 1280 px (escritorio).
   2. Detecta desbordamiento horizontal y lista los elementos que se salen.
   3. Reporta errores de JavaScript de la página.
-  4. Guarda capturas en /tmp/forja-revision/<carpeta de la guía>/ para revisarlas con Read.
+  4. Guarda capturas en <FORJA_SALIDA>/forja-revision/<carpeta de la guía>/ (/tmp por omisión) para revisarlas con Read.
 
 Código de salida: 0 si todo está bien, 1 si hay problemas, 2 si no se pudo revisar.
 Requiere Playwright: pip install playwright && python3 -m playwright install chromium
@@ -17,13 +17,16 @@ import shutil
 import sys
 from pathlib import Path
 
-ANCHO_MOVIL = 390   # iPhone 12-15: el ancho de celular más común
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import _config  # noqa: E402  (lee .env)
+
+ANCHO_MOVIL = _config.ancho_movil()   # 390 por omisión: iPhone 12-15, el ancho de celular más común
 ALTO_MOVIL = 844
 ANCHO_ESCRITORIO = 1280
 ALTO_ESCRITORIO = 800
 # Las capturas completas se cortan en tramos de esta altura para poder leerlas.
 TRAMO_PX = 2000
-SALIDA = Path("/tmp/forja-revision")
+SALIDA = _config.salida("forja-revision")
 
 # Encuentra los CONTENEDORES que causan desbordamiento horizontal: el elemento más
 # externo que se sale, cuyo padre todavía cabe en la pantalla. Corregir ese basta.
@@ -59,12 +62,6 @@ JS_DESBORDES = """
 """
 
 
-def buscar_navegador():
-    for nombre in ("google-chrome", "google-chrome-stable", "chromium", "chromium-browser"):
-        ruta = shutil.which(nombre)
-        if ruta:
-            return ruta
-    return None  # Playwright usará su propio Chromium si está instalado
 
 
 def hojas(captura: Path, prefijo: str, escala: float, por_hoja: int):
@@ -115,7 +112,7 @@ def main() -> int:
     SALIDA.mkdir(parents=True, exist_ok=True)
     problemas, capturas = [], []
     with sync_playwright() as p:
-        ejecutable = buscar_navegador()
+        ejecutable = _config.navegador()
         try:
             nav = p.chromium.launch(executable_path=ejecutable, args=["--no-sandbox"]) if ejecutable \
                 else p.chromium.launch()

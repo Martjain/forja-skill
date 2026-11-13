@@ -13,7 +13,7 @@ Qué hace:
      letra mínima en unidades del viewBox de cada SVG.
   5. Advierte si un SVG usa más de 4 grosores de línea (el sistema es 2.5 / 1.25 / 1; las piezas
      gruesas, de más de 4, no cuentan).
-  6. Guarda todo en /tmp/forja-ilustraciones/<carpeta de la guía>/ para abrirlo con Read.
+  6. Guarda todo en <FORJA_SALIDA>/forja-ilustraciones/<carpeta de la guía>/ (/tmp por omisión) para abrirlo con Read.
 
 Después: abre cada imagen y califícala con la rúbrica de reference/ilustracion.md (mínimo 8/10).
 
@@ -23,7 +23,10 @@ import shutil
 import sys
 from pathlib import Path
 
-SALIDA = Path("/tmp/forja-ilustraciones")
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import _config  # noqa: E402  (lee .env)
+
+SALIDA = _config.salida("forja-ilustraciones")
 TEXTO_MIN_PX = 11
 MAX_GROSORES = 4
 FASES = (0, 0.25, 0.5, 0.75)
@@ -94,12 +97,6 @@ def fases_de(caja):
     return list(FASES)
 
 
-def buscar_navegador():
-    for nombre in ("google-chrome", "google-chrome-stable", "chromium", "chromium-browser"):
-        ruta = shutil.which(nombre)
-        if ruta:
-            return ruta
-    return None
 
 
 def main() -> int:
@@ -120,7 +117,7 @@ def main() -> int:
     shutil.rmtree(salida, ignore_errors=True)
     salida.mkdir(parents=True)
     problemas = 0
-    ejecutable = buscar_navegador()
+    ejecutable = _config.navegador()
 
     with sync_playwright() as p:
         nav = p.chromium.launch(executable_path=ejecutable, args=["--no-sandbox"]) if ejecutable \
@@ -162,7 +159,7 @@ def main() -> int:
         pag.close()
 
         # 3 y 4. Revisión en celular
-        movil = nav.new_page(viewport={"width": 390, "height": 844}, device_scale_factor=1)
+        movil = nav.new_page(viewport={"width": _config.ancho_movil(), "height": 844}, device_scale_factor=1)
         movil.goto(guia.as_uri())
         movil.wait_for_timeout(600)
         movil.evaluate(JS_SVGS)

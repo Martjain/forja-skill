@@ -220,7 +220,7 @@ Lo pidió el usuario. Un agente por guía, en paralelo, editando la guía origin
 
 ## Guía nueva: el ensayo (secundaria), primera guía con la skill de ilustración
 
-- **Pedido:** la sobrina del usuario estudia para su examen de Español y no entiende el ensayo (características, estructura, tipos y propósitos). Nivel: secundaria, principiante.
+- **Pedido:** una alumna de secundaria estudia para su examen de Español y no entiende el ensayo (características, estructura, tipos y propósitos). Nivel: secundaria, principiante.
 - **Familia nueva `lengua-y-literatura`:** cuaderno de rayas con margen rojo, tinta azul y pasta azul marino. Los marcatextos tienen significado fijo: amarillo = tesis, azul = argumentos, verde = conclusión, rosa = ejemplos y datos. Fuentes: Literata, Atkinson Hyperlegible y Courier Prime.
 - **Motivo:** la mesa. La tesis es la tabla y los argumentos son las patas.
 - **Fuentes:** fichas de la SEP de 3.º de secundaria, CCH UNAM (tutoría y examen diagnóstico), UANL, UAEMex, publicaciones de la UNAM, UNLP y SEP Jalisco.

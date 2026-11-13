@@ -26,7 +26,7 @@ que funcionen y que enseñen bien:
   - retos que el recorrido automático no cumplió (normal si piden algo específico: compruébalos a mano).
 
 Fugas que el texto no delata (un dibujo que ya muestra el resultado): el script guarda en
-/tmp/forja-prueba/<carpeta>/antes-<predicción>.png lo que se ve antes de cada pregunta, para revisarlo
+<FORJA_SALIDA>/forja-prueba/<carpeta>/ (/tmp por omisión; ver .env.example) antes-<predicción>.png lo que se ve antes de cada pregunta, para revisarlo
 con Read. En las guías anteriores hubo 4 fugas así; ninguna se habría encontrado comparando texto.
 
 Código de salida: 0 sin errores, 1 con errores, 2 si no se pudo correr.
@@ -35,6 +35,9 @@ import re
 import shutil
 import sys
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import _config  # noqa: E402  (lee .env)
 
 MAX_PALABRAS_PARRAFO = 90
 
@@ -124,12 +127,6 @@ JS_CONTRASTE = """
 """
 
 
-def buscar_navegador():
-    for nombre in ("google-chrome", "google-chrome-stable", "chromium", "chromium-browser"):
-        ruta = shutil.which(nombre)
-        if ruta:
-            return ruta
-    return None
 
 
 def main() -> int:
@@ -149,7 +146,7 @@ def main() -> int:
         return 2
 
     html = guia.read_text(encoding="utf-8")
-    salida = Path("/tmp/forja-prueba") / guia.parent.name
+    salida = _config.salida("forja-prueba") / guia.parent.name
     shutil.rmtree(salida, ignore_errors=True)
     salida.mkdir(parents=True)
     errores, avisos, info = [], [], []
@@ -165,10 +162,10 @@ def main() -> int:
     elif sin_llamada:
         avisos.append(f"Retos sin forja.reto('id') literal (se cumplen con un id calculado; compruébalos): {sin_llamada}")
 
-    ejecutable = buscar_navegador()
+    ejecutable = _config.navegador()
     with sync_playwright() as p:
         nav = p.chromium.launch(executable_path=ejecutable, args=["--no-sandbox"]) if ejecutable else p.chromium.launch()
-        vp = {"width": 390, "height": 844} if celular else {"width": 1280, "height": 900}
+        vp = {"width": _config.ancho_movil(), "height": 844} if celular else {"width": 1280, "height": 900}
         ctx = nav.new_context(viewport=vp)
         pag = ctx.new_page()
         pag.on("pageerror", lambda e: js_errores.append(str(e)))
