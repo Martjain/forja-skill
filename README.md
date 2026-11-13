@@ -115,5 +115,3 @@ cp .env.example .env
 | `FORJA_NAVEGADOR` | Chrome o Chromium para las revisiones | El que encuentre en el PATH, o el de Playwright |
 | `FORJA_SALIDA` | Dónde se guardan capturas e informes | La carpeta temporal del sistema |
 | `FORJA_ANCHO_MOVIL` | Ancho del celular en las revisiones (px) | 390 |
-
-`.env` está en `.gitignore`: **nunca se sube**. Cualquier credencial que un script necesite en el futuro (por ejemplo, un token) va ahí, nunca en el código. Las variables de entorno del sistema tienen prioridad sobre `.env`.
