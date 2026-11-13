@@ -437,7 +437,8 @@ section.banda-acento { background: var(--acento); color: var(--sobre-acento); --
       <div>
         <h2>Una rama no copia nada</h2>
         <p class="idea">Una rama es un puntero móvil a un commit. Crearla es escribir un archivo con un hash <a class="cita" href="https://git-scm.com/book/en/v2/Git-Branching-Branches-in-a-Nutshell">[1]</a>.</p>
-        <p><code>HEAD</code> apunta a la rama en la que estás. Cada <code>git commit</code> mueve hacia adelante <strong>solo esa rama</strong> <a class="cita" href="https://git-scm.com/book/en/v2/Git-Branching-Branches-in-a-Nutshell">[1]</a>.</p>
+        <p><code>HEAD</code> apunta a la rama en la que estás <a class="cita" href="https://git-scm.com/book/en/v2/Git-Branching-Branches-in-a-Nutshell">[1]</a>.</p>
+        <p data-tras-prediccion="pred-commit">Cada <code>git commit</code> mueve hacia adelante <strong>solo esa rama</strong> <a class="cita" href="https://git-scm.com/book/en/v2/Git-Branching-Branches-in-a-Nutshell">[1]</a>.</p>
         <p class="suave">Para crear una rama y cambiarte a ella: <code>git switch -c feature</code> (Git 2.23 o posterior) o <code>git checkout -b feature</code> <a class="cita" href="https://git-scm.com/book/en/v2/Git-Branching-Branches-in-a-Nutshell">[1]</a>.</p>
 
         <div data-interaccion="otra" id="terminal-ramas">
@@ -490,9 +491,10 @@ section.banda-acento { background: var(--acento); color: var(--sobre-acento); --
     <div class="dividido">
       <div>
         <p class="sobre">git merge con ramas divergentes</p>
-        <h2>Tres versiones, un tramo nuevo</h2>
-        <p class="idea">Si las dos ramas avanzaron, Git usa las dos puntas y su ancestro común, y crea un commit de fusión con más de un padre <a class="cita" href="https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging">[2]</a>.</p>
-        <ol class="claves">
+        <h2>Un tramo nuevo: ¿con qué lo arma Git?</h2>
+        <p class="idea">Si las dos ramas avanzaron, Git crea un commit de fusión con más de un padre <a class="cita" href="https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging">[2]</a>. Para armarlo compara versiones del proyecto. ¿Cuáles?</p>
+        <ol class="claves" data-tras-prediccion="pred-tres">
+          <li>Git usa las dos puntas y su ancestro común <a class="cita" href="https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging">[2]</a>.</li>
           <li>El ancestro común dice qué había antes. Comparando cada punta contra él, Git sabe qué cambió de cada lado.</li>
           <li>Si solo un lado cambió un renglón, gana ese cambio. Si los dos lo cambiaron distinto, hay conflicto.</li>
           <li>La estrategia por defecto se llama <code>ort</code> y resuelve dos puntas con un merge de tres vías <a class="cita" href="https://git-scm.com/docs/git-merge">[4]</a>.</li>
@@ -521,7 +523,7 @@ section.banda-acento { background: var(--acento); color: var(--sobre-acento); --
         <p class="nodos-ayuda">Toca un tramo con borde (o usa Tab y Enter) para ver su papel.</p>
         <div class="ficha" id="ficha-tres" data-tras-prediccion="pred-tres" aria-live="polite"></div>
         <ul data-retos>
-          <li data-reto="reto-base"><span>Encuentra el tramo que ninguna rama tiene en la punta pero sin el cual no hay three-way merge.</span></li>
+          <li data-reto="reto-base"><span>Encuentra el tramo que ninguna rama tiene en la punta pero sin el cual Git no sabría qué cambió cada lado.</span></li>
         </ul>
       </div>
     </div>
@@ -530,7 +532,7 @@ section.banda-acento { background: var(--acento); color: var(--sobre-acento); --
   <!-- 4. FAST-FORWARD VS FUSIÓN: COMPARACIÓN -->
   <section id="fast-forward" data-layout="comparacion" data-minutos="3">
     <h2>Fast-forward o commit de fusión</h2>
-    <p class="idea">Si la rama que fusionas desciende de la tuya, no hay trabajo divergente: Git solo mueve el puntero hacia adelante <a class="cita" href="https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging">[2]</a>.</p>
+    <p class="idea">Antes de fusionar, Git se fija en si hay trabajo divergente: si las dos ramas avanzaron desde que se separaron. ¿Qué cambia cuando solo avanzó una?</p>
     <div data-prediccion id="pred-ff" data-correcta="b"
          data-explicacion="hotfix desciende de main, así que no hay nada que combinar: main avanza hasta el commit de hotfix y no aparece un commit nuevo.">
       <p><strong>Predice:</strong> creaste <code>hotfix</code> desde <code>main</code>, hiciste un commit y <code>main</code> no se movió. Estando en <code>main</code> corres <code>git merge hotfix</code>. ¿Qué queda?</p>
@@ -559,7 +561,7 @@ Updating f42c576..3a0874c
 <span class="ok">Fast-forward</span>
  index.html | 2 ++
  1 file changed, 2 insertions(+)</pre>
-        <p>La salida dice <code>Fast-forward</code> y no hay commit nuevo <a class="cita" href="https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging">[2]</a>.</p>
+        <p data-tras-prediccion="pred-ff">Si la rama que fusionas desciende de la tuya, no hay trabajo divergente: Git solo mueve el puntero hacia adelante. La salida dice <code>Fast-forward</code> y no hay commit nuevo <a class="cita" href="https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging">[2]</a>.</p>
       </div>
       <div>
         <p class="etiqueta a">Las dos avanzaron</p>
@@ -568,7 +570,7 @@ Updating f42c576..3a0874c
         <p>Git crea un snapshot nuevo con el resultado del three-way merge y un commit que apunta a él, con dos padres <a class="cita" href="https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging">[2]</a>.</p>
       </div>
     </div>
-    <div class="tabla-scroll">
+    <div class="tabla-scroll" data-tras-prediccion="pred-ff">
       <table class="banderas">
         <caption class="sobre" style="text-align:left">Cómo controlarlo <a class="cita" href="https://git-scm.com/docs/git-merge">[4]</a></caption>
         <tr><th>--ff</th><td>Por defecto. Fast-forward cuando se puede; si no, commit de fusión.</td></tr>
@@ -582,8 +584,9 @@ Updating f42c576..3a0874c
   <section id="laboratorio" data-layout="laboratorio" data-tono="oscuro" data-minutos="6">
     <p class="sobre">simulador</p>
     <h2>Merge contra rebase, con las mismas ramas</h2>
-    <p class="idea">Rebase reaplica cada commit tuyo encima de la otra rama, en orden; merge toma las dos puntas y las une <a class="cita" href="https://git-scm.com/book/en/v2/Git-Branching-Rebasing">[3]</a>.</p>
-    <p>Un commit guarda el ID de su padre, y su ID es un hash de su contenido <a class="cita" href="https://git-scm.com/docs/gitdatamodel">[7]</a>. Por eso una copia sobre otro padre tiene otro hash: rebase abandona commits y crea otros parecidos pero distintos <a class="cita" href="https://git-scm.com/book/en/v2/Git-Branching-Rebasing">[3]</a>.</p>
+    <p class="idea">Merge y rebase llevan tu trabajo a la otra rama por caminos distintos. ¿Qué les pasa a tus commits en cada caso?</p>
+    <p>Un commit guarda el ID de su padre, y su ID es un hash de su contenido <a class="cita" href="https://git-scm.com/docs/gitdatamodel">[7]</a>.</p>
+    <p data-tras-prediccion="pred-rebase">Rebase reaplica cada commit tuyo encima de la otra rama, en orden; merge toma las dos puntas y las une <a class="cita" href="https://git-scm.com/book/en/v2/Git-Branching-Rebasing">[3]</a>. Como cada copia queda sobre otro padre, tiene otro hash: rebase abandona commits y crea otros parecidos pero distintos <a class="cita" href="https://git-scm.com/book/en/v2/Git-Branching-Rebasing">[3]</a>.</p>
 
     <div class="lab" data-interaccion="simulador" id="lab">
       <div data-prediccion id="pred-rebase" data-correcta="b"
@@ -835,7 +838,7 @@ On branch main
   <!-- 8. OURS / THEIRS: MOSAICO -->
   <section id="ours-theirs" data-layout="mosaico" data-tono="oscuro" data-minutos="6">
     <h2>ours, theirs y las salidas de emergencia</h2>
-    <p class="idea"><code>--ours</code> y <code>--theirs</code> señalan stages del índice, no ramas. En un rebase se ven al revés <a class="cita" href="https://git-scm.com/docs/git-checkout">[6]</a>.</p>
+    <p class="idea"><code>--ours</code> y <code>--theirs</code> señalan stages del índice, no ramas <a class="cita" href="https://git-scm.com/docs/git-checkout">[6]</a>. ¿Señalan el mismo lado en un merge que en un rebase?</p>
     <div class="mosaico">
       <div class="pieza grande" data-interaccion="otra" id="probador">
         <h3>Probador: ¿qué versión te queda?</h3>
@@ -888,7 +891,7 @@ On branch main
       <div class="pieza">
         <h3>Ver la base</h3>
         <p>Con el estilo <code>diff3</code>, el conflicto muestra también el texto original tras <code>|||||||</code> <a class="cita" href="https://git-scm.com/docs/git-merge">[4]</a>.</p>
-        <pre class="terminal">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+        <pre class="terminal" data-tras-prediccion="pred-swap">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
 timeout = 45
 <span class="tenue">||||||| base
 timeout = 30</span>

@@ -467,7 +467,7 @@ input[type="range"] { width: 100%; accent-color: var(--acento); }
       <div data-interaccion="diagrama" id="diag-zonas">
         <div data-prediccion id="pred-clon" data-correcta="c"
              data-explicacion="El directorio .git guarda los metadatos y la base de objetos con todos los commits. Es lo que se copia al clonar; de ahí git saca después los archivos de tu carpeta.">
-          <p><strong>Antes de tocar nada:</strong> cuando alguien clona tu repositorio, ¿qué zona se copia?</p>
+          <p><strong>Antes de tocar nada:</strong> alguien hace <code>git clone</code> de tu proyecto en su máquina. ¿Qué zona se copia?</p>
           <div class="opciones">
             <button type="button" data-opcion="a">El working tree</button>
             <button type="button" data-opcion="b">El staging area</button>
@@ -489,7 +489,7 @@ input[type="range"] { width: 100%; accent-color: var(--acento); }
           </div>
           <p class="anima-fase"><b>Editas</b><span>Cambias README.md en tu carpeta. Solo cambió el working tree.</span></p>
         </div>
-        <div class="ficha-nodo" aria-live="polite"></div>
+        <div class="ficha-nodo" data-tras-prediccion="pred-clon" aria-live="polite"></div>
         <p class="resultado" data-tras-prediccion="pred-clon">Al clonar se copia el <strong>directorio .git</strong>: la parte más importante, con todos los commits <a class="cita" href="https://git-scm.com/book/en/v2/Getting-Started-What-is-Git%3F">[1]</a>. Tu working tree y tu staging area son locales: los de la otra persona se arman desde esa copia.</p>
       </div>
     </div>
@@ -499,8 +499,8 @@ input[type="range"] { width: 100%; accent-color: var(--acento); }
   <section id="mesa" data-layout="laboratorio" data-tono="oscuro" data-minutos="6" data-titulo="Mesa de trabajo">
     <div class="lab-cabeza">
       <p class="rotulo">04 · Laboratorio</p>
-      <h2>Mesa de trabajo: <code>git add</code> guarda un momento, no un archivo</h2>
-      <p class="idea">git add copia el archivo tal como está en ese instante. Si lo editas después, el commit se lleva la versión que añadiste, no la última <a class="cita" href="https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository">[3]</a>.</p>
+      <h2>Mesa de trabajo: ¿qué se lleva el commit si editas después de <code>git add</code>?</h2>
+      <p class="idea">Entre <code>git add</code> y <code>git commit</code> puedes seguir editando el archivo. Prueba en la mesa cuál de las versiones termina en el commit.</p>
     </div>
     <div data-interaccion="otra" id="mesa-lab">
       <div data-prediccion id="pred-mesa" data-correcta="b"
@@ -554,12 +554,13 @@ input[type="range"] { width: 100%; accent-color: var(--acento); }
       </div>
 
       <div class="resultado" data-tras-prediccion="pred-mesa">
+        <p><code>git add</code> guarda un momento, no un archivo: copia el archivo tal como está en ese instante <a class="cita" href="https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository">[3]</a>.</p>
         <p>El commit se lleva la <strong>v2</strong>. Tu carpeta sigue con la v3, así que <code>git status -s</code> te avisa con <code> M README.md</code>: hay un cambio que todavía no añadiste <a class="cita" href="https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository">[3]</a>.</p>
       </div>
 
       <ul data-retos>
         <li data-reto="reto-mm"><span>Haz que <code>git status -s</code> muestre <code>MM README.md</code></span></li>
-        <li data-reto="reto-viejo"><span>Haz un commit que guarde una versión de README.md más vieja que la de tu carpeta</span></li>
+        <li data-reto="reto-viejo"><span>Haz un commit justo cuando README.md tenga una versión en tu carpeta y otra distinta en el staging area</span></li>
         <li data-reto="reto-nuevo"><span>Lleva plan.txt de <code>??</code> hasta un commit</span></li>
       </ul>
       <div data-ayuda="ayuda-mesa">
@@ -579,8 +580,8 @@ input[type="range"] { width: 100%; accent-color: var(--acento); }
   <section id="fotos" data-layout="comparacion" data-minutos="4" data-titulo="Fotos, no diferencias">
     <div class="texto">
       <p class="rotulo">05 · Cómo guarda</p>
-      <h2>Fotos, no listas de cambios</h2>
-      <p class="idea">La mayoría de los otros sistemas guardan qué cambió en cada archivo. Git guarda la foto completa, y lo que no cambió lo enlaza a la copia que ya tenía <a class="cita" href="https://git-scm.com/book/en/v2/Getting-Started-What-is-Git%3F">[1]</a>.</p>
+      <h2>Si cambias un archivo, ¿cuánto guarda git?</h2>
+      <p class="idea">La mayoría de los otros sistemas guardan qué cambió en cada archivo. Git guarda en cada commit una foto de todo el proyecto. ¿Quiere decir eso que copia todo cada vez?</p>
     </div>
     <div data-interaccion="simulador" id="sim-fotos">
       <div data-prediccion id="pred-fotos" data-correcta="b"
@@ -610,9 +611,9 @@ input[type="range"] { width: 100%; accent-color: var(--acento); }
         </figure>
         <div class="divisor" aria-hidden="true"><span>vs</span></div>
         <figure class="lado git">
-          <figcaption>Git: una foto completa con enlaces</figcaption>
-          <svg id="svg-fotos" viewBox="0 0 300 200" role="img" aria-labelledby="t-fotos" xmlns="http://www.w3.org/2000/svg"><title id="t-fotos">Commit 1 con 8 archivos y commit 2 con 8 lugares: los archivos que cambiaste son copias nuevas en ámbar y los demás son enlaces punteados al archivo idéntico del commit 1.</title><defs><marker id="fotos-pta" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1 L8 5 L1 9 Z" style="fill:var(--gris)"/></marker></defs><text x="12" y="16" font-size="12" fill="var(--tinta-suave)" font-family="var(--f-codigo)">commit 1</text><rect x="8" y="24" width="284" height="52" rx="3" fill="var(--superficie)" stroke="var(--tinta)" stroke-width="2.5"/><path d="M16 33 H35 L42 40 V67 H16 Z M35 33 V40 H42" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="1.25" stroke-linejoin="round" stroke-linecap="round"/><path d="M50.5 33 H69.5 L76.5 40 V67 H50.5 Z M69.5 33 V40 H76.5" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="1.25" stroke-linejoin="round" stroke-linecap="round"/><path d="M85 33 H104 L111 40 V67 H85 Z M104 33 V40 H111" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="1.25" stroke-linejoin="round" stroke-linecap="round"/><path d="M119.5 33 H138.5 L145.5 40 V67 H119.5 Z M138.5 33 V40 H145.5" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="1.25" stroke-linejoin="round" stroke-linecap="round"/><path d="M154 33 H173 L180 40 V67 H154 Z M173 33 V40 H180" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="1.25" stroke-linejoin="round" stroke-linecap="round"/><path d="M188.5 33 H207.5 L214.5 40 V67 H188.5 Z M207.5 33 V40 H214.5" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="1.25" stroke-linejoin="round" stroke-linecap="round"/><path d="M223 33 H242 L249 40 V67 H223 Z M242 33 V40 H249" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="1.25" stroke-linejoin="round" stroke-linecap="round"/><path d="M257.5 33 H276.5 L283.5 40 V67 H257.5 Z M276.5 33 V40 H283.5" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="1.25" stroke-linejoin="round" stroke-linecap="round"/><g data-dibujo></g></svg>
-          <p class="leyenda"><span class="ln">copia nueva</span><span class="le">enlace a la copia anterior</span></p>
+          <figcaption>Git: una foto completa</figcaption>
+          <svg id="svg-fotos" data-tras-prediccion="pred-fotos" viewBox="0 0 300 200" role="img" aria-labelledby="t-fotos" xmlns="http://www.w3.org/2000/svg"><title id="t-fotos">Commit 1 con 8 archivos y commit 2 con 8 lugares: los archivos que cambiaste son copias nuevas en ámbar y los demás son enlaces punteados al archivo idéntico del commit 1.</title><defs><marker id="fotos-pta" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1 L8 5 L1 9 Z" style="fill:var(--gris)"/></marker></defs><text x="12" y="16" font-size="12" fill="var(--tinta-suave)" font-family="var(--f-codigo)">commit 1</text><rect x="8" y="24" width="284" height="52" rx="3" fill="var(--superficie)" stroke="var(--tinta)" stroke-width="2.5"/><path d="M16 33 H35 L42 40 V67 H16 Z M35 33 V40 H42" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="1.25" stroke-linejoin="round" stroke-linecap="round"/><path d="M50.5 33 H69.5 L76.5 40 V67 H50.5 Z M69.5 33 V40 H76.5" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="1.25" stroke-linejoin="round" stroke-linecap="round"/><path d="M85 33 H104 L111 40 V67 H85 Z M104 33 V40 H111" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="1.25" stroke-linejoin="round" stroke-linecap="round"/><path d="M119.5 33 H138.5 L145.5 40 V67 H119.5 Z M138.5 33 V40 H145.5" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="1.25" stroke-linejoin="round" stroke-linecap="round"/><path d="M154 33 H173 L180 40 V67 H154 Z M173 33 V40 H180" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="1.25" stroke-linejoin="round" stroke-linecap="round"/><path d="M188.5 33 H207.5 L214.5 40 V67 H188.5 Z M207.5 33 V40 H214.5" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="1.25" stroke-linejoin="round" stroke-linecap="round"/><path d="M223 33 H242 L249 40 V67 H223 Z M242 33 V40 H249" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="1.25" stroke-linejoin="round" stroke-linecap="round"/><path d="M257.5 33 H276.5 L283.5 40 V67 H257.5 Z M276.5 33 V40 H283.5" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="1.25" stroke-linejoin="round" stroke-linecap="round"/><g data-dibujo></g></svg>
+          <p class="leyenda" data-tras-prediccion="pred-fotos"><span class="ln">copia nueva</span><span class="le">enlace a la copia anterior</span></p>
         </figure>
       </div>
 
@@ -625,6 +626,7 @@ input[type="range"] { width: 100%; accent-color: var(--acento); }
 
       <div class="resultado" data-tras-prediccion="pred-fotos">
         <p class="lectura-num"><strong data-nuevas>3</strong> copias nuevas · <strong data-enlaces>5</strong> enlaces</p>
+        <p>Git guarda la foto completa, y lo que no cambió lo enlaza a la copia que ya tenía <a class="cita" href="https://git-scm.com/book/en/v2/Getting-Started-What-is-Git%3F">[1]</a>.</p>
         <p id="fotos-expl" aria-live="polite"></p>
         <pre class="terminal" data-term></pre>
       </div>
