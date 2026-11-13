@@ -395,20 +395,20 @@ svg .etiqueta { font-family: var(--f-cuerpo); font-size: inherit; letter-spacing
       </div>
       <div data-interaccion="diagrama" class="diagrama">
         <div data-prediccion id="pred-ve" data-correcta="b"
-             data-explicacion="El subagente arranca con una ventana nueva: no ve tu historial. Claude le escribe un mensaje que resume la tarea, y de ahí trabaja. La excepción es el fork, que sí hereda la conversación.">
-          <p><strong>Antes de tocar el diagrama:</strong> cuando Claude delega, ¿qué ve el subagente de lo que ya platicaron?</p>
+             data-explicacion="El subagente arranca con una ventana nueva: no ve tu historial. Solo recibe el mensaje con la tarea que Claude le escribe; si ahí no dice pnpm, no lo sabe. La excepción es el fork, que sí hereda la conversación.">
+          <p><strong>Antes de tocar el diagrama:</strong> llevas un rato explicándole a Claude que en tu proyecto los tests se corren con <code>pnpm test</code>, no con <code>npm test</code>. Claude delega «corre los tests y dime cuáles fallan» sin mencionar pnpm. ¿Qué sabe el subagente de eso?</p>
           <div class="opciones">
-            <button type="button" data-opcion="a">Todo el historial de la conversación</button>
-            <button type="button" data-opcion="b">Solo el mensaje con la tarea que Claude le escribe</button>
-            <button type="button" data-opcion="c">Nada: tiene que adivinar la tarea</button>
+            <button type="button" data-opcion="a">Lo sabe: ve toda la conversación</button>
+            <button type="button" data-opcion="b">No lo sabe, salvo que Claude lo escriba en la tarea</button>
+            <button type="button" data-opcion="c">Lo sabe: Claude Code le pasa un resumen automático de lo platicado</button>
           </div>
           <p class="veredicto" hidden></p>
           <div data-ayuda="pred-ve">
             <ol>
               <li>Empieza por la definición: un subagente corre en su <strong>propia</strong> ventana de contexto, aparte de la tuya.</li>
-              <li>Tu historial vive en tu ventana. Una ventana propia que arranca nueva, ¿qué trae de la tuya?</li>
-              <li>Aun así, no puede adivinar: Claude tiene que pasarle la tarea de algún modo. Busca en el diagrama la pieza que une la conversación principal con la ventana del subagente.</li>
-              <li data-respuesta><strong>Solo el mensaje con la tarea que Claude le escribe.</strong> Arranca con una ventana nueva, sin tu historial, y ese mensaje de delegación es lo único de la conversación que recibe. La excepción es el fork, que sí hereda la conversación.</li>
+              <li>Lo de pnpm lo platicaste en tu conversación: vive en tu ventana. Una ventana propia que arranca nueva, ¿qué trae de la tuya?</li>
+              <li>Busca en el diagrama la pieza que une la conversación principal con la ventana del subagente. Lo que no vaya en esa pieza no llega.</li>
+              <li data-respuesta><strong>No lo sabe, salvo que Claude lo escriba en la tarea.</strong> Arranca con una ventana nueva, sin tu historial, y el mensaje de delegación es lo único de la conversación que recibe. La excepción es el fork, que sí hereda la conversación.</li>
             </ol>
           </div>
         </div>
@@ -442,8 +442,8 @@ svg .etiqueta { font-family: var(--f-cuerpo); font-size: inherit; letter-spacing
   <!-- 04 VENTANA (laboratorio) -->
   <section id="ventana" data-layout="laboratorio" data-minutos="6">
     <p class="etiqueta">03 · Dónde se acumula el trabajo</p>
-    <h2>El subagente gasta su ventana; a la tuya llega el resultado</h2>
-    <p class="idea">La salida larga se queda en el contexto del subagente y a tu conversación solo vuelve el resumen relevante.<a class="cita" href="https://code.claude.com/docs/en/sub-agents">[1]</a></p>
+    <h2>Si delegas una búsqueda larga, ¿qué le pasa a tu ventana?</h2>
+    <p class="idea">Una búsqueda que lee decenas de archivos produce mucha salida. ¿En qué ventana se acumula: en la del subagente o en la tuya?</p>
     <div class="lab" data-interaccion="simulador">
       <div data-prediccion id="pred-ventana" data-correcta="b"
            data-explicacion="Los archivos se leen en la ventana del subagente, no en la tuya. A tu conversación llegan el mensaje de delegación y el resultado. Pero cada resultado sí ocupa lugar: muchos resultados detallados también la llenan.">
@@ -490,17 +490,18 @@ svg .etiqueta { font-family: var(--f-cuerpo); font-size: inherit; letter-spacing
         <div class="subs" id="b-subs"></div>
         <p class="frase" id="frase-ventana"></p>
       </div>
+      <p data-tras-prediccion="pred-ventana"><strong>La salida larga se queda en el contexto del subagente y a tu conversación solo vuelve el resumen relevante.</strong><a class="cita" href="https://code.claude.com/docs/en/sub-agents">[1]</a></p>
       <ul class="leyenda">
         <li style="--c: var(--gris)">lo que ya platicaron</li>
         <li style="--c: var(--terracota)">archivos leídos</li>
         <li style="--c: var(--azul)">delegación + resultados</li>
       </ul>
-      <ul data-retos>
+      <ul data-retos data-tras-prediccion="pred-ventana">
         <li data-reto="reto-lleno">Sin subagente, haz que tu ventana principal se llene</li>
         <li data-reto="reto-compacta">Con subagentes, haz que la ventana de un subagente se llene</li>
         <li data-reto="reto-resultados">Con subagentes, haz que los resultados ocupen más de la mitad de tu ventana</li>
       </ul>
-      <p class="nota">Modelo simplificado: las cantidades son ilustrativas, no tokens reales. Lo que sí dice la documentación: cada subagente gasta sus propios tokens mientras corre, sus peticiones cuentan para los mismos límites de uso que tu conversación, y muchos subagentes que devuelven resultados detallados pueden consumir bastante contexto.<a class="cita" href="https://code.claude.com/docs/en/sub-agents">[1]</a> Cuando la ventana de un subagente se llena, se compacta automáticamente.<a class="cita" href="https://code.claude.com/docs/en/sub-agents">[1]</a></p>
+      <p class="nota" data-tras-prediccion="pred-ventana">Modelo simplificado: las cantidades son ilustrativas, no tokens reales. Lo que sí dice la documentación: cada subagente gasta sus propios tokens mientras corre, sus peticiones cuentan para los mismos límites de uso que tu conversación, y muchos subagentes que devuelven resultados detallados pueden consumir bastante contexto.<a class="cita" href="https://code.claude.com/docs/en/sub-agents">[1]</a> Cuando la ventana de un subagente se llena, se compacta automáticamente.<a class="cita" href="https://code.claude.com/docs/en/sub-agents">[1]</a></p>
     </div>
   </section>
 

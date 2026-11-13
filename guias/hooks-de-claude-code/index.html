@@ -381,20 +381,20 @@ details.porque summary { cursor: pointer; font-weight: 600; min-height: 32px; di
   </section>
 
   <!-- ============ 02 PEDIR VS GARANTIZAR ============ -->
-  <section id="que-es" data-layout="comparacion" data-minutos="3" data-titulo="Pedirlo o garantizarlo">
+  <section id="que-es" data-layout="comparacion" data-minutos="3" data-titulo="Instrucción o hook">
     <p class="estacion">Estación 02</p>
-    <h2>Pedirlo o garantizarlo</h2>
-    <p class="idea">Una instrucción le pide algo a Claude; un hook lo hace pasar siempre, en el mismo punto.</p>
+    <h2>Instrucción o hook: ¿cuál te garantiza algo?</h2>
+    <p class="idea">Los dos sirven para decir «corre prettier después de cada edición». ¿Los dos hacen que pase?</p>
     <div class="enfrentados">
       <div>
-        <h3>Instrucción <span class="etiqueta">el modelo decide</span></h3>
-        <p>Escribes en <code>CLAUDE.md</code> o en el prompt "después de editar, corre prettier". Claude lo lee y <strong>decide</strong> si lo hace en cada momento.</p>
-        <svg aria-labelledby="t-instr" viewBox="0 0 300 140" role="img" xmlns="http://www.w3.org/2000/svg"><title id="t-instr">Con una instrucción, cada edición llega a un cruce donde Claude decide: a veces corre prettier y a veces no.</title><defs><marker id="instr-pta" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1 L8 5 L1 9 Z" style="fill:var(--tinta)"/></marker><marker id="instr-pta-gris" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1 L8 5 L1 9 Z" style="fill:var(--gris)"/></marker></defs><rect x="16" y="59" width="50" height="26" rx="4" fill="var(--superficie)" stroke="var(--tinta)" stroke-width="1.25"/><text x="41" y="76" font-size="12" fill="var(--tinta)" text-anchor="middle" font-family="var(--f-codigo)">Edit</text><line x1="66" y1="72" x2="100" y2="72" stroke="var(--tinta)" stroke-width="2.5" stroke-linecap="round"/><path d="M100 72 L122 50 L144 72 L122 94 Z" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="2.5" stroke-linejoin="round"/><text x="122" y="78" font-size="17" fill="var(--tinta)" text-anchor="middle" font-weight="700">?</text><text x="154" y="76" font-size="11" fill="var(--tinta-suave)">Claude decide</text><path d="M122 50 L122 36 Q122 26 132 26 L192 26" fill="none" stroke="var(--tinta)" stroke-width="2.5" stroke-linecap="round" marker-end="url(#instr-pta)"/><rect x="196" y="13" width="88" height="26" rx="5" fill="var(--superficie)" stroke="var(--tinta)" stroke-width="1.25"/><text x="240" y="30" font-size="12" fill="var(--tinta)" text-anchor="middle" font-family="var(--f-codigo)">prettier</text><text x="240" y="56" font-size="11" fill="var(--tinta-suave)" text-anchor="middle">a veces corre</text><path d="M122 94 L122 108 Q122 118 132 118 L192 118" fill="none" stroke="var(--gris)" stroke-width="2.5" stroke-dasharray="2 7" stroke-linecap="round" marker-end="url(#instr-pta-gris)"/><text x="202" y="122" font-size="11" fill="var(--tinta-suave)">a veces no</text></svg>
+        <h3>Instrucción <span class="etiqueta">CLAUDE.md o prompt</span></h3>
+        <p data-tras-prediccion="pred-claudemd">Escribes en <code>CLAUDE.md</code> o en el prompt "después de editar, corre prettier". Claude lo lee y <strong>decide</strong> si lo hace en cada momento.</p>
+        <svg data-tras-prediccion="pred-claudemd" aria-labelledby="t-instr" viewBox="0 0 300 140" role="img" xmlns="http://www.w3.org/2000/svg"><title id="t-instr">Con una instrucción, cada edición llega a un cruce donde Claude decide: a veces corre prettier y a veces no.</title><defs><marker id="instr-pta" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1 L8 5 L1 9 Z" style="fill:var(--tinta)"/></marker><marker id="instr-pta-gris" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1 L8 5 L1 9 Z" style="fill:var(--gris)"/></marker></defs><rect x="16" y="59" width="50" height="26" rx="4" fill="var(--superficie)" stroke="var(--tinta)" stroke-width="1.25"/><text x="41" y="76" font-size="12" fill="var(--tinta)" text-anchor="middle" font-family="var(--f-codigo)">Edit</text><line x1="66" y1="72" x2="100" y2="72" stroke="var(--tinta)" stroke-width="2.5" stroke-linecap="round"/><path d="M100 72 L122 50 L144 72 L122 94 Z" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="2.5" stroke-linejoin="round"/><text x="122" y="78" font-size="17" fill="var(--tinta)" text-anchor="middle" font-weight="700">?</text><text x="154" y="76" font-size="11" fill="var(--tinta-suave)">Claude decide</text><path d="M122 50 L122 36 Q122 26 132 26 L192 26" fill="none" stroke="var(--tinta)" stroke-width="2.5" stroke-linecap="round" marker-end="url(#instr-pta)"/><rect x="196" y="13" width="88" height="26" rx="5" fill="var(--superficie)" stroke="var(--tinta)" stroke-width="1.25"/><text x="240" y="30" font-size="12" fill="var(--tinta)" text-anchor="middle" font-family="var(--f-codigo)">prettier</text><text x="240" y="56" font-size="11" fill="var(--tinta-suave)" text-anchor="middle">a veces corre</text><path d="M122 94 L122 108 Q122 118 132 118 L192 118" fill="none" stroke="var(--gris)" stroke-width="2.5" stroke-dasharray="2 7" stroke-linecap="round" marker-end="url(#instr-pta-gris)"/><text x="202" y="122" font-size="11" fill="var(--tinta-suave)">a veces no</text></svg>
       </div>
       <div class="divisor" aria-hidden="true"></div>
       <div class="lado-hook">
         <h3>Hook <span class="etiqueta">Claude Code lo ejecuta</span></h3>
-        <p>Es un comando de shell que tú defines. Claude Code lo corre en un punto exacto de su ciclo de vida, así que la acción <strong>siempre</strong> pasa, en lugar de depender de que el modelo elija hacerla.<a class="cita" href="https://code.claude.com/docs/en/hooks-guide">[1]</a></p>
+        <p>Es un comando de shell que tú defines. Claude Code lo corre en un punto exacto de su ciclo de vida, así que la acción <strong>siempre</strong> pasa.<a class="cita" href="https://code.claude.com/docs/en/hooks-guide">[1]</a></p>
         <svg aria-labelledby="t-hook" viewBox="0 0 300 140" role="img" xmlns="http://www.w3.org/2000/svg"><title id="t-hook">Con un hook, cada edición pasa por la estación PostToolUse, donde corre prettier: todas salen formateadas, siempre.</title><rect x="10" y="92" width="280" height="14" rx="7" fill="var(--tinta)"/><path d="M20 99H280" stroke="var(--fondo)" stroke-width="1.25" stroke-dasharray="3 9" opacity=".5"/><line x1="150" y1="40" x2="150" y2="92" stroke="var(--acento-oscuro)" stroke-width="2.5"/><rect x="100.4" y="14" width="99.2" height="26" rx="6" fill="var(--acento)"/><text x="150" y="31.5" font-size="12" fill="#141413" text-anchor="middle" font-family="var(--f-codigo)" font-weight="700">PostToolUse</text><path class="flujo" d="M199.6 27H222" stroke="var(--tinta)" stroke-width="1.25" fill="none"/><rect x="222" y="14" width="68" height="26" rx="6" fill="var(--tinta)"/><text x="256" y="31" font-size="11" fill="var(--fondo)" text-anchor="middle" font-family="var(--f-codigo)">prettier</text><rect x="24" y="68" width="32" height="24" rx="4" fill="var(--fondo)" stroke="var(--tinta-suave)" stroke-width="1.25" stroke-dasharray="3 3"/><path d="M31 77h14 M31 83h18" stroke="var(--tinta-suave)" stroke-width="1.25" stroke-linecap="round"/><rect x="72" y="68" width="32" height="24" rx="4" fill="var(--fondo)" stroke="var(--tinta-suave)" stroke-width="1.25" stroke-dasharray="3 3"/><path d="M79 77h14 M79 83h18" stroke="var(--tinta-suave)" stroke-width="1.25" stroke-linecap="round"/><rect x="190" y="68" width="32" height="24" rx="4" fill="var(--superficie)" stroke="var(--tinta)" stroke-width="1.25"/><path d="M199 80 l5 5 l9 -10" fill="none" stroke="var(--tinta)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><rect x="238" y="68" width="32" height="24" rx="4" fill="var(--superficie)" stroke="var(--tinta)" stroke-width="1.25"/><path d="M247 80 l5 5 l9 -10" fill="none" stroke="var(--tinta)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><text x="64" y="124" font-size="11" fill="var(--tinta-suave)" text-anchor="middle">cada edición</text><text x="230" y="124" font-size="11" fill="var(--tinta)" text-anchor="middle">formateada, siempre</text></svg>
       </div>
     </div>
@@ -412,7 +412,7 @@ details.porque summary { cursor: pointer; font-weight: 600; min-height: 32px; di
         <div data-ayuda="pred-claudemd">
           <ol>
             <li>Piensa en quién lee <code>CLAUDE.md</code>: es texto que Claude recibe como contexto, igual que un prompt.</li>
-            <li>Con una instrucción, el modelo <strong>decide</strong> en cada momento si la sigue. Es el lado izquierdo de la figura: un cruce con un signo de pregunta.</li>
+            <li>Con una instrucción, el modelo <strong>decide</strong> en cada momento si la sigue.</li>
             <li>Para que algo pase siempre, tiene que ejecutarlo Claude Code mismo en un punto fijo de su ciclo de vida, sin preguntarle al modelo. ¿Una línea de texto hace eso?</li>
             <li>Bloquear una edición tampoco lo hace un archivo de instrucciones: eso le toca a un hook.</li>
             <li data-respuesta><strong>Nada: Claude lo hará cuando lo decida.</strong> <code>CLAUDE.md</code> es contexto que el modelo lee y decide si sigue; para garantizarlo necesitas un hook, que Claude Code ejecuta siempre.</li>
@@ -420,6 +420,7 @@ details.porque summary { cursor: pointer; font-weight: 600; min-height: 32px; di
         </div>
       </div>
       <div class="caja revela-caja" data-tras-prediccion="pred-claudemd">
+        <p><strong>Una instrucción le pide algo a Claude; un hook lo hace pasar siempre, en el mismo punto.</strong></p>
         <p><strong>Para garantizarlo</strong>, la estación correcta es <code>PostToolUse</code> con el matcher <code>Edit|Write</code>: corre después de cada edición de archivo, sin excepción.<a class="cita" href="https://code.claude.com/docs/en/hooks-guide#auto-format-code-after-edits">[1]</a> En la sección 04 vas a ver cómo se escribe.</p>
       </div>
     </div>
@@ -468,8 +469,8 @@ details.porque summary { cursor: pointer; font-weight: 600; min-height: 32px; di
         </div>
         <div class="ficha" id="ficha-evento" data-tras-prediccion="pred-evento" aria-live="polite"></div>
       </div>
-      <p class="retos-titulo">Retos</p>
-      <ul data-retos>
+      <p class="retos-titulo" data-tras-prediccion="pred-evento">Retos</p>
+      <ul data-retos data-tras-prediccion="pred-evento">
         <li data-reto="reto-diag-tarde">Encuentra la estación que llega tarde para impedir nada, porque la herramienta ya corrió</li>
         <li data-reto="reto-diag-sinmatcher">Encuentra las dos estaciones de turno, que no aceptan matcher</li>
       </ul>
@@ -568,7 +569,7 @@ details.porque summary { cursor: pointer; font-weight: 600; min-height: 32px; di
       <p class="suave" style="font-size:.95rem">Las herramientas de MCP se llaman <code>mcp__&lt;servidor&gt;__&lt;herramienta&gt;</code>, así que <code>mcp__memory__.*</code> atrapa todas las del servidor <code>memory</code>.<a class="cita" href="https://code.claude.com/docs/en/hooks#matcher-patterns">[2]</a></p>
       <p class="retos-titulo">Retos</p>
       <ul data-retos>
-        <li data-reto="reto-m-editwrite">Escribe un matcher que dispare solo con Edit y Write, sin NotebookEdit</li>
+        <li data-reto="reto-m-editwrite">Escribe un matcher que dispare solo con Edit y Write</li>
         <li data-reto="reto-m-mcp"><span>Atrapa las dos herramientas del servidor <code>memory</code> y nada más</span></li>
         <li data-reto="reto-m-mayus">Escribe el nombre de una herramienta en minúsculas y comprueba que no dispara</li>
       </ul>
@@ -593,7 +594,7 @@ details.porque summary { cursor: pointer; font-weight: 600; min-height: 32px; di
     <div class="heroe">
       <div>
         <p class="numero-heroe" aria-hidden="true">2</p>
-        <p class="numero-heroe-pie"><code>exit 2</code> es el único código que bloquea. El mensaje que acompaña al bloqueo es tu <strong>stderr</strong>.<a class="cita" href="https://code.claude.com/docs/en/hooks#exit-codes">[2]</a></p>
+        <p class="numero-heroe-pie"><code>exit 2</code> bloquea, y el mensaje que acompaña al bloqueo es tu <strong>stderr</strong>.<a class="cita" href="https://code.claude.com/docs/en/hooks#exit-codes">[2]</a></p>
         <svg aria-labelledby="t-codigos" style="max-width:14rem" viewBox="0 0 220 204" role="img" xmlns="http://www.w3.org/2000/svg"><title id="t-codigos">Las dos salidas que vas a usar en un hook que puede bloquear, como PreToolUse: exit 0 deja seguir la acción y exit 2 la detiene; tu stderr le explica a Claude por qué.</title><defs><marker id="codigos-pta" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1 L8 5 L1 9 Z" style="fill:#FAF9F5"/></marker></defs><rect x="60" y="8" width="100" height="30" rx="7" fill="#1f1e1c" stroke="#FAF9F5" stroke-width="1.25"/><text x="110" y="27.5" font-size="12" fill="#FAF9F5" text-anchor="middle" font-family="var(--f-codigo)">tu script</text><path d="M110 38 L110 45 Q110 52 103 52 L63 52 Q55 52 55 60 L55 72" fill="none" stroke="#FAF9F5" stroke-width="2.5" stroke-linecap="round"/><path d="M110 52 L157 52 Q165 52 165 60 L165 72" fill="none" stroke="var(--acento)" stroke-width="2.5" stroke-linecap="round"/><rect x="15" y="72" width="80" height="30" rx="7" fill="#1f1e1c" stroke="#FAF9F5" stroke-width="1.25"/><text x="55" y="92" font-size="13" fill="#FAF9F5" text-anchor="middle" font-family="var(--f-codigo)" font-weight="700">exit 0</text><rect x="125" y="72" width="80" height="30" rx="7" fill="var(--acento)"/><text x="165" y="92" font-size="13" fill="#141413" text-anchor="middle" font-family="var(--f-codigo)" font-weight="700">exit 2</text><path d="M55 102V140" stroke="#FAF9F5" stroke-width="2.5" stroke-linecap="round" marker-end="url(#codigos-pta)"/><path d="M165 102V136 M151 138H179" stroke="var(--acento)" stroke-width="2.5" stroke-linecap="round"/><text x="55" y="166" font-size="13" fill="#FAF9F5" text-anchor="middle" font-weight="600">sigue</text><text x="55" y="184" font-size="11" fill="#C9C7BE" text-anchor="middle">sin objeción</text><text x="165" y="166" font-size="13" fill="var(--acento)" text-anchor="middle" font-weight="600">se detiene</text><text x="165" y="184" font-size="11" fill="#C9C7BE" text-anchor="middle">stderr a Claude</text></svg>
       </div>
 
@@ -643,7 +644,7 @@ details.porque summary { cursor: pointer; font-weight: 600; min-height: 32px; di
         </ul>
       </div>
     </div>
-    <p class="nota-codigo">Regla práctica para empezar: <strong>exit 0</strong> cuando todo está bien, <strong>exit 2</strong> con un mensaje en stderr cuando quieres detener algo. Evita exit 1 para hacer cumplir reglas.<a class="cita" href="https://code.claude.com/docs/en/hooks#exit-codes">[2]</a></p>
+    <p class="nota-codigo" data-tras-prediccion="pred-exit1">Regla práctica para empezar: <strong>exit 0</strong> cuando todo está bien, <strong>exit 2</strong> con un mensaje en stderr cuando quieres detener algo. Evita exit 1 para hacer cumplir reglas.<a class="cita" href="https://code.claude.com/docs/en/hooks#exit-codes">[2]</a></p>
   </section>
 
   <!-- ============ 07 PRIMER HOOK (PASOS) ============ -->
