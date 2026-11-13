@@ -280,3 +280,14 @@ Lo pidió el usuario. Un agente por guía, en paralelo, editando la guía origin
   - `min-width: 0` en cuadrículas;
   - el simulador sin slider;
   - `Lienzo.registrar` con varios valores.
+
+## Fugas: antes y después de corregir
+
+- **Revisión ciega 1:** un subagente vio solo las capturas de lo visible antes de cada pregunta, sin el HTML. Resultado en 27 predicciones: **20 fugas**, 3 pistas y 4 limpias.
+- **Causa:** la regla de abrir cada sección con su idea en una frase (13 casos). Ya se corrigió en diseno.md.
+- **Corrección:** 4 agentes en paralelo, pedido por el usuario. Además el desenfoque del núcleo pasó de 3px a 7px, porque con 3px los textos grandes se leían.
+- **Revisión ciega 2:** **3 fugas**, 18 pistas y 6 limpias. Las 3 fugas:
+  - **merge-rebase pred-tres:** un reto describía el ancestro. Corregido.
+  - **merge-rebase pred-ff:** caso límite; el término «Fast-forward» de la columna es el tema que se enseña.
+  - **ensayo pred-tipo:** el borrador se parece al ejemplo literario anotado. Es práctica guiada (ejemplo resuelto → aplicar), así que se deja como pista.
+- **Aprendizaje:** las pistas (descartar opciones razonando con lo visible) son deseables. La revisión ciega con un agente que no conoce las respuestas encuentra lo que el autor no ve.
