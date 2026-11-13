@@ -27,8 +27,9 @@ Copia esta lista y márcala conforme avances:
 - [ ] 5. Plan de secciones
 - [ ] 6. Construir
 - [ ] 7. Validar
-- [ ] 8. Revisar en celular
-- [ ] 9. Registrar en el índice
+- [ ] 8. Revisar ilustraciones
+- [ ] 9. Revisar en celular
+- [ ] 10. Registrar en el índice
 ```
 
 **1. Nivel.** Si el pedido no dice el nivel, pregunta *principiante, intermedio o avanzado* y espera la respuesta antes de seguir.
@@ -58,7 +59,7 @@ python3 ${CLAUDE_SKILL_DIR}/scripts/fuentes.py css --titulos <id> --cuerpo <id> 
 - Cada `<section>` lleva `data-layout="<layout del catálogo>"`. No repitas un layout en secciones seguidas y usa al menos 5 distintos.
 - Al menos una sección con `data-tono="oscuro"` para alternar claro y oscuro.
 - Cada interacción lleva `data-interaccion="diagrama|flashcards|simulador|pasos|otra"`. Usa al menos 3 de los 4 tipos principales. Si el tema pide una interacción propia, como un probador, agrégala como `otra`.
-- Una ilustración SVG propia en cada sección clave (mínimo 3), dibujada con los colores de la familia.
+- **Ilustraciones:** una SVG propia en cada sección clave (mínimo 3), generada con un script que calcula la geometría. Si el tema es un proceso, un mecanismo o un ciclo, su ilustración central se anima con `forja.animar`. Antes de dibujar, lee [ilustracion.md](reference/ilustracion.md) y usa [kit-svg.svg](assets/kit-svg.svg).
 - Cita junto al dato: `<a class="cita" href="URL">[n]</a>`, con la lista completa en `<section id="fuentes">`.
 
 **7. Validar.**
@@ -67,13 +68,19 @@ python3 ${CLAUDE_SKILL_DIR}/scripts/validar.py <ruta>
 ```
 Si marca errores, corrígelos y vuelve a correrlo. **No sigas mientras haya errores.**
 
-**8. Revisar en celular.**
+**8. Revisar ilustraciones.**
+```bash
+python3 ${CLAUDE_SKILL_DIR}/scripts/revisar_ilustraciones.py <ruta>
+```
+Corrige lo que reporte. Después abre con Read cada imagen y califícala con la rúbrica de [ilustracion.md](reference/ilustracion.md) sección 9. Escribe la calificación de cada una. Si alguna saca menos de 8, corrígela y repite (máximo 3 vueltas).
+
+**9. Revisar en celular.**
 ```bash
 python3 ${CLAUDE_SKILL_DIR}/scripts/revisar_movil.py <ruta>
 ```
 Abre con Read las capturas que genera y revisa que se lea bien. Corrige cualquier desbordamiento que reporte.
 
-**9. Registrar.**
+**10. Registrar.**
 ```bash
 python3 ${CLAUDE_SKILL_DIR}/scripts/registrar.py indice <ruta> --titulo "<título>" --familia <familia> --nivel <nivel>
 ```

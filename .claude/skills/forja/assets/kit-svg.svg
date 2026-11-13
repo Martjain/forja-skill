@@ -1,0 +1,49 @@
+<!--
+  KIT SVG DE FORJA. Copia a <defs> solo lo que uses. Reglas: reference/ilustracion.md.
+  Los colores salen de variables CSS con un valor de respaldo. Defínelas en :root
+  con la paleta de la familia (por ejemplo, --ach-caliente: #F6D2BC).
+
+  Achurados (material cortado):  fill="url(#ach-neutro)" | url(#ach-caliente) | url(#ach-frio)
+  Metal (pieza sólida):          fill="url(#met)"
+  Flechas por color:             marker-end="url(#pta-caliente)" | url(#pta-frio) | url(#pta-neutro) | url(#pta-acento)
+  Llama (base en 0,0; alto 40):  <use href="#llama" x="216" y="300"/>  o con transform="translate(..) scale(..)"
+                                 Dentro de un <g class="titila"> titila; el núcleo la pausa con los controles.
+  Flecha ondulada:               d = forja.kit.onda(x, yInicio, yFin)  + class="flujo" para que avance.
+  Trazos:                        contorno 2.5 · detalle 1.25 · guías 1
+-->
+<svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute">
+<defs>
+  <pattern id="ach-neutro" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+    <rect width="7" height="7" style="fill:var(--ach-neutro, #CFC8BD)"/>
+    <line x1="0" y1="0" x2="0" y2="7" stroke-width="1.6" style="stroke:var(--ach-neutro-linea, #9C958B)"/>
+  </pattern>
+  <pattern id="ach-caliente" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+    <rect width="7" height="7" style="fill:var(--ach-caliente, #F6D2BC)"/>
+    <line x1="0" y1="0" x2="0" y2="7" stroke-width="1.6" style="stroke:var(--ach-caliente-linea, #E07A45)"/>
+  </pattern>
+  <pattern id="ach-frio" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+    <rect width="7" height="7" style="fill:var(--ach-frio, #D3E0EA)"/>
+    <line x1="0" y1="0" x2="0" y2="7" stroke-width="1.6" style="stroke:var(--ach-frio-linea, #7FA3BE)"/>
+  </pattern>
+
+  <linearGradient id="met" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" style="stop-color:var(--met-claro, #E6E0D6)"/>
+    <stop offset=".5" style="stop-color:var(--met, #CFC8BD)"/>
+    <stop offset="1" style="stop-color:var(--met-oscuro, #9C958B)"/>
+  </linearGradient>
+
+  <marker id="pta-caliente" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1 L8 5 L1 9 Z" style="fill:var(--caliente, #B23A0C)"/></marker>
+  <marker id="pta-frio" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1 L8 5 L1 9 Z" style="fill:var(--frio, #2E5A78)"/></marker>
+  <marker id="pta-neutro" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1 L8 5 L1 9 Z" style="fill:var(--tinta, #3A332C)"/></marker>
+  <marker id="pta-acento" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1 L8 5 L1 9 Z" style="fill:var(--acento, #A7832B)"/></marker>
+
+  <!-- Punto final de una línea guía de etiqueta -->
+  <marker id="punto-guia" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="4" markerHeight="4"><circle cx="5" cy="5" r="4" style="fill:var(--tinta, #3A332C)"/></marker>
+
+  <!-- Llama en dos capas: silueta + núcleo al 55% -->
+  <g id="llama">
+    <path d="M0 0 C-15 -10 -8.25 -24 -1.2 -40 C3.75 -26.4 11.25 -16.8 8.25 -7.2 C6.75 -2 3 0 0 0Z" style="fill:var(--llama, #E2632A)"/>
+    <path d="M1 0 C-7 -5.5 -3.4 -13.2 0.36 -22 C3 -14.52 7 -9.24 5.4 -3.96 C4.6 -1.1 2.6 0 1 0Z" style="fill:var(--llama-nucleo, #F2C14E)"/>
+  </g>
+</defs>
+</svg>

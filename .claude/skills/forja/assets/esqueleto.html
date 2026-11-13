@@ -111,6 +111,31 @@ button, input { font: inherit; min-height: 44px; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+/* Animaciones de proceso (forja.animar) */
+.anima-ctl { display: flex; flex-wrap: wrap; gap: .5rem 1rem; align-items: center; margin-top: .75rem; font-size: .875rem; }
+.anima-ctl button { min-height: 40px; padding: .4rem .95rem; border-radius: 8px; border: 1.5px solid currentColor; background: transparent; color: inherit; cursor: pointer; font: inherit; }
+.anima-ctl .anima-play { background: var(--acento); border-color: var(--acento); color: var(--fondo); min-width: 7.5rem; }
+.anima-ctl input { accent-color: var(--acento); }
+.anima-ctl label { display: inline-flex; gap: .5rem; align-items: center; }
+.anima-ctl .anima-vel { font-family: var(--f-codigo); min-width: 2.5rem; }
+.anima-fase { display: flex; gap: .75rem; align-items: baseline; min-height: 3rem; margin: .5rem 0 0; }
+.anima-fase b { flex: none; font-family: var(--f-codigo); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; padding: .15rem .5rem; border-radius: 4px; background: var(--acento); color: var(--fondo); }
+.flujo { stroke-dasharray: 6 5; animation: forja-flujo 1s linear infinite; }
+@keyframes forja-flujo { to { stroke-dashoffset: -22; } }
+.titila { transform-box: fill-box; transform-origin: 50% 100%; animation: forja-titila .9s ease-in-out infinite alternate; }
+@keyframes forja-titila { from { transform: scaleY(1); } to { transform: scaleY(.86) scaleX(1.04); } }
+.pausado .flujo, .pausado .titila { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) { .flujo, .titila { animation: none; } }
+.et-num, .et-leyenda { display: none; }
+.et-num circle { fill: var(--tinta); stroke: var(--fondo); stroke-width: 2; }
+.et-num text { fill: var(--fondo); font-family: var(--f-codigo); font-weight: 700; }
+.et-leyenda { margin: .5rem 0 0; padding-left: 1.6rem; gap: .25rem; font-size: .9rem; }
+.et-leyenda b { font-weight: 600; }
+@media (max-width: 640px) {
+  svg .etiqueta { display: none; }
+  svg .et-num { display: inline; }
+  .et-leyenda { display: grid; }
+}
 /* ===== FIN NÚCLEO FORJA: CSS ===== */
 </style>
 </head>
@@ -270,6 +295,52 @@ button, input { font: inherit; min-height: 44px; }
     });
   }
 
+  // --- Animaciones de proceso: forja.animar(caja, dibujar, opciones) ---
+  // dibujar(fase) recibe la fase del ciclo de 0 a 1 y coloca TODO a partir de ella (física real, no adorno).
+  // Trae pausa, velocidad, "Paso a paso", respeta reducir movimiento y se detiene fuera de pantalla.
+  const reducir = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function animar(caja, dibujar, { periodo = 4, inicio = 0, pasos = 12 } = {}) {
+    let fase = inicio, vel = 1, corriendo = !reducir, visible = true, t0 = null;
+    const ctl = document.createElement('div');
+    ctl.className = 'anima-ctl';
+    ctl.innerHTML = `<button type="button" class="anima-play"></button>
+      <button type="button" class="anima-paso">Paso a paso ›</button>
+      <label>Velocidad <input type="range" min="0.25" max="2" step="0.25" value="1"></label><span class="anima-vel">1×</span>`;
+    caja.append(ctl);
+    const play = ctl.querySelector('.anima-play');
+    const boton = () => { play.textContent = corriendo ? 'Pausa' : 'Reproducir'; caja.classList.toggle('pausado', !corriendo); };
+    play.addEventListener('click', () => { corriendo = !corriendo; boton(); });
+    ctl.querySelector('.anima-paso').addEventListener('click', () => { corriendo = false; boton(); fase = (Math.round(fase * pasos) + 1) % pasos / pasos; dibujar(fase); });
+    ctl.querySelector('input').addEventListener('input', e => { vel = +e.target.value; ctl.querySelector('.anima-vel').textContent = vel + '×'; });
+    new IntersectionObserver(es => { visible = es[0].isIntersecting; }).observe(caja);
+    const bucle = ts => {
+      if (t0 !== null && corriendo && visible) { fase = (fase + (ts - t0) / 1000 * vel / periodo) % 1; dibujar(fase); }
+      t0 = ts; requestAnimationFrame(bucle);
+    };
+    caja.__fijar = f => { corriendo = false; boton(); fase = f; dibujar(f); };  // lo usa revisar_ilustraciones.py
+    boton(); dibujar(fase); requestAnimationFrame(bucle);
+  }
+  // Ayudas de dibujo calculado: úsalas en lugar de poner coordenadas a ojo.
+  const kit = {
+    // Flecha ondulada (calor, flujo): de (x, y0) a (x, y1), vertical.
+    onda(x, y0, y1, amp = 5, n = 4) {
+      let d = `M${x} ${y0}`; const s = (y0 - y1) / n;
+      for (let k = 0; k < n; k++) d += ` Q${x + (k % 2 ? -amp : amp)} ${y0 - s * (k + .5)} ${x} ${y0 - s * (k + 1)}`;
+      return d;
+    },
+    // Biela-manivela: centro (cx, cy), radio de manivela r, largo de biela L, ángulo a (rad), eje horizontal en y = cy.
+    // Devuelve el perno de la manivela {px, py} y la posición del perno del pistón {wx}. La biela mide L siempre.
+    bielaManivela(cx, cy, r, L, a, lado = -1) {
+      const px = cx + r * Math.cos(a), py = cy + r * Math.sin(a);
+      return { px, py, wx: px + lado * Math.sqrt(L * L - (py - cy) ** 2), wy: cy };
+    },
+    // Mezcla dos colores hex (#rrggbb) con t de 0 a 1.
+    mezcla(c1, c2, t) {
+      const a = c1.slice(1).match(/../g).map(h => parseInt(h, 16)), b = c2.slice(1).match(/../g).map(h => parseInt(h, 16));
+      return '#' + a.map((v, i) => Math.round(v + (b[i] - v) * Math.max(0, Math.min(1, t))).toString(16).padStart(2, '0')).join('');
+    },
+  };
+
   // La API se define antes de dibujar nada: las flashcards y las predicciones restauradas pueden usarla.
   window.forja = {
     reto(id) { if (!estado.retos.includes(id)) { estado.retos.push(id); guardar(); pintar(); } },
@@ -277,7 +348,34 @@ button, input { font: inherit; min-height: 44px; }
     leer(clave) { return estado.extra[clave]; },
     // Para ejercicios generados por JS: forja.ayuda(elemento, ['paso 1', 'paso 2'], 'respuesta')
     ayuda(caja, pasos, respuesta) { montarAyuda(caja, pasos, respuesta); },
+    // forja.animar(caja, fase => {...}, { periodo: segundos por ciclo })
+    animar,
+    kit,
   };
+
+  // Etiquetas de ilustración: <g class="etiqueta" data-punto="x y"> con un título y una frase.
+  // En pantallas angostas se ocultan y quedan un número sobre la pieza + una leyenda debajo del dibujo.
+  const NS = 'http://www.w3.org/2000/svg';
+  document.querySelectorAll('svg').forEach(svg => {
+    const ets = [...svg.querySelectorAll('g.etiqueta[data-punto]')];
+    if (!ets.length) return;
+    const vb = svg.viewBox.baseVal, r = (vb && vb.width ? vb.width : 600) / 36;
+    const ol = document.createElement('ol');
+    ol.className = 'et-leyenda';
+    ets.forEach((g, i) => {
+      const [x, y] = g.dataset.punto.split(/[ ,]+/).map(Number);
+      const n = document.createElementNS(NS, 'g');
+      n.setAttribute('class', 'et-num');
+      n.innerHTML = `<circle cx="${x}" cy="${y}" r="${r}"/><text x="${x}" y="${y}" font-size="${r * 1.15}" text-anchor="middle" dominant-baseline="central">${i + 1}</text>`;
+      svg.appendChild(n);
+      const [t, ...resto] = g.querySelectorAll('text');
+      const li = document.createElement('li');
+      li.innerHTML = `<b>${t ? t.textContent : ''}</b> ${resto.map(e => e.textContent).join(' ')}`;
+      ol.appendChild(li);
+    });
+    const tras = svg.closest('[data-anima]') ? svg : (svg.closest('figure') || svg);
+    tras.after(ol);
+  });
 
   document.querySelectorAll('[data-ayuda]').forEach(caja => {
     const items = [...caja.querySelectorAll(':scope > ol > li')];

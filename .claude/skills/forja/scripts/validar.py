@@ -378,6 +378,15 @@ def validar(ruta: Path):
     if n_sin_fuente:
         advertencias.append(f"{n_sin_fuente} dato(s) marcado(s) sin fuente oficial (se muestran con †). Revisa si se pueden verificar")
 
+    # Ilustraciones: animación del proceso central y etiquetas adaptables al celular
+    contenido = re.sub(r"NÚCLEO FORJA: (CSS|JS).*?FIN NÚCLEO FORJA: \1", "", html, flags=re.S)
+    if not re.search(r"<(?:div|figure|section)\b[^>]*\sdata-anima\b", contenido):
+        advertencias.append("Ninguna ilustración animada (data-anima). Si el tema es un proceso, un mecanismo o un ciclo, "
+                            "anima su ilustración central con forja.animar (reference/ilustracion.md, sección 7)")
+    if not re.search(r'<g\b[^>]*\bclass="[^"]*\betiqueta\b[^"]*"[^>]*\bdata-punto=', contenido):
+        advertencias.append('Las etiquetas de los SVG no usan <g class="etiqueta" data-punto="x y">: en el celular no se adaptan '
+                            "(reference/ilustracion.md, sección 5)")
+
     sin_min = [i or "?" for i, m in lector.minutos if not m]
     if sin_min:
         advertencias.append(f"Secciones sin data-minutos: {sin_min}")

@@ -79,7 +79,7 @@ Cada `<section>` declara uno con `data-layout`. No repitas el mismo en secciones
 
 - **Inline**, con `viewBox` y `role="img"` + `<title>`. Usa los colores de la familia con variables CSS (`fill="var(--acento)"`) o `currentColor`.
 - **Esquemáticas, no decorativas.** Dibujan el mecanismo del concepto con el motivo de la guía: capas que se abren, eventos sobre una línea de tiempo, una rama que se separa. Una mancha abstracta o un "blob" no enseña nada.
-- **Simples.** Menos de 40 elementos por ilustración. Formas reconocibles antes que detalle.
+- **Con calidad de ilustración técnica**, no de boceto: sistema de trazo, materiales, geometría calculada, etiquetas limpias y, si el tema es un proceso, animación. Todas las reglas, el kit y la rúbrica (mínimo 8/10) están en [ilustracion.md](ilustracion.md).
 - **Una por sección clave**, mínimo 3 por guía. La de `portada` presenta el motivo y las siguientes lo reutilizan.
 - Íconos pequeños, si hacen falta: SVG de trazo simple, nunca emojis.
 
