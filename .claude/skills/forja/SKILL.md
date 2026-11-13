@@ -1,8 +1,8 @@
 ---
 name: forja
-description: Crea guías visuales interactivas de estudio sobre cualquier tema, en un solo archivo HTML offline con diagramas clicables, flashcards, simuladores con slider y pasos guiados, investigadas en fuentes oficiales y con una UI que sale del propio tema. Usar cuando se pida una guía visual, una guía interactiva, una guía para estudiar o aprender un tema, o con /forja <tema>. No usar para explicaciones rápidas en el chat, resúmenes de documentos, presentaciones ni para editar un HTML existente.
-argument-hint: [tema]
-allowed-tools: Bash(python3 *), WebFetch, WebSearch
+description: Crea guías visuales interactivas de estudio sobre cualquier tema, en un solo archivo HTML offline con diagramas clicables, flashcards, simuladores con slider y pasos guiados, investigadas en fuentes oficiales y con una UI que sale del propio tema. Usar cuando se pida una guía visual, una guía interactiva, una guía para estudiar o aprender un tema, una guía que explique un repositorio de código con ejemplos, o con /forja <tema>. No usar para explicaciones rápidas en el chat, resúmenes de documentos, presentaciones ni para editar un HTML existente.
+argument-hint: [tema o URL de un repo]
+allowed-tools: Bash(python3 *), Bash(git clone *), Bash(git -C *), WebFetch, WebSearch
 ---
 
 # forja
@@ -12,6 +12,8 @@ Reglas que no se rompen:
 - **Un solo archivo HTML, sin CDN ni recursos externos.** Debe funcionar offline.
 - **Cero emojis.** Si necesitas un ícono, dibújalo en SVG.
 - **No termines hasta que `validar.py` no marque errores y `revisar_movil.py` pase.**
+
+**Si el tema es un repositorio** (una URL de GitHub o una carpeta con código), lee primero [repos.md](reference/repos.md): cambia la ruta, el nivel, la familia, la investigación (la fuente es el código, citado con permalinks al commit) y trae un plan de secciones de partida.
 
 El contenido (investigar y explicar con exactitud) hazlo como lo harías normalmente. Esta skill agrega reglas de **forma**: dirección visual, layouts, interacciones y verificación.
 
@@ -68,7 +70,7 @@ python3 ${CLAUDE_SKILL_DIR}/scripts/fuentes.py css --titulos <id> --cuerpo <id> 
 ```bash
 python3 ${CLAUDE_SKILL_DIR}/scripts/validar.py <ruta>
 ```
-Si marca errores, corrígelos y vuelve a correrlo. **No sigas mientras haya errores.**
+Si marca errores, corrígelos y vuelve a correrlo. **No sigas mientras haya errores.** En una guía de repositorio corre también `scripts/citas_repo.py` ([repos.md](reference/repos.md), sección 8).
 
 **8. Revisar ilustraciones.**
 ```bash
