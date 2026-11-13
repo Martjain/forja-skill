@@ -67,3 +67,24 @@ Verificado a mano: el dato de que "Claude Code anula un Stop hook tras 8 bloqueo
 - **El borroso tapa demasiado.** En algunas secciones el diagrama completo queda ilegible antes de predecir y se ve como una zona muerta. Hay que difuminar solo el **resultado** y dejar visible la estructura y los controles.
 - **Ruta corta** (del caso 4) y **marcar los datos sin fuente** (del caso 4).
 - Siguen pendientes las mejoras 3 (repaso espaciado entre guías) y 4 (ejemplos que se desvanecen).
+
+---
+
+# forja v2, ronda 2: borroso acotado, repaso espaciado, ejemplos que se desvanecen
+
+Prueba: "subagentes de Claude Code: qué son, cómo delegar tareas y cuándo conviene usarlos, nivel principiante". Pedido largo a propósito, para comprobar la ruta corta. Subagente limpio, sin ver otras guías.
+
+| Criterio nuevo | Resultado |
+|---|---|
+| Ruta corta | ✓ `subagentes-de-claude-code` (tema pasado: "subagentes de Claude Code") |
+| Borroso solo en el resultado | ✓ Los 5 objetivos son paneles de resultado; diagrama y sliders visibles desde el inicio |
+| Paso a paso que se desvanece | ✓ Pasos 1-2 resueltos, huecos en 3, 4 y 5, y "¿Por qué funciona?" después de revelar |
+| Flashcards del núcleo | ✓ 14 tarjetas en JSON que se suman al repaso del índice |
+| Núcleo copiado sin cambios | ✓ CSS y JS idénticos al esqueleto (comprobado con diff) |
+| Datos sin fuente | No marcó ninguno; el simulador declara que sus cantidades son ilustrativas |
+| Retos | 9, incluido un clasificador de 6 situaciones ("¿subagente o principal?") |
+| Validador / celular | OK / OK |
+
+Verificado a mano contra la documentación oficial: límite de 20 subagentes simultáneos, fork con `/subtask`, `claude --agent`, `@"nombre (agent)"`.
+
+Costo: 209k tokens, 11.5 min (la v2 ronda 1 usó 230k y 15 min, porque las flashcards ya no se programan a mano).
