@@ -65,8 +65,21 @@ button, input { font: inherit; min-height: 44px; }
 [data-forja-continuar][hidden] { display: none; }
 [data-forja-continuar] a { display: inline-flex; align-items: center; min-height: 44px; padding: .5rem 1.1rem; border-radius: 8px; background: var(--acento); color: var(--fondo); text-decoration: none; font-weight: 600; }
 [data-forja-reiniciar] { background: none; border: 0; color: inherit; text-decoration: underline; opacity: .7; cursor: pointer; }
-[data-interaccion]:not(.revelado) [data-tras-prediccion] { filter: blur(5px) grayscale(.6); opacity: .45; pointer-events: none; user-select: none; }
+[data-tras-prediccion]:not(.revelado) { filter: blur(3px) grayscale(.5); opacity: .5; pointer-events: none; user-select: none; }
 [data-tras-prediccion] { transition: filter .5s ease, opacity .5s ease; }
+.sin-fuente { text-decoration: underline dotted; text-underline-offset: 3px; }
+.sin-fuente::after { content: "†"; color: var(--acento); font-size: .75em; vertical-align: super; margin-left: .1em; }
+.leyenda-sin-fuente { font-size: .875rem; opacity: .8; }
+[data-forja-flashcards] { display: grid; gap: .75rem; max-width: 36rem; }
+.fc-progreso { display: flex; justify-content: space-between; font-family: var(--f-codigo); font-size: .8rem; opacity: .8; }
+.fc-tarjeta { display: grid; align-content: center; gap: .5rem; min-height: 12rem; padding: 1.5rem; border: 1.5px solid currentColor; border-radius: 12px; background: transparent; color: inherit; text-align: left; cursor: pointer; font: inherit; }
+.fc-lado { font-family: var(--f-codigo); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--acento); }
+.fc-texto { font-family: var(--f-titulos); font-size: clamp(1.15rem, 3vw, 1.5rem); line-height: 1.3; }
+.fc-pista { font-size: .8rem; opacity: .65; }
+.fc-botones { display: flex; gap: .5rem; flex-wrap: wrap; }
+.fc-botones button { padding: .5rem 1.1rem; border-radius: 8px; border: 1.5px solid currentColor; background: transparent; color: inherit; cursor: pointer; }
+.fc-botones .fc-sabia { background: var(--acento); border-color: var(--acento); color: var(--fondo); }
+@media (prefers-reduced-motion: no-preference) { .fc-tarjeta .fc-texto { animation: forja-entra .35s ease both; } }
 [data-prediccion] .opciones { display: flex; flex-wrap: wrap; gap: .5rem; margin: .75rem 0; }
 [data-prediccion] [data-opcion] { cursor: pointer; padding: .5rem 1rem; border-radius: 8px; border: 1.5px solid currentColor; background: transparent; color: inherit; }
 [data-prediccion] [data-opcion]:disabled { cursor: default; opacity: .55; }
@@ -119,7 +132,12 @@ button, input { font: inherit; min-height: 44px; }
          </div>
          <p class="veredicto" hidden></p>
        </div>
-       …y el resultado (simulador, panel, SVG) lleva data-tras-prediccion: queda borroso hasta predecir.
+       …y SOLO el resultado lleva data-tras-prediccion="pred-1" (el panel de salida, la lectura, el
+       veredicto del simulador). Los controles y el diagrama quedan visibles: el usuario ve la
+       pregunta y la estructura, solo no ve la respuesta. Nunca pongas data-tras-prediccion
+       en un contenedor que tenga botones, inputs o el diagrama completo.
+
+       Datos sin fuente oficial: <span class="sin-fuente">el dato</span> (el núcleo agrega la leyenda).
 
        Patrón de retos:
        <ul data-retos>
@@ -128,7 +146,16 @@ button, input { font: inherit; min-height: 44px; }
        …y el JS de la interacción llama a forja.reto('reto-1') cuando el usuario lo logra. -->
 
   <section id="repaso" data-layout="repaso" data-minutos="5">
-    <!-- Flashcards (data-interaccion="flashcards"). Guarda su estado con forja.guardar('flashcards', …) -->
+    <h2>{{Título del repaso}}</h2>
+    <!-- El núcleo dibuja las flashcards a partir del JSON de abajo y las suma al repaso espaciado
+         del índice. No escribas JS para ellas; puedes ajustar su CSS (.fc-*). 8 a 15 tarjetas;
+         ids estables y cortos; HTML simple permitido en q y a (code, strong). -->
+    <div data-interaccion="flashcards" data-forja-flashcards></div>
+    <script type="application/json" id="forja-tarjetas">
+    [
+      {"id": "{{id-corto}}", "q": "{{Pregunta}}", "a": "{{Respuesta corta}}"}
+    ]
+    </script>
   </section>
 
   <section id="fuentes" data-layout="lista-grande">
@@ -143,7 +170,8 @@ button, input { font: inherit; min-height: 44px; }
 /* ===== NÚCLEO FORJA: JS (copiar sin cambios) ===== */
 (() => {
   const meta = n => document.querySelector(`meta[name="forja:${n}"]`)?.content;
-  const CLAVE = 'forja:' + (meta('slug') || location.pathname);
+  const SLUG = meta('slug') || location.pathname;
+  const CLAVE = 'forja:' + SLUG;
   const leer = () => { try { return JSON.parse(localStorage.getItem(CLAVE)) || {}; } catch { return {}; } };
   const estado = Object.assign({ vistas: [], retos: [], predicciones: {}, ultima: null, extra: {} }, leer());
   const guardar = () => { try { localStorage.setItem(CLAVE, JSON.stringify(estado)); } catch { /* sin almacenamiento: la guía sigue funcionando */ } };
@@ -164,6 +192,7 @@ button, input { font: inherit; min-height: 44px; }
   const pintar = () => {
     const hechos = estado.vistas.length + estado.retos.length + Object.keys(estado.predicciones).length;
     const pct = total ? Math.min(100, Math.round(100 * hechos / total)) : 0;
+    if (estado.pct !== pct) { estado.pct = pct; guardar(); } // el índice muestra este avance
     document.querySelectorAll('[data-forja-progreso]').forEach(b => { b.style.setProperty('--avance', pct + '%'); b.setAttribute('aria-valuenow', pct); });
     document.querySelectorAll('[data-forja-pct]').forEach(e => { e.textContent = pct + '%'; });
     document.querySelectorAll('[data-mapa]').forEach(a => {
@@ -185,6 +214,11 @@ button, input { font: inherit; min-height: 44px; }
   predicciones.forEach((p, i) => {
     const id = p.id || `prediccion-${i + 1}`;
     const caja = p.closest('[data-interaccion]') || p.parentElement;
+    // Revela solo SU objetivo: data-tras-prediccion="<id>". Sin valor, lo que esté en su misma interacción.
+    const objetivos = () => {
+      const propios = [...document.querySelectorAll(`[data-tras-prediccion="${id}"]`)];
+      return propios.length ? propios : [...caja.querySelectorAll('[data-tras-prediccion=""]')];
+    };
     const veredicto = p.querySelector('.veredicto');
     const botones = [...p.querySelectorAll('[data-opcion]')];
     const resolver = (opcion, restaurando) => {
@@ -202,16 +236,79 @@ button, input { font: inherit; min-height: 44px; }
         veredicto.querySelector('.rehacer').addEventListener('click', () => {
           delete estado.predicciones[id]; guardar();
           botones.forEach(b => { b.disabled = false; b.classList.remove('elegida', 'correcta'); });
-          veredicto.hidden = true; caja.classList.remove('revelado'); pintar();
+          veredicto.hidden = true; objetivos().forEach(o => o.classList.remove('revelado')); pintar();
         });
       }
-      caja.classList.add('revelado');
+      objetivos().forEach(o => o.classList.add('revelado'));
       caja.dispatchEvent(new CustomEvent('forja:revelado', { detail: { id, opcion, acierto } }));
       if (!restaurando) { estado.predicciones[id] = opcion; guardar(); pintar(); }
     };
     botones.forEach(b => b.addEventListener('click', () => resolver(b.dataset.opcion)));
     if (estado.predicciones[id]) resolver(estado.predicciones[id], true);
   });
+
+  // --- Repaso espaciado compartido entre guías (cajas de Leitner) ---
+  // forja:mazo   = { slug: { titulo, url, tarjetas: [{id, q, a}] } }
+  // forja:repaso = { "slug::id": { caja: 1-5, proxima: "AAAA-MM-DD" } }
+  const INTERVALOS = [0, 1, 3, 7, 16, 35]; // días hasta el próximo repaso según la caja
+  const fecha = f => `${f.getFullYear()}-${String(f.getMonth() + 1).padStart(2, '0')}-${String(f.getDate()).padStart(2, '0')}`; // fecha local, no UTC
+  const hoy = () => fecha(new Date());
+  const enDias = n => { const f = new Date(); f.setDate(f.getDate() + n); return fecha(f); };
+  const leerJSON = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } };
+  const escribirJSON = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} };
+  const calificar = (clave, sabia) => {
+    const rep = leerJSON('forja:repaso', {});
+    const r = rep[clave] || { caja: 0 };
+    r.caja = sabia ? Math.min(5, r.caja + 1) : 1;
+    r.proxima = enDias(sabia ? INTERVALOS[r.caja] : 1);
+    rep[clave] = r; escribirJSON('forja:repaso', rep);
+  };
+  let tarjetas = [];
+  try { tarjetas = JSON.parse(document.getElementById('forja-tarjetas')?.textContent || '[]'); } catch {}
+  if (tarjetas.length) {
+    const mazo = leerJSON('forja:mazo', {});
+    mazo[SLUG] = { titulo: document.title, url: location.href.split('#')[0], tarjetas };
+    escribirJSON('forja:mazo', mazo);
+  }
+  document.querySelectorAll('[data-forja-flashcards]').forEach(caja => {
+    if (!tarjetas.length) return;
+    const guardado = estado.extra.flashcards;
+    let cola = guardado?.cola?.filter(i => i < tarjetas.length) ?? tarjetas.map((_, i) => i);
+    let dominadas = guardado?.dominadas ?? 0;
+    let volteada = false;
+    const persistir = () => { estado.extra.flashcards = { cola, dominadas }; guardar(); };
+    const dibujar = () => {
+      if (!cola.length) {
+        caja.innerHTML = `<p class="fc-progreso"><span>${tarjetas.length} de ${tarjetas.length} dominadas</span></p>
+          <p class="fc-texto">Dominaste el mazo. Estas tarjetas vuelven en el <strong>repaso de hoy</strong> del índice cuando toque repasarlas.</p>
+          <div class="fc-botones"><button type="button" class="fc-otra">Barajar de nuevo</button></div>`;
+        caja.querySelector('.fc-otra').addEventListener('click', () => { cola = tarjetas.map((_, i) => i).sort(() => Math.random() - .5); dominadas = 0; persistir(); dibujar(); });
+        if (document.querySelector('[data-reto="flashcards"]')) window.forja.reto('flashcards');
+        return;
+      }
+      const t = tarjetas[cola[0]];
+      caja.innerHTML = `<p class="fc-progreso"><span>Quedan ${cola.length}</span><span>${dominadas} de ${tarjetas.length} dominadas</span></p>
+        <button type="button" class="fc-tarjeta" aria-live="polite">
+          <span class="fc-lado">${volteada ? 'Respuesta' : 'Pregunta'}</span>
+          <span class="fc-texto">${volteada ? t.a : t.q}</span>
+          ${volteada ? '' : '<span class="fc-pista">Intenta responder en tu cabeza. Luego toca, Enter o espacio para voltear.</span>'}
+        </button>
+        ${volteada ? '<div class="fc-botones"><button type="button" class="fc-sabia">Lo sabía</button><button type="button" class="fc-repasar">Repasar</button></div>' : ''}`;
+      caja.querySelector('.fc-tarjeta').addEventListener('click', () => { if (!volteada) { volteada = true; dibujar(); caja.querySelector('.fc-sabia')?.focus(); } });
+      caja.querySelector('.fc-sabia')?.addEventListener('click', () => { calificar(`${SLUG}::${t.id}`, true); cola.shift(); dominadas++; volteada = false; persistir(); dibujar(); });
+      caja.querySelector('.fc-repasar')?.addEventListener('click', () => { calificar(`${SLUG}::${t.id}`, false); cola.push(cola.shift()); volteada = false; persistir(); dibujar(); });
+    };
+    dibujar();
+  });
+
+  // --- Datos sin fuente oficial: leyenda automática en la sección de fuentes ---
+  const sinFuente = document.querySelectorAll('.sin-fuente').length;
+  if (sinFuente) {
+    const p = document.createElement('p');
+    p.className = 'leyenda-sin-fuente';
+    p.textContent = `† ${sinFuente === 1 ? 'Un dato de esta guía no se encontró' : `${sinFuente} datos de esta guía no se encontraron`} en una fuente oficial. Verifícalos antes de confiar en ellos.`;
+    document.getElementById('fuentes')?.append(p);
+  }
 
   window.forja = {
     reto(id) { if (!estado.retos.includes(id)) { estado.retos.push(id); guardar(); pintar(); } },

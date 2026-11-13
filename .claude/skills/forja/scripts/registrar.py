@@ -19,6 +19,10 @@ import unicodedata
 from pathlib import Path
 
 MARCADOR = "<!-- forja:fin-lista -->"
+# Rutas cortas se leen y se escriben mejor: "git-merge-rebase", no el título completo.
+MAX_SLUG = 40
+MAX_PALABRAS = 4
+PLANTILLA_INDICE = Path(__file__).resolve().parent.parent / "assets" / "indice.html"
 
 
 def raiz_repo() -> Path:
@@ -33,11 +37,16 @@ def raiz_repo() -> Path:
 def slug(texto: str) -> str:
     sin_acentos = unicodedata.normalize("NFKD", texto).encode("ascii", "ignore").decode()
     s = re.sub(r"[^a-z0-9]+", "-", sin_acentos.lower()).strip("-")
-    return s[:60].rstrip("-") or "guia"
+    if len(s) > MAX_SLUG:
+        s = s[:MAX_SLUG].rsplit("-", 1)[0]
+    return s or "guia"
 
 
 def cmd_ruta(tema: str) -> int:
     raiz = raiz_repo()
+    if len(tema.split()) > MAX_PALABRAS:
+        print(f"AVISO: el tema tiene {len(tema.split())} palabras. Usa uno corto (1 a {MAX_PALABRAS}), "
+              f"por ejemplo \"git merge rebase\" en vez del título completo.", file=sys.stderr)
     base = slug(tema)
     candidato, n = base, 1
     while (raiz / "guias" / candidato).exists():
@@ -51,38 +60,6 @@ def cmd_ruta(tema: str) -> int:
     return 0
 
 
-INDICE_NUEVO = """<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>forja · guías</title>
-<style>
-:root { --fondo:#FAF9F5; --tinta:#141413; --suave:#5E5D59; --borde:#E8E6DC; --acento:#D97757; }
-* { box-sizing: border-box; }
-body { margin:0; background:var(--fondo); color:var(--tinta); font:400 1.0625rem/1.6 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; }
-main { max-width: 52rem; margin: 0 auto; padding: clamp(2rem, 8vw, 5rem) 1.25rem; }
-h1 { font: 600 clamp(2.5rem, 8vw, 4rem)/1 ui-serif, Georgia, serif; margin: 0 0 .5rem; }
-p.lema { color: var(--suave); margin: 0 0 3rem; }
-ol { list-style: none; padding: 0; margin: 0; counter-reset: g; }
-li { counter-increment: g; display: grid; grid-template-columns: 3.5rem 1fr; gap: .25rem 1rem; padding: 1.25rem 0; border-top: 1px solid var(--borde); }
-li::before { content: counter(g, decimal-leading-zero); grid-row: span 2; font: 600 1.75rem/1 ui-serif, Georgia, serif; color: var(--acento); }
-li a { font-weight: 600; font-size: 1.2rem; color: inherit; text-decoration-color: var(--acento); text-underline-offset: 4px; }
-li span { color: var(--suave); font-size: .9rem; }
-:focus-visible { outline: 3px solid var(--acento); outline-offset: 3px; }
-</style>
-</head>
-<body>
-<main>
-<h1>forja</h1>
-<p class="lema">Guías visuales para aprender haciendo.</p>
-<ol>
-<!-- forja:fin-lista -->
-</ol>
-</main>
-</body>
-</html>
-"""
 
 
 def cmd_indice(ruta_html: str, titulo: str, familia: str, nivel: str) -> int:
@@ -94,7 +71,7 @@ def cmd_indice(ruta_html: str, titulo: str, familia: str, nivel: str) -> int:
     rel = guia.resolve().relative_to(raiz).as_posix()
     indice = raiz / "index.html"
     if not indice.exists():
-        indice.write_text(INDICE_NUEVO, encoding="utf-8")
+        indice.write_text(PLANTILLA_INDICE.read_text(encoding="utf-8"), encoding="utf-8")
     contenido = indice.read_text(encoding="utf-8")
     if MARCADOR not in contenido:
         print(f"ERROR: index.html no tiene el marcador {MARCADOR}. Agrégalo dentro de la lista de guías.")
@@ -104,7 +81,7 @@ def cmd_indice(ruta_html: str, titulo: str, familia: str, nivel: str) -> int:
         return 0
     fecha = datetime.date.today().isoformat()
     entrada = (
-        f'<li><a href="{html.escape(rel)}">{html.escape(titulo)}</a>'
+        f'<li data-slug="{html.escape(guia.parent.name)}"><a href="{html.escape(rel)}">{html.escape(titulo)}</a>'
         f"<span>{html.escape(familia)} · {html.escape(nivel)} · {fecha}</span></li>\n"
     )
     indice.write_text(contenido.replace(MARCADOR, entrada + MARCADOR), encoding="utf-8")

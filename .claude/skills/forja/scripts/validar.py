@@ -12,6 +12,7 @@ Salida: lista de ERRORES (bloquean) y ADVERTENCIAS (revisar).
 Código de salida: 1 si hay errores, 0 si no.
 """
 import colorsys
+import json
 import re
 import sys
 from html.parser import HTMLParser
@@ -84,6 +85,11 @@ RGB = re.compile(r"rgba?\(\s*(\d+)[ ,]+(\d+)[ ,]+(\d+)")
 GRADIENTE = re.compile(r"(?:linear|radial|conic)-gradient\(([^;{}]*)\)", re.I)
 
 
+VACIOS = {"area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "source", "track", "wbr", "param"}
+# Flashcards: menos de 8 no alcanza para repasar; más de 15 cansa en una sola sesión.
+MIN_TARJETAS, MAX_TARJETAS = 8, 15
+
+
 class Lector(HTMLParser):
     """Separa el texto visible, el CSS y los recursos de la página."""
 
@@ -109,6 +115,10 @@ class Lector(HTMLParser):
         self.retos = 0
         self.minutos = []  # (id, data-minutos o None)
         self.atributos = set()  # atributos data-forja-* presentes
+        # Anidamiento: para saber qué hay dentro de un data-tras-prediccion o de unos pasos.
+        self._abiertos = []  # (tag, dentro_de_tras, indice_de_pasos o None)
+        self.tras_con_controles = []  # descripciones de controles escondidos tras una predicción
+        self.pasos = []  # por cada data-interaccion="pasos": cuántas predicciones tiene dentro
         self._pila = []
         self._ignorar = 0
 
@@ -161,10 +171,29 @@ class Lector(HTMLParser):
         if "data-reto" in a:
             self.retos += 1
         self.atributos.update(k for k in a if k.startswith("data-forja-"))
+
+        tras_padre = self._abiertos[-1][1] if self._abiertos else False
+        pasos_padre = self._abiertos[-1][2] if self._abiertos else None
+        if tras_padre and (tag in ("button", "input", "select", "textarea") or "data-nodo" in a):
+            self.tras_con_controles.append(f"<{tag}{' data-nodo' if 'data-nodo' in a else ''}>")
+        if "data-prediccion" in a and pasos_padre is not None:
+            self.pasos[pasos_padre] += 1
+        tras = tras_padre or "data-tras-prediccion" in a
+        pasos = pasos_padre
+        if (a.get("data-interaccion") or "").strip().lower() == "pasos":
+            self.pasos.append(0)
+            pasos = len(self.pasos) - 1
+        if tag not in VACIOS:
+            self._abiertos.append((tag, tras, pasos))
         if tag not in ("br", "img", "meta", "input", "hr", "link"):
             self._pila.append(tag)
 
     def handle_endtag(self, tag):
+        # Cierra hasta la última apertura de esta etiqueta (tolera <p>/<li> sin cerrar).
+        for i in range(len(self._abiertos) - 1, -1, -1):
+            if self._abiertos[i][0] == tag:
+                del self._abiertos[i:]
+                break
         if tag in ("script", "style"):
             self._ignorar = max(0, self._ignorar - 1)
         if self.en_fuentes and tag not in ("br", "img", "meta", "input", "hr"):
@@ -285,6 +314,38 @@ def validar(ruta: Path):
         errores.append("Cada predicción debe ocultar su resultado con data-tras-prediccion")
     if lector.retos < MIN_RETOS:
         errores.append(f"Solo {lector.retos} reto(s) con data-reto; se esperan al menos {MIN_RETOS}")
+    if lector.tras_con_controles:
+        errores.append(
+            "data-tras-prediccion esconde controles o el diagrama "
+            f"({', '.join(sorted(set(lector.tras_con_controles)))}): marca solo el resultado; los controles quedan visibles"
+        )
+    sin_hueco = [i + 1 for i, n in enumerate(lector.pasos) if n == 0]
+    if sin_hueco:
+        errores.append(f"Paso a paso sin huecos (#{sin_hueco}): desde el paso 3 el usuario completa con una data-prediccion")
+
+    # 7b'. Flashcards del núcleo y repaso espaciado
+    if "data-forja-flashcards" not in lector.atributos:
+        errores.append('Falta <div data-forja-flashcards>: las flashcards las dibuja el núcleo')
+    m = re.search(r'<script[^>]*id=["\']forja-tarjetas["\'][^>]*>(.*?)</script>', html, re.S)
+    if not m:
+        errores.append('Falta <script type="application/json" id="forja-tarjetas"> con las flashcards')
+    else:
+        try:
+            tarjetas = json.loads(m.group(1))
+            ids = [t.get("id") for t in tarjetas]
+            if not MIN_TARJETAS <= len(tarjetas) <= MAX_TARJETAS:
+                (errores if len(tarjetas) < MIN_TARJETAS else advertencias).append(
+                    f"{len(tarjetas)} flashcards; se esperan entre {MIN_TARJETAS} y {MAX_TARJETAS}")
+            if any(not (t.get("id") and t.get("q") and t.get("a")) for t in tarjetas):
+                errores.append("Cada flashcard necesita id, q y a")
+            if len(set(ids)) != len(ids):
+                errores.append("Hay ids de flashcards repetidos (el repaso espaciado los mezclaría)")
+        except (json.JSONDecodeError, AttributeError) as e:
+            errores.append(f"El JSON de forja-tarjetas no es válido: {e}")
+    n_sin_fuente = len(re.findall(r'class="[^"]*\bsin-fuente\b', re.sub(r"<!--.*?-->", "", html, flags=re.S)))
+    if n_sin_fuente:
+        advertencias.append(f"{n_sin_fuente} dato(s) marcado(s) sin fuente oficial (se muestran con †). Revisa si se pueden verificar")
+
     sin_min = [i or "?" for i, m in lector.minutos if not m]
     if sin_min:
         advertencias.append(f"Secciones sin data-minutos: {sin_min}")

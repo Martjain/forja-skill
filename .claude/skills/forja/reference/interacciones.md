@@ -31,7 +31,7 @@ Cada interacción lleva `data-interaccion="<tipo>"` en su contenedor.
 Cuando alguien adivina antes de ver la respuesta (aunque se equivoque) y recibe la corrección de inmediato, recuerda más que si solo lee. Por eso **al menos 2 interacciones por guía empiezan con una predicción**: normalmente el simulador y el diagrama o los pasos.
 
 - Una pregunta concreta sobre lo que va a pasar, con 2 a 4 opciones. Las opciones incorrectas deben ser errores **plausibles**, los que comete un principiante de verdad.
-- El resultado de la interacción lleva `data-tras-prediccion`: el núcleo lo deja borroso hasta que el usuario elige.
+- **Solo el resultado** lleva `data-tras-prediccion="<id de la predicción>"`: el panel de salida, la lectura del simulador, la ficha del nodo. El núcleo lo deja borroso hasta que el usuario elige. **Los controles y el diagrama quedan a la vista**, porque ver la estructura ayuda a predecir. Si escondes un bloque grande, se convierte en una zona muerta. El validador marca como error un `data-tras-prediccion` que contenga botones, inputs o `data-nodo`.
 - Al elegir, el núcleo muestra "Acertaste" o "Predijiste X; mira qué pasa en realidad", más la explicación de `data-explicacion` (una o dos frases con el **porqué**).
 - No escribas JS para esto: el núcleo del esqueleto lo resuelve con el marcado:
 
@@ -47,7 +47,8 @@ Cuando alguien adivina antes de ver la respuesta (aunque se equivoque) y recibe 
     </div>
     <p class="veredicto" hidden></p>
   </div>
-  <div data-tras-prediccion> … sliders y resultado … </div>
+  … sliders y SVG (visibles) …
+  <p data-tras-prediccion="pred-exit"> … resultado y frase que lo explica … </p>
 </div>
 ```
 
@@ -86,14 +87,26 @@ diagrama.querySelectorAll('[data-nodo]').forEach(n => {
 
 ## 3. Flashcards — `data-interaccion="flashcards"`
 
-Para memorizar términos, comandos y reglas. Va casi siempre en la sección `repaso`.
+Para memorizar términos, comandos y reglas. Van en la sección `repaso`.
 
-- Muestra la pregunta. El usuario **intenta recordar** y luego voltea la tarjeta (ahí está el aprendizaje, no en la animación).
-- Después de voltear, dos botones: "Lo sabía" y "Repasar". Las de "Repasar" vuelven al final del mazo.
-- Progreso visible: "7 de 12 · 5 dominadas".
-- De 8 a 15 tarjetas, con respuestas cortas.
-- Guarda el mazo y lo dominado con `forja.guardar('flashcards', estado)` y restáuralo con `forja.leer('flashcards')`, para que al volver no se empiece de cero.
-- Voltear con clic, Enter o barra espaciadora. Respeta `prefers-reduced-motion` (sin giro 3D: solo cambio de cara).
+**No escribas JS para las flashcards.** El núcleo las dibuja a partir de un JSON, guarda el avance y las suma al **repaso espaciado** del índice, que mezcla tarjetas de todas las guías y las vuelve a mostrar en 1, 3, 7, 16 y 35 días según cuánto las domines:
+
+```html
+<div data-interaccion="flashcards" data-forja-flashcards></div>
+<script type="application/json" id="forja-tarjetas">
+[
+  {"id": "exit-2", "q": "¿Qué código de salida bloquea la acción?", "a": "<code>exit 2</code>. El <code>exit 1</code> es un error que no bloquea."},
+  …
+]
+</script>
+```
+
+Cómo escribir buenas tarjetas:
+- **De 8 a 15**, una idea por tarjeta. Respuestas de una o dos líneas.
+- **Que se respondan recordando, no reconociendo**: "¿Qué evento corre antes de la herramienta?" sirve; "¿PreToolUse corre antes?" no, porque la respuesta es sí o no.
+- Incluye **las confusiones típicas** del tema (exit 1 contra exit 2, *ours* contra *theirs*): son las que más vale repasar.
+- El `id` debe ser estable y corto. Si cambias el `id`, la tarjeta pierde su historial de repaso.
+- Puedes cambiar su aspecto con CSS (clases `.fc-*`) para que combine con la guía.
 
 ## 4. Simulador con slider — `data-interaccion="simulador"`
 
@@ -123,6 +136,15 @@ Para procedimientos: configurar algo, recorrer un proceso, resolver un problema.
 - **Cada paso cambia el estado visual**: el SVG o el bloque de código se actualiza resaltando lo nuevo. Si solo cambia el texto, es un carrusel, no un paso a paso.
 - El último paso muestra el resultado completo y un "Volver a empezar".
 - Flechas del teclado para avanzar y retroceder.
+
+**Ejemplo que se desvanece.** Para un principiante, ver un ejemplo resuelto enseña más que resolverlo solo desde cero. Pero si todo viene resuelto, solo lee. Por eso la ayuda se va retirando:
+
+1. **Los pasos 1 y 2 vienen resueltos**: se muestra qué se hace y por qué.
+2. **Desde el paso 3, cada paso tiene un hueco**: antes de mostrar la línea o la acción nueva, el usuario elige cuál va. Es una `data-prediccion` dentro del paso, y la línea nueva lleva `data-tras-prediccion="<id>"`. Las opciones incorrectas son los errores reales de un principiante.
+3. **Después de revelar, un "¿Por qué?"**: un `<details>` con `<summary>¿Por qué funciona? Piénsalo y luego ábrelo</summary>`. Explicar el porqué con tus propias palabras es lo que fija el paso.
+4. **El último paso lo arma el usuario**, con un hueco que reúne lo de los pasos anteriores.
+
+El validador exige al menos una `data-prediccion` dentro de cada `data-interaccion="pasos"`.
 
 ## 6. Otras interacciones — `data-interaccion="otra"`
 

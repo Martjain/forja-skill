@@ -5,17 +5,29 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>forja · guías</title>
 <style>
-:root { --fondo:#FAF9F5; --tinta:#141413; --suave:#5E5D59; --borde:#E8E6DC; --acento:#D97757; }
+:root { --fondo:#FAF9F5; --tinta:#141413; --suave:#5E5D59; --borde:#E8E6DC; --acento:#D97757; --oscuro:#141413; }
 * { box-sizing: border-box; }
-body { margin:0; background:var(--fondo); color:var(--tinta); font:400 1.0625rem/1.6 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; }
+body { margin:0; background:var(--fondo); color:var(--tinta); font:400 1.0625rem/1.6 Georgia, serif; }
 main { max-width: 52rem; margin: 0 auto; padding: clamp(2rem, 8vw, 5rem) 1.25rem; }
-h1 { font: 600 clamp(2.5rem, 8vw, 4rem)/1 ui-serif, Georgia, serif; margin: 0 0 .5rem; }
-p.lema { color: var(--suave); margin: 0 0 3rem; }
-ol { list-style: none; padding: 0; margin: 0; counter-reset: g; }
-li { counter-increment: g; display: grid; grid-template-columns: 3.5rem 1fr; gap: .25rem 1rem; padding: 1.25rem 0; border-top: 1px solid var(--borde); }
-li::before { content: counter(g, decimal-leading-zero); grid-row: span 2; font: 600 1.75rem/1 ui-serif, Georgia, serif; color: var(--acento); }
-li a { font-weight: 600; font-size: 1.2rem; color: inherit; text-decoration-color: var(--acento); text-underline-offset: 4px; }
-li span { color: var(--suave); font-size: .9rem; }
+h1 { font: 600 clamp(3rem, 10vw, 5.5rem)/.95 Georgia, serif; margin: 0 0 .5rem; letter-spacing: -.02em; }
+h2 { font: 600 1.6rem/1.2 Georgia, serif; margin: 0 0 1rem; }
+p.lema { color: var(--suave); margin: 0 0 3rem; font-family: system-ui, sans-serif; }
+.repaso { background: var(--oscuro); color: var(--fondo); border-radius: 16px; padding: clamp(1.25rem, 4vw, 2rem); margin: 0 0 3.5rem; font-family: system-ui, sans-serif; }
+.repaso h2 { color: var(--fondo); }
+.repaso .estado { opacity: .8; margin: 0 0 1rem; }
+.tarjeta { display: grid; gap: .5rem; width: 100%; min-height: 11rem; align-content: center; padding: 1.5rem; border-radius: 12px; border: 1.5px solid color-mix(in srgb, var(--fondo) 40%, transparent); background: transparent; color: inherit; text-align: left; font: inherit; cursor: pointer; }
+.tarjeta .de { font: .75rem ui-monospace, Menlo, monospace; letter-spacing: .06em; text-transform: uppercase; color: var(--acento); }
+.tarjeta .texto { font: 1.35rem/1.3 Georgia, serif; }
+.tarjeta .pista { font-size: .8rem; opacity: .65; }
+.botones { display: flex; gap: .5rem; margin-top: .75rem; flex-wrap: wrap; }
+.botones button { min-height: 44px; padding: .5rem 1.1rem; border-radius: 8px; border: 1.5px solid var(--fondo); background: transparent; color: var(--fondo); font: inherit; cursor: pointer; }
+.botones .sabia { background: var(--acento); border-color: var(--acento); color: var(--oscuro); }
+ol.guias { list-style: none; padding: 0; margin: 0; counter-reset: g; font-family: system-ui, sans-serif; }
+ol.guias li { counter-increment: g; display: grid; grid-template-columns: 3.5rem 1fr auto; gap: .25rem 1rem; padding: 1.25rem 0; border-top: 1px solid var(--borde); align-items: baseline; }
+ol.guias li::before { content: counter(g, decimal-leading-zero); grid-row: span 2; font: 600 1.75rem/1 Georgia, serif; color: var(--acento); }
+ol.guias li a { font-weight: 600; font-size: 1.15rem; color: inherit; text-decoration-color: var(--acento); text-underline-offset: 4px; }
+ol.guias li span { color: var(--suave); font-size: .9rem; grid-column: 2; }
+ol.guias li .avance { grid-column: 3; grid-row: 1; font: .85rem ui-monospace, Menlo, monospace; color: var(--acento); }
 :focus-visible { outline: 3px solid var(--acento); outline-offset: 3px; }
 </style>
 </head>
@@ -23,14 +35,90 @@ li span { color: var(--suave); font-size: .9rem; }
 <main>
 <h1>forja</h1>
 <p class="lema">Guías visuales para aprender haciendo.</p>
-<ol>
-<li><a href="guias/hooks-de-claude-code/index.html">Hooks de Claude Code</a><span>claude-code · principiante · 2026-11-12</span></li>
-<li><a href="guias/git/index.html">Cómo funciona git</a><span>control-de-versiones · principiante · 2026-11-12</span></li>
-<li><a href="guias/hooks-de-claude-code-v2/index.html">Hooks de Claude Code (v2): garitas en el camino</a><span>claude-code · principiante · 2026-11-12</span></li>
-<li><a href="guias/git-ramas-merge-vs-rebase-y-resolucion-de-conflictos/index.html">Git: ramas, merge vs rebase y conflictos</a><span>control-de-versiones · intermedio · 2026-11-12</span></li>
-<li><a href="guias/hooks-de-claude-code-v3/index.html">Hooks de Claude Code: tu script en el cable</a><span>claude-code · principiante · 2026-11-12</span></li>
+
+<section class="repaso" aria-live="polite">
+  <h2>Repaso de hoy</h2>
+  <div id="repaso"></div>
+</section>
+
+<h2>Guías</h2>
+<ol class="guias">
+<li data-slug="hooks-de-claude-code"><a href="guias/hooks-de-claude-code/index.html">Hooks de Claude Code</a><span>claude-code · principiante · 2026-11-12</span></li>
+<li data-slug="git"><a href="guias/git/index.html">Cómo funciona git</a><span>control-de-versiones · principiante · 2026-11-12</span></li>
+<li data-slug="hooks-de-claude-code-v2"><a href="guias/hooks-de-claude-code-v2/index.html">Hooks de Claude Code (v2): garitas en el camino</a><span>claude-code · principiante · 2026-11-12</span></li>
+<li data-slug="git-ramas-merge-vs-rebase-y-resolucion-de-conflictos"><a href="guias/git-ramas-merge-vs-rebase-y-resolucion-de-conflictos/index.html">Git: ramas, merge vs rebase y conflictos</a><span>control-de-versiones · intermedio · 2026-11-12</span></li>
+<li data-slug="hooks-de-claude-code-v3"><a href="guias/hooks-de-claude-code-v3/index.html">Hooks de Claude Code: tu script en el cable</a><span>claude-code · principiante · 2026-11-12</span></li>
 <!-- forja:fin-lista -->
 </ol>
 </main>
+<script>
+(() => {
+  // Mismas cajas de Leitner que el núcleo de las guías.
+  const INTERVALOS = [0, 1, 3, 7, 16, 35];
+  const MAX_SESION = 15; // más de 15 tarjetas seguidas cansa; el resto queda para mañana
+  const fecha = f => `${f.getFullYear()}-${String(f.getMonth() + 1).padStart(2, '0')}-${String(f.getDate()).padStart(2, '0')}`; // fecha local, no UTC
+  const hoy = () => fecha(new Date());
+  const enDias = n => { const f = new Date(); f.setDate(f.getDate() + n); return fecha(f); };
+  const leer = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } };
+  const escribir = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} };
+
+  // Avance de cada guía (lo guarda el núcleo de la guía).
+  document.querySelectorAll('ol.guias li[data-slug]').forEach(li => {
+    const e = leer('forja:' + li.dataset.slug, null);
+    if (e && typeof e.pct === 'number') {
+      const s = document.createElement('b'); s.className = 'avance'; s.textContent = e.pct + '%'; li.append(s);
+    }
+  });
+
+  const caja = document.getElementById('repaso');
+  const mazo = leer('forja:mazo', {});
+  const rep = leer('forja:repaso', {});
+  // Pendientes: tarjetas ya estudiadas en su guía cuyo repaso toca hoy o antes.
+  const porGuia = {};
+  for (const [slug, g] of Object.entries(mazo)) for (const t of g.tarjetas || []) {
+    const clave = `${slug}::${t.id}`, r = rep[clave];
+    if (r && r.proxima <= hoy()) (porGuia[slug] ||= []).push({ clave, t, g });
+  }
+  // Intercalar: una de cada guía por turno, para no repasar un tema en bloque.
+  const listas = Object.values(porGuia).map(l => l.sort(() => Math.random() - .5));
+  const cola = [];
+  while (cola.length < MAX_SESION && listas.some(l => l.length)) for (const l of listas) if (l.length && cola.length < MAX_SESION) cola.push(l.shift());
+
+  const proximo = () => {
+    const fechas = Object.values(leer('forja:repaso', {})).map(r => r.proxima).filter(f => f > hoy()).sort();
+    return fechas.length ? `El próximo repaso es el ${fechas[0]} (${fechas.filter(f => f === fechas[0]).length} tarjetas).` : '';
+  };
+  const calificar = (clave, sabia) => {
+    const r2 = leer('forja:repaso', {}); const r = r2[clave] || { caja: 0 };
+    r.caja = sabia ? Math.min(5, r.caja + 1) : 1; r.proxima = enDias(sabia ? INTERVALOS[r.caja] : 1);
+    r2[clave] = r; escribir('forja:repaso', r2);
+  };
+
+  if (!Object.keys(mazo).length) {
+    caja.innerHTML = '<p class="estado">Todavía no hay tarjetas. Abre una guía y haz su repaso: sus tarjetas aparecerán aquí cuando toque repasarlas.</p>';
+    return;
+  }
+  const guias = Object.keys(porGuia).length;
+  let hechas = 0, volteada = false;
+  const dibujar = () => {
+    if (!cola.length) {
+      caja.innerHTML = `<p class="estado">${hechas ? `Listo: repasaste ${hechas} tarjeta${hechas === 1 ? '' : 's'}.` : 'Nada que repasar hoy.'} ${proximo()}</p>`;
+      return;
+    }
+    const { clave, t, g } = cola[0];
+    caja.innerHTML = `<p class="estado">${cola.length} por repasar · de ${guias} guía${guias === 1 ? '' : 's'}</p>
+      <button type="button" class="tarjeta">
+        <span class="de">${g.titulo.replace(/</g, '&lt;')} · ${volteada ? 'respuesta' : 'pregunta'}</span>
+        <span class="texto">${volteada ? t.a : t.q}</span>
+        ${volteada ? '' : '<span class="pista">Recuérdala antes de voltear.</span>'}
+      </button>
+      ${volteada ? '<div class="botones"><button type="button" class="sabia">Lo sabía</button><button type="button" class="repasar">Repasar</button></div>' : ''}`;
+    caja.querySelector('.tarjeta').addEventListener('click', () => { if (!volteada) { volteada = true; dibujar(); caja.querySelector('.sabia')?.focus(); } });
+    caja.querySelector('.sabia')?.addEventListener('click', () => { calificar(clave, true); cola.shift(); hechas++; volteada = false; dibujar(); });
+    caja.querySelector('.repasar')?.addEventListener('click', () => { calificar(clave, false); cola.push(cola.shift()); volteada = false; dibujar(); });
+  };
+  dibujar();
+})();
+</script>
 </body>
 </html>
