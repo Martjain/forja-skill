@@ -434,6 +434,14 @@ input[type="range"] { width: 100%; accent-color: var(--acento); }
               <button type="button" data-opcion="c">Uno, la carpeta vacía</button>
             </div>
             <p class="veredicto" hidden></p>
+            <div data-ayuda="pred-padres">
+              <ol>
+                <li>Mira la ficha: el padre de un commit es <em>el commit anterior</em>, el que vino justo antes.</li>
+                <li>Piensa en el primer commit del repositorio: antes de él, ¿hay algún commit guardado en <code>.git</code>?</li>
+                <li>El padre tiene que ser otro commit que ya exista: no puede ser el mismo commit ni una carpeta.</li>
+                <li data-respuesta><strong>Ninguno.</strong> El primer commit no tiene un commit anterior al que apuntar, así que tiene cero padres. Uno normal tiene uno y uno de fusión, dos o más.</li>
+              </ol>
+            </div>
           </div>
           <p class="rotulo">Qué guarda un commit <a class="cita" href="https://git-scm.com/book/en/v2/Git-Branching-Branches-in-a-Nutshell">[2]</a></p>
           <dl>
@@ -476,6 +484,14 @@ input[type="range"] { width: 100%; accent-color: var(--acento); }
             <button type="button" data-opcion="c">El directorio .git</button>
           </div>
           <p class="veredicto" hidden></p>
+          <div data-ayuda="pred-clon">
+            <ol>
+              <li>Repasa las tres zonas: el working tree es tu carpeta, el staging area es lo que preparas para el próximo commit y <code>.git</code> es el repositorio.</li>
+              <li>¿En cuál de las tres están todos los commits, la historia completa?</li>
+              <li>Lo que tienes a medio editar en tu carpeta o a medio preparar en el staging area es local: todavía no es parte de la historia.</li>
+              <li data-respuesta><strong>El directorio .git.</strong> Ahí están los metadatos y la base de objetos con todos los commits. Es lo que se copia al clonar; de ahí git saca después los archivos de la carpeta de la otra persona.</li>
+            </ol>
+          </div>
         </div>
         <div class="diagrama-scroll">
           <svg viewBox="0 0 640 290" role="img" aria-labelledby="t-zonas">
@@ -543,6 +559,15 @@ input[type="range"] { width: 100%; accent-color: var(--acento); }
           <button type="button" data-opcion="c">Ninguna: git cancela el commit</button>
         </div>
         <p class="veredicto" hidden></p>
+        <div data-ayuda="pred-mesa">
+          <ol>
+            <li>Ordena lo que pasa: editas (v2), <code>git add</code>, editas otra vez (v3), <code>git commit</code>.</li>
+            <li><code>git add</code> copia el archivo al staging area tal como está en ese instante. ¿Qué versión había cuando lo hiciste?</li>
+            <li>Después editas a la v3 en tu carpeta, pero no vuelves a hacer <code>git add</code>. ¿Cambió algo en el staging area?</li>
+            <li><code>git commit</code> guarda lo que hay en el staging area, no lo que hay en tu carpeta.</li>
+            <li data-respuesta><strong>La v2.</strong> Es la que estaba en el staging area al hacer commit. La v3 se queda en tu carpeta y <code>git status -s</code> te avisa con <code> M README.md</code> hasta que vuelvas a hacer <code>git add</code>.</li>
+          </ol>
+        </div>
       </div>
 
       <div class="zonas-lab">
@@ -584,6 +609,16 @@ input[type="range"] { width: 100%; accent-color: var(--acento); }
         <li data-reto="reto-viejo"><span>Haz un commit que guarde una versión de README.md más vieja que la de tu carpeta</span></li>
         <li data-reto="reto-nuevo"><span>Lleva plan.txt de <code>??</code> hasta un commit</span></li>
       </ul>
+      <div data-ayuda="ayuda-mesa">
+        <ol>
+          <li>Lee <code>git status -s</code> como dos columnas: la izquierda habla del staging area y la derecha de tu carpeta (working tree).</li>
+          <li>"Editar" cambia la versión solo en tu carpeta; <code>git add</code> copia esa versión al staging area; <code>git commit</code> guarda en <code>.git</code> lo que hay en el staging area.</li>
+          <li>Para <code>MM</code> necesitas dos diferencias a la vez: una versión en el staging area distinta del último commit y otra más nueva en tu carpeta. ¿En qué orden editas y haces <code>git add</code>?</li>
+          <li>Si haces commit en ese estado, ¿qué versión de README.md se lleva y cuál se queda en tu carpeta?</li>
+          <li>plan.txt empieza como <code>??</code>: git no lo conoce. ¿Por qué zonas tiene que pasar para llegar a un commit?</li>
+          <li data-respuesta>Editar README.md → <code>git add README.md</code> → Editar README.md te deja <code>MM README.md</code>. Si ahí haces <code>git commit</code>, guardas la versión añadida, más vieja que la de tu carpeta. Para plan.txt: Crear plan.txt → <code>git add plan.txt</code> → <code>git commit</code>. Todo sale de lo mismo: <code>git add</code> copia un momento y <code>git commit</code> guarda solo el staging area.</li>
+        </ol>
+      </div>
     </div>
   </section>
 
@@ -604,6 +639,15 @@ input[type="range"] { width: 100%; accent-color: var(--acento); }
           <button type="button" data-opcion="c">Ninguno: solo las líneas cambiadas</button>
         </div>
         <p class="veredicto" hidden></p>
+        <div data-ayuda="pred-fotos">
+          <ol>
+            <li>Recuerda la idea de la sección: en cada commit git guarda una foto completa de tu proyecto.</li>
+            <li>Una foto completa no obliga a copiarlo todo: lo que no cambió, git lo enlaza a la copia que ya tenía.</li>
+            <li>Cuenta: de los 8 archivos, ¿cuántos cambiaron y cuántos quedaron idénticos al commit anterior?</li>
+            <li>Guardar solo las líneas cambiadas es lo que hacen los otros sistemas, con su lista de cambios. Git no trabaja así.</li>
+            <li data-respuesta><strong>Solo 1; los otros 7 son enlaces.</strong> El archivo que cambió se guarda como copia nueva y los 7 iguales apuntan a las copias que ya existían. Aun así, el commit es una foto completa de los 8.</li>
+          </ol>
+        </div>
       </div>
 
       <div class="comparacion">
@@ -684,6 +728,14 @@ input[type="range"] { width: 100%; accent-color: var(--acento); }
                 <button type="button" data-opcion="c"><code>git commit idea</code></button>
               </div>
               <p class="veredicto" hidden></p>
+              <div data-ayuda="pred-p3">
+                <ol>
+                  <li>Repasa el paso 2: <code>git branch idea</code> creó la etiqueta, pero HEAD no se movió.</li>
+                  <li>Los commits nuevos van a la rama a la que apunta HEAD. Necesitas un comando que mueva HEAD a idea.</li>
+                  <li>Descarta: <code>git branch idea</code> ya lo hiciste y solo crea la etiqueta; <code>git commit</code> guarda una foto, no te cambia de rama.</li>
+                  <li data-respuesta><strong><code>git switch idea</code></strong>. Mueve HEAD a idea y deja tu carpeta y el index como están en esa rama; desde ahí, tus commits se agregan en su punta.</li>
+                </ol>
+              </div>
             </div>
 <pre class="terminal" data-tras-prediccion="pred-p3"><span class="p">$</span> git switch idea
 Switched to branch 'idea'</pre>
@@ -703,6 +755,14 @@ Switched to branch 'idea'</pre>
                 <button type="button" data-opcion="c">Las dos</button>
               </div>
               <p class="veredicto" hidden></p>
+              <div data-ayuda="pred-p4">
+                <ol>
+                  <li>Después del paso 3, ¿a qué rama apunta HEAD?</li>
+                  <li>La regla de la sección: la etiqueta a la que apunta HEAD avanza con cada commit nuevo.</li>
+                  <li>¿Hay alguna regla que mueva las etiquetas a las que HEAD <em>no</em> apunta?</li>
+                  <li data-respuesta><strong>idea.</strong> HEAD apunta a idea, así que idea pasa a D. main se queda en C, esperando.</li>
+                </ol>
+              </div>
             </div>
             <p class="resultado" data-tras-prediccion="pred-p4"><code>idea</code> pasa a D. <code>main</code> sigue en C.</p>
             <details><summary>¿Por qué funciona? Piénsalo y luego ábrelo</summary>
@@ -722,6 +782,15 @@ Switched to branch 'idea'</pre>
                 <button type="button" data-opcion="c">Git no deja hacer commit en main</button>
               </div>
               <p class="veredicto" hidden></p>
+              <div data-ayuda="pred-p5">
+                <ol>
+                  <li>Al hacer <code>git switch main</code>, HEAD vuelve a main. ¿A qué commit apunta main? (En el paso 4 se quedó en C.)</li>
+                  <li>Al cambiar de rama, git regresa tus archivos a la foto a la que apunta esa rama. ¿Está D en esa foto?</li>
+                  <li>Un commit nuevo toma como padre el commit donde estás. ¿Cuál es el padre de E?</li>
+                  <li>idea sigue apuntando a D, que también salió de C. ¿Cuántos commits salen ahora de C?</li>
+                  <li data-respuesta><strong>Se abre en dos: E sale de C.</strong> E toma C como padre, igual que D, así que quedan dos caminos: C → D (idea) y C → E (main). La historia divergió.</li>
+                </ol>
+              </div>
             </div>
             <p class="resultado" data-tras-prediccion="pred-p5">E sale de C. Ahora hay dos caminos: C → D (idea) y C → E (main). La historia <strong>divergió</strong>.</p>
             <details><summary>¿Por qué funciona? Piénsalo y luego ábrelo</summary>
@@ -739,6 +808,14 @@ Switched to branch 'idea'</pre>
                 <button type="button" data-opcion="c"><code>git add idea</code></button>
               </div>
               <p class="veredicto" hidden></p>
+              <div data-ayuda="pred-p6">
+                <ol>
+                  <li>¿Qué quieres? Traer el trabajo de idea (D) a la rama en la que estás, main.</li>
+                  <li>Descarta lo que ya conoces: <code>git switch</code> te cambia de rama, no une nada; <code>git add</code> pone archivos en el staging area.</li>
+                  <li>Como las dos ramas avanzaron desde C, git tiene que crear un commit de fusión, con dos padres: E y D. ¿Qué comando fusiona otra rama en la tuya?</li>
+                  <li data-respuesta><strong><code>git merge idea</code></strong>. Estando en main, trae el trabajo de idea; como las ramas divergieron, git crea el commit de fusión F con dos padres, E y D.</li>
+                </ol>
+              </div>
             </div>
 <pre class="terminal" data-tras-prediccion="pred-p6"><span class="p">$</span> git merge idea
 <span class="c"># commit de fusión F, con dos padres: E y D</span></pre>
@@ -834,6 +911,14 @@ Switched to branch 'idea'</pre>
             <button type="button" data-opcion="c">El servidor mezcla los dos solo</button>
           </div>
           <p class="veredicto" hidden></p>
+          <div data-ayuda="pred-push">
+            <ol>
+              <li>Ella hizo push primero: ahora origin tiene un commit que tú no tienes.</li>
+              <li>La fusión no la hace el servidor: <code>git pull</code> descarga y trata de fusionar en tu rama actual, en tu máquina.</li>
+              <li>Entonces, antes de subir, ¿qué tiene que tener tu rama que hoy no tiene?</li>
+              <li data-respuesta><strong>Git lo rechaza: primero trae lo de ella.</strong> El push solo funciona si nadie subió algo en el medio. Trae su trabajo con <code>git pull</code> (o <code>git fetch</code>), incorpóralo y vuelve a subir.</li>
+            </ol>
+          </div>
         </div>
         <div class="resultado" data-tras-prediccion="pred-push">
 <pre class="terminal"><span class="p">$</span> git push origin main

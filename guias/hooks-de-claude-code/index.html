@@ -428,6 +428,15 @@ details.porque summary { cursor: pointer; font-weight: 600; min-height: 32px; di
           <button type="button" data-opcion="c">Que Claude Code bloquee la edición si no lo hace</button>
         </div>
         <p class="veredicto" hidden></p>
+        <div data-ayuda="pred-claudemd">
+          <ol>
+            <li>Piensa en quién lee <code>CLAUDE.md</code>: es texto que Claude recibe como contexto, igual que un prompt.</li>
+            <li>Con una instrucción, el modelo <strong>decide</strong> en cada momento si la sigue. Es el lado izquierdo de la figura: un cruce con un signo de pregunta.</li>
+            <li>Para que algo pase siempre, tiene que ejecutarlo Claude Code mismo en un punto fijo de su ciclo de vida, sin preguntarle al modelo. ¿Una línea de texto hace eso?</li>
+            <li>Bloquear una edición tampoco lo hace un archivo de instrucciones: eso le toca a un hook.</li>
+            <li data-respuesta><strong>Nada: Claude lo hará cuando lo decida.</strong> <code>CLAUDE.md</code> es contexto que el modelo lee y decide si sigue; para garantizarlo necesitas un hook, que Claude Code ejecuta siempre.</li>
+          </ol>
+        </div>
       </div>
       <div class="caja revela-caja" data-tras-prediccion="pred-claudemd">
         <p><strong>Para garantizarlo</strong>, la estación correcta es <code>PostToolUse</code> con el matcher <code>Edit|Write</code>: corre después de cada edición de archivo, sin excepción.<a class="cita" href="https://code.claude.com/docs/en/hooks-guide#auto-format-code-after-edits">[1]</a> En la sección 04 vas a ver cómo se escribe.</p>
@@ -452,6 +461,15 @@ details.porque summary { cursor: pointer; font-weight: 600; min-height: 32px; di
           <button type="button" data-opcion="c">Stop</button>
         </div>
         <p class="veredicto" hidden></p>
+        <div data-ayuda="pred-evento">
+          <ol>
+            <li>¿Qué te piden? <strong>Impedir</strong> la edición: el hook tiene que actuar antes de que el archivo cambie.</li>
+            <li>Busca en la banda las estaciones que pasan en cada herramienta (las naranjas). Una corre antes de la llamada y otra después de que termina.</li>
+            <li>Si el hook corre cuando la herramienta ya terminó, el <code>.env</code> ya cambió: llega tarde. <code>Stop</code> corre cuando Claude termina de responder, todavía más tarde.</li>
+            <li>Necesitas la estación que llega a tiempo y que, con exit 2, puede cancelar la llamada.</li>
+            <li data-respuesta><strong>PreToolUse.</strong> Corre antes de que se ejecute la herramienta y puede bloquearla; <code>PostToolUse</code> llega cuando el archivo ya cambió.</li>
+          </ol>
+        </div>
       </div>
 
       <div class="diag-rejilla">
@@ -559,6 +577,15 @@ details.porque summary { cursor: pointer; font-weight: 600; min-height: 32px; di
           <button type="button" data-opcion="c">Con Edit, Write y NotebookEdit</button>
         </div>
         <p class="veredicto" hidden></p>
+        <div data-ayuda="pred-matcher">
+          <ol>
+            <li>Primero el modo: revisa los caracteres de <code>Edit.*</code>. ¿Son todos letras, dígitos, <code>_</code>, <code>-</code>, espacios, <code>,</code> o <code>|</code>?</li>
+            <li>El <code>.</code> y el <code>*</code> no están en esa lista, así que el matcher es una expresión regular de JavaScript.</li>
+            <li>La regex no está anclada: basta con que el patrón aparezca <strong>en cualquier parte</strong> del nombre. <code>Edit.*</code> es «Edit seguido de cualquier cosa, o de nada».</li>
+            <li>Recorre las herramientas y busca cuáles contienen el texto <code>Edit</code>, con E mayúscula. ¿<code>Write</code> lo contiene?</li>
+            <li data-respuesta><strong>Con Edit y NotebookEdit.</strong> Como regex sin anclar, <code>Edit.*</code> coincide con todo nombre que contenga «Edit»; para solo Edit usa <code>^Edit$</code> o simplemente <code>Edit</code>.</li>
+          </ol>
+        </div>
       </div>
 
       <div class="lab-entrada">
@@ -584,6 +611,16 @@ details.porque summary { cursor: pointer; font-weight: 600; min-height: 32px; di
         <li data-reto="reto-m-mcp"><span>Atrapa las dos herramientas del servidor <code>memory</code> y nada más</span></li>
         <li data-reto="reto-m-mayus">Escribe el nombre de una herramienta en minúsculas y comprueba que no dispara</li>
       </ul>
+      <div data-ayuda="ayuda-matcher">
+        <ol>
+          <li>Mira primero los caracteres del matcher: ellos deciden el modo. <code>"*"</code>, <code>""</code> o no poner matcher disparan con todo.</li>
+          <li>Si solo usa letras, dígitos, <code>_</code>, <code>-</code>, espacios, <code>,</code> y <code>|</code>, es una <strong>lista exacta</strong>: cada nombre tiene que ser idéntico al de la herramienta.</li>
+          <li>Cualquier otro carácter, como <code>.</code>, <code>^</code> o <code>$</code>, lo vuelve expresión regular de JavaScript sin anclar: basta con que el patrón aparezca en cualquier parte del nombre. Usa <code>^…$</code> para exigir el nombre completo.</li>
+          <li>En los dos modos se distinguen mayúsculas: <code>bash</code> no es <code>Bash</code>.</li>
+          <li>Las herramientas de MCP se llaman <code>mcp__&lt;servidor&gt;__&lt;herramienta&gt;</code>: el prefijo de un servidor sirve para atrapar todas las suyas.</li>
+          <li data-respuesta>Para los retos: <code>Edit|Write</code> (lista exacta, deja fuera a NotebookEdit), <code>mcp__memory__.*</code> (regex con el prefijo del servidor) y un nombre en minúsculas como <code>bash</code>, que no dispara con nada.</li>
+        </ol>
+      </div>
     </div>
   </section>
 
@@ -620,6 +657,15 @@ details.porque summary { cursor: pointer; font-weight: 600; min-height: 32px; di
             <button type="button" data-opcion="c">Claude Code se cierra</button>
           </div>
           <p class="veredicto" hidden></p>
+          <div data-ayuda="pred-exit1">
+            <ol>
+              <li>Lo que decide es el código de salida: es la respuesta de tu script a Claude Code.</li>
+              <li>De los tres códigos de esta estación, solo uno bloquea. ¿Cuál es? ¿Es el 1?</li>
+              <li>En Unix, 1 es el código de error de siempre. Para Claude Code, un 1 (o cualquier código que no sea 0 ni 2) significa que tu hook <strong>falló</strong>, no que objeta.</li>
+              <li>Un fallo del hook no es una orden de detenerse. Piensa si eso frena el comando o solo queda registrado.</li>
+              <li data-respuesta><strong>El comando corre igual y aparece un aviso.</strong> exit 1 es un error que no bloquea: el <code>rm -rf</code> sigue y el transcript muestra «hook error». Para hacer cumplir la regla, usa exit 2 con un mensaje en stderr.</li>
+            </ol>
+          </div>
         </div>
 
         <div class="control">
@@ -711,6 +757,15 @@ details.porque summary { cursor: pointer; font-weight: 600; min-height: 32px; di
             <button type="button" data-opcion="c"><code>echo "Blocked" ; exit 0</code></button>
           </div>
           <p class="veredicto" hidden></p>
+          <div data-ayuda="pred-p3">
+            <ol>
+              <li>¿Qué tiene que lograr esta línea? Dos cosas: detener la edición del <code>.env</code> y que Claude entienda por qué.</li>
+              <li>Para detener: en la estación 06 viste que exit 0 es «sin objeción» y exit 1 es un error que no bloquea. ¿Qué código sí bloquea?</li>
+              <li>Para que Claude entienda: cuando el hook bloquea, Claude lee el mensaje de tu <strong>stderr</strong>.</li>
+              <li>En bash, <code>echo "…"</code> escribe en stdout; agregarle <code>&gt;&amp;2</code> lo manda a stderr.</li>
+              <li data-respuesta><strong><code>echo "Blocked" &gt;&amp;2 ; exit 2</code>.</strong> En PreToolUse, exit 2 cancela la herramienta, y el mensaje en stderr es lo que Claude lee para cambiar de plan.</li>
+            </ol>
+          </div>
         </div>
 <pre class="terminal"><code><span class="linea vieja">  if [[ "$FILE_PATH" == *"$pattern"* ]]; then</span><span class="linea nueva" data-tras-prediccion="pred-p3">    echo <span class="s">"Blocked: $FILE_PATH matches protected pattern '$pattern'"</span> <span class="k">&gt;&amp;2</span></span><span class="linea nueva" data-tras-prediccion="pred-p3">    <span class="k">exit 2</span></span><span class="linea vieja">  fi</span><span class="linea vieja">done</span><span class="linea nueva" data-tras-prediccion="pred-p3"><span class="k">exit 0</span>  <span class="c"># ningún patrón coincidió: sin objeción</span></span></code></pre>
         <details class="porque"><summary>¿Por qué funciona? Piénsalo y luego ábrelo</summary>
@@ -730,6 +785,15 @@ details.porque summary { cursor: pointer; font-weight: 600; min-height: 32px; di
             <button type="button" data-opcion="c">Nada, ya está listo</button>
           </div>
           <p class="veredicto" hidden></p>
+          <div data-ayuda="pred-p4">
+            <ol>
+              <li>El hook es un programa más: Claude Code lo lanza como se lanza cualquier script desde la terminal.</li>
+              <li>En macOS y Linux, un archivo recién guardado no se puede ejecutar hasta que el sistema lo permita.</li>
+              <li>¿Y <code>sudo</code>? El hook ya corre con todos tus permisos de usuario (estación 09). Darle más permisos a Claude Code no hace ejecutable al archivo.</li>
+              <li>Piensa qué cambia los permisos <strong>del archivo</strong>, no los del usuario.</li>
+              <li data-respuesta><strong>Darle permiso de ejecución</strong>, con <code>chmod +x .claude/hooks/protect-files.sh</code>. En macOS y Linux, Claude Code solo puede correr scripts de hook ejecutables; es lo primero que se revisa si un hook no corre.</li>
+            </ol>
+          </div>
         </div>
         <p class="terminal-titulo"><span>terminal</span></p>
 <pre class="terminal"><code><span class="linea nueva" data-tras-prediccion="pred-p4"><span class="n">$</span> chmod +x .claude/hooks/protect-files.sh</span></code></pre>
@@ -750,6 +814,15 @@ details.porque summary { cursor: pointer; font-weight: 600; min-height: 32px; di
             <button type="button" data-opcion="c"><code>PreToolUse</code> + <code>"edit|write"</code></button>
           </div>
           <p class="veredicto" hidden></p>
+          <div data-ayuda="pred-p5">
+            <ol>
+              <li>Son dos decisiones: el evento (cuándo corre) y el matcher (con qué herramientas).</li>
+              <li>El evento: tienes que actuar antes de que el <code>.env</code> cambie. En la estación 03, ¿qué estación llega a tiempo y cuál llega tarde?</li>
+              <li>El matcher: las herramientas que editan archivos se llaman <code>Edit</code> y <code>Write</code>. Con solo letras y <code>|</code>, el matcher es una lista exacta.</li>
+              <li>Una lista exacta distingue mayúsculas: compara <code>edit</code> con el nombre real de la herramienta.</li>
+              <li data-respuesta><strong><code>PreToolUse</code> + <code>"Edit|Write"</code>.</strong> Pre corre antes de la edición y puede bloquearla; con Post el <code>.env</code> ya habría cambiado, y <code>edit|write</code> en minúsculas no coincide con ninguna herramienta.</li>
+            </ol>
+          </div>
         </div>
         <p class="terminal-titulo"><span>.claude/settings.json</span></p>
 <pre class="terminal"><code><span class="linea vieja">{</span><span class="linea vieja">  "hooks": {</span><span class="linea nueva" data-tras-prediccion="pred-p5">    <span class="k">"PreToolUse"</span>: [</span><span class="linea nueva" data-tras-prediccion="pred-p5">      { <span class="k">"matcher"</span>: <span class="s">"Edit|Write"</span>,</span><span class="linea vieja">        "hooks": [ { "type": "command",</span><span class="linea vieja">          "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/protect-files.sh" } ] }</span><span class="linea vieja">    ]</span><span class="linea vieja">  }</span><span class="linea vieja">}</span></code></pre>
@@ -770,6 +843,15 @@ details.porque summary { cursor: pointer; font-weight: 600; min-height: 32px; di
             <button type="button" data-opcion="c">Aparece un aviso de error y la edición sigue</button>
           </div>
           <p class="veredicto" hidden></p>
+          <div data-ayuda="pred-p6">
+            <ol>
+              <li>Sigue la pieza por la banda: Claude intenta usar <code>Edit</code> sobre <code>.env</code>. ¿En qué estación está tu hook y deja pasar <code>Edit</code> su matcher <code>Edit|Write</code>?</li>
+              <li>El script lee la ruta por stdin y la compara con la lista: <code>.env</code> coincide con un patrón protegido.</li>
+              <li>Dentro del <code>if</code>, el script escribe en stderr y sale con exit 2. Recuerda qué hace exit 2 en PreToolUse.</li>
+              <li>Descarta lo que contradiga el orden: si el hook corre antes de la herramienta, ¿puede haber una edición que revertir?</li>
+              <li data-respuesta><strong>Se bloquea antes de editar y Claude recibe el mensaje <code>Blocked:</code>.</strong> El hook corre en PreToolUse, coincide con <code>.env</code>, escribe en stderr y sale con 2: la edición se cancela antes de correr y Claude lee el motivo.</li>
+            </ol>
+          </div>
         </div>
         <p class="terminal-titulo"><span>lo que verías</span></p>
 <pre class="terminal"><code><span class="linea vieja"><span class="n">&gt;</span> agrega un comentario a .env</span><span class="linea nueva" data-tras-prediccion="pred-p6"><span class="k">PreToolUse:Edit</span> Blocked: .env matches protected pattern '.env'</span><span class="linea nueva" data-tras-prediccion="pred-p6"><span class="c">Claude explica que ese archivo está protegido</span></span></code></pre>

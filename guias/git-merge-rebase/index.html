@@ -401,6 +401,14 @@ section.banda-acento { background: var(--acento); color: var(--sobre-acento); --
               <button type="button" data-opcion="d">Ninguna: HEAD se separa</button>
             </div>
             <p class="veredicto" hidden></p>
+            <div data-ayuda="pred-commit">
+              <ol>
+                <li>Una rama es solo un puntero móvil a un commit: crearla no copia nada.</li>
+                <li><code>HEAD</code> apunta a la rama en la que estás. Aquí estás en <code>feature</code>.</li>
+                <li>Cada <code>git commit</code> crea un commit hijo del actual y mueve hacia adelante una sola etiqueta: la rama a la que apunta <code>HEAD</code>. ¿Cuál es?</li>
+                <li data-respuesta><strong>Solo feature.</strong> HEAD apunta a feature, así que solo esa etiqueta avanza al commit nuevo; main se queda donde estaba.</li>
+              </ol>
+            </div>
           </div>
           <div class="fila-botones" role="group" aria-label="Comandos">
             <button type="button" class="boton principal" data-cmd="commit">git commit</button>
@@ -410,6 +418,15 @@ section.banda-acento { background: var(--acento); color: var(--sobre-acento); --
           </div>
           <div class="lienzo"><svg class="cinta" id="svg-ramas" viewBox="0 0 520 210" role="img" xmlns="http://www.w3.org/2000/svg"><title>Historial de commits con las etiquetas main y feature</title></svg></div>
           <p class="lectura" data-tras-prediccion="pred-commit" aria-live="polite" id="lectura-ramas">Estás en feature. main y feature apuntan al mismo commit.</p>
+          <div data-ayuda="ayuda-terminal">
+            <ol>
+              <li>Antes de tocar un botón, mira la etiqueta ámbar: es la rama a la que apunta <code>HEAD</code>.</li>
+              <li><code>git commit</code> agrega un tramo después de esa etiqueta y la mueve a él. La otra etiqueta se queda donde estaba.</li>
+              <li><code>git switch</code> no mueve ningún commit: solo cambia a qué rama apunta <code>HEAD</code>.</li>
+              <li>Para que las ramas diverjan, cada una necesita un commit que la otra no tenga. ¿Qué tienes que hacer entre un commit y el siguiente?</li>
+              <li data-respuesta>Haz <code>git commit</code> en feature, luego <code>git switch main</code> y otro <code>git commit</code>. Cada rama avanzó por su lado desde el mismo commit, que ahora es su ancestro común: divergieron.</li>
+            </ol>
+          </div>
           <ul data-retos>
             <li data-reto="reto-divergir"><span>Haz que las ramas diverjan: al menos un commit en main y otro en feature que la otra no tenga.</span></li>
           </ul>
@@ -441,6 +458,14 @@ section.banda-acento { background: var(--acento); color: var(--sobre-acento); --
             <button type="button" data-opcion="c">Todos los commits de ambas ramas</button>
           </div>
           <p class="veredicto" hidden></p>
+          <div data-ayuda="pred-tres">
+            <ol>
+              <li>Piensa en un solo renglón: para combinarlo, Git necesita saber si cambió y de qué lado.</li>
+              <li>Con solo las dos puntas ve que el renglón es distinto, pero no cuál de los dos lo cambió. Le falta saber qué había antes.</li>
+              <li>Lo que había antes está en el último commit que comparten las dos ramas: el ancestro común. Git compara cada punta contra él; los commits intermedios no le hacen falta. Cuenta cuántas versiones son.</li>
+              <li data-respuesta><strong>3: las dos puntas y el ancestro común.</strong> Comparando cada punta contra el ancestro, Git sabe qué cambió cada lado; por eso se llama three-way merge.</li>
+            </ol>
+          </div>
         </div>
         <div class="lienzo"><svg class="cinta diagrama-svg" viewBox="0 0 470 250" role="img" xmlns="http://www.w3.org/2000/svg"><title>Three-way merge: el ancestro común, la punta de main, la punta de feature y el commit de fusión</title><rect class="c-banda" x="16" y="66" width="438" height="48" rx="2"/><line class="c-guia" x1="22" y1="110" x2="448" y2="110"/><rect class="c-banda" x="100" y="166" width="190" height="48" rx="2"/><line class="c-guia" x1="106" y1="210" x2="284" y2="210"/><line class="c-liga " data-une="base main" x1="84" y1="90" x2="106" y2="90"/><line class="c-liga " data-une="base main" x1="154" y1="90" x2="176" y2="90"/><line class="c-liga " data-une="base feature" x1="84" y1="90" x2="106" y2="190"/><line class="c-liga " data-une="base feature" x1="154" y1="190" x2="226" y2="190"/><line class="c-liga empalme" data-une="main merge" x1="224" y1="90" x2="376" y2="90"/><line class="c-liga empalme" data-une="feature merge" x1="274" y1="190" x2="376" y2="90"/><g class="c-commit " data-nodo="base" tabindex="0" role="button" aria-label="Ancestro común"><rect class="c-seg" x="36" y="72" width="48" height="36" rx="2"/><circle class="c-hoyo" cx="55" cy="82" r="3.4"/><circle class="c-hoyo" cx="65" cy="82" r="3.4"/><circle class="c-hoyo" cx="75" cy="82" r="3.4"/><text class="c-hash" x="60" y="101" text-anchor="middle">7c41d08</text></g><g class="c-commit "><rect class="c-seg" x="106" y="72" width="48" height="36" rx="2"/><circle class="c-hoyo" cx="125" cy="82" r="3.4"/><circle class="c-hoyo" cx="145" cy="82" r="3.4"/><text class="c-hash" x="130" y="101" text-anchor="middle">5d0a913</text></g><g class="c-commit " data-nodo="main" tabindex="0" role="button" aria-label="Punta de main"><rect class="c-seg" x="176" y="72" width="48" height="36" rx="2"/><circle class="c-hoyo" cx="185" cy="82" r="3.4"/><circle class="c-hoyo" cx="215" cy="82" r="3.4"/><text class="c-hash" x="200" y="101" text-anchor="middle">91be4c7</text><g class="c-tag actual"><rect x="180.8" y="48" width="38.4" height="18" rx="2"/><text x="200" y="61" text-anchor="middle">main</text></g></g><g class="c-commit "><rect class="c-seg" x="106" y="172" width="48" height="36" rx="2"/><circle class="c-hoyo" cx="135" cy="182" r="3.4"/><text class="c-hash" x="130" y="201" text-anchor="middle">2d8c3a1</text></g><g class="c-commit " data-nodo="feature" tabindex="0" role="button" aria-label="Punta de feature"><rect class="c-seg" x="226" y="172" width="48" height="36" rx="2"/><circle class="c-hoyo" cx="235" cy="182" r="3.4"/><circle class="c-hoyo" cx="255" cy="182" r="3.4"/><circle class="c-hoyo" cx="265" cy="182" r="3.4"/><text class="c-hash" x="250" y="201" text-anchor="middle">b06e7f4</text><g class="c-tag"><rect x="220.9" y="148" width="58.2" height="18" rx="2"/><text x="250" y="161" text-anchor="middle">feature</text></g></g><g class="c-commit merge" data-nodo="merge" tabindex="0" role="button" aria-label="Commit de fusión"><rect class="c-seg" x="376" y="72" width="48" height="36" rx="2"/><circle class="c-hoyo" cx="385" cy="82" r="3.4"/><circle class="c-hoyo" cx="395" cy="82" r="3.4"/><circle class="c-hoyo" cx="405" cy="82" r="3.4"/><text class="c-hash" x="400" y="101" text-anchor="middle">e5b2c90</text></g></svg></div>
         <p class="nodos-ayuda">Toca un tramo con borde (o usa Tab y Enter) para ver su papel.</p>
@@ -465,6 +490,14 @@ section.banda-acento { background: var(--acento); color: var(--sobre-acento); --
         <button type="button" data-opcion="c">Un conflicto que hay que resolver</button>
       </div>
       <p class="veredicto" hidden></p>
+      <div data-ayuda="pred-ff">
+        <ol>
+          <li>Primero pregúntate si hay trabajo divergente: ¿<code>main</code> avanzó después de que creaste <code>hotfix</code>?</li>
+          <li>No: <code>main</code> no se movió, así que el commit de <code>hotfix</code> desciende directamente de <code>main</code>.</li>
+          <li>Si la rama que fusionas desciende de la tuya, no hay dos lados que combinar ni renglones que puedan chocar. ¿Hace falta un commit nuevo, o basta con mover algo?</li>
+          <li data-respuesta><strong>main avanza al commit de hotfix, sin commit nuevo.</strong> Es un fast-forward: como no hay divergencia, Git solo mueve el puntero de main hacia adelante.</li>
+        </ol>
+      </div>
     </div>
     <div class="duelo">
       <div>
@@ -513,6 +546,14 @@ Updating f42c576..3a0874c
           <button type="button" data-opcion="d">1: un commit que junta todo</button>
         </div>
         <p class="veredicto" hidden></p>
+        <div data-ayuda="pred-rebase">
+          <ol>
+            <li>Recuerda qué hace rebase: reaplica cada commit tuyo, en orden, encima de la otra rama. No junta nada en un solo commit.</li>
+            <li>¿Cuáles son tus commits? Los de feature desde que se separó de main. Los de main ya están en la base sobre la que reaplicas y no se tocan.</li>
+            <li>Un commit guarda el ID de su padre, y su ID es un hash de su contenido. Si la copia tiene otro padre, ¿puede conservar el mismo hash?</li>
+            <li data-respuesta><strong>3: una copia por commit de feature.</strong> Cada uno se reaplica sobre un padre distinto y recibe un hash nuevo; los 2 commits de main se quedan igual.</li>
+          </ol>
+        </div>
       </div>
 
       <div class="lab-controles">
@@ -621,6 +662,14 @@ Unmerged paths:
                 <button type="button" data-opcion="c">La versión del ancestro común</button>
               </div>
               <p class="veredicto" hidden></p>
+              <div data-ayuda="pred-marcadores">
+                <ol>
+                  <li><code>HEAD</code> es la rama en la que estabas parado al correr <code>git merge</code>. Aquí estás en <code>main</code> y fusionas <code>feature</code>.</li>
+                  <li>Cada marcador nombra su lado: <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</code> abre el bloque de arriba, <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature</code> cierra el de abajo y <code>=======</code> los separa.</li>
+                  <li>El texto del ancestro común solo aparece con el estilo <code>diff3</code>, tras <code>|||||||</code>. Aquí no hay ese marcador.</li>
+                  <li data-respuesta><strong>Lo de HEAD: tu rama actual, main</strong> (<code>timeout = 45</code>). Arriba del <code>=======</code> va HEAD (ours) y abajo la rama que fusionas, feature (theirs).</li>
+                </ol>
+              </div>
             </div>
             <p data-tras-prediccion="pred-marcadores">Arriba: <code>timeout = 45</code>, de main. Abajo: <code>timeout = 60</code>, de feature <a class="cita" href="https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging">[2]</a>. Borras los marcadores y dejas lo que debe quedar.</p>
             <details><summary>¿Por qué funciona? Piénsalo y luego ábrelo</summary><p>HEAD es la rama en la que estás parado. Al fusionar, tu rama es "ours" (stage 2) y la que entra es "theirs" (stage 3); los marcadores siguen ese orden.</p></details>
@@ -637,6 +686,14 @@ Unmerged paths:
                 <button type="button" data-opcion="c">git merge --abort</button>
               </div>
               <p class="veredicto" hidden></p>
+              <div data-ayuda="pred-add">
+                <ol>
+                  <li>Recuerda dónde vive el conflicto: en el índice, que guarda tres stages del mismo archivo (base, HEAD y feature).</li>
+                  <li>Guardar el archivo cambia lo que tienes en disco, pero el índice sigue con sus tres stages: para Git el conflicto sigue ahí.</li>
+                  <li>Necesitas un comando que ponga en el índice una sola versión, la que dejaste. <code>git merge --abort</code> no sirve: tira toda la fusión.</li>
+                  <li data-respuesta><strong>git add app.conf.</strong> Al agregar el archivo al staging, sus tres stages se reemplazan por tu versión y Git lo marca como resuelto.</li>
+                </ol>
+              </div>
             </div>
             <pre class="terminal" data-tras-prediccion="pred-add"><span class="p">$</span> git add app.conf
 <span class="p">$</span> git status
@@ -657,6 +714,14 @@ On branch main
                 <button type="button" data-opcion="c">git push</button>
               </div>
               <p class="veredicto" hidden></p>
+              <div data-ayuda="pred-cierre">
+                <ol>
+                  <li>Pregúntate qué operación está en curso. <code>git status</code> lo dijo en el paso anterior: "you are still merging".</li>
+                  <li>El comando que cierra tiene que ser de esa operación. <code>git rebase --continue</code> es para un rebase en curso, y aquí no hay ninguno.</li>
+                  <li><code>git push</code> manda tu rama al remoto; no crea commits, y el commit de fusión todavía no existe.</li>
+                  <li data-respuesta><strong>git merge --continue (o git commit).</strong> Revisa que haya una fusión en curso y llama a <code>git commit</code>, que crea el commit con dos padres: el HEAD de antes y <code>MERGE_HEAD</code>.</li>
+                </ol>
+              </div>
             </div>
             <pre class="terminal" data-tras-prediccion="pred-cierre"><span class="p">$</span> git merge --continue
 <span class="ok">[main e5b2c90] Merge branch 'feature'</span></pre>
@@ -675,6 +740,14 @@ On branch main
                 <button type="button" data-opcion="c">editar → git commit → git push</button>
               </div>
               <p class="veredicto" hidden></p>
+              <div data-ayuda="pred-secuencia">
+                <ol>
+                  <li>Resolver el conflicto en sí no cambia: editas <code>app.conf</code> y lo marcas como resuelto con <code>git add</code>, igual que en el merge.</li>
+                  <li>Lo que cambia es la operación en curso: ahora es un rebase, no un merge.</li>
+                  <li>Cada operación sigue con su propio <code>--continue</code>: el merge con <code>git merge --continue</code>, y el rebase con…</li>
+                  <li data-respuesta><strong>editar → git add app.conf → git rebase --continue.</strong> Rebase es una serie de fusiones pequeñas, una por commit reaplicado: cada una se resuelve igual y se sigue con el rebase, que puede volver a pararse en el siguiente commit.</li>
+                </ol>
+              </div>
             </div>
             <pre class="terminal" data-tras-prediccion="pred-secuencia"><span class="p">$</span> git rebase main
 <span class="mal">CONFLICT (content): Merge conflict in app.conf</span>
@@ -725,6 +798,14 @@ On branch main
             <button type="button" data-opcion="b">git checkout --theirs app.conf</button>
           </div>
           <p class="veredicto" hidden></p>
+          <div data-ayuda="pred-swap">
+            <ol>
+              <li><code>--ours</code> y <code>--theirs</code> señalan stages del índice, no ramas: ours es el stage 2 y theirs el stage 3.</li>
+              <li>Piensa qué hace rebase: parte de la punta de <code>main</code> y reaplica encima tus commits, uno por uno.</li>
+              <li>El punto de partida, la rama sobre la que reaplicas, ocupa el lugar de ours. Tu trabajo es lo que va entrando. ¿Qué lado es entonces tu versión?</li>
+              <li data-respuesta><strong>git checkout --theirs app.conf.</strong> Durante un rebase los lados se ven intercambiados: <code>--ours</code> es main, la rama sobre la que reaplicas, y <code>--theirs</code> es tu commit que se está reaplicando.</li>
+            </ol>
+          </div>
         </div>
         <div class="probador-fila" role="group" aria-label="Operación en curso">
           <span>Operación</span>
@@ -748,6 +829,7 @@ On branch main
           <div class="archivo"><div class="archivo-cab"><span>app.conf queda así</span></div><pre id="prob-archivo"></pre></div>
           <p id="prob-explica" style="margin-top:.75rem"></p>
         </div>
+        <div data-ayuda data-ayuda-dinamica id="ayuda-probador"></div>
         <ul data-retos>
           <li data-reto="reto-swap"><span>Durante un rebase, consigue que app.conf quede con tu versión.</span></li>
           <li data-reto="reto-s-ours"><span>Encuentra la opción que descarta incluso el <code>log = info</code> de main, que no chocaba con nada.</span></li>
@@ -1356,7 +1438,48 @@ const Cinta = (() => {
     $('prob-explica').textContent = c.frase + (op === 'rebase' ? ' (-X y -s aquí se muestran solo con git merge.)' : '');
     if (op === 'rebase' && cm === 'theirs') forja.reto('reto-swap');
     if (cm === 'sours') forja.reto('reto-s-ours');
+    ayudarCaso();
   };
+  // "Explícamelo paso a paso" del caso elegido. Solo aparece después de la predicción, para no dar la respuesta antes.
+  const ayudaDiv = $('ayuda-probador');
+  let ayudaClave = null;
+  const pasosCaso = {
+    'merge:ours': [['Estás en <code>feature</code> y corres <code>git merge main</code>: HEAD es feature y la rama que entra, <code>MERGE_HEAD</code>, es main.',
+      'En un merge, el stage 2 (ours) es HEAD y el stage 3 (theirs) es <code>MERGE_HEAD</code>.',
+      '<code>git checkout --ours</code> no mezcla nada: copia el archivo completo del stage 2. ¿Qué tiene el app.conf de ese lado: timeout = 60 o 45? ¿Tiene log = info?'],
+      'Te queda tu versión: <code>timeout = 60</code>, sin <code>log = info</code>. En un merge, --ours es el stage 2, HEAD = feature, y se copia el archivo completo.'],
+    'merge:theirs': [['Estás en <code>feature</code> y corres <code>git merge main</code>: HEAD es feature y la rama que entra, <code>MERGE_HEAD</code>, es main.',
+      'En un merge, el stage 2 (ours) es HEAD y el stage 3 (theirs) es <code>MERGE_HEAD</code>.',
+      '<code>git checkout --theirs</code> no mezcla nada: copia el archivo completo del stage 3. ¿Qué tiene el app.conf de ese lado?'],
+      'Te queda la versión de main: <code>timeout = 45</code> y <code>log = info</code>. En un merge, --theirs es el stage 3, MERGE_HEAD = main.'],
+    'rebase:ours': [['Estás en <code>feature</code> y corres <code>git rebase main</code>: Git parte de la punta de main y reaplica encima tus commits, uno por uno.',
+      'Por eso, en un rebase, el stage 2 (ours) es la rama sobre la que reaplicas, y el stage 3 (theirs) es el commit tuyo que se está reaplicando.',
+      '<code>git checkout --ours</code> copia el archivo completo del stage 2. ¿De qué rama es ese lado aquí?'],
+      'Te queda la versión de main: <code>timeout = 45</code> y <code>log = info</code>. En un rebase, --ours es main, la rama sobre la que reaplicas: es la trampa más común.'],
+    'rebase:theirs': [['Estás en <code>feature</code> y corres <code>git rebase main</code>: Git parte de la punta de main y reaplica encima tus commits, uno por uno.',
+      'Por eso, en un rebase, el stage 2 (ours) es la rama sobre la que reaplicas, y el stage 3 (theirs) es el commit tuyo que se está reaplicando.',
+      '<code>git checkout --theirs</code> copia el archivo completo del stage 3. ¿De quién es ese lado aquí?'],
+      'Te queda tu versión: <code>timeout = 60</code>, sin <code>log = info</code>. En un rebase, --theirs es tu commit que se está reaplicando.'],
+    'merge:xours': [['Estás en <code>feature</code> y corres <code>git merge -X ours main</code>: "ours" es tu lado, HEAD = feature.',
+      '<code>-X ours</code> es una opción de la estrategia <code>ort</code>: el three-way merge corre normal, y lo que cambió un solo lado entra sin conflicto.',
+      'La opción solo decide los trozos donde los dos lados chocaron. timeout chocó (60 contra 45); ¿chocó log = info con algo?'],
+      'Te queda <code>timeout = 60</code> y también <code>log = info</code>: el trozo en conflicto se resuelve a tu favor y lo que main cambió sin chocar sí entra.'],
+    'merge:sours': [['Estás en <code>feature</code> y corres <code>git merge -s ours main</code>: "ours" es tu lado, HEAD = feature.',
+      '<code>-s</code> no elige una opción de <code>ort</code>: elige otra estrategia, llamada ours.',
+      'Esa estrategia crea el commit de fusión, pero su resultado es siempre el árbol de tu rama: no mira lo que trae main. ¿Qué tiene tu app.conf?'],
+      'Te queda exactamente tu app.conf: <code>timeout = 60</code>, sin <code>log = info</code>. -s ours descarta todo lo de main, incluso lo que no chocaba.'],
+  };
+  const ayudarCaso = () => {
+    const visible = $('prob-toma').closest('[data-tras-prediccion]')?.classList.contains('revelado');
+    const clave = visible ? `${op}:${cm}` : '';
+    if (clave === ayudaClave) return;
+    ayudaClave = clave;
+    const caso = pasosCaso[clave];
+    forja.ayuda(ayudaDiv, caso ? caso[0] : [], caso ? caso[1] : '');
+  };
+  caja.addEventListener('forja:revelado', ayudarCaso);
+  // Volver a predecir esconde otra vez la ayuda del caso
+  caja.addEventListener('click', e => { if (e.target.closest('.rehacer')) setTimeout(ayudarCaso, 0); });
   caja.querySelectorAll('[data-op]').forEach(b => b.addEventListener('click', () => { op = b.dataset.op; if (op === 'rebase' && (cm === 'xours' || cm === 'sours')) cm = 'ours'; pintar(); }));
   caja.querySelectorAll('[data-cm]').forEach(b => b.addEventListener('click', () => { cm = b.dataset.cm; pintar(); }));
   pintar();

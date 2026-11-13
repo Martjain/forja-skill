@@ -371,6 +371,14 @@ section[data-tono="oscuro"] .nota { color: var(--gris); }
             <button type="button" data-opcion="c">Nada: tiene que adivinar la tarea</button>
           </div>
           <p class="veredicto" hidden></p>
+          <div data-ayuda="pred-ve">
+            <ol>
+              <li>Empieza por la definición: un subagente corre en su <strong>propia</strong> ventana de contexto, aparte de la tuya.</li>
+              <li>Tu historial vive en tu ventana. Una ventana propia que arranca nueva, ¿qué trae de la tuya?</li>
+              <li>Aun así, no puede adivinar: Claude tiene que pasarle la tarea de algún modo. Busca en el diagrama la pieza que une la conversación principal con la ventana del subagente.</li>
+              <li data-respuesta><strong>Solo el mensaje con la tarea que Claude le escribe.</strong> Arranca con una ventana nueva, sin tu historial, y ese mensaje de delegación es lo único de la conversación que recibe. La excepción es el fork, que sí hereda la conversación.</li>
+            </ol>
+          </div>
         </div>
         <p class="pista-desliza nota">Desliza el diagrama a los lados para verlo completo.</p>
         <div class="marco-ancho">
@@ -469,6 +477,15 @@ section[data-tono="oscuro"] .nota { color: var(--gris); }
           <button type="button" data-opcion="c">No crece nada</button>
         </div>
         <p class="veredicto" hidden></p>
+        <div data-ayuda="pred-ventana">
+          <ol>
+            <li>Pregúntate quién lee los 40 archivos. Los lee quien hace la búsqueda, y aquí la hace el subagente.</li>
+            <li>El subagente trabaja en su propia ventana de contexto: lo que lee se queda ahí, no en la tuya.</li>
+            <li>Ahora piensa qué sí cruza a tu ventana: el mensaje con la tarea que Claude le escribe y lo que el subagente devuelve al terminar.</li>
+            <li>¿Eso ocupa cero lugar? Hasta un mensaje corto es texto que queda en tu conversación.</li>
+            <li data-respuesta><strong>Crece poco: solo llega el resultado.</strong> Los archivos se leen en la ventana del subagente; a la tuya llegan la delegación y el resultado, que sí ocupan algo de lugar.</li>
+          </ol>
+        </div>
       </div>
       <div class="modo" role="group" aria-label="Quién hace la búsqueda">
         <button type="button" class="boton" data-modo="principal" aria-pressed="false">Sin subagente</button>
@@ -576,6 +593,15 @@ section[data-tono="oscuro"] .nota { color: var(--gris); }
           <p class="respuesta" aria-live="polite"></p>
         </li>
       </ul>
+      <div data-ayuda="ayuda-delega">
+        <ol>
+          <li>Empieza por lo que hace Claude en el tramo 02: lee la <code>description</code> de cada subagente y la compara con la tarea.</li>
+          <li>Marca qué cubre cada description: <code>code-reviewer</code>, revisar código recién escrito o modificado; <code>debugger</code>, errores, pruebas que fallan y comportamiento inesperado; <code>data-scientist</code>, SQL, BigQuery y análisis de datos.</li>
+          <li>En cada tarea, busca la palabra que la delata (un error, una revisión, una consulta) y la description que la menciona.</li>
+          <li>Antes de delegar, pregúntate si vale la pena: un subagente arranca de cero y tarda en juntar contexto. Para un cambio rápido y puntual, la documentación recomienda la conversación principal.</li>
+          <li data-respuesta><strong>El criterio:</strong> la tarea va al subagente cuya description la cubre, y se queda en la conversación principal si es un cambio rápido y puntual. Ejemplo: "Corre las pruebas: fallan con un TypeError en parser.js" habla de pruebas que fallan y de un error, justo lo que cubre la description de <code>debugger</code>.</li>
+        </ol>
+      </div>
       <ul data-retos>
         <li data-reto="reto-delega">Acierta el destino de las cuatro tareas</li>
       </ul>
@@ -688,6 +714,14 @@ section[data-tono="oscuro"] .nota { color: var(--gris); }
               <button type="button" data-opcion="c"><code>tools: Read, Edit, Write</code></button>
             </div>
             <p class="veredicto" hidden></p>
+            <div data-ayuda="pred-tools">
+              <ol>
+                <li>Haz la lista de lo que necesita el revisor: leer código y correr <code>git diff</code>. Editar archivos no está en la lista.</li>
+                <li>Recuerda qué pasa si no pones <code>tools</code>: el subagente hereda todas las herramientas disponibles, incluidas Edit y Write.</li>
+                <li>Para correr <code>git diff</code> hace falta Bash. Read, Grep y Glob sirven para leer y buscar, sin editar ni escribir archivos. Compara cada opción con eso.</li>
+                <li data-respuesta><strong><code>tools: Read, Grep, Glob, Bash</code>.</strong> Le da lo justo para leer y correr comandos, sin Edit ni Write. Sin <code>tools</code> heredaría todas, incluidas las que editan.</li>
+              </ol>
+            </div>
           </div>
 <pre class="archivo"><span class="ruta"># .claude/agents/revisor.md</span>
 ---
@@ -715,6 +749,15 @@ section[data-tono="oscuro"] .nota { color: var(--gris); }
               <button type="button" data-opcion="c">Nada: con la description basta</button>
             </div>
             <p class="veredicto" hidden></p>
+            <div data-ayuda="pred-prompt">
+              <ol>
+                <li>Recuerda qué es el texto debajo del frontmatter: el prompt de sistema del subagente.</li>
+                <li>Recuerda qué ve el subagente al arrancar: ese prompt y la tarea que Claude le escribe, pero no tu historial.</li>
+                <li>Lee la opción a como si fueras el subagente: ¿sabes qué es "lo que estábamos viendo hace rato"?</li>
+                <li>La <code>description</code> es lo que Claude lee para decidir cuándo delegar. ¿Le dice al subagente cómo hacer la revisión y cómo entregarla?</li>
+                <li data-respuesta><strong>"Eres un revisor de código. Corre git diff, revisa los archivos modificados y entrega hallazgos por prioridad."</strong> El cuerpo es su prompt de sistema y, como no ve tu conversación, tiene que decir por sí solo qué hacer y cómo entregar el resultado.</li>
+              </ol>
+            </div>
           </div>
 <pre class="archivo"><span class="ruta"># .claude/agents/revisor.md</span>
 ---
@@ -760,6 +803,14 @@ tools: Read, Grep, Glob, Bash
 Eres un revisor de código. Corre git diff…</span></button>
             </div>
             <p class="veredicto" hidden></p>
+            <div data-ayuda="pred-final">
+              <ol>
+                <li>Junta lo de los cuatro pasos: el archivo necesita <code>name</code> y <code>description</code> (los dos obligatorios), las herramientas justas y un prompt de sistema.</li>
+                <li>Revisa el frontmatter de cada opción: ¿a cuál le falta un campo obligatorio?</li>
+                <li>Lee el cuerpo de las que quedan: ¿se entiende sin tu conversación, o depende de algo que el subagente no ve?</li>
+                <li data-respuesta><strong>El tercero.</strong> Tiene <code>name</code> y <code>description</code>, herramientas para leer y correr comandos, y un prompt que se entiende sin tu historial. Al primero le falta la <code>description</code>, y el segundo depende de "lo que hablamos antes".</li>
+              </ol>
+            </div>
           </div>
           <div data-tras-prediccion="pred-final">
             <p><strong>Listo.</strong> Para probarlo, pídeselo con tus palabras o con @:</p>
@@ -859,6 +910,15 @@ Eres un revisor de código. Corre git diff…</span></button>
           <p class="respuesta" aria-live="polite"></p>
         </li>
       </ul>
+      <div data-ayuda="ayuda-clasifica">
+        <ol>
+          <li>Para cada situación, pregúntate primero: ¿produce mucha salida que no vas a volver a consultar? Es la señal más clara de que va un subagente.</li>
+          <li>Luego: ¿pide ida y vuelta contigo o ir afinando? El subagente trabaja aparte y solo te devuelve el resultado al final.</li>
+          <li>¿Depende de mucho contexto que ya platicaron? El subagente no ve tu historial: habría que repetírselo en cada delegación.</li>
+          <li>Revisa dos razones más a favor del subagente: que quieras limitar qué herramientas usa, o que sean investigaciones independientes que pueden correr en paralelo.</li>
+          <li data-respuesta><strong>El criterio:</strong> subagente para lo ruidoso, autocontenido, en paralelo o con herramientas limitadas; conversación principal para el ida y vuelta, las fases que comparten contexto y los cambios rápidos. Ejemplo: "Renombrar una variable en un solo archivo" es un cambio rápido y puntual, así que va en la principal: el subagente tardaría más en juntar contexto.</li>
+        </ol>
+      </div>
       <ul data-retos>
         <li data-reto="reto-clasifica">Deja las seis situaciones bien clasificadas</li>
       </ul>

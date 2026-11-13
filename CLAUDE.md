@@ -14,7 +14,8 @@ Repositorio de **forja**, una skill de Claude Code que crea guías visuales inte
 
 - Todo en español. Los términos técnicos van como aparecen en la documentación oficial.
 - Una guía = un solo archivo `guias/<slug>/index.html`, sin CDN ni recursos externos. Tiene que funcionar offline.
-- Nunca sobrescribir una guía existente. Si `guias/<slug>/` ya existe, crear `guias/<slug>-v2/` (o el siguiente número).
+- Al **generar** una guía, nunca sobrescribir una existente: si `guias/<slug>/` ya existe, crear `guias/<slug>-v2/` (o el siguiente número).
+- Cuando el **usuario pide explícitamente un cambio en una guía publicada** (por ejemplo, agregar ayudas o corregir un dato), se edita la guía original: no se crea una `-v2`. Se aplica solo lo pedido, con un script que inserte o reemplace esos bloques, y se muestra el diff. El hook de protección bloquea Edit/Write sobre guías con commit para evitar sobrescrituras accidentales; no está pensado para impedir cambios que el usuario pidió.
 - Al agregar una guía, agregarla también a `index.html`.
 - Antes de dar una guía por terminada, correr el validador y corregir hasta que no marque errores:
   `python3 .claude/skills/forja/scripts/validar.py guias/<slug>/index.html`

@@ -151,3 +151,12 @@ Botón en el núcleo para cuando el usuario no puede resolver algo. Muestra el r
 - Núcleo propagado a las 5 guías.
 - **Derivadas:** ayuda escrita para las 6 predicciones y ayuda dinámica en el probador (cambia con cada ejercicio; para n = 0 explica la constante). Probado en Chrome: un paso por clic, cerrar y retomar ("Seguir con la explicación"), "Acertaste con ayuda", reinicio con "Otro ejercicio", sin errores de JS.
 - **Pendiente:** hooks, git, git-merge-rebase y subagentes tienen el botón en su núcleo, pero no tienen los pasos escritos. El validador ahora lo marca como error. Hay que escribir sus ayudas o regenerarlas.
+- **Hecho (2026-11-12):** ayudas agregadas a las 4 guías restantes, solo con líneas nuevas y sin borrar ninguna:
+  - hooks: 9 (8 de predicciones + probador de matchers)
+  - git: 10 (9 + laboratorio de zonas)
+  - git-merge-rebase: 11 (9 + terminal + **ayuda dinámica en el probador de ours/theirs**, que solo aparece después de responder `pred-swap` para no dar la respuesta antes de tiempo)
+  - subagentes: 7 (5 + 2 clasificadores; dan el criterio y un caso de ejemplo, no las 6 respuestas)
+
+  Las 5 guías pasan el validador sin errores de ayuda y no tienen errores de JS.
+- **Aclaración de regla:** un subagente creó `git-v2` en vez de editar la original, porque la regla "nunca sobrescribir" era ambigua. Se aplicó el cambio a la original y se quitó la copia. Ahora CLAUDE.md y el mensaje del hook distinguen entre *generar* una guía (nunca sobrescribir) y un *cambio pedido por el usuario* (se edita la original, solo lo pedido, mostrando el diff).
+- **Nota:** el hook de protección no corre en sesiones que no se abren desde el repo (como los subagentes de esta sesión). En las sesiones de Claude Code abiertas en `forja-skill` sí se aplica.

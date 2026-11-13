@@ -36,8 +36,11 @@ def main() -> int:
     ).returncode == 0
     if publicada:
         print(
-            f"Bloqueado: {ruta} es una guía ya publicada (está en git) y forja nunca sobrescribe guías. "
-            "Crea una versión nueva con: python3 .claude/skills/forja/scripts/registrar.py ruta \"<tema>\"",
+            f"Bloqueado: {ruta} es una guía ya publicada (está en git). "
+            "Si estás generando una guía nueva, crea otra versión con: "
+            "python3 .claude/skills/forja/scripts/registrar.py ruta \"<tema>\". "
+            "Si el usuario pidió explícitamente cambiar ESTA guía, aplica solo ese cambio con un script "
+            "que inserte o reemplace los bloques pedidos y muéstrale el diff (ver CLAUDE.md).",
             file=sys.stderr,
         )
         return 2
