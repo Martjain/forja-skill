@@ -160,3 +160,13 @@ Botón en el núcleo para cuando el usuario no puede resolver algo. Muestra el r
   Las 5 guías pasan el validador sin errores de ayuda y no tienen errores de JS.
 - **Aclaración de regla:** un subagente creó `git-v2` en vez de editar la original, porque la regla "nunca sobrescribir" era ambigua. Se aplicó el cambio a la original y se quitó la copia. Ahora CLAUDE.md y el mensaje del hook distinguen entre *generar* una guía (nunca sobrescribir) y un *cambio pedido por el usuario* (se edita la original, solo lo pedido, mostrando el diff).
 - **Nota:** el hook de protección no corre en sesiones que no se abren desde el repo (como los subagentes de esta sesión). En las sesiones de Claude Code abiertas en `forja-skill` sí se aplica.
+
+## Prueba con pedido natural: "quiero una guía del proceso de un motor de combustión externa"
+
+- **Activación y preguntas:** cargó forja sola y, antes de crear nada, preguntó el **nivel** y además **qué motor** (Stirling, vapor o los dos). La segunda pregunta no está en la skill; salió del criterio de Claude ante un tema ambiguo. Respuesta del usuario: principiante, los dos.
+- **Familia nueva `maquinas-termicas`:** crema de plano técnico, negro de hierro fundido, naranja de brasa como acento y azul acero del agua fría. Regla fija: naranja = caliente y azul = frío en toda la guía. Fuentes: Fraunces, IBM Plex Sans e IBM Plex Mono.
+- **Motivo:** la pared que separa el fuego del fluido.
+- **Estructura:** 3 partes (lo común, Stirling, vapor), 9 secciones, 6 predicciones (3 son huecos del paso a paso), 8 ayudas (2 dinámicas), 7 retos, 13 flashcards.
+- **Fuentes:** NASA (science.nasa.gov y NTRS), DOE, OpenStax, Ohio University, FAMU-FSU, Penn State, MSU, HyperPhysics y ASME. Dos datos con †: volumen ×1,600 del vapor y que bombear líquido cuesta menos que comprimir vapor.
+- **Física verificada a mano:** Carnot con T en kelvin (30 °C de lado frío: 47 % → 65 % al subir de 300 a 600 °C: "sube, pero no al doble"); regenerador con modelo de gas ideal (68 % = Carnot entre 850 y 90 °C; sin regenerador, 20 % con aire y 27 % con helio, reproducido con cv/R = 2.5 y 1.5). La guía aclara que son cálculos de modelo, no datos publicados.
+- Validador sin errores, celular OK, sin errores de JS.
