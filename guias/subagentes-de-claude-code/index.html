@@ -178,16 +178,20 @@ section[data-tono="oscuro"] .nota { color: var(--gris); }
 .dividido.invertido { grid-template-columns: 3fr 2fr; }
 .diagrama svg { min-width: 560px; width: 100%; display: block; }
 .diagrama [data-nodo] { cursor: pointer; }
-.diagrama [data-nodo] rect { fill: var(--fondo); stroke: var(--tinta); stroke-width: 1.5; transition: fill .2s, stroke .2s; }
-.diagrama [data-nodo] text { fill: var(--tinta); font-family: var(--f-cuerpo); font-size: 15px; }
-.diagrama [data-nodo="ventana"] > rect { fill: color-mix(in srgb, var(--azul) 10%, var(--fondo)); stroke-dasharray: 6 5; }
-.diagrama [data-nodo].activo > rect { fill: var(--terracota); stroke: var(--acento); stroke-width: 2.5; }
-.diagrama [data-nodo="ventana"].activo > rect { fill: color-mix(in srgb, var(--terracota) 22%, var(--fondo)); }
-.diagrama [data-nodo].activo > text { font-weight: 600; }
-.diagrama [data-nodo]:focus-visible { outline: none; }
+.diagrama [data-nodo] rect { fill: var(--fondo); stroke: var(--tinta); stroke-width: 1.25; transition: fill .2s, stroke .2s; }
+.diagrama [data-nodo] text { fill: var(--tinta); font-family: var(--f-cuerpo); font-size: 15px; transition: fill .2s; }
+.diagrama [data-nodo="principal"] > rect { fill: var(--superficie); stroke-width: 2.5; }
+.diagrama [data-nodo="ventana"] > rect { fill: color-mix(in srgb, var(--terracota) 7%, var(--fondo)); stroke: var(--terracota); stroke-width: 2.5; }
+.diagrama [data-nodo="ventana"] > text { fill: var(--acento); font-weight: 600; }
+.diagrama [data-nodo="delegacion"] > rect, .diagrama [data-nodo="resumen"] > rect { fill: color-mix(in srgb, var(--azul) 16%, var(--fondo)); stroke: var(--azul); stroke-width: 2.5; }
+.diagrama [data-nodo].activo > rect { fill: var(--tinta); stroke: var(--tinta); }
+.diagrama [data-nodo].activo > text { fill: var(--fondo); font-weight: 600; }
+.diagrama [data-nodo="ventana"].activo > rect { fill: color-mix(in srgb, var(--terracota) 20%, var(--fondo)); stroke: var(--tinta); }
+.diagrama [data-nodo="ventana"].activo > text { fill: var(--tinta); }
+.diagrama [data-nodo]:focus { outline: none; }   /* sin el anillo del navegador al hacer clic; con teclado se marca el rect */
 .diagrama [data-nodo]:focus-visible > rect { stroke: var(--acento); stroke-width: 4; }
-.diagrama [data-une] { stroke: var(--gris); stroke-width: 2.5; fill: none; transition: stroke .2s; }
-.diagrama [data-une].activo { stroke: var(--acento); stroke-width: 3.5; }
+.diagrama [data-une] { stroke: var(--gris); stroke-width: 2.5; fill: none; marker-end: url(#pta-gris); transition: stroke .2s; }
+.diagrama [data-une].activo { stroke: var(--tinta); marker-end: url(#pta-neutro); }
 .ficha { margin-top: 1rem; padding: 1.1rem 1.25rem; border-left: 4px solid var(--terracota); background: var(--superficie); border-radius: 0 10px 10px 0; min-height: 8rem; }
 .ficha h3 { margin-top: 0; }
 .ficha p:last-child { margin-bottom: 0; }
@@ -302,6 +306,12 @@ section[data-tono="oscuro"] .nota { color: var(--gris); }
 #fuentes ol { padding-left: 1.4rem; display: grid; gap: .5rem; }
 #fuentes li::marker { font-family: var(--f-codigo); color: var(--acento); }
 
+/* Ilustraciones: etiquetas del núcleo (g.etiqueta) sin el estilo de la etiqueta de sección */
+svg .etiqueta { font-family: var(--f-cuerpo); font-size: inherit; letter-spacing: normal; text-transform: none; margin: 0; }
+#anima-delegar { max-width: 36rem; margin: 0 auto 2.5rem; }
+#anima-delegar svg { display: block; width: 100%; }
+#anima-delegar .leyenda { margin-top: .5rem; }
+
 /* Los hijos de grid no deben estirarse al ancho de un SVG o un <pre>: lo ancho se desplaza dentro de su marco. */
 .portada-rejilla > *, .dividido > *, .heroe > *, .mosaico > *, .versus > *, .formas > li, .descs > *, .controles > *, .repaso-rejilla > *, .lab > *, .pasos > *, .paso > * { min-width: 0; }
 
@@ -321,6 +331,14 @@ section[data-tono="oscuro"] .nota { color: var(--gris); }
 </style>
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<!-- Kit SVG de forja (solo lo que usa esta guía): flechas por color. Reglas: reference/ilustracion.md, sección 8. -->
+<defs>
+  <marker id="pta-neutro" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1 L8 5 L1 9 Z" style="fill:var(--tinta, #141413)"/></marker>
+  <marker id="pta-gris" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1 L8 5 L1 9 Z" style="fill:var(--gris, #B0AEA5)"/></marker>
+  <marker id="pta-azul" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1 L8 5 L1 9 Z" style="fill:var(--azul, #6A9BCC)"/></marker>
+</defs>
+</svg>
 <header class="forja-barra">
   <div data-forja-progreso role="progressbar" aria-label="Avance de la guía" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
   <details class="forja-mapa">
@@ -338,28 +356,7 @@ section[data-tono="oscuro"] .nota { color: var(--gris); }
         <h1 class="entra" style="--i:1">Subagentes: <em>delega</em> sin llenar tu conversación</h1>
         <p class="bajada entra" style="--i:2">Un subagente es un asistente aparte, con su propia ventana de contexto, que hace una tarea y te devuelve el resultado.<a class="cita" href="https://code.claude.com/docs/en/sub-agents">[1]</a></p>
       </div>
-      <svg class="entra" style="--i:3" viewBox="0 0 640 320" role="img" aria-labelledby="t-portada">
-        <title id="t-portada">Una línea horizontal, la conversación principal, de la que salen tres ramas hacia cajas de trabajo; cada rama vuelve a la línea con un solo punto: el resultado.</title>
-        <path d="M20 250 H620" stroke="var(--tinta)" stroke-width="4" fill="none"/>
-        <circle cx="34" cy="250" r="8" fill="var(--tinta)"/>
-        <path d="M70 250 C70 175 95 150 120 150" stroke="var(--gris)" stroke-width="2.5" fill="none" stroke-dasharray="6 5"/>
-        <rect x="120" y="116" width="150" height="68" rx="10" fill="var(--superficie)" stroke="var(--tinta)" stroke-width="1.5"/>
-        <text x="195" y="158" text-anchor="middle" font-size="24" fill="var(--tinta)" font-family="var(--f-codigo)">explorar</text>
-        <path d="M270 150 C295 150 305 175 305 250" stroke="var(--terracota)" stroke-width="3" fill="none"/>
-        <circle cx="305" cy="250" r="10" fill="var(--terracota)"/>
-        <path d="M225 250 C225 80 255 50 285 50" stroke="var(--gris)" stroke-width="2.5" fill="none" stroke-dasharray="6 5"/>
-        <rect x="285" y="16" width="150" height="68" rx="10" fill="var(--superficie)" stroke="var(--tinta)" stroke-width="1.5"/>
-        <text x="360" y="58" text-anchor="middle" font-size="24" fill="var(--tinta)" font-family="var(--f-codigo)">revisar</text>
-        <path d="M435 50 C465 50 475 90 475 250" stroke="var(--terracota)" stroke-width="3" fill="none"/>
-        <circle cx="475" cy="250" r="10" fill="var(--terracota)"/>
-        <path d="M390 250 C390 195 405 175 440 175" stroke="var(--gris)" stroke-width="2.5" fill="none" stroke-dasharray="6 5"/>
-        <rect x="440" y="141" width="150" height="68" rx="10" fill="var(--superficie)" stroke="var(--tinta)" stroke-width="1.5"/>
-        <text x="515" y="183" text-anchor="middle" font-size="24" fill="var(--tinta)" font-family="var(--f-codigo)">probar</text>
-        <path d="M590 175 C605 175 605 200 605 250" stroke="var(--terracota)" stroke-width="3" fill="none"/>
-        <circle cx="605" cy="250" r="10" fill="var(--terracota)"/>
-        <text x="20" y="298" font-size="21" fill="var(--tinta-suave)" font-family="var(--f-cuerpo)">tu conversación</text>
-        <text x="620" y="298" text-anchor="end" font-size="21" fill="var(--acento)" font-family="var(--f-cuerpo)">● = el resultado</text>
-      </svg>
+      <svg class="entra" style="--i:3" viewBox="0 0 560 372" role="img" aria-labelledby="t-portada"><title id="t-portada">Tu conversación, abajo, delega tres tareas: explorar, revisar y probar. Cada subagente trabaja en su propia ventana, arriba, y a tu conversación vuelve solo su resultado.</title><path d="M24 0V372M48 0V372M72 0V372M96 0V372M120 0V372M144 0V372M168 0V372M192 0V372M216 0V372M240 0V372M264 0V372M288 0V372M312 0V372M336 0V372M360 0V372M384 0V372M408 0V372M432 0V372M456 0V372M480 0V372M504 0V372M528 0V372M552 0V372M0 24H560M0 48H560M0 72H560M0 96H560M0 120H560M0 144H560M0 168H560M0 192H560M0 216H560M0 240H560M0 264H560M0 288H560M0 312H560M0 336H560M0 360H560" stroke="rgba(20,20,19,.055)" stroke-width="1" fill="none"/><rect x="24" y="268" width="512" height="48" rx="10" fill="var(--superficie)" stroke="var(--tinta)" stroke-width="2.5" stroke-linejoin="round"/><rect x="36" y="287" width="30" height="10" rx="3" fill="var(--gris)"/><rect x="166" y="287" width="44" height="10" rx="3" fill="var(--gris)"/><rect x="346" y="287" width="40" height="10" rx="3" fill="var(--gris)"/><rect x="24" y="84" width="150" height="120" rx="10" fill="color-mix(in srgb, var(--terracota) 7%, var(--fondo))" stroke="var(--terracota)" stroke-width="2.5" stroke-linejoin="round"/><path d="M24 118V94Q24 84 34 84H164Q174 84 174 94V118Z" fill="var(--terracota)" opacity=".14"/><line x1="24" y1="118" x2="174" y2="118" stroke="var(--terracota)" stroke-width="1.25" opacity=".45"/><text x="36" y="108" font-size="18.0" fill="var(--acento)" font-family="var(--f-codigo)">explorar</text><rect x="38" y="132" width="96" height="10" rx="3" fill="var(--terracota)"/><rect x="38" y="152" width="120" height="10" rx="3" fill="var(--terracota)"/><rect x="38" y="172" width="70" height="10" rx="3" fill="var(--terracota)"/><path d="M58 268 L58 208" stroke="var(--azul)" stroke-width="2.5" fill="none" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#pta-azul)"/><circle cx="58" cy="268" r="4.5" fill="var(--azul)" stroke="var(--fondo)" stroke-width="1.25"/><path d="M140 204 L140 261" stroke="var(--azul)" stroke-width="2.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/><circle cx="140" cy="268" r="6.5" fill="var(--azul)" stroke="var(--fondo)" stroke-width="1.25"/><rect x="128" y="287" width="30" height="10" rx="3" fill="var(--azul)"/><rect x="205" y="84" width="150" height="120" rx="10" fill="color-mix(in srgb, var(--terracota) 7%, var(--fondo))" stroke="var(--terracota)" stroke-width="2.5" stroke-linejoin="round"/><path d="M205 118V94Q205 84 215 84H345Q355 84 355 94V118Z" fill="var(--terracota)" opacity=".14"/><line x1="205" y1="118" x2="355" y2="118" stroke="var(--terracota)" stroke-width="1.25" opacity=".45"/><text x="217" y="108" font-size="18.0" fill="var(--acento)" font-family="var(--f-codigo)">revisar</text><rect x="219" y="132" width="110" height="10" rx="3" fill="var(--terracota)"/><rect x="219" y="152" width="84" height="10" rx="3" fill="var(--terracota)"/><rect x="219" y="172" width="118" height="10" rx="3" fill="var(--terracota)"/><path d="M239 268 L239 208" stroke="var(--azul)" stroke-width="2.5" fill="none" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#pta-azul)"/><circle cx="239" cy="268" r="4.5" fill="var(--azul)" stroke="var(--fondo)" stroke-width="1.25"/><path d="M321 204 L321 261" stroke="var(--azul)" stroke-width="2.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/><circle cx="321" cy="268" r="6.5" fill="var(--azul)" stroke="var(--fondo)" stroke-width="1.25"/><rect x="309" y="287" width="30" height="10" rx="3" fill="var(--azul)"/><rect x="386" y="84" width="150" height="120" rx="10" fill="color-mix(in srgb, var(--terracota) 7%, var(--fondo))" stroke="var(--terracota)" stroke-width="2.5" stroke-linejoin="round"/><path d="M386 118V94Q386 84 396 84H526Q536 84 536 94V118Z" fill="var(--terracota)" opacity=".14"/><line x1="386" y1="118" x2="536" y2="118" stroke="var(--terracota)" stroke-width="1.25" opacity=".45"/><text x="398" y="108" font-size="18.0" fill="var(--acento)" font-family="var(--f-codigo)">probar</text><rect x="400" y="132" width="72" height="10" rx="3" fill="var(--terracota)"/><rect x="400" y="152" width="112" height="10" rx="3" fill="var(--terracota)"/><rect x="400" y="172" width="96" height="10" rx="3" fill="var(--terracota)"/><path d="M420 268 L420 208" stroke="var(--azul)" stroke-width="2.5" fill="none" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#pta-azul)"/><circle cx="420" cy="268" r="4.5" fill="var(--azul)" stroke="var(--fondo)" stroke-width="1.25"/><path d="M502 204 L502 261" stroke="var(--azul)" stroke-width="2.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/><circle cx="502" cy="268" r="6.5" fill="var(--azul)" stroke="var(--fondo)" stroke-width="1.25"/><rect x="490" y="287" width="30" height="10" rx="3" fill="var(--azul)"/><g class="etiqueta" data-punto="40 84"><path d="M40 84 L40 40" stroke="var(--acento)" stroke-width="1" fill="none" opacity=".7"/><circle cx="40" cy="84" r="3" fill="var(--acento)"/><text x="46" y="44.5" font-size="13.5" font-weight="600" fill="var(--acento)">Subagente</text><text x="46" y="61.5" font-size="12" fill="var(--tinta)" opacity=".75">trabaja en su propia ventana</text></g><g class="etiqueta" data-punto="40 316"><path d="M40 316 L40 336" stroke="var(--tinta)" stroke-width="1" fill="none" opacity=".7"/><circle cx="40" cy="316" r="3" fill="var(--tinta)"/><text x="46" y="340.5" font-size="13.5" font-weight="600" fill="var(--tinta)">Tu conversación</text><text x="46" y="357.5" font-size="12" fill="var(--tinta)" opacity=".75">a ella vuelve solo el resultado</text></g></svg>
     </div>
     <div class="cifras">
       <p class="cifra entra" style="--i:4"><b>1</b><span>ventana de contexto propia por subagente<a class="cita" href="https://code.claude.com/docs/en/sub-agents">[1]</a></span></p>
@@ -407,46 +404,7 @@ section[data-tono="oscuro"] .nota { color: var(--gris); }
         </div>
         <p class="pista-desliza nota">Desliza el diagrama a los lados para verlo completo.</p>
         <div class="marco-ancho">
-          <svg viewBox="0 0 640 380" role="img" aria-labelledby="t-diagrama">
-            <title id="t-diagrama">Diagrama: la conversación principal manda un mensaje de delegación a la ventana del subagente, que tiene su prompt de sistema y sus herramientas; el subagente regresa un resumen a la conversación principal.</title>
-            <path data-une="principal delegacion" d="M120 296 V206"/>
-            <path data-une="delegacion ventana" d="M240 184 H300"/>
-            <path data-une="ventana resumen" d="M480 262 V280"/>
-            <path data-une="resumen principal" d="M480 320 V336 H250"/>
-            <g data-nodo="ventana" tabindex="0" role="button" aria-label="Ventana de contexto del subagente">
-              <rect x="300" y="24" width="320" height="238" rx="14"/>
-              <text x="320" y="54">Ventana del subagente</text>
-            </g>
-            <rect x="322" y="160" width="120" height="10" rx="3" fill="var(--gris)" opacity=".55"/>
-            <rect x="322" y="178" width="200" height="10" rx="3" fill="var(--gris)" opacity=".55"/>
-            <rect x="322" y="196" width="160" height="10" rx="3" fill="var(--gris)" opacity=".55"/>
-            <rect x="322" y="214" width="230" height="10" rx="3" fill="var(--gris)" opacity=".55"/>
-            <rect x="322" y="232" width="100" height="10" rx="3" fill="var(--gris)" opacity=".55"/>
-            <text x="598" y="246" text-anchor="end" font-size="12" fill="var(--tinta-suave)" font-family="var(--f-codigo)">su trabajo</text>
-            <g data-nodo="prompt" tabindex="0" role="button" aria-label="Prompt de sistema">
-              <rect x="320" y="72" width="136" height="64" rx="10"/>
-              <text x="388" y="100" text-anchor="middle">Prompt de</text>
-              <text x="388" y="120" text-anchor="middle">sistema</text>
-            </g>
-            <g data-nodo="herramientas" tabindex="0" role="button" aria-label="Herramientas y modelo">
-              <rect x="466" y="72" width="136" height="64" rx="10"/>
-              <text x="534" y="100" text-anchor="middle">Herramientas</text>
-              <text x="534" y="120" text-anchor="middle">y modelo</text>
-            </g>
-            <g data-nodo="delegacion" tabindex="0" role="button" aria-label="Mensaje de delegación">
-              <rect x="20" y="160" width="220" height="46" rx="23"/>
-              <text x="130" y="189" text-anchor="middle">Mensaje de delegación</text>
-            </g>
-            <g data-nodo="resumen" tabindex="0" role="button" aria-label="Resultado que regresa">
-              <rect x="410" y="280" width="140" height="40" rx="20"/>
-              <text x="480" y="306" text-anchor="middle">Resultado</text>
-            </g>
-            <g data-nodo="principal" tabindex="0" role="button" aria-label="Conversación principal">
-              <rect x="20" y="296" width="230" height="64" rx="10"/>
-              <text x="135" y="324" text-anchor="middle">Conversación</text>
-              <text x="135" y="344" text-anchor="middle">principal</text>
-            </g>
-          </svg>
+          <svg viewBox="0 0 640 380" role="img" aria-labelledby="t-diagrama"><title id="t-diagrama">Diagrama: la conversación principal manda un mensaje de delegación a la ventana del subagente, que tiene su prompt de sistema, sus herramientas y su propio trabajo; el subagente regresa un resultado a la conversación principal. Tu historial se queda en tu ventana.</title><path d="M24 0V380M48 0V380M72 0V380M96 0V380M120 0V380M144 0V380M168 0V380M192 0V380M216 0V380M240 0V380M264 0V380M288 0V380M312 0V380M336 0V380M360 0V380M384 0V380M408 0V380M432 0V380M456 0V380M480 0V380M504 0V380M528 0V380M552 0V380M576 0V380M600 0V380M624 0V380M0 24H640M0 48H640M0 72H640M0 96H640M0 120H640M0 144H640M0 168H640M0 192H640M0 216H640M0 240H640M0 264H640M0 288H640M0 312H640M0 336H640M0 360H640" stroke="rgba(20,20,19,.055)" stroke-width="1" fill="none"/><path data-une="principal delegacion" d="M144 236 L144 197"/><path data-une="delegacion ventana" d="M244 172 L297 172"/><path data-une="ventana resumen" d="M458 278 L458 309"/><path data-une="resumen principal" d="M388 332 L267 332"/><g data-nodo="ventana" tabindex="0" role="button" aria-label="Ventana de contexto del subagente"><rect x="300" y="24" width="316" height="254" rx="14"/><text x="320" y="54">Ventana del subagente</text></g><g pointer-events="none"><rect x="322" y="156" width="118" height="10" rx="3" fill="var(--terracota)" opacity=".8"/><rect x="322" y="174" width="204" height="10" rx="3" fill="var(--terracota)" opacity=".8"/><rect x="322" y="192" width="160" height="10" rx="3" fill="var(--terracota)" opacity=".8"/><rect x="322" y="210" width="232" height="10" rx="3" fill="var(--terracota)" opacity=".8"/><rect x="322" y="228" width="96" height="10" rx="3" fill="var(--terracota)" opacity=".8"/><text x="598" y="266" font-size="13.0" fill="var(--acento)" text-anchor="end" font-family="var(--f-codigo)">su trabajo</text></g><g data-nodo="prompt" tabindex="0" role="button" aria-label="Prompt de sistema"><rect x="320" y="72" width="136" height="64" rx="10"/><text x="388" y="99.5" text-anchor="middle">Prompt de</text><text x="388" y="119.5" text-anchor="middle">sistema</text></g><g data-nodo="herramientas" tabindex="0" role="button" aria-label="Herramientas y modelo"><rect x="468" y="72" width="132" height="64" rx="10"/><text x="534" y="99.5" text-anchor="middle">Herramientas</text><text x="534" y="119.5" text-anchor="middle">y modelo</text></g><g data-nodo="delegacion" tabindex="0" role="button" aria-label="Mensaje de delegación"><rect x="44" y="150" width="200" height="44" rx="22"/><text x="144" y="177.5" text-anchor="middle">Mensaje de delegación</text></g><g data-nodo="resumen" tabindex="0" role="button" aria-label="Resultado que regresa"><rect x="388" y="312" width="140" height="40" rx="20"/><text x="458" y="337.5" text-anchor="middle">Resultado</text></g><g data-nodo="principal" tabindex="0" role="button" aria-label="Conversación principal"><rect x="24" y="236" width="240" height="120" rx="10"/><text x="38" y="266">Conversación principal</text></g><g pointer-events="none"><rect x="108" y="278" width="140" height="10" rx="3" fill="var(--gris)"/><rect x="38" y="295" width="150" height="10" rx="3" fill="var(--gris)"/><rect x="128" y="312" width="120" height="10" rx="3" fill="var(--gris)"/><rect x="38" y="329" width="110" height="10" rx="3" fill="var(--gris)"/><circle cx="144" cy="236" r="4.5" fill="var(--gris)" stroke="var(--fondo)" stroke-width="1.25"/><circle cx="244" cy="172" r="4.5" fill="var(--gris)" stroke="var(--fondo)" stroke-width="1.25"/><circle cx="458" cy="278" r="4.5" fill="var(--gris)" stroke="var(--fondo)" stroke-width="1.25"/><circle cx="388" cy="332" r="4.5" fill="var(--gris)" stroke="var(--fondo)" stroke-width="1.25"/></g></svg>
         </div>
         <div class="ficha" data-tras-prediccion="pred-ve" aria-live="polite"></div>
       </div>
@@ -462,23 +420,7 @@ section[data-tono="oscuro"] .nota { color: var(--gris); }
         <h2>Lo que no está en la tarea, no lo sabe</h2>
         <p>Cada subagente empieza con una ventana nueva y aislada. No ve tu historial, ni las skills que ya usaste, ni los archivos que Claude ya leyó. Claude le escribe un mensaje que resume la tarea, y de ahí trabaja.<a class="cita" href="https://code.claude.com/docs/en/sub-agents">[1]</a></p>
         <p>Por eso tarda un poco: si no es un fork, arranca de cero y puede necesitar tiempo para juntar contexto.<a class="cita" href="https://code.claude.com/docs/en/sub-agents">[1]</a></p>
-        <svg class="heroe-svg" viewBox="0 0 440 200" role="img" aria-labelledby="t-heroe">
-          <title id="t-heroe">A la izquierda, la ventana principal llena de mensajes. A la derecha, la ventana del subagente con un solo mensaje: la tarea.</title>
-          <rect x="4" y="4" width="200" height="190" rx="12" fill="none" stroke="#FAF9F5" stroke-width="1.5"/>
-          <text x="20" y="30" font-size="17" fill="#B0AEA5" font-family="var(--f-codigo)">principal</text>
-          <rect x="20" y="46" width="150" height="10" rx="3" fill="#B0AEA5"/>
-          <rect x="44" y="66" width="140" height="10" rx="3" fill="#5E5D59"/>
-          <rect x="20" y="86" width="120" height="10" rx="3" fill="#B0AEA5"/>
-          <rect x="44" y="106" width="140" height="10" rx="3" fill="#5E5D59"/>
-          <rect x="20" y="126" width="160" height="10" rx="3" fill="#B0AEA5"/>
-          <rect x="44" y="146" width="110" height="10" rx="3" fill="#5E5D59"/>
-          <rect x="20" y="166" width="164" height="12" rx="3" fill="#D97757"/>
-          <path d="M210 172 C230 172 230 60 250 60" stroke="#D97757" stroke-width="2.5" fill="none"/>
-          <rect x="236" y="4" width="200" height="190" rx="12" fill="none" stroke="#D97757" stroke-width="1.5" stroke-dasharray="6 5"/>
-          <text x="252" y="30" font-size="17" fill="#D97757" font-family="var(--f-codigo)">subagente</text>
-          <rect x="252" y="54" width="164" height="12" rx="3" fill="#D97757"/>
-          <text x="252" y="90" font-size="17" fill="#B0AEA5" font-family="var(--f-cuerpo)">solo la tarea</text>
-        </svg>
+        <svg class="heroe-svg" viewBox="0 0 440 224" role="img" aria-labelledby="t-heroe"><title id="t-heroe">A la izquierda, tu ventana llena de mensajes; abajo, el mensaje de delegación. A la derecha, la ventana del subagente: solo recibe ese mensaje, la tarea, y lo demás está vacío.</title><path d="M24 0V224M48 0V224M72 0V224M96 0V224M120 0V224M144 0V224M168 0V224M192 0V224M216 0V224M240 0V224M264 0V224M288 0V224M312 0V224M336 0V224M360 0V224M384 0V224M408 0V224M432 0V224M0 24H440M0 48H440M0 72H440M0 96H440M0 120H440M0 144H440M0 168H440M0 192H440M0 216H440" stroke="rgba(250,249,245,.07)" stroke-width="1" fill="none"/><rect x="24" y="72" width="172" height="140" rx="10" fill="rgba(250,249,245,.05)" stroke="#FAF9F5" stroke-width="2.5" stroke-linejoin="round"/><path d="M24 102V82Q24 72 34 72H186Q196 72 196 82V102Z" fill="#FAF9F5" opacity=".08"/><line x1="24" y1="102" x2="196" y2="102" stroke="#FAF9F5" stroke-width="1.25" opacity=".45"/><text x="36" y="93" font-size="14.0" fill="#B0AEA5" font-family="var(--f-codigo)">principal</text><rect x="244" y="72" width="172" height="140" rx="10" fill="rgba(217,119,87,.08)" stroke="var(--terracota)" stroke-width="2.5" stroke-linejoin="round"/><path d="M244 102V82Q244 72 254 72H406Q416 72 416 82V102Z" fill="var(--terracota)" opacity=".16"/><line x1="244" y1="102" x2="416" y2="102" stroke="var(--terracota)" stroke-width="1.25" opacity=".45"/><text x="256" y="93" font-size="14.0" fill="var(--terracota)" font-family="var(--f-codigo)">subagente</text><rect x="80" y="114" width="104" height="9" rx="3" fill="#B0AEA5"/><rect x="36" y="129" width="128" height="9" rx="3" fill="#5E5D59"/><rect x="80" y="144" width="104" height="9" rx="3" fill="#B0AEA5"/><rect x="36" y="159" width="128" height="9" rx="3" fill="#5E5D59"/><rect x="80" y="174" width="104" height="9" rx="3" fill="#B0AEA5"/><rect x="36" y="189" width="116" height="9" rx="3" fill="#6A9BCC"/><path d="M196 193.5 L220 193.5 L220 118.5 L241 118.5" stroke="#6A9BCC" stroke-width="2.5" fill="none" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#pta-azul)"/><circle cx="196" cy="193.5" r="4.5" fill="#6A9BCC" stroke="#141413" stroke-width="1.25"/><rect x="256" y="114" width="116" height="9" rx="3" fill="#6A9BCC"/><rect x="256" y="129" width="148" height="9" rx="3" fill="none" stroke="rgba(250,249,245,.18)" stroke-width="1" stroke-dasharray="3 4"/><rect x="256" y="144" width="148" height="9" rx="3" fill="none" stroke="rgba(250,249,245,.18)" stroke-width="1" stroke-dasharray="3 4"/><rect x="256" y="159" width="148" height="9" rx="3" fill="none" stroke="rgba(250,249,245,.18)" stroke-width="1" stroke-dasharray="3 4"/><rect x="256" y="174" width="148" height="9" rx="3" fill="none" stroke="rgba(250,249,245,.18)" stroke-width="1" stroke-dasharray="3 4"/><rect x="256" y="189" width="148" height="9" rx="3" fill="none" stroke="rgba(250,249,245,.18)" stroke-width="1" stroke-dasharray="3 4"/><g class="etiqueta" data-punto="40 72"><path d="M40 72 L40 24" stroke="#FAF9F5" stroke-width="1" fill="none" opacity=".7"/><circle cx="40" cy="72" r="3" fill="#FAF9F5"/><text x="46" y="28.5" font-size="13.5" font-weight="600" fill="#FAF9F5">Tu ventana</text><text x="46" y="45.5" font-size="12" fill="#FAF9F5" opacity=".75">con todo lo platicado</text></g><g class="etiqueta" data-punto="260 72"><path d="M260 72 L260 24" stroke="var(--terracota)" stroke-width="1" fill="none" opacity=".7"/><circle cx="260" cy="72" r="3" fill="var(--terracota)"/><text x="266" y="28.5" font-size="13.5" font-weight="600" fill="var(--terracota)">La del subagente</text><text x="266" y="45.5" font-size="12" fill="#FAF9F5" opacity=".75">solo con la tarea</text></g></svg>
         <div class="excepcion">
           <h3>La excepción: el fork</h3>
           <p>Un fork es un subagente que hereda toda la conversación hasta ese momento. Aun así, sus llamadas a herramientas se quedan fuera de tu conversación y solo regresa su resultado final.<a class="cita" href="https://code.claude.com/docs/en/sub-agents">[1]</a> Lo puedes lanzar tú con <code>/subtask</code> seguido de la tarea.<a class="cita" href="https://code.claude.com/docs/en/sub-agents">[1]</a></p>
@@ -580,6 +522,17 @@ section[data-tono="oscuro"] .nota { color: var(--gris); }
       </li>
     </ol>
 
+    <div data-anima id="anima-delegar">
+      <svg viewBox="0 0 560 436" role="img" aria-labelledby="t-delegar"><title id="t-delegar">Animación de una delegación: tu pedido entra a tu conversación; Claude compara la tarea con las descriptions y elige Explore; le manda un mensaje con la tarea; Explore lee y trabaja en su propia ventana; al terminar, solo su resultado vuelve a tu conversación.</title><path d="M24 0V436M48 0V436M72 0V436M96 0V436M120 0V436M144 0V436M168 0V436M192 0V436M216 0V436M240 0V436M264 0V436M288 0V436M312 0V436M336 0V436M360 0V436M384 0V436M408 0V436M432 0V436M456 0V436M480 0V436M504 0V436M528 0V436M552 0V436M0 24H560M0 48H560M0 72H560M0 96H560M0 120H560M0 144H560M0 168H560M0 192H560M0 216H560M0 240H560M0 264H560M0 288H560M0 312H560M0 336H560M0 360H560M0 384H560M0 408H560M0 432H560" stroke="rgba(20,20,19,.055)" stroke-width="1" fill="none"/><rect x="24" y="92" width="160" height="320" rx="10" fill="var(--superficie)" stroke="var(--tinta)" stroke-width="2.5" stroke-linejoin="round"/><path d="M24 128V102Q24 92 34 92H174Q184 92 184 102V128Z" fill="var(--tinta)" opacity=".06"/><line x1="24" y1="128" x2="184" y2="128" stroke="var(--tinta)" stroke-width="1.25" opacity=".45"/><text x="36" y="117" font-size="18.0" fill="var(--tinta)" font-family="var(--f-codigo)">principal</text><rect x="100" y="142" width="72" height="10" rx="3" fill="var(--gris)"/><rect x="36" y="166" width="124" height="10" rx="3" fill="var(--gris)"/><rect x="36" y="190" width="96" height="10" rx="3" fill="var(--gris)"/><rect id="dl-pedido" x="172" y="214" width="0" height="10" rx="3" fill="var(--tinta)"/><rect id="dl-res" x="36" y="238" width="0" height="10" rx="3" fill="var(--azul)"/><g id="dl-chip-0"><rect x="208" y="106" width="144" height="36" rx="8" fill="var(--fondo)" stroke="var(--gris)" stroke-width="1.25"/><text x="222" y="130.5" font-size="18.0" fill="var(--tinta)" font-family="var(--f-codigo)">debugger</text></g><g id="dl-chip-1"><rect x="208" y="154" width="144" height="36" rx="8" fill="var(--fondo)" stroke="var(--gris)" stroke-width="1.25"/><text x="222" y="178.5" font-size="18.0" fill="var(--tinta)" font-family="var(--f-codigo)">revisor</text></g><g id="dl-chip-2"><rect x="208" y="202" width="144" height="36" rx="8" fill="var(--fondo)" stroke="var(--gris)" stroke-width="1.25"/><text x="222" y="226.5" font-size="18.0" fill="var(--tinta)" font-family="var(--f-codigo)">Explore</text></g><g id="dl-enlace" opacity="0"><path d="M184 220.0H208" stroke="var(--tinta)" stroke-width="2.5"/><circle cx="184" cy="220" r="4.5" fill="var(--tinta)" stroke="var(--fondo)" stroke-width="1.25"/></g><g id="dl-sub"><rect x="376" y="92" width="160" height="320" rx="10" fill="color-mix(in srgb, var(--terracota) 7%, var(--fondo))" stroke="var(--terracota)" stroke-width="2.5" stroke-linejoin="round"/><path d="M376 128V102Q376 92 386 92H526Q536 92 536 102V128Z" fill="var(--terracota)" opacity=".14"/><line x1="376" y1="128" x2="536" y2="128" stroke="var(--terracota)" stroke-width="1.25" opacity=".45"/><text x="388" y="117" font-size="18.0" fill="var(--acento)" font-family="var(--f-codigo)">Explore</text><rect id="dl-tarea" x="388" y="142" width="0" height="10" rx="3" fill="var(--azul)"/><rect id="dl-trab-0" x="388" y="166" width="0" height="10" rx="3" fill="var(--terracota)"/><rect id="dl-trab-1" x="388" y="190" width="0" height="10" rx="3" fill="var(--terracota)"/><rect id="dl-trab-2" x="388" y="214" width="0" height="10" rx="3" fill="var(--terracota)"/><rect id="dl-trab-3" x="388" y="238" width="0" height="10" rx="3" fill="var(--terracota)"/><rect id="dl-trab-4" x="388" y="262" width="0" height="10" rx="3" fill="var(--terracota)"/><rect id="dl-trab-5" x="388" y="286" width="0" height="10" rx="3" fill="var(--terracota)"/><rect id="dl-trab-6" x="388" y="310" width="0" height="10" rx="3" fill="var(--terracota)"/><rect id="dl-trab-7" x="388" y="334" width="0" height="10" rx="3" fill="var(--terracota)"/><rect id="dl-res-sub" x="388" y="358" width="0" height="10" rx="3" fill="var(--azul)"/></g><path d="M352 220 L364 220 L364 147 L373 147" stroke="var(--gris)" stroke-width="2.5" fill="none" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#pta-gris)" id="dl-ida"/><path d="M376 363 L196 363 L196 243 L187 243" stroke="var(--gris)" stroke-width="2.5" fill="none" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#pta-gris)" id="dl-vuelta"/><circle cx="352" cy="220" r="4.5" fill="var(--gris)" stroke="var(--fondo)" stroke-width="1.25"/><circle cx="376" cy="363" r="4.5" fill="var(--gris)" stroke="var(--fondo)" stroke-width="1.25"/><rect id="dl-sobre-ida" x="-9" y="-6" width="18" height="12" rx="3" fill="var(--azul)" stroke="var(--fondo)" stroke-width="1.25" opacity="0"/><rect id="dl-sobre-vuelta" x="-9" y="-6" width="18" height="12" rx="3" fill="var(--azul)" stroke="var(--fondo)" stroke-width="1.25" opacity="0"/><g class="etiqueta" data-punto="44 92"><path d="M44 92 L44 40" stroke="var(--tinta)" stroke-width="1" fill="none" opacity=".7"/><circle cx="44" cy="92" r="3" fill="var(--tinta)"/><text x="50" y="44.5" font-size="13.5" font-weight="600" fill="var(--tinta)">Tu conversación</text><text x="50" y="61.5" font-size="12" fill="var(--tinta)" opacity=".75">pedido y resultado</text></g><g class="etiqueta" data-punto="222 106"><path d="M222 106 L222 40" stroke="var(--tinta)" stroke-width="1" fill="none" opacity=".7"/><circle cx="222" cy="106" r="3" fill="var(--tinta)"/><text x="228" y="44.5" font-size="13.5" font-weight="600" fill="var(--tinta)">descriptions</text><text x="228" y="61.5" font-size="12" fill="var(--tinta)" opacity=".75">con ellas elige Claude</text></g><g class="etiqueta" data-punto="392 92"><path d="M392 92 L392 40" stroke="var(--acento)" stroke-width="1" fill="none" opacity=".7"/><circle cx="392" cy="92" r="3" fill="var(--acento)"/><text x="398" y="44.5" font-size="13.5" font-weight="600" fill="var(--acento)">Su propia ventana</text><text x="398" y="61.5" font-size="12" fill="var(--tinta)" opacity=".75">lee y trabaja aparte</text></g></svg>
+      <ul class="leyenda">
+        <li style="--c: var(--gris)">lo que ya platicaron</li>
+        <li style="--c: var(--tinta)">tu pedido</li>
+        <li style="--c: var(--azul)">delegación + resultado</li>
+        <li style="--c: var(--terracota)">archivos leídos</li>
+      </ul>
+      <p class="anima-fase"><b id="dl-fase-et">01 · Pides algo</b><span id="dl-fase-tx"></span></p>
+    </div>
+
     <h3>Cuatro formas de pedirlo<a class="cita" href="https://code.claude.com/docs/en/sub-agents">[1]</a></h3>
     <ul class="formas">
       <li><strong>Automática.</strong> Claude ve que la tarea coincide con una <code>description</code>. Frases como "use proactively" en la description lo animan a delegar solo.</li>
@@ -642,16 +595,7 @@ section[data-tono="oscuro"] .nota { color: var(--gris); }
     <div class="mosaico">
       <article class="pieza grande">
         <h3>Explore</h3>
-        <svg viewBox="0 0 240 150" role="img" aria-labelledby="t-explore">
-          <title id="t-explore">Una lupa sobre varias hojas de código; un candado indica que solo lee.</title>
-          <rect x="10" y="20" width="70" height="90" rx="6" fill="none" stroke="#FAF9F5" stroke-width="2"/>
-          <rect x="40" y="35" width="70" height="90" rx="6" fill="#141413" stroke="#FAF9F5" stroke-width="2"/>
-          <path d="M52 55 H96 M52 70 H86 M52 85 H98 M52 100 H80" stroke="#B0AEA5" stroke-width="3"/>
-          <circle cx="150" cy="72" r="30" fill="none" stroke="#D97757" stroke-width="5"/>
-          <path d="M172 94 L200 122" stroke="#D97757" stroke-width="7" stroke-linecap="round"/>
-          <rect x="200" y="22" width="28" height="22" rx="4" fill="#D97757"/>
-          <path d="M206 22 V15 a8 8 0 0 1 16 0 V22" fill="none" stroke="#D97757" stroke-width="3"/>
-        </svg>
+        <svg viewBox="0 0 240 150" role="img" aria-labelledby="t-explore"><title id="t-explore">Explore: una lupa lee varias hojas de código. Sus herramientas: Read, Grep y Glob, permitidas; Write y Edit, tachadas: es de solo lectura.</title><path d="M20 0V150M40 0V150M60 0V150M80 0V150M100 0V150M120 0V150M140 0V150M160 0V150M180 0V150M200 0V150M220 0V150M0 20H240M0 40H240M0 60H240M0 80H240M0 100H240M0 120H240M0 140H240" stroke="rgba(250,249,245,.07)" stroke-width="1" fill="none"/><rect x="14" y="22" width="62" height="80" rx="6" fill="#141413" stroke="#B0AEA5" stroke-width="1.25" stroke-linejoin="round"/><rect x="24" y="34" width="62" height="80" rx="6" fill="#141413" stroke="#B0AEA5" stroke-width="1.25" stroke-linejoin="round"/><rect x="34" y="46" width="62" height="80" rx="6" fill="#141413" stroke="#FAF9F5" stroke-width="1.25" stroke-linejoin="round"/><rect x="42" y="58" width="40" height="6" rx="3" fill="#5E5D59"/><rect x="42" y="70" width="30" height="6" rx="3" fill="#5E5D59"/><rect x="42" y="82" width="44" height="6" rx="3" fill="#5E5D59"/><rect x="42" y="94" width="24" height="6" rx="3" fill="#5E5D59"/><rect x="42" y="106" width="36" height="6" rx="3" fill="#5E5D59"/><circle cx="84" cy="82" r="21" fill="rgba(217,119,87,.16)" stroke="var(--terracota)" stroke-width="2.5"/><line x1="98.8" y1="96.8" x2="118.8" y2="116.8" stroke="var(--terracota)" stroke-width="7" stroke-linecap="round"/><rect x="140" y="14" width="86" height="19" rx="5" fill="rgba(250,249,245,.08)" stroke="#FAF9F5" stroke-width="1.25" stroke-linejoin="round"/><text x="150" y="27.5" font-size="11" fill="#FAF9F5" font-family="var(--f-codigo)">Read</text><path d="M206 23.5 L211 28 L218 19" stroke="var(--terracota)" stroke-width="1.25" fill="none" stroke-linejoin="round" stroke-linecap="round"/><rect x="140" y="39" width="86" height="19" rx="5" fill="rgba(250,249,245,.08)" stroke="#FAF9F5" stroke-width="1.25" stroke-linejoin="round"/><text x="150" y="52.5" font-size="11" fill="#FAF9F5" font-family="var(--f-codigo)">Grep</text><path d="M206 48.5 L211 53 L218 44" stroke="var(--terracota)" stroke-width="1.25" fill="none" stroke-linejoin="round" stroke-linecap="round"/><rect x="140" y="64" width="86" height="19" rx="5" fill="rgba(250,249,245,.08)" stroke="#FAF9F5" stroke-width="1.25" stroke-linejoin="round"/><text x="150" y="77.5" font-size="11" fill="#FAF9F5" font-family="var(--f-codigo)">Glob</text><path d="M206 73.5 L211 78 L218 69" stroke="var(--terracota)" stroke-width="1.25" fill="none" stroke-linejoin="round" stroke-linecap="round"/><rect x="140" y="89" width="86" height="19" rx="5" fill="none" stroke="#5E5D59" stroke-width="1.25" stroke-linejoin="round" stroke-dasharray="3 3"/><text x="150" y="102.5" font-size="11" fill="#B0AEA5" font-family="var(--f-codigo)">Write</text><line x1="147" y1="98.5" x2="186" y2="98.5" stroke="#B0AEA5" stroke-width="1.25"/><path d="M208 94L217 103M217 94L208 103" stroke="#B0AEA5" stroke-width="1.25" stroke-linecap="round"/><rect x="140" y="114" width="86" height="19" rx="5" fill="none" stroke="#5E5D59" stroke-width="1.25" stroke-linejoin="round" stroke-dasharray="3 3"/><text x="150" y="127.5" font-size="11" fill="#B0AEA5" font-family="var(--f-codigo)">Edit</text><line x1="147" y1="123.5" x2="179.4" y2="123.5" stroke="#B0AEA5" stroke-width="1.25"/><path d="M208 119L217 128M217 119L208 128" stroke="#B0AEA5" stroke-width="1.25" stroke-linecap="round"/><line x1="134" y1="86" x2="232" y2="86" stroke="#5E5D59" stroke-width="1"/></svg>
         <p>Busca archivos y código rápido. Es de <strong>solo lectura</strong>: tiene denegadas Write y Edit.<a class="cita" href="https://code.claude.com/docs/en/sub-agents">[1]</a></p>
         <p>Claude le indica qué tan a fondo buscar: <code>quick</code>, <code>medium</code> o <code>very thorough</code>.<a class="cita" href="https://code.claude.com/docs/en/sub-agents">[1]</a> Arranca sin tus CLAUDE.md ni el estado de git.<a class="cita" href="https://code.claude.com/docs/en/sub-agents">[1]</a></p>
       </article>
@@ -678,19 +622,7 @@ section[data-tono="oscuro"] .nota { color: var(--gris); }
     <div class="dividido">
       <div>
         <h3>Dónde vive el archivo</h3>
-        <svg class="arbol" viewBox="0 0 300 170" role="img" aria-labelledby="t-arbol">
-          <title id="t-arbol">Árbol de carpetas: en el proyecto, .claude/agents/revisor.md; en tu carpeta personal, ~/.claude/agents/.</title>
-          <text x="10" y="24" font-size="15" font-family="var(--f-codigo)" fill="var(--tinta)">mi-proyecto/</text>
-          <path d="M22 32 V100 M22 56 H40 M22 100 H40" stroke="var(--gris)" stroke-width="2" fill="none"/>
-          <text x="46" y="61" font-size="15" font-family="var(--f-codigo)" fill="var(--tinta)">.claude/agents/</text>
-          <rect x="44" y="84" width="140" height="28" rx="6" fill="var(--terracota)"/>
-          <text x="54" y="104" font-size="15" font-family="var(--f-codigo)" fill="var(--tinta)">revisor.md</text>
-          <path d="M190 98 H212" stroke="var(--terracota)" stroke-width="2.5"/>
-          <text x="218" y="103" font-size="13" font-family="var(--f-cuerpo)" fill="var(--tinta-suave)">este proyecto</text>
-          <text x="10" y="148" font-size="15" font-family="var(--f-codigo)" fill="var(--tinta)">~/.claude/agents/</text>
-          <text x="218" y="148" font-size="13" font-family="var(--f-cuerpo)" fill="var(--tinta-suave)">todos tus</text>
-          <text x="218" y="164" font-size="13" font-family="var(--f-cuerpo)" fill="var(--tinta-suave)">proyectos</text>
-        </svg>
+        <svg class="arbol" viewBox="0 0 300 176" role="img" aria-labelledby="t-arbol"><title id="t-arbol">Árbol de carpetas: en el proyecto (P), mi-proyecto/.claude/agents/revisor.md; en tu carpeta personal (U), ~/.claude/agents/, para todos tus proyectos.</title><path d="M21 35 L21 62 L33 62" stroke="var(--gris)" stroke-width="1.25" fill="none" stroke-linejoin="round" stroke-linecap="round"/><path d="M45 71 L45 98 L57 98" stroke="var(--gris)" stroke-width="1.25" fill="none" stroke-linejoin="round" stroke-linecap="round"/><path d="M12 19Q12 17 14 17H18L20 19.5H28Q30 19.5 30 21.5V29Q30 31 28 31H14Q12 31 12 29Z" fill="var(--superficie)" stroke="var(--tinta)" stroke-width="1.25" stroke-linejoin="round"/><text x="36" y="30" font-size="13" fill="var(--tinta)" font-family="var(--f-codigo)">mi-proyecto/</text><path d="M36 55Q36 53 38 53H42L44 55.5H52Q54 55.5 54 57.5V65Q54 67 52 67H38Q36 67 36 65Z" fill="var(--superficie)" stroke="var(--tinta)" stroke-width="1.25" stroke-linejoin="round"/><text x="60" y="66" font-size="13" fill="var(--tinta)" font-family="var(--f-codigo)">.claude/agents/</text><rect x="54" y="85" width="150" height="26" rx="6" fill="color-mix(in srgb, var(--terracota) 18%, var(--fondo))" stroke="var(--terracota)" stroke-width="1.25" stroke-linejoin="round"/><path d="M60 90H69L73 94V106H60Z M69 90V94H73" fill="var(--fondo)" stroke="var(--acento)" stroke-width="1.25" stroke-linejoin="round"/><text x="82" y="102.5" font-size="13" fill="var(--tinta)" font-family="var(--f-codigo)">revisor.md</text><line x1="0" y1="124" x2="300" y2="124" stroke="var(--borde)" stroke-width="1"/><path d="M12 143Q12 141 14 141H18L20 143.5H28Q30 143.5 30 145.5V153Q30 155 28 155H14Q12 155 12 153Z" fill="var(--superficie)" stroke="var(--tinta)" stroke-width="1.25" stroke-linejoin="round"/><text x="36" y="154" font-size="13" fill="var(--tinta)" font-family="var(--f-codigo)">~/.claude/agents/</text><circle cx="193" cy="62" r="10" fill="var(--acento)"/><text x="193" y="66.5" font-size="13" font-weight="600" fill="var(--fondo)" text-anchor="middle" font-family="var(--f-codigo)">P</text><circle cx="193" cy="150" r="10" fill="var(--acento)"/><text x="193" y="154.5" font-size="13" font-weight="600" fill="var(--fondo)" text-anchor="middle" font-family="var(--f-codigo)">U</text><text x="209" y="66" font-size="12" fill="var(--tinta-suave)">este proyecto</text><text x="209" y="146" font-size="12" fill="var(--tinta-suave)">todos tus</text><text x="209" y="161" font-size="12" fill="var(--tinta-suave)">proyectos</text></svg>
         <ul class="ubicaciones">
           <li><b>P</b><span><code>.claude/agents/</code>: solo este proyecto. Súbelo al control de versiones para que tu equipo lo use.<a class="cita" href="https://code.claude.com/docs/en/sub-agents">[1]</a></span></li>
           <li><b>U</b><span><code>~/.claude/agents/</code>: todos tus proyectos.<a class="cita" href="https://code.claude.com/docs/en/sub-agents">[1]</a></span></li>
@@ -862,13 +794,7 @@ Eres un revisor de código. Corre git diff…</span></button>
     <p class="idea">Delega lo ruidoso y autocontenido; quédate con lo que necesita ida y vuelta.</p>
     <div class="versus">
       <div>
-        <svg viewBox="0 0 240 110" role="img" aria-labelledby="t-sub">
-          <title id="t-sub">Una rama sale de la línea principal, trabaja aparte y vuelve con un punto.</title>
-          <path d="M10 90 H230" stroke="var(--tinta)" stroke-width="3"/>
-          <path d="M40 90 C40 30 70 20 100 20 H140 C170 20 190 40 190 90" stroke="var(--terracota)" stroke-width="3" fill="none"/>
-          <path d="M100 34 H140 M104 46 H136 M100 58 H140" stroke="var(--gris)" stroke-width="3"/>
-          <circle cx="190" cy="90" r="8" fill="var(--terracota)"/>
-        </svg>
+        <svg viewBox="0 0 240 116" role="img" aria-labelledby="t-sub"><title id="t-sub">Desde tu conversación, una rama azul lleva la tarea a un subagente, que trabaja aparte con mucha salida; a tu conversación vuelve un solo punto: el resultado.</title><path d="M20 0V116M40 0V116M60 0V116M80 0V116M100 0V116M120 0V116M140 0V116M160 0V116M180 0V116M200 0V116M220 0V116M0 20H240M0 40H240M0 60H240M0 80H240M0 100H240" stroke="rgba(20,20,19,.055)" stroke-width="1" fill="none"/><path d="M12 94 L228 94" stroke="var(--tinta)" stroke-width="2.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/><rect x="62" y="12" width="112" height="54" rx="8" fill="color-mix(in srgb, var(--terracota) 9%, var(--fondo))" stroke="var(--terracota)" stroke-width="2.5" stroke-linejoin="round"/><rect x="74" y="21" width="70" height="6" rx="3" fill="var(--terracota)"/><rect x="74" y="31" width="88" height="6" rx="3" fill="var(--terracota)"/><rect x="74" y="41" width="56" height="6" rx="3" fill="var(--terracota)"/><rect x="74" y="51" width="80" height="6" rx="3" fill="var(--terracota)"/><path d="M36 94 L36 39 L59 39" stroke="var(--azul)" stroke-width="2.5" fill="none" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#pta-azul)"/><path d="M174 39 L196 39 L196 86" stroke="var(--azul)" stroke-width="2.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/><circle cx="36" cy="94" r="4.5" fill="var(--azul)" stroke="var(--fondo)" stroke-width="1.25"/><circle cx="196" cy="94" r="6.5" fill="var(--azul)" stroke="var(--fondo)" stroke-width="1.25"/></svg>
         <h3>Subagente</h3>
         <ul>
           <li>La tarea produce mucha salida que no necesitas en tu contexto.<a class="cita" href="https://code.claude.com/docs/en/sub-agents">[1]</a></li>
@@ -879,13 +805,7 @@ Eres un revisor de código. Corre git diff…</span></button>
       </div>
       <div class="divisor" aria-hidden="true"></div>
       <div>
-        <svg viewBox="0 0 240 110" role="img" aria-labelledby="t-pri">
-          <title id="t-pri">Dos líneas, tú y Claude, con mensajes que van y vuelven en zigzag.</title>
-          <path d="M10 20 H230 M10 90 H230" stroke="var(--tinta)" stroke-width="3"/>
-          <path d="M30 20 L60 90 L90 20 L120 90 L150 20 L180 90 L210 20" stroke="var(--azul)" stroke-width="3" fill="none"/>
-          <text x="10" y="12" font-size="15" fill="var(--tinta-suave)" font-family="var(--f-codigo)">tú</text>
-          <text x="10" y="108" font-size="15" fill="var(--tinta-suave)" font-family="var(--f-codigo)">Claude</text>
-        </svg>
+        <svg viewBox="0 0 240 116" role="img" aria-labelledby="t-pri"><title id="t-pri">Dos carriles, tú y Claude, con mensajes que van y vuelven uno tras otro: ida y vuelta constante.</title><path d="M20 0V116M40 0V116M60 0V116M80 0V116M100 0V116M120 0V116M140 0V116M160 0V116M180 0V116M200 0V116M220 0V116M0 20H240M0 40H240M0 60H240M0 80H240M0 100H240" stroke="rgba(20,20,19,.055)" stroke-width="1" fill="none"/><path d="M60 26 L228 26" stroke="var(--tinta)" stroke-width="2.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/><path d="M60 94 L228 94" stroke="var(--tinta)" stroke-width="2.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/><text x="50" y="30" font-size="11" fill="var(--tinta-suave)" text-anchor="end" font-family="var(--f-codigo)">tú</text><text x="50" y="98" font-size="11" fill="var(--tinta-suave)" text-anchor="end" font-family="var(--f-codigo)">Claude</text><line x1="74" y1="26" x2="92" y2="87" stroke="var(--tinta-suave)" stroke-width="1.25" marker-end="url(#pta-neutro)"/><circle cx="74" cy="26" r="3.5" fill="var(--tinta)"/><line x1="100" y1="94" x2="118" y2="33" stroke="var(--tinta-suave)" stroke-width="1.25" marker-end="url(#pta-neutro)"/><circle cx="100" cy="94" r="3.5" fill="var(--tinta)"/><line x1="126" y1="26" x2="144" y2="87" stroke="var(--tinta-suave)" stroke-width="1.25" marker-end="url(#pta-neutro)"/><circle cx="126" cy="26" r="3.5" fill="var(--tinta)"/><line x1="152" y1="94" x2="170" y2="33" stroke="var(--tinta-suave)" stroke-width="1.25" marker-end="url(#pta-neutro)"/><circle cx="152" cy="94" r="3.5" fill="var(--tinta)"/><line x1="178" y1="26" x2="196" y2="87" stroke="var(--tinta-suave)" stroke-width="1.25" marker-end="url(#pta-neutro)"/><circle cx="178" cy="26" r="3.5" fill="var(--tinta)"/><line x1="204" y1="94" x2="222" y2="33" stroke="var(--tinta-suave)" stroke-width="1.25" marker-end="url(#pta-neutro)"/><circle cx="204" cy="94" r="3.5" fill="var(--tinta)"/></svg>
         <h3>Conversación principal</h3>
         <ul>
           <li>La tarea pide ida y vuelta frecuente o ir afinando.<a class="cita" href="https://code.claude.com/docs/en/sub-agents">[1]</a></li>
@@ -1461,6 +1381,81 @@ Eres un revisor de código. Corre git diff…</span></button>
   });
   contar();
 })();
+// ---- Ilustración animada: una delegación, tramo por tramo ----
+// Todo sale de la fase (0 a 1). Cada tramo de la secuencia 01–05 ocupa un intervalo; los mensajes
+// viajan sobre las mismas rutas que dibuja el SVG y cada barra aparece justo cuando entra a su ventana.
+(() => {
+  const caja = document.getElementById('anima-delegar'); if (!caja || !window.forja) return;
+  const $ = id => caja.querySelector('#' + id);
+  const IDA = [[352, 220.0], [364, 220.0], [364, 147], [373, 147]], VUELTA = [[376, 363], [196, 363], [196, 243], [187, 243]];          // mismas coordenadas que el dibujo
+  const TRAB = [112, 84, 128, 98, 120, 70, 108, 92], PED = [172, 88], RES = 118, TAREA = 112, RES_SUB = 96;
+  const T = { pide: [0, .1], elige: [.1, .3], delega: [.3, .44], trabaja: [.46, .74], resul: [.74, .78], regresa: [.78, .88], llega: [.87, .91] };
+  const k = ([a, b], f) => Math.max(0, Math.min(1, (f - a) / (b - a)));
+  const suave = t => t * t * (3 - 2 * t);
+  const largo = r => r.slice(1).reduce((s, p, i) => s + Math.hypot(p[0] - r[i][0], p[1] - r[i][1]), 0);
+  const sobre = (r, t) => {                                  // punto a la fracción t del recorrido
+    let d = t * largo(r);
+    for (let i = 1; i < r.length; i++) {
+      const s = Math.hypot(r[i][0] - r[i - 1][0], r[i][1] - r[i - 1][1]);
+      if (d <= s) return [r[i - 1][0] + (r[i][0] - r[i - 1][0]) * d / s, r[i - 1][1] + (r[i][1] - r[i - 1][1]) * d / s];
+      d -= s;
+    }
+    return r[r.length - 1];
+  };
+  const mover = (el, r, t, ver) => {
+    const [x, y] = sobre(r, suave(t));
+    el.setAttribute('transform', `translate(${x.toFixed(1)} ${y.toFixed(1)})`);
+    el.setAttribute('opacity', ver ? 1 : 0);
+  };
+  const ruta = (el, activa) => {
+    el.classList.toggle('flujo', activa);
+    el.setAttribute('stroke', activa ? 'var(--azul)' : 'var(--gris)');
+    el.setAttribute('marker-end', activa ? 'url(#pta-azul)' : 'url(#pta-gris)');
+  };
+  const FASES = [
+    ['01 · Pides algo', 'Escribes tu tarea en la conversación principal, como cualquier mensaje.'],
+    ['02 · Claude elige', 'Claude compara tu tarea con la description de cada subagente. Es una búsqueda en el código: le toca a Explore.'],
+    ['03 · Delega', 'Claude escribe un mensaje que resume la tarea. Es lo único de tu conversación que llega al subagente.'],
+    ['04 · Trabaja aparte', 'Explore lee archivos y busca en su propia ventana. Todo eso se queda ahí: tu ventana no cambia.'],
+    ['05 · Regresa', 'Su resultado vuelve a tu conversación. La salida larga se queda en la ventana del subagente.'],
+  ];
+  forja.animar(caja, f => {
+    // 01: tu pedido entra a tu ventana (alineado a la derecha, como tus otros mensajes)
+    const wp = PED[1] * suave(k(T.pide, f));
+    $('dl-pedido').setAttribute('width', wp.toFixed(1));
+    $('dl-pedido').setAttribute('x', (PED[0] - wp).toFixed(1));
+    // 02: Claude recorre las descriptions de arriba abajo y se queda con la que coincide
+    const ke = k(T.elige, f), mira = f >= T.elige[0] && ke < 1 ? Math.min(2, Math.floor(ke * 3)) : -1;
+    const elegido = ke >= 1;
+    for (let i = 0; i < 3; i++) {
+      const r = $('dl-chip-' + i).querySelector('rect');
+      const on = i === mira || (elegido && i === 2);
+      r.setAttribute('stroke', on ? 'var(--tinta)' : 'var(--gris)');
+      r.setAttribute('stroke-width', on ? 2.5 : 1.25);
+      r.setAttribute('fill', elegido && i === 2 ? 'color-mix(in srgb, var(--tinta) 8%, var(--fondo))' : 'var(--fondo)');
+    }
+    $('dl-enlace').setAttribute('opacity', elegido ? 1 : 0);   // tu pedido queda unido a la description elegida
+    // 03: el mensaje de delegación viaja a la ventana del subagente, que arranca con eso
+    const kd = k(T.delega, f), viajando = f >= T.delega[0] && kd < 1;
+    ruta($('dl-ida'), viajando);
+    mover($('dl-sobre-ida'), IDA, kd, viajando);
+    $('dl-tarea').setAttribute('width', f >= T.delega[1] ? TAREA : 0);
+    $('dl-sub').setAttribute('opacity', f < T.delega[1] ? .4 : f < T.llega[1] ? 1 : .55);
+    // 04: lee archivos; cada barra entra a SU ventana, una tras otra
+    const kt = k(T.trabaja, f) * TRAB.length;
+    TRAB.forEach((w, i) => $('dl-trab-' + i).setAttribute('width', (w * Math.max(0, Math.min(1, kt - i))).toFixed(1)));
+    $('dl-res-sub').setAttribute('width', (RES_SUB * suave(k(T.resul, f))).toFixed(1));
+    // 05: solo el resultado cruza de vuelta y entra a tu ventana
+    const kr = k(T.regresa, f), vuelve = f >= T.regresa[0] && kr < 1;
+    ruta($('dl-vuelta'), vuelve);
+    mover($('dl-sobre-vuelta'), VUELTA, kr, vuelve);
+    $('dl-res').setAttribute('width', (RES * suave(k(T.llega, f))).toFixed(1));
+    const n = f < T.elige[0] ? 0 : f < T.delega[0] ? 1 : f < T.delega[1] ? 2 : f < T.regresa[0] ? 3 : 4;
+    $('dl-fase-et').textContent = FASES[n][0];
+    $('dl-fase-tx').textContent = FASES[n][1];
+  }, { periodo: 12, pasos: 12 });
+})();
+
 </script>
 </body>
 </html>
