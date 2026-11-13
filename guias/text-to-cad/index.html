@@ -938,7 +938,7 @@ section[data-tono="oscuro"] [data-prediccion] { background: rgba(15, 62, 94, .6)
     let t0 = null;
     const paso = ts => {
       t0 ??= ts;
-      const t = Math.min(1, (ts - t0) / ms), k = suave(t);
+      const t = Math.max(0, Math.min(1, (ts - t0) / ms)), k = suave(t);
       aplicar(Object.fromEntries(Object.keys(hasta).map(c => [c, desde[c] + (hasta[c] - desde[c]) * k])));
       if (t < 1) enCurso.set(el, requestAnimationFrame(paso)); else enCurso.delete(el);
     };
@@ -957,11 +957,12 @@ section[data-tono="oscuro"] [data-prediccion] { background: rgba(15, 62, 94, .6)
   }
   function contar(el, valor, { decimales = 0, sufijo = '', prefijo = '', ms = 450, miles = true } = {}) {
     if (!el) return;
-    const previo = parseFloat(el.dataset.valor ?? valor);
+    // Parte de lo que se ve ahora (aunque otra cuenta vaya a medias). La primera vez no anima.
+    const previo = el.__mostrado ?? parseFloat(el.dataset.valor ?? valor);
     el.dataset.valor = valor;
     const fmt = n => prefijo + (miles ? n.toLocaleString('en-US', { minimumFractionDigits: decimales, maximumFractionDigits: decimales })
       : n.toFixed(decimales)) + sufijo;
-    interpolar(el, { n: previo }, { n: valor }, ms, v => { el.textContent = fmt(v.n); });
+    interpolar(el, { n: previo }, { n: valor }, ms, v => { el.__mostrado = v.n; el.textContent = fmt(v.n); });
   }
 
   // Ayudas de dibujo calculado: úsalas en lugar de poner coordenadas a ojo.
