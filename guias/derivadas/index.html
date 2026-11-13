@@ -566,7 +566,7 @@ section > .anima-caja { max-width: 46rem; margin-left: max(0px, calc((100% - var
       </ul>
     </div>
     <div class="anima-caja" data-anima id="anima-secante">
-<svg id="an-svg" viewBox="0 0 480 400" role="img" aria-labelledby="t-anima">
+<svg id="an-svg" data-tras-prediccion="pred-limite" viewBox="0 0 480 400" role="img" aria-labelledby="t-anima">
 <title id="t-anima">Animación: sobre la parábola y = x al cuadrado, P queda fijo en x = 1.5 y Q se acerca a P. La secante PQ gira hasta confundirse con la tangente en P, y su pendiente, 3 + h, baja hasta 3.</title>
 <defs><clipPath id="cl-an"><rect x="56" y="20" width="406" height="242"/></clipPath><marker id="pta-an" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1 L8 5 L1 9 Z" style="fill:var(--tinta-suave)"/></marker></defs>
 <path d="M56 20V262M101.1 20V262M146.2 20V262M191.3 20V262M236.4 20V262M281.6 20V262M326.7 20V262M371.8 20V262M416.9 20V262M462 20V262M56 262H462M56 240H462M56 218H462M56 196H462M56 174H462M56 152H462M56 130H462M56 108H462M56 86H462M56 64H462M56 42H462M56 20H462" stroke="var(--rejilla)" stroke-width="1" fill="none"/>
@@ -599,10 +599,10 @@ section > .anima-caja { max-width: 46rem; margin-left: max(0px, calc((100% - var
 <circle id="an-gm" cy="360" r="6" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="2.5"/>
 <text id="an-gv" y="342" font-size="16" fill="var(--tinta)" text-anchor="middle" style="font-family:var(--f-codigo);font-weight:400"></text>
 </svg>
-      <p class="anima-fase"><b id="an-fase-et">Dos puntos</b><span id="an-fase-tx"></span></p>
+      <p class="anima-fase" data-tras-prediccion="pred-limite"><b id="an-fase-et">Dos puntos</b><span id="an-fase-tx"></span></p>
     </div>
 
-    <p>Ese número al que se acercan las pendientes de las secantes es la pendiente de la tangente. Tiene nombre propio: <strong>la derivada de f en a</strong>, que se escribe <span class="f"><i>f</i> ′(<i>a</i>)</span><a class="cita" href="https://openstax.org/books/c%C3%A1lculo-volumen-1/pages/3-1-definir-la-derivada">[1]</a>. El libro de OpenStax hace la misma estimación con una tabla de valores para <span class="f"><i>x</i><sup>2</sup></span> en 3 y obtiene <span class="f"><i>f</i> ′(3) = 6</span><a class="cita" href="https://openstax.org/books/c%C3%A1lculo-volumen-1/pages/3-1-definir-la-derivada">[1]</a>. Compruébalo arriba: es 2 por 3.</p>
+    <p data-tras-prediccion="pred-limite">Ese número al que se acercan las pendientes de las secantes es la pendiente de la tangente. Tiene nombre propio: <strong>la derivada de f en a</strong>, que se escribe <span class="f"><i>f</i> ′(<i>a</i>)</span><a class="cita" href="https://openstax.org/books/c%C3%A1lculo-volumen-1/pages/3-1-definir-la-derivada">[1]</a>. El libro de OpenStax hace la misma estimación con una tabla de valores para <span class="f"><i>x</i><sup>2</sup></span> en 3 y obtiene <span class="f"><i>f</i> ′(3) = 6</span><a class="cita" href="https://openstax.org/books/c%C3%A1lculo-volumen-1/pages/3-1-definir-la-derivada">[1]</a>. Compruébalo arriba: es 2 por 3.</p>
   </section>
 
   <!-- ===================== 04 ANATOMÍA (DIAGRAMA) ===================== -->
@@ -894,7 +894,7 @@ section > .anima-caja { max-width: 46rem; margin-left: max(0px, calc((100% - var
   <section id="valor-pendiente" data-layout="comparacion" data-minutos="4">
     <p class="kicker">07 · La confusión más común</p>
     <h2>Altura contra inclinación</h2>
-    <p class="idea"><span class="f"><i>f</i>(<i>a</i>)</span> es una altura; <span class="f"><i>f</i> ′(<i>a</i>)</span> es una inclinación. Son números distintos.</p>
+    <p class="idea"><span class="f"><i>f</i>(<i>a</i>)</span> y <span class="f"><i>f</i> ′(<i>a</i>)</span> se escriben casi igual. ¿Miden lo mismo?</p>
     <div data-interaccion="simulador" id="sim-vp">
       <div data-prediccion id="pred-minimo" data-correcta="b"
            data-explicacion="En el fondo del valle la tangente es horizontal, y una recta horizontal tiene pendiente 0. Que f(1) valga −1 no importa: la derivada mide inclinación, no altura.">
@@ -931,7 +931,7 @@ section > .anima-caja { max-width: 46rem; margin-left: max(0px, calc((100% - var
 <circle id="vp-pt" r="6" fill="var(--acento)" stroke="var(--fondo)" stroke-width="2.5"/>
 </svg>
         </div>
-        <div>
+        <div data-tras-prediccion="pred-minimo">
           <h3>f ′(x) = 2x − 2</h3>
           <p class="sub">La pendiente de f en cada x</p>
           <svg id="vp-d" viewBox="0 0 360 270" role="img" aria-labelledby="t-vpd">
@@ -959,7 +959,8 @@ section > .anima-caja { max-width: 46rem; margin-left: max(0px, calc((100% - var
         <li data-reto="reto-dos">Encuentra el x donde la pendiente vale 2: la tangente sube 2 por cada 1 que avanza.</li>
       </ul>
     </div>
-    <ul class="signos">
+    <p data-tras-prediccion="pred-minimo"><span class="f"><i>f</i>(<i>a</i>)</span> es una altura; <span class="f"><i>f</i> ′(<i>a</i>)</span> es una inclinación. Son números distintos.</p>
+    <ul class="signos" data-tras-prediccion="pred-minimo">
       <li><b>f′ &gt; 0</b>donde f sube</li>
       <li><b>f′ &lt; 0</b>donde f baja</li>
       <li><b>f′ = 0</b>donde la tangente es horizontal<a class="cita" href="https://openstax.org/books/calculus-volume-1/pages/3-2-the-derivative-as-a-function">[2]</a></li>
