@@ -60,6 +60,7 @@ Cuando alguien adivina antes de ver la respuesta (aunque se equivoque) y recibe 
 - el mismo ejemplo que se pregunta, ya anotado más arriba en la sección (el borrador literario con sus etiquetas «tono subjetivo», «intención estética»);
 - etiquetas de un diagrama que repiten las palabras de la opción correcta («el repositorio» en la caja `.git`);
 - un reto o un pie de figura que descarta las opciones incorrectas.
+- **otra sección o un reto**: un dato dicho antes que descarta opciones, o un reto que describe la respuesta. Lee los retos y las secciones anteriores con la pregunta en mente.
 - **la opción correcta destaca**: es la más larga, la más técnica o la única con matices. Iguala el largo y el detalle de las opciones.
 
 Cómo corregirlas, en este orden:

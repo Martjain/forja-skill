@@ -52,7 +52,7 @@ python3 ${CLAUDE_SKILL_DIR}/scripts/fuentes.py css --titulos <id> --cuerpo <id> 
 
 **4. Investigar.** Solo fuentes oficiales (documentación oficial, estándares, sitios .gov/.edu, papers). Anota la URL de cada dato clave. Si un dato no lo encontraste en una fuente oficial, márcalo en la guía con `<span class="sin-fuente">…</span>`. **Nunca lo presentes como verificado.**
 
-**5. Plan de secciones.** Antes de escribir HTML, muéstrale al usuario una tabla corta con 5 a 9 secciones. Para cada una: concepto, layout del catálogo, interacción (con su predicción y sus retos, si los tiene), ilustración SVG y minutos. Layouts e interacciones: [diseno.md](reference/diseno.md) sección 4 e [interacciones.md](reference/interacciones.md).
+**5. Plan de secciones.** Antes de escribir HTML, muéstrale al usuario una tabla corta con 5 a 9 secciones de contenido (sin contar la portada, el repaso ni las fuentes). Para cada una: concepto, layout del catálogo, interacción (con su predicción y sus retos, si los tiene), ilustración SVG y minutos. Layouts e interacciones: [diseno.md](reference/diseno.md) sección 4 e [interacciones.md](reference/interacciones.md).
 
 **6. Construir.** Parte de [esqueleto.html](assets/esqueleto.html). Copia **sin cambios** los bloques "NÚCLEO FORJA" (progreso, mapa, predicciones, retos, guardado) y pega el CSS de las fuentes. Reglas:
 - **Predecir antes de ver:** al menos 2 interacciones empiezan con `data-prediccion`. **Solo el resultado** lleva `data-tras-prediccion="<id>"`; los controles y el diagrama quedan visibles.

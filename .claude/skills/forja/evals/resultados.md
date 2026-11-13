@@ -291,3 +291,28 @@ Lo pidió el usuario. Un agente por guía, en paralelo, editando la guía origin
   - **merge-rebase pred-ff:** caso límite; el término «Fast-forward» de la columna es el tema que se enseña.
   - **ensayo pred-tipo:** el borrador se parece al ejemplo literario anotado. Es práctica guiada (ejemplo resuelto → aplicar), así que se deja como pista.
 - **Aprendizaje:** las pistas (descartar opciones razonando con lo visible) son deseables. La revisión ciega con un agente que no conoce las respuestas encuentra lo que el autor no ve.
+
+## Modo paper: primera guía (Beyond Accuracy, arXiv:2602.09805v2)
+
+- **Paper:** Kaiser, Frigessi, Ramezani-Kebrya y Ricaud (Integreat, UiT y UiO), v2 del 18 de mayo de 2026, licencia CC BY 4.0. Propone una descomposición de la eficiencia en tokens.
+- **Guía:**
+  - 10 secciones, 12 predicciones, un simulador de la fórmula real con 8 modelos de la Tabla 21 y una animación del método.
+  - Figura 1, Tabla 4 y Figura 2 redibujadas desde sus números.
+  - Glosario inglés–español, 5 frases clave, un mapa de lectura del original y la sección de leer con criterio.
+- **Verificación:**
+  - Las identidades de la descomposición cuadran en las 25 filas de la Tabla 21, con tolerancia por redondeo.
+  - La ρ = 0.63 se reproduce (0.631).
+  - `paper_herramientas.py numeros`: de 66 cifras de la guía, 2 no aparecen tal cual en el paper. Las dos son cálculos de la guía y lo dice.
+- **Revisión ciega:** 1 fuga y 4 pistas en 8 preguntas.
+  - **Fuga:** el clasificador afirma/muestra/límite/no dice tenía una frase por categoría y se resolvía por descarte. Se agregó una quinta frase con una categoría repetida.
+  - **Pista:** en pred-gemini la opción correcta era la única con dos términos. Ahora las tres tienen la misma forma.
+- **Mejoras a la skill:**
+  - `scripts/paper_herramientas.py` (`anclas` y `numeros`).
+  - papers.md:
+    - anclas de arXiv, autores tomados del paper y tolerancia en los `assert`;
+    - figuras sin datos y umbrales cualitativos marcados `.sin-fuente`;
+    - definiciones de afirma / muestra / límite / no dice, y qué hacer si el paper se contradice;
+    - fugas entre secciones.
+  - SKILL.md: de 5 a 9 secciones de contenido, sin contar portada, repaso ni fuentes.
+  - Núcleo: `.anima-fase > b:first-child`.
+  - `svg_kit.conector` tolera puntos repetidos.
