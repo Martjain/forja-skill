@@ -63,7 +63,10 @@
       "explícame rápido qué es un hook",
       "resume este PDF",
       "hazme una presentación de ventas",
-      "corrige este archivo HTML"
-    ]
+      "corrige este archivo HTML",
+      "dame una tabla con los comandos de git que más se usan",
+      "explícame con un diagrama cómo funciona un hook de Claude Code"
+    ],
+    "resultado_2026_11_12": "10/10 correctas (ver resultados.md)"
   }
 }

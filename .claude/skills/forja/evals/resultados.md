@@ -98,3 +98,24 @@ Se quitaron las guías hechas con versiones anteriores de la skill, para dejar u
 - `guias/git/` (eval 2, v1): commit `e2d15aa`
 - `guias/git-ramas-merge-vs-rebase-y-resolucion-de-conflictos/` (eval 4, v1): commit `77f7711`
 - `guias/hooks-de-claude-code-v3/` (v2 ronda 1): commit `00846a1`
+
+---
+
+## Pruebas de activación (D)
+
+Cada frase corrió en un subagente limpio, con todas las skills de la sesión disponibles. El subagente se detenía al cargar una skill. **10 de 10 correctas.**
+
+| # | Frase | Esperado | Resultado |
+|---|---|---|---|
+| 1 | hazme una guía visual de los hooks de Claude Code | forja | ✓ forja (y preguntó el nivel) |
+| 2 | quiero aprender git, hazme una guía | forja | ✓ forja (preguntó el nivel con temario por nivel) |
+| 3 | /forja subagentes | forja | ✓ forja (preguntó el nivel) |
+| 4 | créame una guía interactiva para estudiar control de pozos | forja | ✓ forja (preguntó el nivel) |
+| 5 | explícame rápido qué es un hook | ninguna | ✓ respondió en el chat |
+| 6 | resume este PDF | no forja | ✓ pidió el archivo; dijo que forja no es para resúmenes |
+| 7 | hazme una presentación de ventas… | no forja | ✓ cargó pptx, no forja |
+| 8 | corrige este archivo HTML… | no forja | ✓ ninguna; citó que forja excluye editar HTML |
+| 9 | dame una tabla con los comandos de git (ambiguo) | no forja | ✓ tabla en el chat; ofreció forja como opción |
+| 10 | explícame con un diagrama cómo funciona un hook (ambiguo) | no forja | ✓ cargó product-self-knowledge, no forja |
+
+Conclusión: la description no se activa de más ni de menos, y no le quita trabajo a otras skills (pptx, product-self-knowledge). No hay que cambiarla.
