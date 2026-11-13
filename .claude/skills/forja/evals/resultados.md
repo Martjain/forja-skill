@@ -88,3 +88,13 @@ Prueba: "subagentes de Claude Code: qué son, cómo delegar tareas y cuándo con
 Verificado a mano contra la documentación oficial: límite de 20 subagentes simultáneos, fork con `/subtask`, `claude --agent`, `@"nombre (agent)"`.
 
 Costo: 209k tokens, 11.5 min (la v2 ronda 1 usó 230k y 15 min, porque las flashcards ya no se programan a mano).
+
+---
+
+## Limpieza (2026-11-12)
+
+Se quitaron las guías hechas con versiones anteriores de la skill, para dejar una por tema con la versión actual. La evidencia de los evals sigue en el historial de git:
+- `guias/hooks-de-claude-code/` (eval 1, v1) y `guias/hooks-de-claude-code-v2/` (eval 3, v1): commit `e2d15aa`
+- `guias/git/` (eval 2, v1): commit `e2d15aa`
+- `guias/git-ramas-merge-vs-rebase-y-resolucion-de-conflictos/` (eval 4, v1): commit `77f7711`
+- `guias/hooks-de-claude-code-v3/` (v2 ronda 1): commit `00846a1`
