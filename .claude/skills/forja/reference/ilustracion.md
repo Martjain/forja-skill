@@ -40,7 +40,7 @@ Según el tema, uno de estos (y mantenlo en toda la guía):
   - referencias y proyecciones a los ejes: 1, punteadas;
   - ejes y marcas: 1.25;
   - puntos: círculo de radio 4.5 con borde del color del fondo (`punto()` de `svg_kit`).
-- Los grosores que pongas en el CSS de la guía también cuentan.
+- Los grosores que pongas en el CSS de la guía también cuentan: ajustarlos al sistema es parte del redibujo.
 
 ## 3. Materiales, color y profundidad
 
@@ -74,7 +74,9 @@ Según el tema, uno de estos (y mantenlo en toda la guía):
   </g>
   ```
   En pantallas de menos de 640 px el núcleo oculta las etiquetas, pone un número sobre cada pieza y arma la leyenda debajo del dibujo. Así el dibujo puede ser ancho y seguir legible en el celular.
-- El texto que no sea etiqueta (números de los ejes, valores, letras de puntos) no debe verse de menos de 11 px en el celular. **En unidades del viewBox: al menos 11 × ancho del viewBox ÷ 350.** Un viewBox de 480 pide 15.5; uno de 900, 28.5. `Lienzo.letra_min` lo calcula y `revisar_ilustraciones.py` lo imprime para cada SVG. Si en escritorio se ve demasiado grande, haz el viewBox más angosto (más vertical) en lugar de bajar la letra.
+- **No uses la clase `etiqueta` para otra cosa en la guía.** Si la guía ya tiene un `.etiqueta` en su CSS (una pastilla, un título), acótalo (`h3 .etiqueta`) o renómbralo: si no, su estilo (mayúsculas, letra de código) se hereda a las etiquetas del SVG.
+- En una sección oscura, pasa `color_sub` a `Lienzo.etiqueta` con el color de texto claro de esa sección.
+- El texto que no sea etiqueta (números de los ejes, valores, letras de puntos) no debe verse de menos de 11 px en el celular. **En unidades del viewBox: al menos 11 × ancho del viewBox ÷ 350.** Un viewBox de 480 pide 16; uno de 900, 30 (con 330 px: el ancho a 390 px menos el padding de una sección). `Lienzo.letra_min` lo calcula y `revisar_ilustraciones.py` lo imprime para cada SVG. **Si el CSS le pone al SVG un `min-width` (dentro de un contenedor con scroll) o un `max-width`, el ancho real es ese:** pásalo como `Lienzo(..., ancho_movil=560)`. Si en escritorio se ve demasiado grande, haz el viewBox más angosto (más vertical) en lugar de bajar la letra.
 
 ## 6. Formas orgánicas
 
@@ -91,7 +93,11 @@ Llamas, agua, órganos, hojas: curvas Bézier cúbicas **simétricas** y en **do
 - El núcleo pone los controles (Pausa, **Paso a paso**, velocidad), respeta "reducir movimiento" y pausa la animación fuera de pantalla. No los programes tú.
 - Contenedor: `<div data-anima id="anima-…">` con el SVG y la narración dentro.
 - **Una o dos animaciones por guía**: la del proceso central. Las demás ilustraciones pueden ser fijas.
-- **No reveles una predicción.** Si una sección pregunta "¿qué crees que pasa?", la animación va dentro de su `data-tras-prediccion` o después, o usa otros valores que no den la respuesta.
+- **No reveles una predicción.** Si una sección pregunta "¿qué crees que pasa?", la animación va después de su `data-tras-prediccion`, o usa otros valores que no den la respuesta. Si el JS reescribe el resultado con `innerHTML`, no la metas ahí: ponla después. Revisa también las ilustraciones fijas: un dibujo que muestra el resultado antes de responder también revela.
+- **Si el proceso central no tiene ilustración**, créala: es la que más enseña.
+- **Si la ilustración que animas ya es interactiva** (nodos clicables que se atenúan), pon las piezas que se mueven en una capa propia con `pointer-events: none`, fuera de los nodos, para que el atenuado no apague la animación.
+- **Momentos clave fuera de 0, .25, .5 y .75** (un mensaje a medio viaje): ponlos en `data-fases="0 .37 .5 .83"` del `[data-anima]` para que el revisor los capture.
+- Si la narración lleva espacios que importan (la salida de `git status -s`), usa `<code style="white-space:pre">`.
 
 ## 8. El kit
 
@@ -100,6 +106,9 @@ Llamas, agua, órganos, hojas: curvas Bézier cúbicas **simétricas** y en **do
 - **Pega el kit una sola vez**, en un `<svg width="0" height="0" style="position:absolute" aria-hidden="true">` al inicio del `<body>`, y úsalo desde todos los SVG con `url(#id)`. Si cada SVG pega sus propios `<defs>`, los ids se repiten y el navegador usa el primero.
 - Los colores del kit se resuelven donde está definido, no donde se usa. En una sección oscura, define al lado una copia con sufijo (`pta-caliente-oscuro`) con los colores que se ven sobre fondo oscuro.
 - Las definiciones propias de un SVG (un `clipPath`, un degradado) llevan el prefijo del SVG: `motor-interior`, `pend-pta`.
+- Los nombres del kit (caliente, frío) son de ejemplo. Agrega las flechas que pida el significado de tu guía con el mismo marcador y otro color (`pta-gris`, `pta-azul`).
+- Para un SVG que dibuja el JS, replica su geometría en el script de Python para comprobarla con `assert`, y registra con `Lienzo.registrar()` el texto más largo que el JS pueda poner.
+- Diagramas de sistema: `conector([(x, y), ...])` de `svg_kit` traza líneas en ángulo recto con esquinas redondeadas.
 
 ## 9. Rúbrica (mínimo 8 de 10)
 

@@ -6,7 +6,8 @@ Uso:
 
 Qué hace:
   1. Captura cada <svg> de contenido en grande (escala 2x, a 1280 px de ancho).
-  2. En cada animación [data-anima] captura 4 fases (0, 0.25, 0.5, 0.75), cada una en su imagen.
+  2. En cada animación [data-anima] captura 4 fases (0, 0.25, 0.5, 0.75, o las de su data-fases),
+     cada una en su imagen. Lo que está detrás de una predicción se captura sin desenfoque.
   3. Detecta etiquetas encimadas y texto fuera del viewBox en escritorio, en las 4 fases.
   4. En celular (390 px) detecta texto de menos de 11 px (fuera de g.etiqueta) e imprime la
      letra mínima en unidades del viewBox de cada SVG.
@@ -31,7 +32,7 @@ FASES = (0, 0.25, 0.5, 0.75)
 JS_SVGS = """
 () => [...document.querySelectorAll('main svg, section svg')].filter(s => {
   const r = s.getBoundingClientRect();
-  return r.width >= 160 && r.height >= 80 && !s.closest('.anima-ctl, [data-forja-flashcards], nav');
+  return r.width >= 120 && r.height >= 40 && !s.closest('.anima-ctl, [data-forja-flashcards], nav');
 }).map((s, i) => { s.dataset.forjaIlus = i; return i; })
 """
 
@@ -81,6 +82,18 @@ JS_REVISAR = """
 """
 
 
+def fases_de(caja):
+    """Fases a capturar: data-fases="0 .37 .5 .83" en el [data-anima], o las 4 de siempre.
+    Úsalo cuando el momento importante (un mensaje en viaje) no cae en 0, .25, .5 o .75."""
+    attr = caja.get_attribute("data-fases")
+    if attr:
+        try:
+            return [float(x) for x in attr.replace(",", " ").split()]
+        except ValueError:
+            print(f"  AVISO: data-fases no válido: {attr!r}")
+    return list(FASES)
+
+
 def buscar_navegador():
     for nombre in ("google-chrome", "google-chrome-stable", "chromium", "chromium-browser"):
         ruta = shutil.which(nombre)
@@ -117,7 +130,9 @@ def main() -> int:
         pag = nav.new_page(viewport={"width": 1280, "height": 900}, device_scale_factor=2)
         pag.goto(guia.as_uri())
         pag.wait_for_timeout(600)
-        pag.add_style_tag(content=".entra{animation:none!important;opacity:1!important;transform:none!important}")
+        # Sin entrada animada y sin el desenfoque de lo que aún no se predice: se revisa el dibujo, no el estado.
+        pag.add_style_tag(content=".entra{animation:none!important;opacity:1!important;transform:none!important}"
+                          "[data-tras-prediccion]{filter:none!important;opacity:1!important}")
         ids = pag.evaluate(JS_SVGS)
         n_anim = 0
         for i in ids:
@@ -126,7 +141,8 @@ def main() -> int:
             caja_anima = svg.locator("xpath=ancestor::*[@data-anima][1]")
             if caja_anima.count():
                 n_anim += 1
-                for f in FASES:
+                fases = fases_de(caja_anima)
+                for f in fases:
                     caja_anima.evaluate(f"c => c.__fijar && c.__fijar({f})")
                     pag.wait_for_timeout(120)
                     caja_anima.screenshot(path=str(salida / f"ilus-{i:02d}-fase-{int(f * 100):02d}.png"))
@@ -134,9 +150,10 @@ def main() -> int:
                 svg.screenshot(path=str(salida / f"ilus-{i:02d}.png"))
         # Revisión en escritorio, en cada fase de las animaciones (ahí se ven las etiquetas completas)
         escritorio = {}
-        for f in FASES:
+        for k in range(4):
             for c in pag.locator("[data-anima]").all():
-                c.evaluate(f"c => c.__fijar && c.__fijar({f})")
+                fs = fases_de(c)
+                c.evaluate(f"c => c.__fijar && c.__fijar({fs[k % len(fs)]})")
             pag.wait_for_timeout(80)
             for r in pag.evaluate(JS_REVISAR, TEXTO_MIN_PX):
                 e = escritorio.setdefault(r["donde"], {"choques": set(), "fuera": set(), "grosores": r["grosores"]})

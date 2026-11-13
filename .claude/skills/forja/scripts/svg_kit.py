@@ -3,7 +3,7 @@
 Uso en tu script generador:
 
     import sys; sys.path.insert(0, "<CLAUDE_SKILL_DIR>/scripts")
-    from svg_kit import Lienzo, Plano, linea, W_C, W_D, W_G
+    from svg_kit import Lienzo, Plano, linea, punto, conector, W_C, W_D, W_G
 
     lz = Lienzo("pendiente", 480, 320)          # viewBox 0 0 480 320
     P = Plano(-1, 5, -1, 9, L=48, R=456, T=24, B=288)   # mundo -> viewBox
@@ -26,7 +26,8 @@ para detectar choques. La revisión final la hace revisar_ilustraciones.py con e
 import math
 
 W_C, W_D, W_G = 2.5, 1.25, 1      # contorno, detalle, guías y cotas
-ANCHO_MOVIL = 350                  # ancho real aproximado de un SVG a todo lo ancho en un celular de 390 px
+ANCHO_MOVIL = 330                  # ancho real de un SVG a todo lo ancho en un celular de 390 px (con el padding
+                                   # de una sección oscura). Si el CSS le pone min-width o max-width, pasa ese ancho.
 LETRA_MIN_PX = 11
 
 
@@ -36,8 +37,9 @@ def r1(v):
     return "0" if s in ("-0", "") else s
 
 
-def ancho_texto(txt, size, mono=False):
-    return len(txt) * size * (0.6 if mono else 0.56)
+def ancho_texto(txt, size, mono=False, em=None):
+    """Ancho estimado del texto. em: ancho medio por carácter (0.56 proporcional, 0.6 monoespaciada)."""
+    return len(txt) * size * (em or (0.6 if mono else 0.56))
 
 
 class Lienzo:
@@ -49,25 +51,31 @@ class Lienzo:
         self.letra_min = math.ceil(LETRA_MIN_PX * w / ancho_movil * 2) / 2
         self.cajas = []   # (x0, y0, x1, y1, texto)
 
-    def _caja(self, x, y, txt, size, anchor, mono):
-        a = ancho_texto(txt, size, mono)
+    def registrar(self, x, y, txt, size, anchor="start", mono=False, em=None):
+        """Registra la caja de un texto que no generó este Lienzo (uno que cambia el JS, un título con
+        otra fuente) para que comprobar() lo tome en cuenta. Usa el texto más largo que pueda mostrar."""
+        self._caja(x, y, txt, size, anchor, mono, em)
+
+    def _caja(self, x, y, txt, size, anchor, mono, em=None):
+        a = ancho_texto(txt, size, mono, em)
         x0 = x - a if anchor == "end" else x - a / 2 if anchor == "middle" else x
         self.cajas.append((x0, y - size * 0.74, x0 + a, y + size * 0.24, txt))
 
-    def texto(self, x, y, txt, size=None, color="var(--tinta)", anchor="start", mono=False, extra=""):
+    def texto(self, x, y, txt, size=None, color="var(--tinta)", anchor="start", mono=False, extra="", em=None):
         """Texto que se ve también en el celular (ejes, valores). Por omisión, del tamaño mínimo."""
         size = size or self.letra_min
         assert size >= self.letra_min - 1e-9, \
             f"{self.nombre}: '{txt}' mide {size} y el mínimo en este viewBox es {self.letra_min}"
-        self._caja(x, y, txt, size, anchor, mono)
+        self._caja(x, y, txt, size, anchor, mono, em)
         a = f' text-anchor="{anchor}"' if anchor != "start" else ""
         m = ' font-family="var(--f-codigo)"' if mono else ""
         return f'<text x="{r1(x)}" y="{r1(y)}" font-size="{size}" fill="{color}"{a}{m}{extra}>{txt}</text>'
 
-    def etiqueta(self, punto, ruta, titulo, sub, color, anchor="start"):
+    def etiqueta(self, punto, ruta, titulo, sub, color, anchor="start", color_sub="var(--tinta)"):
         """Etiqueta forja: punto sobre la pieza, guía de 1 px por `ruta`, título 13.5 + frase 12.
 
         punto: (x, y) sobre la pieza. ruta: puntos de la guía; el texto va junto al último.
+        color_sub: color de la frase (en una sección oscura, el color de texto claro de esa sección).
         """
         px, py = punto
         d = f"M{r1(px)} {r1(py)}" + "".join(f" L{r1(x)} {r1(y)}" for x, y in ruta)
@@ -78,7 +86,7 @@ class Lienzo:
                   f'<circle cx="{r1(px)}" cy="{r1(py)}" r="3" fill="{color}"/>']
         a = f' text-anchor="{anchor}"' if anchor != "start" else ""
         for txt, size, y, extra in ((titulo, 13.5, ey + 4.5, f' font-weight="600" fill="{color}"'),
-                                    (sub, 12, ey + 21.5, ' fill="var(--tinta)" opacity=".75"')):
+                                    (sub, 12, ey + 21.5, f' fill="{color_sub}" opacity=".75"')):
             if not txt:
                 continue
             self._caja(tx, y, txt, size, anchor, False)
@@ -96,10 +104,12 @@ class Lienzo:
                 oy = min(a[3], b[3]) - max(a[1], b[1])
                 assert not (ox > 1 and oy > 1), f"{self.nombre}: '{a[4]}' choca con '{b[4]}'"
 
-    def svg(self, contenido, titulo, id_svg=None, defs=""):
+    def svg(self, contenido, titulo, id_svg=None, defs="", **attrs):
+        """attrs: atributos extra del <svg> (class_="..." para class, aria_labelledby="..." para aria-labelledby)."""
         i = f' id="{id_svg}"' if id_svg else ""
+        extra = "".join(f' {k.rstrip("_").replace("_", "-")}="{v}"' for k, v in attrs.items())
         d = f"<defs>{defs}</defs>" if defs else ""
-        return (f'<svg{i} viewBox="0 0 {self.w} {self.h}" role="img" xmlns="http://www.w3.org/2000/svg">'
+        return (f'<svg{i} viewBox="0 0 {self.w} {self.h}" role="img" xmlns="http://www.w3.org/2000/svg"{extra}>'
                 f"<title>{titulo}</title>{d}{contenido}</svg>")
 
 
@@ -177,6 +187,23 @@ def linea(x1, y1, x2, y2, color, w=W_C, extra=""):
     return f'<line x1="{r1(x1)}" y1="{r1(y1)}" x2="{r1(x2)}" y2="{r1(y2)}" stroke="{color}" stroke-width="{w}"{extra}/>'
 
 
+def conector(puntos, radio=8):
+    """Path ortogonal por `puntos` [(x, y), ...] con esquinas redondeadas (diagramas de sistema).
+    Ponle marker-end para la flecha. Los tramos deben ser horizontales o verticales."""
+    assert len(puntos) >= 2
+    for (x1, y1), (x2, y2) in zip(puntos, puntos[1:]):
+        assert x1 == x2 or y1 == y2, f"tramo no ortogonal: {(x1, y1)} → {(x2, y2)}"
+    d = f"M{r1(puntos[0][0])} {r1(puntos[0][1])}"
+    for (x0, y0), (x1, y1), (x2, y2) in zip(puntos, puntos[1:], puntos[2:]):
+        l1, l2 = math.hypot(x1 - x0, y1 - y0), math.hypot(x2 - x1, y2 - y1)
+        r = min(radio, l1 / 2, l2 / 2)
+        ax, ay = x1 - (x1 - x0) / l1 * r, y1 - (y1 - y0) / l1 * r
+        bx, by = x1 + (x2 - x1) / l2 * r, y1 + (y2 - y1) / l2 * r
+        d += f" L{r1(ax)} {r1(ay)} Q{r1(x1)} {r1(y1)} {r1(bx)} {r1(by)}"
+    d += f" L{r1(puntos[-1][0])} {r1(puntos[-1][1])}"
+    return d
+
+
 def punto(x, y, color, r=4.5):
     """Punto de una gráfica: relleno de color con borde del fondo para que se separe de las líneas."""
     return f'<circle cx="{r1(x)}" cy="{r1(y)}" r="{r}" fill="{color}" stroke="var(--fondo)" stroke-width="{W_D}"/>'
@@ -196,4 +223,5 @@ if __name__ == "__main__":
               f'<path d="{P.curva(lambda x: x * x)}" stroke="var(--azul)" stroke-width="{W_C}" fill="none"/>',
               lz.etiqueta((P.X(2), P.Y(4)), [(P.X(2) - 40, P.Y(4) - 50)], "Punto P", "aquí medimos", "black", "end")]
     lz.comprobar()
+    assert conector([(0, 0), (40, 0), (40, 30)]).startswith("M0 0 L32 0 Q40 0 40 8")
     print(f"letra mínima: {lz.letra_min} unidades ·", len(lz.svg("".join(partes), "prueba")), "bytes · ok")

@@ -115,7 +115,7 @@ button, input { font: inherit; min-height: 44px; }
 .anima-ctl { display: flex; flex-wrap: wrap; gap: .5rem 1rem; align-items: center; margin-top: .75rem; font-size: .875rem; }
 .anima-ctl button { min-height: 40px; padding: .4rem .95rem; border-radius: 8px; border: 1.5px solid currentColor; background: transparent; color: inherit; cursor: pointer; font: inherit; }
 .anima-ctl .anima-play { background: var(--acento); border-color: var(--acento); color: var(--fondo); min-width: 7.5rem; }
-.anima-ctl input { accent-color: var(--acento); }
+.anima-ctl input { accent-color: var(--acento); width: 7rem; }
 .anima-ctl label { display: inline-flex; gap: .5rem; align-items: center; white-space: nowrap; overflow-wrap: normal; }
 .anima-ctl .anima-vel { font-family: var(--f-codigo); min-width: 2.5rem; }
 .anima-fase { display: flex; gap: .75rem; align-items: baseline; min-height: 3rem; margin: .5rem 0 0; }
@@ -127,7 +127,7 @@ button, input { font: inherit; min-height: 44px; }
 .pausado .flujo, .pausado .titila { animation-play-state: paused; }
 @media (prefers-reduced-motion: reduce) { .flujo, .titila { animation: none; } }
 .et-num, .et-leyenda { display: none; }
-.et-num circle { fill: var(--tinta); stroke: var(--fondo); stroke-width: 2; }
+.et-num circle { fill: var(--tinta); stroke: var(--fondo); stroke-width: 2; vector-effect: non-scaling-stroke; }
 .et-num text { fill: var(--fondo); font-family: var(--f-codigo); font-weight: 700; }
 .et-leyenda { margin: .5rem 0 0; padding-left: 1.6rem; gap: .25rem; font-size: .9rem; }
 .et-leyenda b { font-weight: 600; }
@@ -1153,7 +1153,7 @@ section > .anima-caja { max-width: 46rem; margin-left: max(0px, calc((100% - var
     ctl.className = 'anima-ctl';
     ctl.innerHTML = `<button type="button" class="anima-play"></button>
       <button type="button" class="anima-paso">Paso a paso ›</button>
-      <label>Velocidad <input type="range" min="0.25" max="2" step="0.25" value="1"></label><span class="anima-vel">1×</span>`;
+      <label>Velocidad <input type="range" min="0.25" max="2" step="0.25" value="1"><span class="anima-vel">1×</span></label>`;
     caja.append(ctl);
     const play = ctl.querySelector('.anima-play');
     const boton = () => { play.textContent = corriendo ? 'Pausa' : 'Reproducir'; caja.classList.toggle('pausado', !corriendo); };
@@ -1203,29 +1203,27 @@ section > .anima-caja { max-width: 46rem; margin-left: max(0px, calc((100% - var
 
   // Etiquetas de ilustración: <g class="etiqueta" data-punto="x y"> con un título y una frase.
   // En pantallas angostas se ocultan y quedan un número sobre la pieza + una leyenda debajo del dibujo.
+  // El número se mide con el ancho REAL del SVG para que siempre se vea de ~13 px.
   const NS = 'http://www.w3.org/2000/svg';
+  const numeros = [];
   document.querySelectorAll('svg').forEach(svg => {
     const ets = [...svg.querySelectorAll('g.etiqueta[data-punto]')];
     if (!ets.length) return;
-    const vb = svg.viewBox.baseVal, r = (vb && vb.width ? vb.width : 600) / 36;
     const ol = document.createElement('ol');
     ol.className = 'et-leyenda';
     ets.forEach((g, i) => {
-      let [x, y] = g.dataset.punto.split(/[ ,]+/).map(Number);
-      // El número no tapa la pieza: se corre del punto hacia donde estaba el texto.
+      const [x, y] = g.dataset.punto.split(/[ ,]+/).map(Number);
       const t0 = g.querySelector('text');
+      let ux = 0, uy = 0;
       if (t0) {
         const dx = +t0.getAttribute('x') - x, dy = +t0.getAttribute('y') - y, d = Math.hypot(dx, dy) || 1;
-        x += dx / d * r * 1.6; y += dy / d * r * 1.6;
-      }
-      if (vb && vb.width) {
-        x = Math.min(Math.max(x, vb.x + r), vb.x + vb.width - r);
-        y = Math.min(Math.max(y, vb.y + r), vb.y + vb.height - r);
+        ux = dx / d; uy = dy / d;
       }
       const n = document.createElementNS(NS, 'g');
       n.setAttribute('class', 'et-num');
-      n.innerHTML = `<circle cx="${x}" cy="${y}" r="${r}"/><text x="${x}" y="${y}" font-size="${r * 1.15}" text-anchor="middle" dominant-baseline="central">${i + 1}</text>`;
+      n.innerHTML = `<circle/><text text-anchor="middle" dominant-baseline="central">${i + 1}</text>`;
       svg.appendChild(n);
+      numeros.push({ svg, n, x, y, ux, uy });
       const [t, ...resto] = g.querySelectorAll('text');
       const li = document.createElement('li');
       li.innerHTML = `<b>${t ? t.textContent : ''}</b> ${resto.map(e => e.textContent).join(' ')}`;
@@ -1234,6 +1232,24 @@ section > .anima-caja { max-width: 46rem; margin-left: max(0px, calc((100% - var
     const tras = svg.closest('[data-anima]') ? svg : (svg.closest('figure') || svg);
     tras.after(ol);
   });
+  function colocarNumeros() {
+    for (const { svg, n, x, y, ux, uy } of numeros) {
+      const vb = svg.viewBox.baseVal, ancho = svg.getBoundingClientRect().width;
+      if (!vb || !vb.width || !ancho) continue;
+      const r = 12 * vb.width / ancho;   // radio de 12 px en pantalla
+      // El número no tapa la pieza: se corre del punto hacia donde estaba el texto, sin salir del viewBox.
+      const cx = Math.min(Math.max(x + ux * r * 1.6, vb.x + r), vb.x + vb.width - r);
+      const cy = Math.min(Math.max(y + uy * r * 1.6, vb.y + r), vb.y + vb.height - r);
+      const [c, t] = n.children;
+      c.setAttribute('cx', cx); c.setAttribute('cy', cy); c.setAttribute('r', r);
+      t.setAttribute('x', cx); t.setAttribute('y', cy); t.setAttribute('font-size', r * 1.1);
+    }
+  }
+  if (numeros.length) {
+    colocarNumeros();
+    addEventListener('resize', colocarNumeros);
+    if ('ResizeObserver' in window) new ResizeObserver(colocarNumeros).observe(document.body);
+  }
 
   document.querySelectorAll('[data-ayuda]').forEach(caja => {
     const items = [...caja.querySelectorAll(':scope > ol > li')];
