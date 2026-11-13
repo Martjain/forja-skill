@@ -60,6 +60,7 @@ Cuando alguien adivina antes de ver la respuesta (aunque se equivoque) y recibe 
 - el mismo ejemplo que se pregunta, ya anotado más arriba en la sección (el borrador literario con sus etiquetas «tono subjetivo», «intención estética»);
 - etiquetas de un diagrama que repiten las palabras de la opción correcta («el repositorio» en la caja `.git`);
 - un reto o un pie de figura que descarta las opciones incorrectas.
+- **la opción correcta destaca**: es la más larga, la más técnica o la única con matices. Iguala el largo y el detalle de las opciones.
 
 Cómo corregirlas, en este orden:
 1. Reescribe el subtítulo o el párrafo para que plantee la pregunta en lugar de responderla.

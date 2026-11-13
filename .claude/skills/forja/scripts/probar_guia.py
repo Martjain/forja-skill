@@ -19,6 +19,7 @@ que funcionen y que enseñen bien:
 
   Advertencias (revísalas con criterio):
   - el texto de la opción correcta aparece a la vista ANTES de la predicción (posible fuga);
+  - la opción correcta es mucho más larga que las demás;
   - el primer paso de una ayuda ya contiene la respuesta;
   - texto con contraste insuficiente (WCAG AA: 4.5:1, o 3:1 en texto grande);
   - párrafos de más de 90 palabras (muro de texto);
@@ -228,6 +229,11 @@ def main() -> int:
             for o in pag.evaluate(JS_OCULTO, pid):
                 if not o["oculto"]:
                     errores.append(f"{pid}: su resultado se ve antes de contestar: «{o['texto']}…»")
+            # ¿La opción correcta destaca por su largo?
+            largos = {b.get_attribute("data-opcion"): len(b.inner_text().strip()) for b in botones.all()}
+            otros = [n for k, n in largos.items() if k != correcta]
+            if otros and largos.get(correcta, 0) > 1.6 * (sum(otros) / len(otros)) and largos.get(correcta, 0) - max(otros) > 12:
+                avisos.append(f"{pid}: la opción correcta es mucho más larga que las demás (se adivina por eso)")
             # ¿La opción correcta ya se lee antes de la pregunta?
             txt_correcta = caja.locator(f'[data-opcion="{correcta}"]').inner_text().strip().lower()
             if len(txt_correcta) >= 12 and txt_correcta in pag.evaluate(JS_TEXTO_ANTES, pid):

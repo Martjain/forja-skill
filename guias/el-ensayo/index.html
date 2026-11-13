@@ -142,6 +142,8 @@ button, input { font: inherit; min-height: 44px; }
 .forja-uso b em { font-style: normal; font-weight: 400; font-family: var(--f-codigo); font-size: .78rem; color: var(--acento); margin-left: .25rem; }
 .forja-uso p { margin: .2rem 0 .3rem; font-size: .88rem; line-height: 1.5; }
 .forja-uso a { font-size: .82rem; }
+code, pre, kbd, samp { font-variant-ligatures: none; }
+[data-reto] > code { display: inline; }
 /* ===== FIN NÚCLEO FORJA: CSS ===== */
 
 /* ===== Guía: el ensayo (familia lengua-y-literatura) ===== */
@@ -769,10 +771,10 @@ input[type="range"] { width: 100%; accent-color: var(--acento); }
            data-explicacion="La característica principal del ensayo es la argumentación: dar razones para reafirmar tu punto de vista. Contar historias es del cuento, informar del día es de la noticia y la moraleja es de la fábula.">
         <p><strong>Pregunta de examen:</strong> ¿cuál es el propósito principal del ensayo que escribes en secundaria?</p>
         <div class="opciones">
-          <button type="button" data-opcion="a">Contar una historia que entretenga</button>
-          <button type="button" data-opcion="b">Convencer al lector de su punto de vista con argumentos</button>
-          <button type="button" data-opcion="c">Informar una noticia reciente</button>
-          <button type="button" data-opcion="d">Dejar una moraleja</button>
+          <button type="button" data-opcion="a">Contar una historia para entretener al lector</button>
+          <button type="button" data-opcion="b">Convencer al lector de su punto de vista</button>
+          <button type="button" data-opcion="c">Informar una noticia reciente al lector</button>
+          <button type="button" data-opcion="d">Dejar una moraleja o una enseñanza</button>
         </div>
         <p class="veredicto" hidden></p>
         <div data-ayuda="pred-proposito">

@@ -163,6 +163,8 @@ pre code { background: none; padding: 0; }
 .forja-uso b em { font-style: normal; font-weight: 400; font-family: var(--f-codigo); font-size: .78rem; color: var(--acento); margin-left: .25rem; }
 .forja-uso p { margin: .2rem 0 .3rem; font-size: .88rem; line-height: 1.5; }
 .forja-uso a { font-size: .82rem; }
+code, pre, kbd, samp { font-variant-ligatures: none; }
+[data-reto] > code { display: inline; }
 /* ===== FIN NÚCLEO FORJA: CSS ===== */
 
 /* ===== Piezas comunes de la guía ===== */
@@ -603,9 +605,9 @@ details.porque summary { cursor: pointer; font-weight: 600; min-height: 32px; di
              data-explicacion="En Unix, 1 es el código de error de siempre, pero para Claude Code (sin JSON válido) es un error que no bloquea. Para hacer cumplir una regla, usa exit 2.">
           <p><strong>Antes de mover nada:</strong> tu hook de PreToolUse detecta un <code>rm -rf</code> y termina con <code>exit 1</code>. ¿Qué pasa?</p>
           <div class="opciones">
-            <button type="button" data-opcion="a">El comando se bloquea</button>
-            <button type="button" data-opcion="b">El comando corre igual y aparece un aviso</button>
-            <button type="button" data-opcion="c">Claude Code se cierra</button>
+            <button type="button" data-opcion="a">El comando se bloquea y no corre</button>
+            <button type="button" data-opcion="b">El comando corre y sale un aviso</button>
+            <button type="button" data-opcion="c">Claude Code se cierra por el error</button>
           </div>
           <p class="veredicto" hidden></p>
           <div data-ayuda="pred-exit1">
@@ -614,7 +616,7 @@ details.porque summary { cursor: pointer; font-weight: 600; min-height: 32px; di
               <li>De los tres códigos de esta estación, solo uno bloquea. ¿Cuál es? ¿Es el 1?</li>
               <li>En Unix, 1 es el código de error de siempre. Para Claude Code, un 1 (o cualquier código que no sea 0 ni 2) significa que tu hook <strong>falló</strong>, no que objeta.</li>
               <li>Un fallo del hook no es una orden de detenerse. Piensa si eso frena el comando o solo queda registrado.</li>
-              <li data-respuesta><strong>El comando corre igual y aparece un aviso.</strong> exit 1 es un error que no bloquea: el <code>rm -rf</code> sigue y el transcript muestra «hook error». Para hacer cumplir la regla, usa exit 2 con un mensaje en stderr.</li>
+              <li data-respuesta><strong>El comando corre y sale un aviso.</strong> exit 1 es un error que no bloquea: el <code>rm -rf</code> sigue y el transcript muestra «hook error». Para hacer cumplir la regla, usa exit 2 con un mensaje en stderr.</li>
             </ol>
           </div>
         </div>

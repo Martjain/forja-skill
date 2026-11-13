@@ -146,6 +146,8 @@ button, input { font: inherit; min-height: 44px; }
 .forja-uso b em { font-style: normal; font-weight: 400; font-family: var(--f-codigo); font-size: .78rem; color: var(--acento); margin-left: .25rem; }
 .forja-uso p { margin: .2rem 0 .3rem; font-size: .88rem; line-height: 1.5; }
 .forja-uso a { font-size: .82rem; }
+code, pre, kbd, samp { font-variant-ligatures: none; }
+[data-reto] > code { display: inline; }
 /* ===== FIN NÚCLEO FORJA: CSS ===== */
 
 /* ===== Estilo de la guía: sala de máquinas ===== */
@@ -775,16 +777,16 @@ li:has(.revelado[data-tras-prediccion="pred-watt"]) .watt-cil { fill: var(--cali
            data-explicacion="En la máquina de Newcomen el mismo cilindro se calentaba y se enfriaba en cada golpe, y había que recalentar el metal cada vez. Con el condensador aparte, el cilindro de Watt seguía caliente todo el tiempo.">
         <p><strong>Predice:</strong> ¿por qué el condensador separado ahorraba tanto combustible?</p>
         <div class="opciones">
-          <button type="button" data-opcion="a">El cilindro ya no se enfriaba en cada golpe</button>
-          <button type="button" data-opcion="b">El vapor salía a más presión</button>
-          <button type="button" data-opcion="c">La caldera era más grande</button>
+          <button type="button" data-opcion="a">El cilindro ya no se enfriaba</button>
+          <button type="button" data-opcion="b">El vapor salía con más presión</button>
+          <button type="button" data-opcion="c">La caldera era mucho más grande</button>
         </div>
         <p class="veredicto" hidden></p>
         <div data-ayuda="pred-watt">
           <ol>
             <li>En Newcomen, ¿dónde se echaba el chorro de agua fría? Dentro del mismo cilindro.</li>
             <li>Si el cilindro de metal se enfría, el siguiente vapor que entra ¿qué tiene que hacer primero?</li>
-            <li data-respuesta><strong>El cilindro ya no se enfriaba en cada golpe.</strong> Antes, parte del vapor se gastaba en recalentar el metal; con el condensador aparte, el cilindro quedaba siempre caliente.</li>
+            <li data-respuesta><strong>El cilindro ya no se enfriaba.</strong> Antes, parte del vapor se gastaba en recalentar el metal; con el condensador aparte, el cilindro quedaba siempre caliente.</li>
           </ol>
         </div>
       </div>
