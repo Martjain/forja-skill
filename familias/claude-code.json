@@ -39,6 +39,7 @@
     "subagentes": "ramas que se separan y vuelven con un resultado",
     "mcp": "conectores y enchufes entre sistemas",
     "plugins": "paquetes que agrupan piezas",
-    "hooks-v3": "circuito de relés: la señal de cada evento corre por un cable, el matcher es un selector de vía y tu script es un relé que deja pasar la corriente o la corta"
+    "hooks-v3": "circuito de relés: la señal de cada evento corre por un cable, el matcher es un selector de vía y tu script es un relé que deja pasar la corriente o la corta",
+    "hooks-v4": "línea de ensamblaje: la sesión es una banda transportadora, cada evento una estación fija, el matcher el lector de etiquetas y el hook la pluma que deja pasar, detiene (exit 2) o avisa"
   }
 }

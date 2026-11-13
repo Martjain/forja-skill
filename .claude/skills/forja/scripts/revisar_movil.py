@@ -8,7 +8,7 @@ Qué hace:
   1. Abre la guía a 390 px de ancho (celular) y a 1280 px (escritorio).
   2. Detecta desbordamiento horizontal y lista los elementos que se salen.
   3. Reporta errores de JavaScript de la página.
-  4. Guarda capturas en /tmp/forja-revision/ para revisarlas con Read.
+  4. Guarda capturas en /tmp/forja-revision/<carpeta de la guía>/ para revisarlas con Read.
 
 Código de salida: 0 si todo está bien, 1 si hay problemas, 2 si no se pudo revisar.
 Requiere Playwright: pip install playwright && python3 -m playwright install chromium
@@ -102,6 +102,9 @@ def main() -> int:
     if not guia.exists():
         print(f"ERROR: no existe {guia}")
         return 2
+    # Una carpeta por guía: si se revisan varias guías a la vez, no se pisan las capturas.
+    global SALIDA
+    SALIDA = SALIDA / guia.parent.name
     try:
         from playwright.sync_api import sync_playwright
     except ImportError:

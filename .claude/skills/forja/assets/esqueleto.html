@@ -211,6 +211,13 @@ button, input { font: inherit; min-height: 44px; }
   }), { rootMargin: '-45% 0px -50% 0px' });
   secciones.forEach(s => obs.observe(s));
 
+  // La API se define antes de dibujar nada: las flashcards y las predicciones restauradas pueden usarla.
+  window.forja = {
+    reto(id) { if (!estado.retos.includes(id)) { estado.retos.push(id); guardar(); pintar(); } },
+    guardar(clave, valor) { estado.extra[clave] = valor; guardar(); },
+    leer(clave) { return estado.extra[clave]; },
+  };
+
   predicciones.forEach((p, i) => {
     const id = p.id || `prediccion-${i + 1}`;
     const caja = p.closest('[data-interaccion]') || p.parentElement;
@@ -310,11 +317,6 @@ button, input { font: inherit; min-height: 44px; }
     document.getElementById('fuentes')?.append(p);
   }
 
-  window.forja = {
-    reto(id) { if (!estado.retos.includes(id)) { estado.retos.push(id); guardar(); pintar(); } },
-    guardar(clave, valor) { estado.extra[clave] = valor; guardar(); },
-    leer(clave) { return estado.extra[clave]; },
-  };
 
   const continuar = document.querySelector('[data-forja-continuar]');
   if (continuar && estado.ultima && estado.ultima !== secciones[0]?.id) {

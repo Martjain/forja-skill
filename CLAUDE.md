@@ -19,3 +19,5 @@ Repositorio de **forja**, una skill de Claude Code que crea guías visuales inte
 - Antes de dar una guía por terminada, correr el validador y corregir hasta que no marque errores:
   `python3 .claude/skills/forja/scripts/validar.py guias/<slug>/index.html`
 - Los cambios van en ramas, nunca directo a `main`.
+- Si cambias el núcleo en `assets/esqueleto.html` (bloques "NÚCLEO FORJA"), propágalo a las guías publicadas con
+  `python3 .claude/skills/forja/scripts/actualizar_nucleo.py`. Solo toca esos bloques; el contenido de las guías no se modifica.

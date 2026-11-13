@@ -119,3 +119,18 @@ Cada frase corrió en un subagente limpio, con todas las skills de la sesión di
 | 10 | explícame con un diagrama cómo funciona un hook (ambiguo) | no forja | ✓ cargó product-self-knowledge, no forja |
 
 Conclusión: la description no se activa de más ni de menos, y no le quita trabajo a otras skills (pptx, product-self-knowledge). No hay que cambiarla.
+
+## Regeneración con la skill actual (A)
+
+| Guía | Motivo | Predicciones (huecos) | Retos | Tarjetas | Sin fuente |
+|---|---|---|---|---|---|
+| `hooks-de-claude-code` | banda transportadora con estaciones (nuevo: `hooks-v4`) | 8 (4) | 10 | 14 | 0 |
+| `git` | cuentas en un hilo de papel continuo | 9 (4) | 7 | 14 | 1 (que muchos servicios crean `main` por defecto) |
+| `git-merge-rebase` | cinta perforada | 9 (4) | 9 | 14 | 0 (zdiff3 desde 2.35 se verificó en las release notes oficiales y se citó) |
+
+Las 3 pasan el validador y la revisión en celular.
+
+### Fallas encontradas al regenerar
+
+1. **Bug en el núcleo:** la API `forja` se definía después de dibujar las flashcards. Con el reto `flashcards` cumplido, al recargar fallaba todo el núcleo. Corregido en el esqueleto y propagado a las 4 guías con el script nuevo `scripts/actualizar_nucleo.py`, que solo reemplaza los bloques del núcleo. Probado: dominar el mazo y recargar ya no da errores.
+2. **`revisar_movil.py` compartía la carpeta de capturas** entre procesos paralelos. Ahora usa una carpeta por guía.
