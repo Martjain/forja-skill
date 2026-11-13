@@ -229,7 +229,7 @@ input[type="range"] { width: 100%; accent-color: var(--acento); }
 .diagrama-caja { display: grid; gap: 1rem; }
 .diagrama-svg { background: var(--fondo); border: 1px solid var(--borde); border-radius: 14px; }
 [data-nodo] { cursor: pointer; }
-[data-nodo] rect { fill: var(--fondo); stroke: var(--tinta-suave); stroke-width: 1.5; transition: fill .2s; }
+[data-nodo] rect { fill: var(--fondo); stroke: var(--tinta-suave); stroke-width: 1.25; transition: fill .2s; }
 [data-nodo] text { fill: var(--tinta); }
 [data-nodo].activo rect { fill: var(--acento); stroke: var(--acento); }
 [data-nodo].activo text { fill: var(--fondo); }
@@ -327,6 +327,14 @@ input[type="range"] { width: 100%; accent-color: var(--acento); }
 #fuentes li::marker { font-family: var(--f-codigo); color: var(--acento); }
 #fuentes .suave { font-size: .9rem; }
 
+/* ---------- Ilustraciones ---------- */
+/* Color con significado en todas las gráficas: azul = la función f; acento = tangente y derivada;
+   tinta = secante y puntos; verde = los cambios h y Δy. En el pizarrón el verde es de gis. */
+:root { --rejilla: #CFDCCB; }
+section[data-tono="oscuro"] { --verde: #9DBFA8; --rejilla: #2F4339; }
+section > .anima-caja { max-width: 46rem; margin-left: max(0px, calc((100% - var(--ancho)) / 2)); margin-right: auto; margin-top: 2.5rem; }
+.anima-caja svg { display: block; width: 100%; border: 1px solid var(--borde); border-radius: 14px; background: rgb(0 0 0 / .18); }
+
 @media (max-width: 720px) {
   .portada-rejilla, .heroe, .dividido, .pasos-cuerpo, .probador, .comparar, .controles { grid-template-columns: 1fr; }
   .comparar > div { padding-inline: 0; }
@@ -371,31 +379,30 @@ input[type="range"] { width: 100%; accent-color: var(--acento); }
       </div>
       <figure class="figura entra" style="--i:3">
         <svg viewBox="0 0 480 360" role="img" aria-labelledby="t-portada">
-          <title id="t-portada">Curva azul y = x al cuadrado. Tres rectas secantes grises pasan por el punto P y por un punto Q cada vez más cercano. La recta roja solo toca la curva en P: es la tangente.</title>
-          <defs>
-            <pattern id="pp-portada" width="24" height="24" patternUnits="userSpaceOnUse"><path d="M24 0H0V24" fill="none" stroke="var(--verde)" stroke-opacity=".2"/></pattern>
-            <clipPath id="cl-portada"><rect x="40" y="30" width="420" height="300"/></clipPath>
-          </defs>
-          <rect x="40" y="30" width="420" height="300" fill="url(#pp-portada)"/>
-          <line x1="100" y1="30" x2="100" y2="330" stroke="var(--tinta-suave)" stroke-width="1.5"/>
-          <line x1="40" y1="314.2" x2="460" y2="314.2" stroke="var(--tinta-suave)" stroke-width="1.5"/>
-          <g clip-path="url(#cl-portada)" stroke-linecap="round">
-            <line x1="170.0" y1="330.0" x2="460.0" y2="55.3" stroke="var(--tinta-suave)" stroke-opacity=".3" stroke-width="2"/>
-            <line x1="160.0" y1="330.0" x2="460.0" y2="93.2" stroke="var(--tinta-suave)" stroke-opacity=".5" stroke-width="2"/>
-            <line x1="146.5" y1="330.0" x2="460.0" y2="127.9" stroke="var(--tinta-suave)" stroke-opacity=".75" stroke-width="2"/>
-            <path d="M40.0,306.3 L54.0,309.6 L68.0,312.0 L82.0,313.5 L96.0,314.2 L110.0,314.0 L124.0,312.9 L138.0,311.0 L152.0,308.3 L166.0,304.7 L180.0,300.2 L194.0,294.8 L208.0,288.6 L222.0,281.6 L236.0,273.6 L250.0,264.9 L264.0,255.2 L278.0,244.7 L292.0,233.4 L306.0,221.1 L320.0,208.1 L334.0,194.1 L348.0,179.3 L362.0,163.7 L376.0,147.2 L390.0,129.8 L404.0,111.5 L418.0,92.4 L432.0,72.5 L446.0,51.7 L460.0,30.0" fill="none" stroke="var(--azul)" stroke-width="3.5"/>
-            <line x1="130.0" y1="330.0" x2="460.0" y2="156.3" stroke="var(--acento)" stroke-width="4"/>
-          </g>
-          <circle cx="412" cy="100.7" r="5.5" fill="var(--fondo)" stroke="var(--tinta-suave)" stroke-width="2" opacity=".5"/>
-          <circle cx="340" cy="187.9" r="5.5" fill="var(--fondo)" stroke="var(--tinta-suave)" stroke-width="2" opacity=".75"/>
-          <circle cx="274" cy="247.8" r="5.5" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="2"/>
-          <circle cx="220" cy="282.6" r="7.5" fill="var(--acento)"/>
-          <text x="196" y="268" font-size="22" fill="var(--tinta)">P</text>
-          <text x="282" y="240" font-size="20" fill="var(--tinta)">Q</text>
-          <text x="118" y="62" font-size="20" fill="var(--azul)">y = x²</text>
-          <text x="440" y="208" font-size="18" fill="var(--acento)" text-anchor="end">tangente</text>
-          <text x="440" y="48" font-size="16" fill="var(--tinta-suave)" text-anchor="end">secantes</text>
-        </svg>
+<title id="t-portada">Curva azul y = x al cuadrado. Tres rectas secantes grises pasan por el punto P y por un punto Q cada vez más cercano. La recta roja solo toca la curva en P: es la tangente.</title>
+<defs><clipPath id="cl-portada"><rect x="40" y="20" width="420" height="302"/></clipPath><marker id="pta-portada" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1 L8 5 L1 9 Z" style="fill:var(--tinta-suave)"/></marker></defs>
+<path d="M51.4 20V322M108.1 20V322M164.9 20V322M221.6 20V322M278.4 20V322M335.1 20V322M391.9 20V322M448.6 20V322M40 301.1H460M40 271.2H460M40 241.3H460M40 211.4H460M40 181.5H460M40 151.6H460M40 121.7H460M40 91.8H460M40 61.9H460M40 32H460" stroke="var(--rejilla)" stroke-width="1" fill="none"/>
+<line x1="40" y1="301.1" x2="464" y2="301.1" stroke="var(--tinta-suave)" stroke-width="1.25" marker-end="url(#pta-portada)"/><line x1="108.1" y1="322" x2="108.1" y2="16" stroke="var(--tinta-suave)" stroke-width="1.25" marker-end="url(#pta-portada)"/>
+<path d="M221.6 298.1V304.1M335.1 298.1V304.1M448.6 298.1V304.1M105.1 241.3H111.1M105.1 181.5H111.1M105.1 121.7H111.1M105.1 61.9H111.1" stroke="var(--tinta-suave)" stroke-width="1.25" fill="none"/><text x="221.6" y="320.6" font-size="15.5" fill="var(--tinta-suave)" text-anchor="middle" style="font-family:var(--f-codigo);font-weight:400">1</text><text x="335.1" y="320.6" font-size="15.5" fill="var(--tinta-suave)" text-anchor="middle" style="font-family:var(--f-codigo);font-weight:400">2</text><text x="448.6" y="320.6" font-size="15.5" fill="var(--tinta-suave)" text-anchor="middle" style="font-family:var(--f-codigo);font-weight:400">3</text><text x="101.1" y="246.7" font-size="15.5" fill="var(--tinta-suave)" text-anchor="end" style="font-family:var(--f-codigo);font-weight:400">2</text><text x="101.1" y="186.9" font-size="15.5" fill="var(--tinta-suave)" text-anchor="end" style="font-family:var(--f-codigo);font-weight:400">4</text><text x="101.1" y="127.1" font-size="15.5" fill="var(--tinta-suave)" text-anchor="end" style="font-family:var(--f-codigo);font-weight:400">6</text><text x="101.1" y="67.3" font-size="15.5" fill="var(--tinta-suave)" text-anchor="end" style="font-family:var(--f-codigo);font-weight:400">8</text>
+<text x="458" y="292.1" font-size="17" fill="var(--tinta-suave)" text-anchor="end" font-style="italic">x</text>
+<text x="117.1" y="30" font-size="17" fill="var(--tinta-suave)" font-style="italic">y</text>
+<g clip-path="url(#cl-portada)" stroke-linecap="round" fill="none">
+<line x1="40" y1="443.4" x2="460" y2="45.1" stroke="var(--tinta-suave)" stroke-width="2.5" stroke-opacity=".3"/>
+<line x1="40" y1="414.7" x2="460" y2="82.8" stroke="var(--tinta-suave)" stroke-width="2.5" stroke-opacity=".5"/>
+<line x1="40" y1="388.4" x2="460" y2="117.3" stroke="var(--tinta-suave)" stroke-width="2.5" stroke-opacity=".8"/>
+<path d="M40.0,290.3 L42.1,291.0 L44.2,291.6 L46.3,292.2 L48.4,292.8 L50.5,293.4 L52.6,293.9 L54.7,294.5 L56.8,295.0 L58.9,295.5 L61.0,295.9 L63.1,296.4 L65.2,296.8 L67.3,297.2 L69.4,297.6 L71.5,298.0 L73.6,298.3 L75.7,298.6 L77.8,298.9 L79.9,299.2 L82.0,299.5 L84.1,299.7 L86.2,300.0 L88.3,300.2 L90.4,300.3 L92.5,300.5 L94.6,300.6 L96.7,300.8 L98.8,300.9 L100.9,300.9 L103.0,301.0 L105.1,301.0 L107.2,301.1 L109.3,301.1 L111.4,301.0 L113.5,301.0 L115.6,300.9 L117.7,300.9 L119.8,300.8 L121.9,300.6 L124.0,300.5 L126.1,300.3 L128.2,300.1 L130.3,299.9 L132.4,299.7 L134.5,299.5 L136.6,299.2 L138.7,298.9 L140.8,298.6 L142.9,298.3 L145.0,297.9 L147.1,297.5 L149.2,297.2 L151.3,296.7 L153.4,296.3 L155.5,295.9 L157.6,295.4 L159.7,294.9 L161.8,294.4 L163.9,293.8 L166.0,293.3 L168.1,292.7 L170.2,292.1 L172.3,291.5 L174.4,290.9 L176.5,290.2 L178.6,289.5 L180.7,288.8 L182.8,288.1 L184.9,287.4 L187.0,286.6 L189.1,285.8 L191.2,285.0 L193.3,284.2 L195.4,283.4 L197.5,282.5 L199.6,281.6 L201.7,280.7 L203.8,279.8 L205.9,278.9 L208.0,277.9 L210.1,276.9 L212.2,275.9 L214.3,274.9 L216.4,273.9 L218.5,272.8 L220.6,271.7 L222.7,270.6 L224.8,269.5 L226.9,268.3 L229.0,267.2 L231.1,266.0 L233.2,264.8 L235.3,263.5 L237.4,262.3 L239.5,261.0 L241.6,259.7 L243.7,258.4 L245.8,257.1 L247.9,255.7 L250.0,254.3 L252.1,253.0 L254.2,251.5 L256.3,250.1 L258.4,248.7 L260.5,247.2 L262.6,245.7 L264.7,244.2 L266.8,242.6 L268.9,241.1 L271.0,239.5 L273.1,237.9 L275.2,236.3 L277.3,234.6 L279.4,233.0 L281.5,231.3 L283.6,229.6 L285.7,227.9 L287.8,226.1 L289.9,224.4 L292.0,222.6 L294.1,220.8 L296.2,219.0 L298.3,217.1 L300.4,215.3 L302.5,213.4 L304.6,211.5 L306.7,209.5 L308.8,207.6 L310.9,205.6 L313.0,203.7 L315.1,201.6 L317.2,199.6 L319.3,197.6 L321.4,195.5 L323.5,193.4 L325.6,191.3 L327.7,189.2 L329.8,187.0 L331.9,184.8 L334.0,182.7 L336.1,180.4 L338.2,178.2 L340.3,176.0 L342.4,173.7 L344.5,171.4 L346.6,169.1 L348.7,166.7 L350.8,164.4 L352.9,162.0 L355.0,159.6 L357.1,157.2 L359.2,154.8 L361.3,152.3 L363.4,149.8 L365.5,147.3 L367.6,144.8 L369.7,142.3 L371.8,139.7 L373.9,137.1 L376.0,134.5 L378.1,131.9 L380.2,129.3 L382.3,126.6 L384.4,123.9 L386.5,121.2 L388.6,118.5 L390.7,115.8 L392.8,113.0 L394.9,110.2 L397.0,107.4 L399.1,104.6 L401.2,101.7 L403.3,98.9 L405.4,96.0 L407.5,93.1 L409.6,90.1 L411.7,87.2 L413.8,84.2 L415.9,81.2 L418.0,78.2 L420.1,75.2 L422.2,72.1 L424.3,69.1 L426.4,66.0 L428.5,62.9 L430.6,59.7 L432.7,56.6 L434.8,53.4 L436.9,50.2 L439.0,47.0 L441.1,43.8 L443.2,40.5 L445.3,37.2 L447.4,33.9 L449.5,30.6 L451.6,27.3 L453.7,23.9 L455.8,20.5 L457.9,17.1 L460.0,13.7" stroke="var(--azul)" stroke-width="2.5" stroke-linejoin="round"/>
+<line x1="40" y1="366.9" x2="460" y2="145.6" stroke="var(--acento)" stroke-width="2.5"/>
+</g>
+<circle cx="403.2" cy="98.9" r="5" fill="var(--fondo)" stroke="var(--tinta-suave)" stroke-width="2.5" opacity=".3"/>
+<circle cx="335.1" cy="181.5" r="5" fill="var(--fondo)" stroke="var(--tinta-suave)" stroke-width="2.5" opacity=".5"/>
+<circle cx="272.7" cy="238.2" r="5" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="2.5" opacity="1"/>
+<circle cx="221.6" cy="271.2" r="6" fill="var(--acento)"/>
+<text x="210.6" y="261.2" font-size="19" fill="var(--tinta)" text-anchor="end">P</text>
+<text x="282.7" y="257.2" font-size="19" fill="var(--tinta)">Q</text>
+<g class="etiqueta" data-punto="425.9 66.6"><path d="M425.9 66.6 L236 66.6" stroke="var(--azul)" stroke-width="1" fill="none" opacity=".7"/><circle cx="425.9" cy="66.6" r="3" fill="var(--azul)"/><text x="230" y="71.1" font-size="13.5" font-weight="600" fill="var(--azul)" text-anchor="end">Curva y = x²</text><text x="230" y="88.1" font-size="12" fill="var(--tinta)" opacity=".75" text-anchor="end">la función f</text></g>
+<g class="etiqueta" data-punto="323.8 174.3"><path d="M323.8 174.3 L236 174.3" stroke="var(--tinta-suave)" stroke-width="1" fill="none" opacity=".7"/><circle cx="323.8" cy="174.3" r="3" fill="var(--tinta-suave)"/><text x="230" y="178.8" font-size="13.5" font-weight="600" fill="var(--tinta-suave)" text-anchor="end">Secantes</text><text x="230" y="195.8" font-size="12" fill="var(--tinta)" opacity=".75" text-anchor="end">Q se acerca a P</text></g>
+<g class="etiqueta" data-punto="318.1 220.3"><path d="M318.1 220.3 L318.1 262" stroke="var(--acento)" stroke-width="1" fill="none" opacity=".7"/><circle cx="318.1" cy="220.3" r="3" fill="var(--acento)"/><text x="324.1" y="266.5" font-size="13.5" font-weight="600" fill="var(--acento)">Tangente en P</text><text x="324.1" y="283.5" font-size="12" fill="var(--tinta)" opacity=".75">f′(1) = 2</text></g>
+</svg>
         <figcaption>Q se acerca a P. Cada secante se inclina un poco menos, hasta quedar en la tangente roja.</figcaption>
       </figure>
     </div>
@@ -418,21 +425,23 @@ input[type="range"] { width: 100%; accent-color: var(--acento); }
       </div>
       <figure class="figura">
         <svg viewBox="0 0 400 320" role="img" aria-labelledby="t-pend">
-          <title id="t-pend">Recta que pasa por A(1, 2) y B(4, 8). Un escalón marca que avanza 3 y sube 6.</title>
-          <defs><pattern id="pp-pend" width="68" height="28" patternUnits="userSpaceOnUse"><path d="M68 0H0V28" fill="none" stroke="var(--verde)" stroke-opacity=".22"/></pattern></defs>
-          <rect x="40" y="20" width="340" height="280" fill="url(#pp-pend)"/>
-          <line x1="40" y1="20" x2="40" y2="300" stroke="var(--tinta-suave)" stroke-width="1.5"/>
-          <line x1="40" y1="300" x2="380" y2="300" stroke="var(--tinta-suave)" stroke-width="1.5"/>
-          <line x1="40" y1="300" x2="380" y2="20" stroke="var(--azul)" stroke-width="3.5" stroke-linecap="round"/>
-          <line x1="108" y1="244" x2="312" y2="244" stroke="var(--acento)" stroke-width="3" stroke-dasharray="7 5"/>
-          <line x1="312" y1="244" x2="312" y2="76" stroke="var(--acento)" stroke-width="3" stroke-dasharray="7 5"/>
-          <circle cx="108" cy="244" r="7" fill="var(--tinta)"/>
-          <circle cx="312" cy="76" r="7" fill="var(--tinta)"/>
-          <text x="118" y="272" font-size="18" fill="var(--tinta)">A(1, 2)</text>
-          <text x="232" y="66" font-size="18" fill="var(--tinta)" text-anchor="end">B(4, 8)</text>
-          <text x="210" y="234" font-size="18" fill="var(--acento)" text-anchor="middle">Δx = 3</text>
-          <text x="322" y="166" font-size="18" fill="var(--acento)">Δy = 6</text>
-        </svg>
+<title id="t-pend">Recta que pasa por A(1, 2) y B(4, 8). Un escalón marca que avanza 3 y sube 6.</title>
+<defs><clipPath id="cl-pend"><rect x="52" y="18" width="332" height="266"/></clipPath><marker id="pta-pend" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1 L8 5 L1 9 Z" style="fill:var(--tinta-suave)"/></marker></defs>
+<path d="M114.6 18V284M177.3 18V284M239.9 18V284M302.6 18V284M365.2 18V284M52 258.9H384M52 233.8H384M52 208.7H384M52 183.6H384M52 158.5H384M52 133.4H384M52 108.3H384M52 83.2H384M52 58.2H384M52 33.1H384" stroke="var(--rejilla)" stroke-width="1" fill="none"/>
+<line x1="52" y1="284" x2="388" y2="284" stroke="var(--tinta-suave)" stroke-width="1.25" marker-end="url(#pta-pend)"/><line x1="52" y1="284" x2="52" y2="14" stroke="var(--tinta-suave)" stroke-width="1.25" marker-end="url(#pta-pend)"/>
+<path d="M114.6 281V287M177.3 281V287M239.9 281V287M302.6 281V287M365.2 281V287M49 233.8H55M49 183.6H55M49 133.4H55M49 83.2H55M49 33.1H55" stroke="var(--tinta-suave)" stroke-width="1.25" fill="none"/><text x="114.6" y="301.5" font-size="13.5" fill="var(--tinta-suave)" text-anchor="middle" style="font-family:var(--f-codigo);font-weight:400">1</text><text x="177.3" y="301.5" font-size="13.5" fill="var(--tinta-suave)" text-anchor="middle" style="font-family:var(--f-codigo);font-weight:400">2</text><text x="239.9" y="301.5" font-size="13.5" fill="var(--tinta-suave)" text-anchor="middle" style="font-family:var(--f-codigo);font-weight:400">3</text><text x="302.6" y="301.5" font-size="13.5" fill="var(--tinta-suave)" text-anchor="middle" style="font-family:var(--f-codigo);font-weight:400">4</text><text x="365.2" y="301.5" font-size="13.5" fill="var(--tinta-suave)" text-anchor="middle" style="font-family:var(--f-codigo);font-weight:400">5</text><text x="45" y="238.5" font-size="13.5" fill="var(--tinta-suave)" text-anchor="end" style="font-family:var(--f-codigo);font-weight:400">2</text><text x="45" y="188.3" font-size="13.5" fill="var(--tinta-suave)" text-anchor="end" style="font-family:var(--f-codigo);font-weight:400">4</text><text x="45" y="138.2" font-size="13.5" fill="var(--tinta-suave)" text-anchor="end" style="font-family:var(--f-codigo);font-weight:400">6</text><text x="45" y="88" font-size="13.5" fill="var(--tinta-suave)" text-anchor="end" style="font-family:var(--f-codigo);font-weight:400">8</text><text x="45" y="37.8" font-size="13.5" fill="var(--tinta-suave)" text-anchor="end" style="font-family:var(--f-codigo);font-weight:400">10</text>
+<text x="45" y="301.5" font-size="13.5" fill="var(--tinta-suave)" text-anchor="end" style="font-family:var(--f-codigo);font-weight:400">0</text>
+<path d="M114.6 233.8V284M114.6 233.8H52M302.6 83.2H52" stroke="var(--tinta-suave)" stroke-width="1" stroke-dasharray="3 4" fill="none" opacity=".8"/>
+<path d="M114.6 233.8H302.6V83.2Z" fill="var(--verde)" fill-opacity=".12" stroke="none"/>
+<g clip-path="url(#cl-pend)"><line x1="52" y1="284" x2="384" y2="18" stroke="var(--azul)" stroke-width="2.5" stroke-linecap="round"/></g>
+<path d="M114.6 233.8H302.6V83.2" stroke="var(--verde)" stroke-width="2.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="114.6" cy="233.8" r="6" fill="var(--tinta)"/><circle cx="302.6" cy="83.2" r="6" fill="var(--tinta)"/>
+<text x="124.6" y="255.8" font-size="16" fill="var(--tinta)">A(1, 2)</text>
+<text x="290.6" y="71.2" font-size="16" fill="var(--tinta)" text-anchor="end">B(4, 8)</text>
+<text x="222.6" y="223.8" font-size="16" fill="var(--verde)" text-anchor="middle">Δx = 3</text>
+<text x="312.6" y="164.5" font-size="16" fill="var(--verde)">Δy = 6</text>
+<g class="etiqueta" data-punto="266.7 112"><path d="M266.7 112 L183 112" stroke="var(--azul)" stroke-width="1" fill="none" opacity=".7"/><circle cx="266.7" cy="112" r="3" fill="var(--azul)"/><text x="177" y="116.5" font-size="13.5" font-weight="600" fill="var(--azul)" text-anchor="end">Pendiente m = 2</text><text x="177" y="133.5" font-size="12" fill="var(--tinta)" opacity=".75" text-anchor="end">sube 2 por cada 1</text></g>
+</svg>
         <figcaption>De A a B sube 8 − 2 = 6 y avanza 4 − 1 = 3. <span class="f"><i>m</i> = 6 / 3 = 2</span>: sube 2 por cada 1 que avanza.</figcaption>
       </figure>
     </div>
@@ -492,29 +501,28 @@ input[type="range"] { width: 100%; accent-color: var(--acento); }
       </div>
 
       <div class="lab-grafica">
-        <svg id="sec-svg" viewBox="0 0 440 330" role="img" aria-labelledby="t-sec">
-          <title id="t-sec">Parábola y = x al cuadrado con el punto P fijo y el punto Q que se mueve con el control h. La recta blanca es la secante PQ y la amarilla punteada es la tangente en P.</title>
-          <defs>
-            <pattern id="pp-sec" width="29.7" height="26.4" patternUnits="userSpaceOnUse" x="30" y="20"><path d="M29.7 0H0V26.4" fill="none" stroke="#ECEADF" stroke-opacity=".1"/></pattern>
-            <clipPath id="cl-sec"><rect x="30" y="20" width="380" height="290"/></clipPath>
-          </defs>
-          <rect x="30" y="20" width="380" height="290" fill="url(#pp-sec)"/>
-          <line x1="220" y1="20" x2="220" y2="310" stroke="var(--tinta-suave)" stroke-width="1.2"/>
-          <line x1="30" y1="270.5" x2="410" y2="270.5" stroke="var(--tinta-suave)" stroke-width="1.2"/>
-          <g clip-path="url(#cl-sec)" stroke-linecap="round">
-            <path id="sec-curva" fill="none" stroke="var(--azul)" stroke-width="3.5"/>
-            <line id="sec-tan" stroke="var(--acento)" stroke-width="2.5" stroke-dasharray="8 6"/>
-            <line id="sec-linea" stroke="var(--tinta)" stroke-width="3"/>
-            <line id="sec-dx" stroke="var(--rojo)" stroke-width="2.5"/>
-            <line id="sec-dy" stroke="var(--rojo)" stroke-width="2.5"/>
-          </g>
-          <circle id="sec-P" r="7" fill="var(--acento)"/>
-          <circle id="sec-Q" r="6.5" fill="var(--oscuro-fondo)" stroke="var(--tinta)" stroke-width="3"/>
-          <text id="sec-tP" font-size="20" fill="var(--tinta)">P</text>
-          <text id="sec-tQ" font-size="20" fill="var(--tinta)">Q</text>
-          <text id="sec-th" font-size="17" fill="var(--rojo)" text-anchor="middle">h</text>
-          <text id="sec-tdy" font-size="17" fill="var(--rojo)">Δy</text>
-        </svg>
+        <svg id="sec-svg" viewBox="0 0 440 362" role="img" aria-labelledby="t-sec">
+<title id="t-sec">Parábola y = x al cuadrado con el punto P fijo y el punto Q que se mueve con el control h. La recta blanca es la secante PQ y la amarilla punteada es la tangente en P.</title>
+<defs><clipPath id="cl-sec"><rect x="30" y="20" width="380" height="290"/></clipPath><marker id="pta-sec" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1 L8 5 L1 9 Z" style="fill:var(--tinta-suave)"/></marker></defs>
+<path d="M41.9 20V310M101.3 20V310M160.6 20V310M220 20V310M279.4 20V310M338.8 20V310M398.1 20V310M30 296.8H410M30 270.5H410M30 244.1H410M30 217.7H410M30 191.4H410M30 165H410M30 138.6H410M30 112.3H410M30 85.9H410M30 59.5H410M30 33.2H410" stroke="var(--rejilla)" stroke-width="1" fill="none"/>
+<line x1="30" y1="270.5" x2="414" y2="270.5" stroke="var(--tinta-suave)" stroke-width="1.25" marker-end="url(#pta-sec)"/><line x1="220" y1="310" x2="220" y2="16" stroke="var(--tinta-suave)" stroke-width="1.25" marker-end="url(#pta-sec)"/>
+<path d="M41.9 267.5V273.5M101.3 267.5V273.5M160.6 267.5V273.5M279.4 267.5V273.5M338.8 267.5V273.5M398.1 267.5V273.5M217 217.7H223M217 165H223M217 112.3H223M217 59.5H223" stroke="var(--tinta-suave)" stroke-width="1.25" fill="none"/><text x="41.9" y="289.5" font-size="15" fill="var(--tinta-suave)" text-anchor="middle" style="font-family:var(--f-codigo);font-weight:400">−3</text><text x="101.3" y="289.5" font-size="15" fill="var(--tinta-suave)" text-anchor="middle" style="font-family:var(--f-codigo);font-weight:400">−2</text><text x="160.6" y="289.5" font-size="15" fill="var(--tinta-suave)" text-anchor="middle" style="font-family:var(--f-codigo);font-weight:400">−1</text><text x="279.4" y="289.5" font-size="15" fill="var(--tinta-suave)" text-anchor="middle" style="font-family:var(--f-codigo);font-weight:400">1</text><text x="338.8" y="289.5" font-size="15" fill="var(--tinta-suave)" text-anchor="middle" style="font-family:var(--f-codigo);font-weight:400">2</text><text x="398.1" y="289.5" font-size="15" fill="var(--tinta-suave)" text-anchor="middle" style="font-family:var(--f-codigo);font-weight:400">3</text><text x="213" y="223" font-size="15" fill="var(--tinta-suave)" text-anchor="end" style="font-family:var(--f-codigo);font-weight:400">2</text><text x="213" y="170.2" font-size="15" fill="var(--tinta-suave)" text-anchor="end" style="font-family:var(--f-codigo);font-weight:400">4</text><text x="213" y="117.5" font-size="15" fill="var(--tinta-suave)" text-anchor="end" style="font-family:var(--f-codigo);font-weight:400">6</text><text x="213" y="64.8" font-size="15" fill="var(--tinta-suave)" text-anchor="end" style="font-family:var(--f-codigo);font-weight:400">8</text>
+<text x="408" y="262.5" font-size="16" fill="var(--tinta-suave)" text-anchor="end" font-style="italic">x</text>
+<g clip-path="url(#cl-sec)" stroke-linecap="round">
+<path id="sec-curva" fill="none" stroke="var(--azul)" stroke-width="2.5" stroke-linejoin="round"/>
+<line id="sec-linea" stroke="var(--tinta)" stroke-width="2.5"/>
+<line id="sec-dx" stroke="var(--verde)" stroke-width="2.5"/>
+<line id="sec-dy" stroke="var(--verde)" stroke-width="2.5"/>
+<line id="sec-tan" stroke="var(--acento)" stroke-width="2.5" stroke-dasharray="8 6"/>
+</g>
+<circle id="sec-P" r="6" fill="var(--acento)"/>
+<circle id="sec-Q" r="6" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="2.5"/>
+<text font-size="20" fill="var(--tinta)" id="sec-tP">P</text>
+<text font-size="20" fill="var(--tinta)" id="sec-tQ">Q</text>
+<text font-size="17" fill="var(--verde)" text-anchor="middle" id="sec-th">h</text>
+<text font-size="17" fill="var(--verde)" id="sec-tdy">Δy</text>
+<line x1="34" y1="341.2" x2="58" y2="341.2" stroke="var(--azul)" stroke-width="2.5" stroke-linecap="round"/><text x="65" y="346" font-size="15" fill="var(--tinta)">f(x) = x²</text><line x1="160.6" y1="341.2" x2="184.6" y2="341.2" stroke="var(--tinta)" stroke-width="2.5" stroke-linecap="round"/><text x="191.6" y="346" font-size="15" fill="var(--tinta)">secante PQ</text><line x1="295.6" y1="341.2" x2="319.6" y2="341.2" stroke="var(--acento)" stroke-width="2.5" stroke-dasharray="8 6" stroke-linecap="round"/><text x="326.6" y="346" font-size="15" fill="var(--tinta)">tangente en P</text>
+</svg>
       </div>
 
       <div class="controles">
@@ -547,6 +555,43 @@ input[type="range"] { width: 100%; accent-color: var(--acento); }
         <li data-reto="reto-horizontal">Encuentra el punto a donde la tangente queda horizontal, con h entre −0.1 y 0.1.</li>
       </ul>
     </div>
+    <div class="anima-caja" data-anima id="anima-secante">
+<svg id="an-svg" viewBox="0 0 480 400" role="img" aria-labelledby="t-anima">
+<title id="t-anima">Animación: sobre la parábola y = x al cuadrado, P queda fijo en x = 1.5 y Q se acerca a P. La secante PQ gira hasta confundirse con la tangente en P, y su pendiente, 3 + h, baja hasta 3.</title>
+<defs><clipPath id="cl-an"><rect x="56" y="20" width="406" height="242"/></clipPath><marker id="pta-an" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1 L8 5 L1 9 Z" style="fill:var(--tinta-suave)"/></marker></defs>
+<path d="M56 20V262M101.1 20V262M146.2 20V262M191.3 20V262M236.4 20V262M281.6 20V262M326.7 20V262M371.8 20V262M416.9 20V262M462 20V262M56 262H462M56 240H462M56 218H462M56 196H462M56 174H462M56 152H462M56 130H462M56 108H462M56 86H462M56 64H462M56 42H462M56 20H462" stroke="var(--rejilla)" stroke-width="1" fill="none"/>
+<line x1="56" y1="240" x2="466" y2="240" stroke="var(--tinta-suave)" stroke-width="1.25" marker-end="url(#pta-an)"/><line x1="146.2" y1="262" x2="146.2" y2="16" stroke="var(--tinta-suave)" stroke-width="1.25" marker-end="url(#pta-an)"/>
+<path d="M236.4 237V243M326.7 237V243M416.9 237V243M143.2 196H149.2M143.2 152H149.2M143.2 108H149.2M143.2 64H149.2M143.2 20H149.2" stroke="var(--tinta-suave)" stroke-width="1.25" fill="none"/><text x="236.4" y="260" font-size="16" fill="var(--tinta-suave)" text-anchor="middle" style="font-family:var(--f-codigo);font-weight:400">1</text><text x="326.7" y="260" font-size="16" fill="var(--tinta-suave)" text-anchor="middle" style="font-family:var(--f-codigo);font-weight:400">2</text><text x="416.9" y="260" font-size="16" fill="var(--tinta-suave)" text-anchor="middle" style="font-family:var(--f-codigo);font-weight:400">3</text><text x="139.2" y="201.6" font-size="16" fill="var(--tinta-suave)" text-anchor="end" style="font-family:var(--f-codigo);font-weight:400">2</text><text x="139.2" y="157.6" font-size="16" fill="var(--tinta-suave)" text-anchor="end" style="font-family:var(--f-codigo);font-weight:400">4</text><text x="139.2" y="113.6" font-size="16" fill="var(--tinta-suave)" text-anchor="end" style="font-family:var(--f-codigo);font-weight:400">6</text><text x="139.2" y="69.6" font-size="16" fill="var(--tinta-suave)" text-anchor="end" style="font-family:var(--f-codigo);font-weight:400">8</text><text x="139.2" y="25.6" font-size="16" fill="var(--tinta-suave)" text-anchor="end" style="font-family:var(--f-codigo);font-weight:400">10</text>
+<g clip-path="url(#cl-an)" stroke-linecap="round">
+<line id="an-ghost0" stroke="var(--tinta-suave)" stroke-width="1.25" opacity="0"/><line id="an-ghost1" stroke="var(--tinta-suave)" stroke-width="1.25" opacity="0"/><line id="an-ghost2" stroke="var(--tinta-suave)" stroke-width="1.25" opacity="0"/><line id="an-ghost3" stroke="var(--tinta-suave)" stroke-width="1.25" opacity="0"/>
+<path id="an-tri" fill="var(--verde)" fill-opacity=".14"/>
+<path d="M56.0,218.0 L58.0,219.0 L60.1,219.9 L62.1,220.9 L64.1,221.8 L66.2,222.7 L68.2,223.5 L70.2,224.4 L72.2,225.2 L74.3,226.0 L76.3,226.8 L78.3,227.5 L80.4,228.3 L82.4,229.0 L84.4,229.7 L86.5,230.3 L88.5,231.0 L90.5,231.6 L92.5,232.2 L94.6,232.8 L96.6,233.3 L98.6,233.9 L100.7,234.4 L102.7,234.9 L104.7,235.3 L106.8,235.8 L108.8,236.2 L110.8,236.6 L112.8,237.0 L114.9,237.3 L116.9,237.7 L118.9,238.0 L121.0,238.3 L123.0,238.5 L125.0,238.8 L127.0,239.0 L129.1,239.2 L131.1,239.4 L133.1,239.5 L135.2,239.7 L137.2,239.8 L139.2,239.9 L141.3,239.9 L143.3,240.0 L145.3,240.0 L147.3,240.0 L149.4,240.0 L151.4,239.9 L153.4,239.9 L155.5,239.8 L157.5,239.7 L159.5,239.5 L161.6,239.4 L163.6,239.2 L165.6,239.0 L167.7,238.8 L169.7,238.5 L171.7,238.2 L173.7,238.0 L175.8,237.6 L177.8,237.3 L179.8,236.9 L181.9,236.6 L183.9,236.2 L185.9,235.7 L187.9,235.3 L190.0,234.8 L192.0,234.3 L194.0,233.8 L196.1,233.3 L198.1,232.7 L200.1,232.1 L202.2,231.5 L204.2,230.9 L206.2,230.3 L208.2,229.6 L210.3,228.9 L212.3,228.2 L214.3,227.5 L216.4,226.7 L218.4,225.9 L220.4,225.1 L222.5,224.3 L224.5,223.4 L226.5,222.6 L228.6,221.7 L230.6,220.8 L232.6,219.8 L234.6,218.9 L236.7,217.9 L238.7,216.9 L240.7,215.9 L242.8,214.8 L244.8,213.7 L246.8,212.6 L248.9,211.5 L250.9,210.4 L252.9,209.2 L254.9,208.1 L257.0,206.9 L259.0,205.6 L261.0,204.4 L263.1,203.1 L265.1,201.8 L267.1,200.5 L269.1,199.2 L271.2,197.8 L273.2,196.4 L275.2,195.0 L277.3,193.6 L279.3,192.1 L281.3,190.7 L283.4,189.2 L285.4,187.7 L287.4,186.1 L289.4,184.6 L291.5,183.0 L293.5,181.4 L295.5,179.7 L297.6,178.1 L299.6,176.4 L301.6,174.7 L303.7,173.0 L305.7,171.3 L307.7,169.5 L309.8,167.7 L311.8,165.9 L313.8,164.1 L315.8,162.2 L317.9,160.4 L319.9,158.5 L321.9,156.6 L324.0,154.6 L326.0,152.7 L328.0,150.7 L330.1,148.7 L332.1,146.6 L334.1,144.6 L336.1,142.5 L338.2,140.4 L340.2,138.3 L342.2,136.2 L344.3,134.0 L346.3,131.8 L348.3,129.6 L350.4,127.4 L352.4,125.1 L354.4,122.9 L356.4,120.6 L358.5,118.2 L360.5,115.9 L362.5,113.5 L364.6,111.2 L366.6,108.8 L368.6,106.3 L370.6,103.9 L372.7,101.4 L374.7,98.9 L376.7,96.4 L378.8,93.8 L380.8,91.3 L382.8,88.7 L384.9,86.1 L386.9,83.5 L388.9,80.8 L390.9,78.1 L393.0,75.4 L395.0,72.7 L397.0,70.0 L399.1,67.2 L401.1,64.4 L403.1,61.6 L405.2,58.8 L407.2,55.9 L409.2,53.1 L411.2,50.2 L413.3,47.2 L415.3,44.3 L417.3,41.3 L419.4,38.4 L421.4,35.3 L423.4,32.3 L425.5,29.3 L427.5,26.2 L429.5,23.1 L431.5,20.0 L433.6,16.8 L435.6,13.7 L437.6,10.5 L439.7,7.3 L441.7,4.0 L443.7,0.8" fill="none" stroke="var(--azul)" stroke-width="2.5" stroke-linejoin="round"/>
+<line id="an-sec" stroke="var(--tinta)" stroke-width="2.5"/>
+<line id="an-dx" stroke="var(--verde)" stroke-width="2.5"/>
+<line id="an-dy" stroke="var(--verde)" stroke-width="2.5"/>
+<line x1="56" y1="355.5" x2="462" y2="58.5" stroke="var(--acento)" stroke-width="2.5" stroke-dasharray="8 6"/>
+</g>
+<circle id="an-Q" r="6" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="2.5"/>
+<circle cx="281.6" cy="190.5" r="6" fill="var(--acento)"/>
+<text id="an-tQ" font-size="18" fill="var(--tinta)" text-anchor="end">Q</text>
+<text id="an-th" font-size="17" fill="var(--verde)" text-anchor="middle" font-style="italic">h</text>
+<text id="an-tdy" font-size="17" fill="var(--verde)">Δy</text>
+<g class="etiqueta" data-punto="281.6 190.5"><path d="M281.6 190.5 L281.6 58 L267.6 58" stroke="var(--tinta)" stroke-width="1" fill="none" opacity=".7"/><circle cx="281.6" cy="190.5" r="3" fill="var(--tinta)"/><text x="261.6" y="62.5" font-size="13.5" font-weight="600" fill="var(--tinta)" text-anchor="end">P queda fijo</text><text x="261.6" y="79.5" font-size="12" fill="var(--tinta)" opacity=".75" text-anchor="end">aquí se mide</text></g>
+<line x1="58" y1="286.9" x2="82" y2="286.9" stroke="var(--azul)" stroke-width="2.5" stroke-linecap="round"/><text x="89" y="292" font-size="16" fill="var(--tinta)">y = x²</text><line x1="162.8" y1="286.9" x2="186.8" y2="286.9" stroke="var(--tinta)" stroke-width="2.5" stroke-linecap="round"/><text x="193.8" y="292" font-size="16" fill="var(--tinta)">secante PQ</text><line x1="303.4" y1="286.9" x2="327.4" y2="286.9" stroke="var(--acento)" stroke-width="2.5" stroke-dasharray="8 6" stroke-linecap="round"/><text x="334.4" y="292" font-size="16" fill="var(--tinta)">tangente en P</text>
+<text x="58" y="320" font-size="16" fill="var(--tinta-suave)">pendiente de la secante</text>
+<line x1="70" y1="360" x2="450" y2="360" stroke="var(--tinta-suave)" stroke-width="1.25"/>
+<path d="M70 356V364M146 354V366M222 356V364M298 354V366M374 356V364M450 354V366" stroke="var(--tinta-suave)" stroke-width="1.25"/>
+<line x1="146" y1="349" x2="146" y2="371" stroke="var(--acento)" stroke-width="2.5" stroke-linecap="round"/>
+<text x="146" y="388" font-size="16" fill="var(--acento)" text-anchor="middle">f′(1.5) = 3</text>
+<text x="298" y="388" font-size="16" fill="var(--tinta-suave)" text-anchor="middle" style="font-family:var(--f-codigo);font-weight:400">4</text>
+<text x="450" y="388" font-size="16" fill="var(--tinta-suave)" text-anchor="middle" style="font-family:var(--f-codigo);font-weight:400">5</text>
+<line id="an-gh" y1="360" y2="360" stroke="var(--verde)" stroke-width="2.5" stroke-linecap="round"/>
+<circle id="an-gm" cy="360" r="6" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="2.5"/>
+<text id="an-gv" y="342" font-size="16" fill="var(--tinta)" text-anchor="middle" style="font-family:var(--f-codigo);font-weight:400"></text>
+</svg>
+      <p class="anima-fase"><b id="an-fase-et">Dos puntos</b><span id="an-fase-tx"></span></p>
+    </div>
+
     <p>Ese número al que se acercan las pendientes de las secantes es la pendiente de la tangente. Tiene nombre propio: <strong>la derivada de f en a</strong>, que se escribe <span class="f"><i>f</i> ′(<i>a</i>)</span><a class="cita" href="https://openstax.org/books/c%C3%A1lculo-volumen-1/pages/3-1-definir-la-derivada">[1]</a>. El libro de OpenStax hace la misma estimación con una tabla de valores para <span class="f"><i>x</i><sup>2</sup></span> en 3 y obtiene <span class="f"><i>f</i> ′(3) = 6</span><a class="cita" href="https://openstax.org/books/c%C3%A1lculo-volumen-1/pages/3-1-definir-la-derivada">[1]</a>. Compruébalo arriba: es 2 por 3.</p>
   </section>
 
@@ -564,61 +609,65 @@ input[type="range"] { width: 100%; accent-color: var(--acento); }
         <p>Si cambias <i>a</i> por <i>x</i>, obtienes una <strong>función derivada</strong> <span class="f"><i>f</i> ′(<i>x</i>)</span> que da la pendiente en cada punto<a class="cita" href="https://openstax.org/books/calculus-volume-1/pages/3-2-the-derivative-as-a-function">[2]</a>.</p>
       </div>
       <div class="diagrama-caja" data-interaccion="diagrama" id="diagrama-def">
-        <svg class="diagrama-svg" viewBox="0 0 520 470" role="group" aria-labelledby="t-ana">
-          <title id="t-ana">Fórmula de la derivada con piezas que puedes tocar, y debajo la gráfica donde se ve cada pieza.</title>
-          <defs><pattern id="pp-ana" width="28.75" height="27" patternUnits="userSpaceOnUse" x="40" y="180"><path d="M28.75 0H0V27" fill="none" stroke="var(--verde)" stroke-opacity=".18"/></pattern></defs>
-          <text x="10" y="102" font-size="28" fill="var(--tinta)">f′(a) =</text>
-          <g data-nodo="lim" tabindex="0" role="button" aria-label="lím cuando h tiende a 0">
-            <rect x="116" y="46" width="94" height="86" rx="10"/>
-            <text x="163" y="86" font-size="28" text-anchor="middle">lím</text>
-            <text x="163" y="118" font-size="19" text-anchor="middle">h→0</text>
-          </g>
-          <g data-nodo="fah" tabindex="0" role="button" aria-label="f de a más h">
-            <rect x="222" y="12" width="120" height="60" rx="10"/>
-            <text x="282" y="52" font-size="26" text-anchor="middle">f(a+h)</text>
-          </g>
-          <text x="357" y="52" font-size="28" fill="var(--tinta)" text-anchor="middle">−</text>
-          <g data-nodo="fa" tabindex="0" role="button" aria-label="f de a">
-            <rect x="372" y="12" width="94" height="60" rx="10"/>
-            <text x="419" y="52" font-size="26" text-anchor="middle">f(a)</text>
-          </g>
-          <line x1="222" y1="84" x2="466" y2="84" stroke="var(--tinta)" stroke-width="2.5"/>
-          <g data-nodo="h" tabindex="0" role="button" aria-label="h">
-            <rect x="310" y="96" width="68" height="58" rx="10"/>
-            <text x="344" y="134" font-size="26" text-anchor="middle">h</text>
-          </g>
-          <rect x="40" y="180" width="460" height="270" fill="url(#pp-ana)"/>
-          <line x1="97.5" y1="180" x2="97.5" y2="450" stroke="var(--tinta-suave)" stroke-width="1.2"/>
-          <line x1="40" y1="450" x2="500" y2="450" stroke="var(--tinta-suave)" stroke-width="1.2"/>
-          <path d="M40.0,387.3 L63.0,390.4 L86.0,391.9 L109.0,391.9 L132.0,390.4 L155.0,387.3 L178.0,382.7 L201.0,376.5 L224.0,368.8 L247.0,359.6 L270.0,348.8 L293.0,336.4 L316.0,322.5 L339.0,307.1 L362.0,290.1 L385.0,271.6 L408.0,251.5 L431.0,229.9 L454.0,206.8 L477.0,182.1" fill="none" stroke="var(--azul)" stroke-width="3.5"/>
-          <line x1="84.7" y1="450" x2="500" y2="199.3" stroke="var(--tinta)" stroke-width="2.5"/>
-          <g data-une="lim">
-            <line x1="42.1" y1="450" x2="500" y2="242.7" stroke="var(--tinta-suave)" stroke-width="2" stroke-dasharray="6 5"/>
-            <line x1="40" y1="430.7" x2="500" y2="276.4" stroke="var(--acento)" stroke-width="3.5"/>
-            <circle cx="293" cy="336.4" r="5" fill="var(--fondo)" stroke="var(--tinta-suave)" stroke-width="2"/>
-            <text x="470" y="300" font-size="17" fill="var(--acento)" text-anchor="end">tangente</text>
-          </g>
-          <g data-une="fa">
-            <line x1="194" y1="450" x2="194" y2="372.9" stroke="var(--verde)" stroke-width="3"/>
-            <text x="186" y="420" font-size="17" fill="var(--verde)" text-anchor="end">f(a)</text>
-          </g>
-          <g data-une="fah">
-            <line x1="416" y1="450" x2="416" y2="261.8" stroke="var(--verde)" stroke-width="3"/>
-            <text x="424" y="372" font-size="17" fill="var(--verde)">f(a+h)</text>
-          </g>
-          <g data-une="h">
-            <line x1="212.5" y1="372.9" x2="396.5" y2="372.9" stroke="var(--acento)" stroke-width="3" stroke-dasharray="7 5"/>
-            <text x="304" y="396" font-size="19" fill="var(--acento)" text-anchor="middle">h</text>
-          </g>
-          <g data-une="fah fa">
-            <line x1="396.5" y1="372.9" x2="396.5" y2="261.8" stroke="var(--acento)" stroke-width="3" stroke-dasharray="7 5"/>
-            <text x="388" y="324" font-size="17" fill="var(--acento)" text-anchor="end">Δy</text>
-          </g>
-          <circle cx="212.5" cy="372.9" r="7" fill="var(--tinta)"/>
-          <circle cx="396.5" cy="261.8" r="7" fill="var(--tinta)"/>
-          <text x="214" y="356" font-size="19" fill="var(--tinta)" text-anchor="end">P</text>
-          <text x="380" y="252" font-size="19" fill="var(--tinta)" text-anchor="end">Q</text>
-        </svg>
+        <svg class="diagrama-svg" viewBox="0 0 520 500" role="group" aria-labelledby="t-ana">
+<title id="t-ana">Fórmula de la derivada con piezas que puedes tocar, y debajo la gráfica donde se ve cada pieza.</title>
+<defs><clipPath id="cl-ana"><rect x="40" y="180" width="460" height="272"/></clipPath><marker id="pta-ana" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1 L8 5 L1 9 Z" style="fill:var(--tinta-suave)"/></marker></defs>
+<text x="10" y="102" font-size="28" fill="var(--tinta)">f′(a) =</text>
+<g data-nodo="lim" tabindex="0" role="button" aria-label="lím cuando h tiende a 0">
+  <rect x="116" y="46" width="94" height="86" rx="10"/>
+  <text x="163" y="86" font-size="28" text-anchor="middle">lím</text>
+  <text x="163" y="118" font-size="19" text-anchor="middle">h→0</text>
+</g>
+<g data-nodo="fah" tabindex="0" role="button" aria-label="f de a más h">
+  <rect x="222" y="12" width="120" height="60" rx="10"/>
+  <text x="282" y="52" font-size="26" text-anchor="middle">f(a+h)</text>
+</g>
+<text x="357" y="52" font-size="28" fill="var(--tinta)" text-anchor="middle">−</text>
+<g data-nodo="fa" tabindex="0" role="button" aria-label="f de a">
+  <rect x="372" y="12" width="94" height="60" rx="10"/>
+  <text x="419" y="52" font-size="26" text-anchor="middle">f(a)</text>
+</g>
+<line x1="222" y1="84" x2="466" y2="84" stroke="var(--tinta)" stroke-width="2.5"/>
+<g data-nodo="h" tabindex="0" role="button" aria-label="h">
+  <rect x="310" y="96" width="68" height="58" rx="10"/>
+  <text x="344" y="134" font-size="26" text-anchor="middle">h</text>
+</g>
+<path d="M78.3 180V452M126.2 180V452M174.2 180V452M222.1 180V452M270 180V452M317.9 180V452M365.8 180V452M413.7 180V452M461.7 180V452M40 410.8H500M40 369.6H500M40 328.4H500M40 287.2H500M40 245.9H500M40 204.7H500" stroke="var(--rejilla)" stroke-width="1" fill="none"/>
+<line x1="40" y1="452" x2="504" y2="452" stroke="var(--tinta-suave)" stroke-width="1.25" marker-end="url(#pta-ana)"/><line x1="78.3" y1="452" x2="78.3" y2="176" stroke="var(--tinta-suave)" stroke-width="1.25" marker-end="url(#pta-ana)"/>
+<path d="M174.2 449V455M365.8 449V455" stroke="var(--tinta-suave)" stroke-width="1.25"/>
+<text x="174.2" y="475" font-size="18" fill="var(--tinta-suave)" text-anchor="middle" font-style="italic">a</text>
+<text x="365.8" y="475" font-size="18" fill="var(--tinta-suave)" text-anchor="middle" font-style="italic">a + h</text>
+<path d="M40.0,417.1 L42.3,417.3 L44.6,417.5 L46.9,417.7 L49.2,417.9 L51.5,418.1 L53.8,418.2 L56.1,418.4 L58.4,418.5 L60.7,418.6 L63.0,418.7 L65.3,418.8 L67.6,418.9 L69.9,418.9 L72.2,419.0 L74.5,419.0 L76.8,419.0 L79.1,419.0 L81.4,419.0 L83.7,419.0 L86.0,419.0 L88.3,418.9 L90.6,418.8 L92.9,418.7 L95.2,418.6 L97.5,418.5 L99.8,418.4 L102.1,418.3 L104.4,418.1 L106.7,417.9 L109.0,417.8 L111.3,417.6 L113.6,417.4 L115.9,417.1 L118.2,416.9 L120.5,416.6 L122.8,416.4 L125.1,416.1 L127.4,415.8 L129.7,415.5 L132.0,415.2 L134.3,414.8 L136.6,414.5 L138.9,414.1 L141.2,413.7 L143.5,413.3 L145.8,412.9 L148.1,412.5 L150.4,412.0 L152.7,411.6 L155.0,411.1 L157.3,410.6 L159.6,410.1 L161.9,409.6 L164.2,409.1 L166.5,408.6 L168.8,408.0 L171.1,407.4 L173.4,406.9 L175.7,406.3 L178.0,405.7 L180.3,405.0 L182.6,404.4 L184.9,403.7 L187.2,403.1 L189.5,402.4 L191.8,401.7 L194.1,401.0 L196.4,400.3 L198.7,399.5 L201.0,398.8 L203.3,398.0 L205.6,397.2 L207.9,396.4 L210.2,395.6 L212.5,394.8 L214.8,394.0 L217.1,393.1 L219.4,392.2 L221.7,391.4 L224.0,390.5 L226.3,389.6 L228.6,388.6 L230.9,387.7 L233.2,386.7 L235.5,385.8 L237.8,384.8 L240.1,383.8 L242.4,382.8 L244.7,381.8 L247.0,380.7 L249.3,379.7 L251.6,378.6 L253.9,377.5 L256.2,376.4 L258.5,375.3 L260.8,374.2 L263.1,373.1 L265.4,371.9 L267.7,370.8 L270.0,369.6 L272.3,368.4 L274.6,367.2 L276.9,366.0 L279.2,364.7 L281.5,363.5 L283.8,362.2 L286.1,360.9 L288.4,359.6 L290.7,358.3 L293.0,357.0 L295.3,355.7 L297.6,354.3 L299.9,352.9 L302.2,351.6 L304.5,350.2 L306.8,348.8 L309.1,347.3 L311.4,345.9 L313.7,344.5 L316.0,343.0 L318.3,341.5 L320.6,340.0 L322.9,338.5 L325.2,337.0 L327.5,335.5 L329.8,333.9 L332.1,332.3 L334.4,330.8 L336.7,329.2 L339.0,327.6 L341.3,325.9 L343.6,324.3 L345.9,322.7 L348.2,321.0 L350.5,319.3 L352.8,317.6 L355.1,315.9 L357.4,314.2 L359.7,312.5 L362.0,310.7 L364.3,308.9 L366.6,307.2 L368.9,305.4 L371.2,303.6 L373.5,301.7 L375.8,299.9 L378.1,298.1 L380.4,296.2 L382.7,294.3 L385.0,292.4 L387.3,290.5 L389.6,288.6 L391.9,286.7 L394.2,284.7 L396.5,282.8 L398.8,280.8 L401.1,278.8 L403.4,276.8 L405.7,274.8 L408.0,272.7 L410.3,270.7 L412.6,268.6 L414.9,266.5 L417.2,264.4 L419.5,262.3 L421.8,260.2 L424.1,258.1 L426.4,255.9 L428.7,253.8 L431.0,251.6 L433.3,249.4 L435.6,247.2 L437.9,245.0 L440.2,242.7 L442.5,240.5 L444.8,238.2 L447.1,236.0 L449.4,233.7 L451.7,231.4 L454.0,229.0 L456.3,226.7 L458.6,224.4 L460.9,222.0 L463.2,219.6 L465.5,217.2 L467.8,214.8 L470.1,212.4 L472.4,210.0 L474.7,207.5 L477.0,205.1 L479.3,202.6 L481.6,200.1 L483.9,197.6 L486.2,195.1 L488.5,192.5 L490.8,190.0 L493.1,187.4 L495.4,184.9 L497.7,182.3 L500.0,179.7" fill="none" stroke="var(--azul)" stroke-width="2.5" stroke-linejoin="round"/>
+<g clip-path="url(#cl-ana)" stroke-linecap="round"><line x1="40" y1="475.9" x2="500" y2="238.5" stroke="var(--tinta)" stroke-width="2.5"/></g>
+<g data-une="lim">
+<g clip-path="url(#cl-ana)" stroke-linecap="round"><line x1="40" y1="458.6" x2="500" y2="280.6" stroke="var(--tinta-suave)" stroke-width="2.5" stroke-dasharray="7 6"/><line x1="40" y1="441.3" x2="500" y2="322.6" stroke="var(--acento)" stroke-width="2.5"/></g>
+<circle cx="270" cy="369.6" r="5" fill="var(--fondo)" stroke="var(--tinta-suave)" stroke-width="2.5"/>
+<text x="466.5" y="357.2" font-size="17" fill="var(--acento)" text-anchor="middle">tangente</text>
+</g>
+<g data-une="fa">
+<line x1="174.2" y1="452" x2="174.2" y2="406.7" stroke="var(--azul)" stroke-width="2.5"/>
+<text x="182.2" y="442" font-size="17" fill="var(--azul)">f(a)</text>
+</g>
+<g data-une="fah">
+<line x1="365.8" y1="452" x2="365.8" y2="307.8" stroke="var(--azul)" stroke-width="2.5"/>
+<text x="373.8" y="442" font-size="17" fill="var(--azul)">f(a+h)</text>
+</g>
+<g data-une="h">
+<line x1="174.2" y1="406.7" x2="365.8" y2="406.7" stroke="var(--verde)" stroke-width="2.5"/>
+<text x="270" y="427.7" font-size="17" fill="var(--verde)" text-anchor="middle" font-style="italic">h</text>
+</g>
+<g data-une="fah fa">
+<path d="M369.8 307.8H387.8M369.8 406.7H387.8" stroke="var(--verde)" stroke-width="1"/>
+<line x1="381.8" y1="307.8" x2="381.8" y2="406.7" stroke="var(--verde)" stroke-width="2.5"/>
+<text x="390.8" y="363.2" font-size="17" fill="var(--verde)">Δy</text>
+</g>
+<circle cx="174.2" cy="406.7" r="6" fill="var(--tinta)"/>
+<circle cx="365.8" cy="307.8" r="6" fill="var(--tinta)"/>
+<text x="164.2" y="396.7" font-size="19" fill="var(--tinta)" text-anchor="end">P</text>
+<text x="355.8" y="297.8" font-size="19" fill="var(--tinta)" text-anchor="end">Q</text>
+<g class="etiqueta" data-punto="476.1 206"><path d="M476.1 206 L246 206" stroke="var(--azul)" stroke-width="1" fill="none" opacity=".7"/><circle cx="476.1" cy="206" r="3" fill="var(--azul)"/><text x="240" y="210.5" font-size="13.5" font-weight="600" fill="var(--azul)" text-anchor="end">Curva y = f(x)</text><text x="240" y="227.5" font-size="12" fill="var(--tinta)" opacity=".75" text-anchor="end">la función</text></g>
+<g class="etiqueta" data-punto="346.7 317.6"><path d="M346.7 317.6 L246 317.6" stroke="var(--tinta)" stroke-width="1" fill="none" opacity=".7"/><circle cx="346.7" cy="317.6" r="3" fill="var(--tinta)"/><text x="240" y="322.1" font-size="13.5" font-weight="600" fill="var(--tinta)" text-anchor="end">Secante PQ</text><text x="240" y="339.1" font-size="12" fill="var(--tinta)" opacity=".75" text-anchor="end">pasa por P y por Q</text></g>
+</svg>
         <div class="ficha" id="ficha-def" aria-live="polite"></div>
         <ul data-retos>
           <li data-reto="reto-anatomia">Toca las cuatro piezas de la fórmula y encuentra cada una en la gráfica.</li>
@@ -813,13 +862,19 @@ input[type="range"] { width: 100%; accent-color: var(--acento); }
       </div>
       <figure class="figura">
         <svg id="pr-svg" viewBox="0 0 320 220" role="img" aria-labelledby="t-pr">
-          <title id="t-pr">Gráfica de la función del ejercicio en azul y, después de comprobar, la de su derivada en amarillo punteado.</title>
-          <rect x="20" y="20" width="280" height="180" fill="none" stroke="var(--borde)"/>
-          <line x1="160" y1="20" x2="160" y2="200" stroke="var(--tinta-suave)" stroke-width="1"/>
-          <line x1="20" y1="110" x2="300" y2="110" stroke="var(--tinta-suave)" stroke-width="1"/>
-          <path id="pr-f" fill="none" stroke="var(--azul)" stroke-width="3"/>
-          <path id="pr-d" fill="none" stroke="var(--acento)" stroke-width="3" stroke-dasharray="7 5"/>
-        </svg>
+<title id="t-pr">Gráfica de la función del ejercicio en azul y, después de comprobar, la de su derivada en amarillo punteado.</title>
+<rect x="20" y="20" width="280" height="180" fill="none" stroke="var(--borde)" stroke-width="1"/>
+<path d="M72.5 20V200M247.5 20V200M20 67.5H300M20 152.5H300M20 25H300M20 195H300" stroke="var(--rejilla)" stroke-width="1"/>
+<line x1="160" y1="20" x2="160" y2="200" stroke="var(--tinta-suave)" stroke-width="1.25"/>
+<line x1="20" y1="110" x2="300" y2="110" stroke="var(--tinta-suave)" stroke-width="1.25"/>
+<path d="M72.5 107V113M247.5 107V113M157 25H163M157 195H163" stroke="var(--tinta-suave)" stroke-width="1.25"/>
+<text x="72.5" y="193" font-size="12" fill="var(--tinta-suave)" text-anchor="middle" style="font-family:var(--f-codigo);font-weight:400">−1</text>
+<text x="247.5" y="193" font-size="12" fill="var(--tinta-suave)" text-anchor="middle" style="font-family:var(--f-codigo);font-weight:400">1</text>
+<text x="166" y="34" font-size="12" fill="var(--tinta-suave)" style="font-family:var(--f-codigo);font-weight:400" id="pr-ymax"></text>
+<text x="166" y="192" font-size="12" fill="var(--tinta-suave)" style="font-family:var(--f-codigo);font-weight:400" id="pr-ymin"></text>
+<path id="pr-f" fill="none" stroke="var(--azul)" stroke-width="2.5" stroke-linejoin="round"/>
+<path id="pr-d" fill="none" stroke="var(--acento)" stroke-width="2.5" stroke-dasharray="7 5"/>
+</svg>
         <div class="leyenda-graf"><span class="lf">f(x)</span><span class="ld" id="pr-ley-d">f ′(x), al comprobar</span></div>
       </figure>
     </div>
@@ -854,31 +909,34 @@ input[type="range"] { width: 100%; accent-color: var(--acento); }
           <h3>f(x) = x² − 2x</h3>
           <p class="sub">Lo que vale: una altura</p>
           <svg id="vp-f" viewBox="0 0 360 270" role="img" aria-labelledby="t-vpf">
-            <title id="t-vpf">Parábola con su punto más bajo en x = 1. Un punto rojo se mueve con el control x y lleva su tangente.</title>
-            <defs><pattern id="pp-vp1" width="60" height="32.86" patternUnits="userSpaceOnUse" x="30" y="20"><path d="M60 0H0V32.86" fill="none" stroke="var(--verde)" stroke-opacity=".2"/></pattern></defs>
-            <rect x="30" y="20" width="300" height="230" fill="url(#pp-vp1)"/>
-            <line x1="120" y1="20" x2="120" y2="250" stroke="var(--tinta-suave)" stroke-width="1.2"/>
-            <line x1="30" y1="200.7" x2="330" y2="200.7" stroke="var(--tinta-suave)" stroke-width="1.2"/>
-            <text x="180" y="196" font-size="14" fill="var(--tinta-suave)" text-anchor="middle">1</text>
-            <path d="M30.0,28.2 L40.0,54.7 L50.0,79.3 L60.0,102.1 L70.0,123.1 L80.0,142.3 L90.0,159.6 L100.0,175.2 L110.0,188.8 L120.0,200.7 L130.0,210.8 L140.0,219.0 L150.0,225.4 L160.0,229.9 L170.0,232.7 L180.0,233.6 L190.0,232.7 L200.0,229.9 L210.0,225.4 L220.0,219.0 L230.0,210.8 L240.0,200.7 L250.0,188.8 L260.0,175.2 L270.0,159.6 L280.0,142.3 L290.0,123.1 L300.0,102.1 L310.0,79.3 L320.0,54.7 L330.0,28.2" fill="none" stroke="var(--azul)" stroke-width="3.5"/>
-            <line id="vp-tan" stroke="var(--acento)" stroke-width="3.5" stroke-linecap="round"/>
-            <circle id="vp-pt" r="7" fill="var(--acento)"/>
-          </svg>
+<title id="t-vpf">Parábola con su punto más bajo en x = 1. Un punto rojo se mueve con el control x y lleva su tangente.</title>
+<defs><marker id="pta-vpf" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1 L8 5 L1 9 Z" style="fill:var(--tinta-suave)"/></marker></defs>
+<path d="M60 20V250M120 20V250M180 20V250M240 20V250M300 20V250M30 233.6H330M30 200.7H330M30 167.9H330M30 135H330M30 102.1H330M30 69.3H330M30 36.4H330" stroke="var(--rejilla)" stroke-width="1" fill="none"/>
+<line x1="30" y1="200.7" x2="334" y2="200.7" stroke="var(--tinta-suave)" stroke-width="1.25" marker-end="url(#pta-vpf)"/><line x1="120" y1="250" x2="120" y2="16" stroke="var(--tinta-suave)" stroke-width="1.25" marker-end="url(#pta-vpf)"/>
+<path d="M60 197.7V203.7M180 197.7V203.7M240 197.7V203.7M300 197.7V203.7M117 167.9H123M117 135H123M117 102.1H123M117 69.3H123M117 36.4H123" stroke="var(--tinta-suave)" stroke-width="1.25" fill="none"/><text x="60" y="217.2" font-size="12.5" fill="var(--tinta-suave)" text-anchor="middle" style="font-family:var(--f-codigo);font-weight:400">−1</text><text x="180" y="217.2" font-size="12.5" fill="var(--tinta-suave)" text-anchor="middle" style="font-family:var(--f-codigo);font-weight:400">1</text><text x="240" y="217.2" font-size="12.5" fill="var(--tinta-suave)" text-anchor="middle" style="font-family:var(--f-codigo);font-weight:400">2</text><text x="300" y="217.2" font-size="12.5" fill="var(--tinta-suave)" text-anchor="middle" style="font-family:var(--f-codigo);font-weight:400">3</text><text x="113" y="172.2" font-size="12.5" fill="var(--tinta-suave)" text-anchor="end" style="font-family:var(--f-codigo);font-weight:400">1</text><text x="113" y="139.4" font-size="12.5" fill="var(--tinta-suave)" text-anchor="end" style="font-family:var(--f-codigo);font-weight:400">2</text><text x="113" y="106.5" font-size="12.5" fill="var(--tinta-suave)" text-anchor="end" style="font-family:var(--f-codigo);font-weight:400">3</text><text x="113" y="73.7" font-size="12.5" fill="var(--tinta-suave)" text-anchor="end" style="font-family:var(--f-codigo);font-weight:400">4</text><text x="113" y="40.8" font-size="12.5" fill="var(--tinta-suave)" text-anchor="end" style="font-family:var(--f-codigo);font-weight:400">5</text>
+<text x="328" y="193.7" font-size="14" fill="var(--tinta-suave)" text-anchor="end" font-style="italic">x</text>
+<path d="M30.0,28.2 L31.5,32.3 L33.0,36.3 L34.5,40.4 L36.0,44.3 L37.5,48.2 L39.0,52.1 L40.5,56.0 L42.0,59.8 L43.5,63.5 L45.0,67.2 L46.5,70.9 L48.0,74.5 L49.5,78.1 L51.0,81.7 L52.5,85.2 L54.0,88.7 L55.5,92.1 L57.0,95.5 L58.5,98.8 L60.0,102.1 L61.5,105.4 L63.0,108.6 L64.5,111.8 L66.0,115.0 L67.5,118.1 L69.0,121.1 L70.5,124.1 L72.0,127.1 L73.5,130.1 L75.0,132.9 L76.5,135.8 L78.0,138.6 L79.5,141.4 L81.0,144.1 L82.5,146.8 L84.0,149.5 L85.5,152.1 L87.0,154.6 L88.5,157.2 L90.0,159.6 L91.5,162.1 L93.0,164.5 L94.5,166.9 L96.0,169.2 L97.5,171.5 L99.0,173.7 L100.5,175.9 L102.0,178.0 L103.5,180.2 L105.0,182.2 L106.5,184.3 L108.0,186.3 L109.5,188.2 L111.0,190.1 L112.5,192.0 L114.0,193.8 L115.5,195.6 L117.0,197.3 L118.5,199.1 L120.0,200.7 L121.5,202.3 L123.0,203.9 L124.5,205.5 L126.0,207.0 L127.5,208.4 L129.0,209.8 L130.5,211.2 L132.0,212.5 L133.5,213.8 L135.0,215.1 L136.5,216.3 L138.0,217.5 L139.5,218.6 L141.0,219.7 L142.5,220.7 L144.0,221.7 L145.5,222.7 L147.0,223.6 L148.5,224.5 L150.0,225.4 L151.5,226.2 L153.0,226.9 L154.5,227.6 L156.0,228.3 L157.5,229.0 L159.0,229.5 L160.5,230.1 L162.0,230.6 L163.5,231.1 L165.0,231.5 L166.5,231.9 L168.0,232.3 L169.5,232.6 L171.0,232.8 L172.5,233.1 L174.0,233.2 L175.5,233.4 L177.0,233.5 L178.5,233.6 L180.0,233.6 L181.5,233.6 L183.0,233.5 L184.5,233.4 L186.0,233.2 L187.5,233.1 L189.0,232.8 L190.5,232.6 L192.0,232.3 L193.5,231.9 L195.0,231.5 L196.5,231.1 L198.0,230.6 L199.5,230.1 L201.0,229.5 L202.5,229.0 L204.0,228.3 L205.5,227.6 L207.0,226.9 L208.5,226.2 L210.0,225.4 L211.5,224.5 L213.0,223.6 L214.5,222.7 L216.0,221.7 L217.5,220.7 L219.0,219.7 L220.5,218.6 L222.0,217.5 L223.5,216.3 L225.0,215.1 L226.5,213.8 L228.0,212.5 L229.5,211.2 L231.0,209.8 L232.5,208.4 L234.0,207.0 L235.5,205.5 L237.0,203.9 L238.5,202.3 L240.0,200.7 L241.5,199.1 L243.0,197.3 L244.5,195.6 L246.0,193.8 L247.5,192.0 L249.0,190.1 L250.5,188.2 L252.0,186.3 L253.5,184.3 L255.0,182.2 L256.5,180.2 L258.0,178.0 L259.5,175.9 L261.0,173.7 L262.5,171.5 L264.0,169.2 L265.5,166.9 L267.0,164.5 L268.5,162.1 L270.0,159.6 L271.5,157.2 L273.0,154.6 L274.5,152.1 L276.0,149.5 L277.5,146.8 L279.0,144.1 L280.5,141.4 L282.0,138.6 L283.5,135.8 L285.0,132.9 L286.5,130.1 L288.0,127.1 L289.5,124.1 L291.0,121.1 L292.5,118.1 L294.0,115.0 L295.5,111.8 L297.0,108.6 L298.5,105.4 L300.0,102.1 L301.5,98.8 L303.0,95.5 L304.5,92.1 L306.0,88.7 L307.5,85.2 L309.0,81.7 L310.5,78.1 L312.0,74.5 L313.5,70.9 L315.0,67.2 L316.5,63.5 L318.0,59.8 L319.5,56.0 L321.0,52.1 L322.5,48.2 L324.0,44.3 L325.5,40.4 L327.0,36.3 L328.5,32.3 L330.0,28.2" fill="none" stroke="var(--azul)" stroke-width="2.5" stroke-linejoin="round"/>
+<g class="etiqueta" data-punto="180 233.6"><path d="M180 233.6 L180 239.6 L112 239.6" stroke="var(--azul)" stroke-width="1" fill="none" opacity=".7"/><circle cx="180" cy="233.6" r="3" fill="var(--azul)"/><text x="106" y="244.1" font-size="13.5" font-weight="600" fill="var(--azul)" text-anchor="end">Mínimo</text><text x="106" y="261.1" font-size="12" fill="var(--tinta)" opacity=".75" text-anchor="end">f(1) = −1</text></g>
+<line id="vp-tan" stroke="var(--acento)" stroke-width="2.5" stroke-linecap="round"/>
+<circle id="vp-pt" r="6" fill="var(--acento)" stroke="var(--fondo)" stroke-width="2.5"/>
+</svg>
         </div>
         <div>
           <h3>f ′(x) = 2x − 2</h3>
           <p class="sub">La pendiente de f en cada x</p>
           <svg id="vp-d" viewBox="0 0 360 270" role="img" aria-labelledby="t-vpd">
-            <title id="t-vpd">Recta de la derivada, que cruza el eje horizontal en x = 1. Un punto rojo marca el valor de la pendiente en el x elegido.</title>
-            <defs><pattern id="pp-vp2" width="60" height="20.9" patternUnits="userSpaceOnUse" x="30" y="20"><path d="M60 0H0V20.9" fill="none" stroke="var(--verde)" stroke-opacity=".2"/></pattern></defs>
-            <rect x="30" y="20" width="300" height="230" fill="url(#pp-vp2)"/>
-            <line x1="120" y1="20" x2="120" y2="250" stroke="var(--tinta-suave)" stroke-width="1.2"/>
-            <line x1="30" y1="135" x2="330" y2="135" stroke="var(--tinta-suave)" stroke-width="1.2"/>
-            <text x="186" y="152" font-size="14" fill="var(--tinta-suave)">1</text>
-            <line x1="30.0" y1="239.5" x2="330.0" y2="30.5" stroke="var(--tinta)" stroke-width="3"/>
-            <line id="vp-guia" stroke="var(--acento)" stroke-width="2" stroke-dasharray="5 4"/>
-            <circle id="vp-dpt" r="7" fill="var(--acento)"/>
-          </svg>
+<title id="t-vpd">Recta de la derivada, que cruza el eje horizontal en x = 1. Un punto rojo marca el valor de la pendiente en el x elegido.</title>
+<defs><marker id="pta-vpd" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1 L8 5 L1 9 Z" style="fill:var(--tinta-suave)"/></marker></defs>
+<path d="M60 20V250M120 20V250M180 20V250M240 20V250M300 20V250M30 218.6H330M30 176.8H330M30 135H330M30 93.2H330M30 51.4H330" stroke="var(--rejilla)" stroke-width="1" fill="none"/>
+<line x1="30" y1="135" x2="334" y2="135" stroke="var(--tinta-suave)" stroke-width="1.25" marker-end="url(#pta-vpd)"/><line x1="120" y1="250" x2="120" y2="16" stroke="var(--tinta-suave)" stroke-width="1.25" marker-end="url(#pta-vpd)"/>
+<path d="M60 132V138M180 132V138M240 132V138M300 132V138M117 218.6H123M117 93.2H123M117 51.4H123" stroke="var(--tinta-suave)" stroke-width="1.25" fill="none"/><text x="60" y="151.5" font-size="12.5" fill="var(--tinta-suave)" text-anchor="middle" style="font-family:var(--f-codigo);font-weight:400">−1</text><text x="180" y="151.5" font-size="12.5" fill="var(--tinta-suave)" text-anchor="middle" style="font-family:var(--f-codigo);font-weight:400">1</text><text x="240" y="151.5" font-size="12.5" fill="var(--tinta-suave)" text-anchor="middle" style="font-family:var(--f-codigo);font-weight:400">2</text><text x="300" y="151.5" font-size="12.5" fill="var(--tinta-suave)" text-anchor="middle" style="font-family:var(--f-codigo);font-weight:400">3</text><text x="113" y="223" font-size="12.5" fill="var(--tinta-suave)" text-anchor="end" style="font-family:var(--f-codigo);font-weight:400">−4</text><text x="113" y="97.6" font-size="12.5" fill="var(--tinta-suave)" text-anchor="end" style="font-family:var(--f-codigo);font-weight:400">2</text><text x="113" y="55.7" font-size="12.5" fill="var(--tinta-suave)" text-anchor="end" style="font-family:var(--f-codigo);font-weight:400">4</text>
+<text x="328" y="128" font-size="14" fill="var(--tinta-suave)" text-anchor="end" font-style="italic">x</text>
+<line x1="30" y1="239.5" x2="330" y2="30.5" stroke="var(--acento)" stroke-width="2.5" stroke-linecap="round"/>
+<g class="etiqueta" data-punto="285 61.8"><path d="M285 61.8 L184 61.8" stroke="var(--acento)" stroke-width="1" fill="none" opacity=".7"/><circle cx="285" cy="61.8" r="3" fill="var(--acento)"/><text x="178" y="66.3" font-size="13.5" font-weight="600" fill="var(--acento)" text-anchor="end">f′ > 0</text><text x="178" y="83.3" font-size="12" fill="var(--tinta)" opacity=".75" text-anchor="end">f sube</text></g>
+<g class="etiqueta" data-punto="75 208.2"><path d="M75 208.2 L196 208.2" stroke="var(--acento)" stroke-width="1" fill="none" opacity=".7"/><circle cx="75" cy="208.2" r="3" fill="var(--acento)"/><text x="202" y="212.7" font-size="13.5" font-weight="600" fill="var(--acento)">f′ < 0</text><text x="202" y="229.7" font-size="12" fill="var(--tinta)" opacity=".75">f baja</text></g>
+<line id="vp-guia" stroke="var(--acento)" stroke-width="1" stroke-dasharray="4 4"/>
+<circle id="vp-dpt" r="6" fill="var(--acento)" stroke="var(--fondo)" stroke-width="2.5"/>
+</svg>
         </div>
       </div>
       <div class="control vp-control">
@@ -912,13 +970,14 @@ input[type="range"] { width: 100%; accent-color: var(--acento); }
           <p>Es la más común en ingeniería y física<a class="cita" href="https://openstax.org/books/calculus-volume-1/pages/3-2-the-derivative-as-a-function">[2]</a>. <span class="sin-fuente">Aunque parece fracción, en Cálculo I trátala como un solo símbolo: no «tachas» las d.</span></p>
         </div>
         <svg viewBox="0 0 160 160" width="160" role="img" aria-labelledby="t-leib">
-          <title id="t-leib">Pequeño escalón sobre la tangente: dx de avance y dy de subida.</title>
-          <line x1="10" y1="150" x2="150" y2="20" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
-          <line x1="50" y1="113" x2="110" y2="113" stroke="currentColor" stroke-width="2.5" stroke-dasharray="5 4"/>
-          <line x1="110" y1="113" x2="110" y2="57" stroke="currentColor" stroke-width="2.5" stroke-dasharray="5 4"/>
-          <text x="80" y="135" font-size="18" fill="currentColor" text-anchor="middle">dx</text>
-          <text x="118" y="92" font-size="18" fill="currentColor">dy</text>
-        </svg>
+<title id="t-leib">Pequeño escalón sobre la tangente: dx de avance y dy de subida.</title>
+<path d="M14.2,136.8 L14.9,136.7 L15.6,136.7 L16.2,136.6 L16.9,136.6 L17.6,136.5 L18.2,136.5 L18.9,136.4 L19.6,136.3 L20.2,136.2 L20.9,136.2 L21.6,136.1 L22.2,136.0 L22.9,135.9 L23.6,135.8 L24.2,135.6 L24.9,135.5 L25.6,135.4 L26.2,135.3 L26.9,135.1 L27.6,135.0 L28.2,134.9 L28.9,134.7 L29.6,134.5 L30.2,134.4 L30.9,134.2 L31.6,134.1 L32.2,133.9 L32.9,133.7 L33.6,133.5 L34.2,133.3 L34.9,133.1 L35.6,132.9 L36.2,132.7 L36.9,132.5 L37.6,132.3 L38.2,132.0 L38.9,131.8 L39.6,131.6 L40.2,131.3 L40.9,131.1 L41.6,130.8 L42.2,130.6 L42.9,130.3 L43.5,130.0 L44.2,129.8 L44.9,129.5 L45.5,129.2 L46.2,128.9 L46.9,128.6 L47.5,128.3 L48.2,128.0 L48.9,127.7 L49.5,127.4 L50.2,127.0 L50.9,126.7 L51.5,126.4 L52.2,126.0 L52.9,125.7 L53.5,125.4 L54.2,125.0 L54.9,124.6 L55.5,124.3 L56.2,123.9 L56.9,123.5 L57.5,123.1 L58.2,122.8 L58.9,122.4 L59.5,122.0 L60.2,121.6 L60.9,121.2 L61.5,120.7 L62.2,120.3 L62.9,119.9 L63.5,119.5 L64.2,119.0 L64.9,118.6 L65.5,118.1 L66.2,117.7 L66.9,117.2 L67.5,116.8 L68.2,116.3 L68.9,115.8 L69.5,115.3 L70.2,114.9 L70.9,114.4 L71.5,113.9 L72.2,113.4 L72.9,112.9 L73.5,112.4 L74.2,111.8 L74.9,111.3 L75.5,110.8 L76.2,110.3 L76.9,109.7 L77.5,109.2 L78.2,108.6 L78.9,108.1 L79.5,107.5 L80.2,106.9 L80.8,106.4 L81.5,105.8 L82.2,105.2 L82.8,104.6 L83.5,104.0 L84.2,103.4 L84.8,102.8 L85.5,102.2 L86.2,101.6 L86.8,101.0 L87.5,100.4 L88.2,99.7 L88.8,99.1 L89.5,98.5 L90.2,97.8 L90.8,97.2 L91.5,96.5 L92.2,95.8 L92.8,95.2 L93.5,94.5 L94.2,93.8 L94.8,93.1 L95.5,92.4 L96.2,91.8 L96.8,91.1 L97.5,90.3 L98.2,89.6 L98.8,88.9 L99.5,88.2 L100.2,87.5 L100.8,86.7 L101.5,86.0 L102.2,85.3 L102.8,84.5 L103.5,83.8 L104.2,83.0 L104.8,82.2 L105.5,81.5 L106.2,80.7 L106.8,79.9 L107.5,79.1 L108.2,78.3 L108.8,77.5 L109.5,76.7 L110.2,75.9 L110.8,75.1 L111.5,74.3 L112.2,73.5 L112.8,72.6 L113.5,71.8 L114.2,71.0 L114.8,70.1 L115.5,69.3 L116.1,68.4 L116.8,67.5 L117.5,66.7 L118.1,65.8 L118.8,64.9 L119.5,64.0 L120.1,63.1 L120.8,62.3 L121.5,61.4 L122.1,60.4 L122.8,59.5 L123.5,58.6 L124.1,57.7 L124.8,56.8 L125.5,55.8 L126.1,54.9 L126.8,54.0 L127.5,53.0 L128.1,52.1 L128.8,51.1 L129.5,50.1 L130.1,49.2 L130.8,48.2 L131.5,47.2 L132.1,46.2 L132.8,45.2 L133.5,44.2 L134.1,43.2 L134.8,42.2 L135.5,41.2 L136.1,40.2 L136.8,39.2 L137.5,38.1 L138.1,37.1 L138.8,36.1 L139.5,35.0 L140.1,34.0 L140.8,32.9 L141.5,31.9 L142.1,30.8 L142.8,29.7 L143.5,28.6 L144.1,27.6 L144.8,26.5 L145.5,25.4 L146.1,24.3 L146.8,23.2 L147.5,22.1" fill="none" stroke="currentColor" stroke-width="1.25" opacity=".6"/>
+<line x1="27" y1="153.6" x2="147.5" y2="48" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+<path d="M82.1 105.3H128.8V64.4" fill="none" stroke="currentColor" stroke-width="1.25" stroke-dasharray="4 3"/>
+<circle cx="82.1" cy="105.3" r="4" fill="currentColor"/>
+<text x="105.5" y="123.3" font-size="15" fill="currentColor" text-anchor="middle" font-style="italic">dx</text>
+<text x="134.8" y="89.8" font-size="15" fill="currentColor" font-style="italic">dy</text>
+</svg>
       </div>
       <div class="pieza chica">
         <p class="kicker">Prima</p>
@@ -937,13 +996,16 @@ input[type="range"] { width: 100%; accent-color: var(--acento); }
           <p>El valor absoluto tiene un pico en 0. Por la izquierda las secantes tienen pendiente −1 y por la derecha, 1. Como no coinciden, el límite no existe y <span class="f"><i>f</i> ′(0)</span> tampoco. Es continua ahí y aun así no es derivable<a class="cita" href="https://tutorial.math.lamar.edu/Classes/CalcI/DefnOfDerivative.aspx">[4]</a>.</p>
         </div>
         <svg viewBox="0 0 200 140" role="img" aria-labelledby="t-abs">
-          <title id="t-abs">Gráfica en forma de V. Del lado izquierdo la pendiente es menos uno y del derecho es uno; en el pico no hay una sola tangente.</title>
-          <line x1="10" y1="120" x2="190" y2="120" stroke="var(--tinta-suave)" stroke-width="1.2"/>
-          <path d="M20 30 L100 110 L180 30" fill="none" stroke="var(--azul)" stroke-width="4" stroke-linejoin="round"/>
-          <circle cx="100" cy="110" r="6" fill="var(--acento)"/>
-          <text x="40" y="96" font-size="17" fill="var(--acento)">−1</text>
-          <text x="150" y="96" font-size="17" fill="var(--acento)">+1</text>
-        </svg>
+<title id="t-abs">Gráfica en forma de V. Del lado izquierdo la pendiente es menos uno y del derecho es uno; en el pico no hay una sola tangente.</title>
+<line x1="12" y1="103.3" x2="188" y2="103.3" stroke="var(--tinta-suave)" stroke-width="1.25"/>
+<path d="M46.7 100.3V106.3M153.3 100.3V106.3" stroke="var(--tinta-suave)" stroke-width="1.25"/>
+<line x1="60" y1="83.4" x2="140" y2="123.1" stroke="var(--tinta-suave)" stroke-width="1" stroke-dasharray="4 3"/>
+<line x1="60" y1="123.1" x2="140" y2="83.4" stroke="var(--tinta-suave)" stroke-width="1" stroke-dasharray="4 3"/>
+<path d="M20 14.9 L100 103.3 L180 14.9" fill="none" stroke="var(--azul)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="100" cy="103.3" r="4.5" fill="var(--tinta)"/>
+<text x="73.3" y="43.2" font-size="15" fill="var(--acento)" text-anchor="middle">−1</text>
+<text x="126.7" y="43.2" font-size="15" fill="var(--acento)" text-anchor="middle">+1</text>
+</svg>
       </div>
       <div class="pieza chica">
         <p class="kicker">Para qué sirve</p>
@@ -1442,6 +1504,8 @@ const setLinea = (el, x1, y1, x2, y2) => { el.setAttribute('x1', x1); el.setAttr
     for (let k = 0; k <= 32; k++) { const x = -1.6 + 3.2 * k / 32; M = Math.max(M, Math.abs(f(x)), conDerivada ? Math.abs(df(x)) : 0); }
     M = Math.min(M, 40);
     $('pr-f').setAttribute('d', polilinea(f, M));
+    const eje = v => String(Math.round(v * 10) / 10);
+    $('pr-ymax').textContent = eje(M); $('pr-ymin').textContent = '−' + eje(M);
     $('pr-d').setAttribute('d', conDerivada ? polilinea(df, M) : '');
     $('pr-ley-d').textContent = conDerivada ? `f ′(x) = ${texto(a * n, Math.max(0, n - 1))}` : 'f ′(x), al comprobar';
   };
@@ -1512,6 +1576,54 @@ const setLinea = (el, x1, y1, x2, y2) => { el.setAttribute('x1', x1); el.setAttr
   sl.addEventListener('input', pintar);
   pintar();
 })();
+// ---- Ilustración animada: la secante se vuelve tangente (h → 0) ----
+// Todo sale de la fase (0 a 1): fase → h → Q = (a + h, (a + h)²) → secante, escalón y medidor.
+(() => {
+  const caja = document.getElementById('anima-secante'); if (!caja) return;
+  const $ = id => caja.querySelector('#' + id);
+  const X0 = -1, X1 = 3.5, Y0 = -1, Y1 = 10, L = 56, R = 462, T = 20, B = 262;
+  const X = x => L + (x - X0) / (X1 - X0) * (R - L), Y = y => B - (y - Y0) / (Y1 - Y0) * (B - T);
+  const G = m => 70 + (m - 2.5) / (5 - 2.5) * (450 - 70);
+  const f = x => x * x, a = 1.5, fa = f(a), t = 2 * a;              // f′(a) = 2a = 3
+  const H0 = 1.5, HMIN = 0.01, FANTASMAS = [1.5, 0.75, 0.375, 0.19];
+  // h baja de forma geométrica: cada tramo igual de la fase la divide entre el mismo número
+  const hDe = fase => fase < .1 ? H0 : fase < .75 ? H0 * Math.pow(HMIN / H0, (fase - .1) / .65) : HMIN;
+  const recta = (el, m) => setLinea(el, X(X0), Y(fa + m * (X0 - a)), X(X1), Y(fa + m * (X1 - a)));
+  let dec = 2; const num = v => fmt(v, dec);   // 3 decimales cuando h < 0.1
+  forja.animar(caja, fase => {
+    const h = hDe(fase), q = a + h, fq = f(q), dy = fq - fa, m = dy / h;   // m = 3 + h exacto
+    dec = h < 0.1 ? 3 : 2;
+    const op = fase < .92 ? 1 : 1 - (fase - .92) / .08;                   // al final se desvanece y vuelve
+    recta($('an-sec'), m);
+    setLinea($('an-dx'), X(a), Y(fa), X(q), Y(fa));
+    setLinea($('an-dy'), X(q), Y(fa), X(q), Y(fq));
+    $('an-tri').setAttribute('d', `M${X(a)} ${Y(fa)}H${X(q)}V${Y(fq)}Z`);
+    FANTASMAS.forEach((hf, k) => {
+      const g = $('an-ghost' + k);
+      recta(g, (f(a + hf) - fa) / hf);
+      g.setAttribute('opacity', h < hf * 0.97 ? (.18 + .1 * k) * op : 0);
+    });
+    $('an-Q').setAttribute('cx', X(q)); $('an-Q').setAttribute('cy', Y(fq));
+    $('an-tQ').setAttribute('x', X(q) - 11); $('an-tQ').setAttribute('y', Y(fq) - 9);   // arriba a la izquierda: sobre la cuerda no hay nada
+    $('an-th').setAttribute('x', X(a + h / 2)); $('an-th').setAttribute('y', Y(fa) + 21);
+    $('an-tdy').setAttribute('x', X(q) + 8); $('an-tdy').setAttribute('y', (Y(fa) + Y(fq)) / 2 + 6);
+    const grande = h > 0.3;
+    $('an-th').style.display = $('an-tdy').style.display = grande ? '' : 'none';
+    $('an-tQ').style.display = h > 0.3 ? '' : 'none';
+    ['an-sec', 'an-dx', 'an-dy', 'an-tri', 'an-Q', 'an-tQ', 'an-th', 'an-tdy', 'an-gm', 'an-gv', 'an-gh'].forEach(id => $(id).style.opacity = op);
+    // Medidor: el marcador está en 3 + h; el tramo verde mide h
+    $('an-gm').setAttribute('cx', G(m));
+    setLinea($('an-gh'), G(t), 360, G(m), 360);
+    $('an-gv').setAttribute('x', Math.max(G(m), G(t) + 22)); $('an-gv').textContent = num(m);
+    let et, tx;
+    if (fase < .1) { et = 'Dos puntos'; tx = `P está fijo en x = 1.5 y Q está h = ${num(h)} más adelante. La secante PQ sube Δy = ${num(dy)} en h = ${num(h)}: pendiente ${num(m)}.`; }
+    else if (fase < .75) { et = 'Q se acerca'; tx = `h = ${num(h)}: la secante gira hacia la tangente. Su pendiente es 3 + h = ${num(m)}; lo que le sobra es justo h.`; }
+    else if (fase < .92) { et = 'Casi tangente'; tx = `h = 0.010, pero no 0: Q casi está encima de P y la secante ya no se distingue de la tangente. Pendiente 3.010, cada vez más cerca de 3 = f′(1.5).`; }
+    else { et = 'Otra vez'; tx = 'h nunca llega a 0, solo se acerca. Q regresa y el ciclo vuelve a empezar.'; }
+    $('an-fase-et').textContent = et; $('an-fase-tx').textContent = tx;
+  }, { periodo: 9 });
+})();
+
 </script>
 </body>
 </html>
