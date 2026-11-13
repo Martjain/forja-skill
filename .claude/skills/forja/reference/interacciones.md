@@ -4,6 +4,7 @@
 1. La prueba de una interacción real
    - 1.1 Predecir antes de ver
    - 1.2 Retos que guían la atención
+   - 1.3 "Explícamelo paso a paso"
 2. Diagrama clicable
 3. Flashcards
 4. Simulador con slider
@@ -52,6 +53,24 @@ Cuando alguien adivina antes de ver la respuesta (aunque se equivoque) y recibe 
 </div>
 ```
 
+**La prueba de la fuga.** Tapa con la mano todo lo que está detrás de la predicción y pregúntate: con lo que queda a la vista en esa sección (el subtítulo, los párrafos, los dibujos, la tabla, la lista de abajo), ¿alguien puede contestar sin pensar? Si sí, hay una fuga. Una revisión ciega de las 7 primeras guías encontró **20 fugas en 27 predicciones**, todas **en la misma sección que la pregunta**:
+- un subtítulo que ya dice la respuesta («Git solo mueve el puntero hacia adelante», «El que más te van a preguntar: convencer»);
+- un dibujo o una tabla debajo de la pregunta que muestra el resultado (el fast-forward ya hecho, la flecha resaltada hacia «Convencer»);
+- un texto explicativo junto a una animación que sí está borrosa («Primero la introducción, con la tesis en amarillo»).
+- el mismo ejemplo que se pregunta, ya anotado más arriba en la sección (el borrador literario con sus etiquetas «tono subjetivo», «intención estética»);
+- etiquetas de un diagrama que repiten las palabras de la opción correcta («el repositorio» en la caja `.git`);
+- un reto o un pie de figura que descarta las opciones incorrectas.
+- **la opción correcta destaca**: es la más larga, la más técnica o la única con matices. Iguala el largo y el detalle de las opciones.
+
+Cómo corregirlas, en este orden:
+1. Reescribe el subtítulo o el párrafo para que plantee la pregunta en lugar de responderla.
+2. Pon **también** detrás de la predicción (`data-tras-prediccion`) el dibujo, la tabla o el texto que la responden. Sigue sin tapar controles: en un `[data-anima]`, el atributo va en el SVG y en la narración `.anima-fase`, no en el contenedor, para que los controles queden a la vista.
+3. Si el bloque es grande y quedaría una zona muerta, cambia la pregunta por otra que ese bloque no responda.
+
+Mostrar la **estructura** (las piezas, el orden de las etapas) no es fuga si la pregunta es sobre el **comportamiento** (qué pasa, cuánto da, qué gana). Sí es fuga si la pregunta es justamente sobre esa estructura.
+
+`probar_guia.py` marca los dibujos, tablas y bloques de código que quedan a la vista después de una pregunta y guarda una captura de cada sección antes de contestar. Revísalas con esta prueba.
+
 ### 1.2 Retos que guían la atención
 
 Una interacción sin dirección es un juguete. Cada interacción principal lleva **1 a 3 retos**: tareas concretas que llevan al usuario al fenómeno que importa ("Mueve el código a 2 en PostToolUse: ¿por qué ya no bloquea?"). **Mínimo 3 retos por guía.**
@@ -63,6 +82,29 @@ Una interacción sin dirección es un juguete. Cada interacción principal lleva
 ```
 
 El JS de la interacción llama a `forja.reto('reto-post')` cuando el usuario llega a ese estado. El núcleo lo marca, lo guarda y actualiza el progreso. El reto se cumple haciendo, no con un botón de "listo".
+
+### 1.3 "Explícamelo paso a paso"
+
+Si alguien no puede resolver algo, no debe quedarse atorado ni adivinar al azar. **Cada predicción y cada ejercicio** lleva un botón "Explícamelo paso a paso" que muestra el razonamiento **un paso a la vez**. Después de cada paso, el usuario puede decir "Ya entendí, lo intento" y volver a intentarlo él mismo. La respuesta llega al final, solo si la pide.
+
+```html
+<div data-ayuda="pred-limite">
+  <ol>
+    <li>Fija a = 1. La pendiente de la secante es (f(1+h) − f(1)) / h.</li>
+    <li>Con f(x) = x²: (1 + 2h + h² − 1) / h = (2h + h²) / h.</li>
+    <li>Divide entre h (h no es 0, solo se acerca): queda 2 + h.</li>
+    <li data-respuesta>Cuando h se acerca a 0, 2 + h se acerca a <strong>2</strong>.</li>
+  </ol>
+</div>
+```
+
+Cómo escribir los pasos:
+- **De 2 a 5 pasos**, cada uno con **una sola** idea u operación. El primero arranca desde lo que el usuario ya sabe ("¿qué te piden?", "¿qué fórmula aplica?").
+- **Ningún paso antes del último dice la respuesta.** Cada uno acerca, pero deja que el usuario la termine.
+- **El que lleva `data-respuesta` cierra** con la respuesta y una frase del porqué.
+- **Va dentro del bloque `data-prediccion`**, después de `.veredicto`, y su valor es el id de la predicción. Si el usuario abre la ayuda antes de responder, el veredicto dice "Acertaste con ayuda.", sin castigo.
+- **Ejercicios que se generan con JS** (probadores, ejercicios al azar): pon `<div data-ayuda data-ayuda-dinamica></div>` en el ejercicio y, cada vez que cambie, llama a `forja.ayuda(div, ['paso 1', 'paso 2'], 'respuesta')` con los pasos de **ese** ejercicio.
+- Puedes cambiar el texto del botón con `data-ayuda-texto="…"` cuando otro encaje mejor, por ejemplo "¿Cómo se resuelve?".
 
 ## 2. Diagrama clicable — `data-interaccion="diagrama"`
 
@@ -109,6 +151,8 @@ Cómo escribir buenas tarjetas:
 - Puedes cambiar su aspecto con CSS (clases `.fc-*`) para que combine con la guía.
 
 ## 4. Simulador con slider — `data-interaccion="simulador"`
+
+Un simulador cambia un resultado al mover sus controles. Lo normal es un `<input type="range">`, pero si el tema no tiene una magnitud continua (elegir argumentos, prender y apagar piezas), valen 2 o más botones, casillas o un `select`: no inventes un slider sin sentido.
 
 Para relaciones de causa y efecto: "si cambio X, ¿qué pasa con Y?".
 
@@ -163,3 +207,6 @@ Siguen la prueba de la sección 1.
 - Controles con elementos nativos (`<button>`, `<input>`), operables con teclado y con `:focus-visible`.
 - Nada depende de hover: en celular no existe.
 - Estado inicial con contenido: nunca una interacción que empiece vacía.
+- Cada reto `data-reto="x"` necesita un `forja.reto('x')` en el JS, con el id escrito tal cual: `probar_guia.py` marca como error un reto que ningún código cumple.
+- En una cuadrícula (`display: grid`) con una columna que se desplaza de lado (una fila de pasos, un SVG con `min-width`), pon `min-width: 0` en esa columna: sin eso desborda en el celular.
+- Los botones con fondo de acento los resuelve el núcleo (elige texto claro u oscuro según el contraste). Si haces tus propios botones de color, comprueba el contraste: `probar_guia.py` avisa cuando el texto queda por debajo de 4.5:1.

@@ -49,7 +49,11 @@ def cmd_ruta(tema: str) -> int:
               f"por ejemplo \"git merge rebase\" en vez del título completo.", file=sys.stderr)
     base = slug(tema)
     candidato, n = base, 1
-    while (raiz / "guias" / candidato).exists():
+    # Una carpeta vacía (reservada por un `ruta` anterior que no llegó a escribir la guía) cuenta como libre.
+    def ocupada(c):
+        d = raiz / "guias" / c
+        return d.exists() and (not d.is_dir() or any(d.iterdir()))
+    while ocupada(candidato):
         n += 1
         candidato = f"{base}-v{n}"
     ruta = Path("guias") / candidato / "index.html"

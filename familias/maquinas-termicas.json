@@ -1,0 +1,42 @@
+{
+  "familia": "maquinas-termicas",
+  "descripcion": "Guías sobre máquinas térmicas y termodinámica aplicada (motores de combustión externa e interna, Stirling, vapor, turbinas, ciclos, refrigeración, calderas).",
+  "origen": "Paleta tomada de los objetos del taller y de la sala de máquinas: el crema del papel de un plano técnico, el negro grafito del hierro fundido y del hollín, el naranja de la brasa en el hogar de una caldera (lo caliente) y el azul acero del agua fría del condensador (lo frío). El latón de manómetros y válvulas queda solo como detalle decorativo. Caliente y frío siempre se leen con el mismo par de colores. Sin logos ni marcas.",
+  "paleta": {
+    "fondo": "#F4EFE6",
+    "superficie": "#E8E1D3",
+    "borde": "#D2C7B4",
+    "tinta": "#1E1B18",
+    "tinta_suave": "#5A5249",
+    "gris_medio": "#A39887",
+    "acento": "#B23A0C",
+    "acento_oscuro": "#7E2706",
+    "secundario_azul": "#2E5A78",
+    "secundario_laton": "#A7832B"
+  },
+  "bloques_oscuros": {
+    "fondo": "#1B1815",
+    "tinta": "#F2E9DA",
+    "tinta_suave": "#BCB09D",
+    "acento": "#FF8A3D",
+    "azul": "#7FB6D9",
+    "laton": "#D9B45A"
+  },
+  "tipografia": {
+    "titulos": "fraunces",
+    "cuerpo": "ibm-plex-sans",
+    "codigo": "ibm-plex-mono",
+    "nota": "ids de assets/fuentes/catalogo.json; se incrustan con scripts/fuentes.py css. Fraunces tiene el aire de las placas de fundición y los manuales de oficio del siglo XIX; IBM Plex Sans es industrial y precisa para explicar mecanismos; IBM Plex Mono para lecturas de instrumentos (temperaturas, eficiencias, presiones)."
+  },
+  "tono": "Como un maquinista paciente que te enseña junto a la máquina: primero señala la pieza, luego dice qué hace, y al final el número. Frases cortas, ejemplos de máquinas reales.",
+  "rasgos": [
+    "Fondo de papel de plano con una retícula técnica muy tenue",
+    "Naranja brasa solo para lo caliente y lo importante; azul acero solo para lo frío",
+    "Bloques oscuros de hierro fundido y hollín para alternar el ritmo",
+    "Lecturas numéricas en monoespaciada, como las de un manómetro o un termómetro de carátula",
+    "Ilustraciones de corte esquemático: paredes de metal con trazo grueso, fluido en color plano"
+  ],
+  "motivos_por_tema": {
+    "motor-de-combustion-externa": "la pared que separa el fuego del fluido: una fuente de calor (llama, sol o pastilla radiactiva) queda afuera de una pared de metal; del otro lado, un fluido encerrado que nunca toca el fuego recibe una flecha naranja de calor, empuja un pistón o una turbina que hace girar un volante, y entrega una flecha azul de calor sobrante al lado frío antes de volver a empezar"
+  }
+}

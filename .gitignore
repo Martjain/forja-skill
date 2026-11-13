@@ -1,0 +1,14 @@
+# Configuración local y credenciales: nunca al repo
+.env
+.env.*
+!.env.example
+
+# Ajustes personales de Claude Code
+.claude/settings.local.json
+
+# Python
+__pycache__/
+*.pyc
+
+# Sistema
+.DS_Store

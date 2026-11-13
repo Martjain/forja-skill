@@ -1,8 +1,8 @@
 ---
 name: forja
-description: Crea guías visuales interactivas de estudio sobre cualquier tema, en un solo archivo HTML offline con diagramas clicables, flashcards, simuladores con slider y pasos guiados, investigadas en fuentes oficiales y con una UI que sale del propio tema. Usar cuando se pida una guía visual, una guía interactiva, una guía para estudiar o aprender un tema, o con /forja <tema>. No usar para explicaciones rápidas en el chat, resúmenes de documentos, presentaciones ni para editar un HTML existente.
-argument-hint: [tema]
-allowed-tools: Bash(python3 *), WebFetch, WebSearch
+description: Crea guías visuales interactivas de estudio sobre cualquier tema, en un solo archivo HTML offline con diagramas clicables, flashcards, simuladores con slider y pasos guiados, investigadas en fuentes oficiales y con una UI que sale del propio tema. Usar cuando se pida una guía visual, una guía interactiva, una guía para estudiar o aprender un tema, una guía que explique un repositorio de código con ejemplos, o con /forja <tema>. No usar para explicaciones rápidas en el chat, resúmenes de documentos, presentaciones ni para editar un HTML existente.
+argument-hint: [tema o URL de un repo]
+allowed-tools: Bash(python3 *), Bash(git clone *), Bash(git -C *), WebFetch, WebSearch
 ---
 
 # forja
@@ -12,6 +12,8 @@ Reglas que no se rompen:
 - **Un solo archivo HTML, sin CDN ni recursos externos.** Debe funcionar offline.
 - **Cero emojis.** Si necesitas un ícono, dibújalo en SVG.
 - **No termines hasta que `validar.py` no marque errores y `revisar_movil.py` pase.**
+
+**Si el tema es un repositorio** (una URL de GitHub o una carpeta con código), lee primero [repos.md](reference/repos.md): cambia la ruta, el nivel, la familia, la investigación (la fuente es el código, citado con permalinks al commit) y trae un plan de secciones de partida.
 
 El contenido (investigar y explicar con exactitud) hazlo como lo harías normalmente. Esta skill agrega reglas de **forma**: dirección visual, layouts, interacciones y verificación.
 
@@ -27,8 +29,10 @@ Copia esta lista y márcala conforme avances:
 - [ ] 5. Plan de secciones
 - [ ] 6. Construir
 - [ ] 7. Validar
-- [ ] 8. Revisar en celular
-- [ ] 9. Registrar en el índice
+- [ ] 8. Revisar ilustraciones
+- [ ] 9. Probar la guía (y revisar fugas)
+- [ ] 10. Revisar en celular
+- [ ] 11. Registrar en el índice
 ```
 
 **1. Nivel.** Si el pedido no dice el nivel, pregunta *principiante, intermedio o avanzado* y espera la respuesta antes de seguir.
@@ -50,29 +54,47 @@ python3 ${CLAUDE_SKILL_DIR}/scripts/fuentes.py css --titulos <id> --cuerpo <id> 
 
 **6. Construir.** Parte de [esqueleto.html](assets/esqueleto.html). Copia **sin cambios** los bloques "NÚCLEO FORJA" (progreso, mapa, predicciones, retos, guardado) y pega el CSS de las fuentes. Reglas:
 - **Predecir antes de ver:** al menos 2 interacciones empiezan con `data-prediccion`. **Solo el resultado** lleva `data-tras-prediccion="<id>"`; los controles y el diagrama quedan visibles.
+- **"Explícamelo paso a paso":** cada predicción lleva su `data-ayuda` con 2 a 5 pasos, y la respuesta solo en el último (`data-respuesta`). Los ejercicios generados por JS usan `forja.ayuda(...)`.
 - **Paso a paso que se desvanece:** los pasos 1 y 2 vienen resueltos, desde el 3 el usuario completa un hueco y después ve un "¿Por qué?".
 - **Flashcards:** solo el JSON `forja-tarjetas` (8 a 15 tarjetas) y `<div data-forja-flashcards>`. El núcleo las dibuja y las suma al repaso del índice.
 - **Retos:** al menos 3 `data-reto` en total, que se cumplen haciendo (tu JS llama a `forja.reto(id)`).
 - **Portada:** incluye el mapa (`<nav data-forja-mapa>`) y la entrada escalonada (`class="entra"` con `--i`). Cada `<section>` lleva `id` y `data-minutos`.
+- **Instrucciones de uso:** no las escribas. El núcleo arma solo, debajo del mapa de la portada (`nav.mapa-portada`), un panel «Cómo usar esta guía» que cuenta las preguntas, retos, animaciones, diagramas, simuladores, ejercicios y tarjetas que trae la guía, explica cómo se usa cada uno y enlaza al primero. Por eso cada interacción debe llevar bien su `data-interaccion`, `data-prediccion`, `data-reto` o `data-anima`.
 - Cada `<section>` lleva `data-layout="<layout del catálogo>"`. No repitas un layout en secciones seguidas y usa al menos 5 distintos.
 - Al menos una sección con `data-tono="oscuro"` para alternar claro y oscuro.
 - Cada interacción lleva `data-interaccion="diagrama|flashcards|simulador|pasos|otra"`. Usa al menos 3 de los 4 tipos principales. Si el tema pide una interacción propia, como un probador, agrégala como `otra`.
-- Una ilustración SVG propia en cada sección clave (mínimo 3), dibujada con los colores de la familia.
+- **Ilustraciones:** una SVG propia en cada sección clave (mínimo 3), generada con un script que calcula la geometría (con [svg_kit.py](scripts/svg_kit.py)). Si el tema es un proceso, un mecanismo o un ciclo, su ilustración central se anima con `forja.animar`. Antes de dibujar, lee [ilustracion.md](reference/ilustracion.md) y usa [kit-svg.svg](assets/kit-svg.svg).
 - Cita junto al dato: `<a class="cita" href="URL">[n]</a>`, con la lista completa en `<section id="fuentes">`.
 
 **7. Validar.**
 ```bash
 python3 ${CLAUDE_SKILL_DIR}/scripts/validar.py <ruta>
 ```
-Si marca errores, corrígelos y vuelve a correrlo. **No sigas mientras haya errores.**
+Si marca errores, corrígelos y vuelve a correrlo. **No sigas mientras haya errores.** En una guía de repositorio corre también `scripts/citas_repo.py` ([repos.md](reference/repos.md), sección 8).
 
-**8. Revisar en celular.**
+**8. Revisar ilustraciones.**
+```bash
+python3 ${CLAUDE_SKILL_DIR}/scripts/revisar_ilustraciones.py <ruta>
+```
+Corrige lo que reporte. Después abre con Read cada imagen y califícala con la rúbrica de [ilustracion.md](reference/ilustracion.md) sección 9. Escribe la calificación de cada una. Si alguna saca menos de 8, corrígela y repite (máximo 3 vueltas).
+
+**9. Probar la guía.** `validar.py` cuenta lo que hay; este paso comprueba que funcione y que enseñe:
+```bash
+python3 ${CLAUDE_SKILL_DIR}/scripts/probar_guia.py <ruta>
+```
+Recorre la guía como una persona: contesta cada predicción (mal, «Volver a predecir» y bien), abre cada ayuda hasta la respuesta, toca cada pieza de los diagramas, mueve cada control, avanza los pasos y las animaciones y voltea tarjetas. **Corrige todos sus errores.** De sus advertencias, revisa sobre todo dos:
+- **Fugas:** abre con Read cada `antes-<predicción>.png` y aplica la prueba de la fuga de [interacciones.md](reference/interacciones.md) sección 1.1. Si la respuesta ya se ve (en un subtítulo, un dibujo, una tabla o un texto junto a la animación), corrígelo. Si puedes lanzar un subagente, pídele esta revisión sin decirle las respuestas: así no se califica a sí mismo.
+- **Contraste y muros de texto:** corrígelos.
+
+Los retos que el recorrido no cumple son normales si piden algo concreto; compruébalos tú.
+
+**10. Revisar en celular.**
 ```bash
 python3 ${CLAUDE_SKILL_DIR}/scripts/revisar_movil.py <ruta>
 ```
 Abre con Read las capturas que genera y revisa que se lea bien. Corrige cualquier desbordamiento que reporte.
 
-**9. Registrar.**
+**11. Registrar.**
 ```bash
 python3 ${CLAUDE_SKILL_DIR}/scripts/registrar.py indice <ruta> --titulo "<título>" --familia <familia> --nivel <nivel>
 ```

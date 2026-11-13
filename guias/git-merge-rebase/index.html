@@ -75,7 +75,7 @@ button, input { font: inherit; min-height: 44px; }
 [data-forja-continuar][hidden] { display: none; }
 [data-forja-continuar] a { display: inline-flex; align-items: center; min-height: 44px; padding: .5rem 1.1rem; border-radius: 8px; background: var(--acento); color: var(--fondo); text-decoration: none; font-weight: 600; }
 [data-forja-reiniciar] { background: none; border: 0; color: inherit; text-decoration: underline; opacity: .7; cursor: pointer; }
-[data-tras-prediccion]:not(.revelado) { filter: blur(3px) grayscale(.5); opacity: .5; pointer-events: none; user-select: none; }
+[data-tras-prediccion]:not(.revelado) { filter: blur(7px) grayscale(.6); opacity: .4; pointer-events: none; user-select: none; }
 [data-tras-prediccion] { transition: filter .5s ease, opacity .5s ease; }
 .sin-fuente { text-decoration: underline dotted; text-underline-offset: 3px; }
 .sin-fuente::after { content: "†"; color: var(--acento); font-size: .75em; vertical-align: super; margin-left: .1em; }
@@ -90,6 +90,18 @@ button, input { font: inherit; min-height: 44px; }
 .fc-botones button { padding: .5rem 1.1rem; border-radius: 8px; border: 1.5px solid currentColor; background: transparent; color: inherit; cursor: pointer; }
 .fc-botones .fc-sabia { background: var(--acento); border-color: var(--acento); color: var(--fondo); }
 @media (prefers-reduced-motion: no-preference) { .fc-tarjeta .fc-texto { animation: forja-entra .35s ease both; } }
+[data-ayuda] { margin: .75rem 0 0; }
+[data-ayuda] > ol { display: none; } /* fuente de los pasos: el núcleo los muestra uno por uno */
+.ayuda-abrir { min-height: 40px; padding: .4rem .9rem; border-radius: 8px; border: 1.5px dashed currentColor; background: transparent; color: inherit; cursor: pointer; font-size: .9rem; opacity: .85; }
+.ayuda-abrir:hover { opacity: 1; }
+.ayuda-panel { margin-top: .6rem; padding: .9rem 1rem; border-radius: 10px; background: color-mix(in srgb, var(--acento) 10%, transparent); }
+.ayuda-panel ol { margin: 0 0 .75rem; padding-left: 1.4rem; display: grid; gap: .55rem; }
+.ayuda-panel li::marker { color: var(--acento); font-weight: 600; }
+.ayuda-panel li.respuesta { list-style: none; margin-left: -1.4rem; padding-top: .55rem; border-top: 1px solid color-mix(in srgb, currentColor 25%, transparent); font-weight: 600; }
+.ayuda-botones { display: flex; gap: .5rem; flex-wrap: wrap; }
+.ayuda-botones button { min-height: 40px; padding: .4rem .95rem; border-radius: 8px; border: 1.5px solid currentColor; background: transparent; color: inherit; cursor: pointer; font-size: .9rem; }
+.ayuda-botones .ayuda-siguiente { background: var(--acento); border-color: var(--acento); color: var(--fondo); }
+@media (prefers-reduced-motion: no-preference) { .ayuda-panel li { animation: forja-entra .35s ease both; } }
 [data-prediccion] .opciones { display: flex; flex-wrap: wrap; gap: .5rem; margin: .75rem 0; }
 [data-prediccion] [data-opcion] { cursor: pointer; padding: .5rem 1rem; border-radius: 8px; border: 1.5px solid currentColor; background: transparent; color: inherit; }
 [data-prediccion] [data-opcion]:disabled { cursor: default; opacity: .55; }
@@ -109,6 +121,43 @@ button, input { font: inherit; min-height: 44px; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+/* Animaciones de proceso (forja.animar) */
+.anima-ctl { display: flex; flex-wrap: wrap; gap: .5rem 1rem; align-items: center; margin-top: .75rem; font-size: .875rem; }
+.anima-ctl button { min-height: 40px; padding: .4rem .95rem; border-radius: 8px; border: 1.5px solid currentColor; background: transparent; color: inherit; cursor: pointer; font: inherit; }
+.anima-ctl .anima-play { background: var(--acento); border-color: var(--acento); color: var(--fondo); min-width: 7.5rem; }
+.anima-ctl input { accent-color: var(--acento); width: 7rem; }
+.anima-ctl label { display: inline-flex; gap: .5rem; align-items: center; white-space: nowrap; overflow-wrap: normal; }
+.anima-ctl .anima-vel { font-family: var(--f-codigo); min-width: 2.5rem; }
+.anima-fase { display: flex; gap: .75rem; align-items: baseline; min-height: 3rem; margin: .5rem 0 0; }
+.anima-fase b { flex: none; font-family: var(--f-codigo); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; padding: .15rem .5rem; border-radius: 4px; background: var(--acento); color: var(--fondo); }
+.flujo { stroke-dasharray: 6 5; animation: forja-flujo 1s linear infinite; }
+@keyframes forja-flujo { to { stroke-dashoffset: -22; } }
+.titila { transform-box: fill-box; transform-origin: 50% 100%; animation: forja-titila .9s ease-in-out infinite alternate; }
+@keyframes forja-titila { from { transform: scaleY(1); } to { transform: scaleY(.86) scaleX(1.04); } }
+.pausado .flujo, .pausado .titila { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) { .flujo, .titila { animation: none; } }
+.et-num, .et-leyenda { display: none; }
+.et-num circle { fill: var(--tinta); stroke: var(--fondo); stroke-width: 2; vector-effect: non-scaling-stroke; }
+.et-num text { fill: var(--fondo); font-family: var(--f-codigo); font-weight: 700; }
+.et-leyenda { margin: .5rem 0 0; padding-left: 1.6rem; gap: .25rem; font-size: .9rem; }
+.et-leyenda b { font-weight: 600; }
+@media (max-width: 640px) {
+  svg .etiqueta { display: none; }
+  svg .et-num { display: inline; }
+  .et-leyenda { display: grid; }
+}
+.forja-uso { margin: 1.25rem 0 0; border: 1px solid var(--borde); border-radius: 12px; background: color-mix(in srgb, var(--fondo) 85%, var(--tinta) 4%); }
+.forja-uso > summary { cursor: pointer; display: flex; flex-wrap: wrap; gap: .25rem .75rem; align-items: baseline; padding: .8rem 1rem; font-weight: 700; }
+.forja-uso > summary small { font-weight: 400; font-family: var(--f-codigo); font-size: .78rem; opacity: .75; }
+.forja-uso ul { list-style: none; margin: 0; padding: 0 1rem 1rem; display: grid; gap: .9rem; grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); }
+.forja-uso li { display: grid; grid-template-columns: 1.75rem 1fr; gap: .6rem; align-items: start; }
+.forja-uso li svg { width: 1.75rem; height: 1.75rem; color: var(--acento); }
+.forja-uso b { display: block; font-size: .95rem; }
+.forja-uso b em { font-style: normal; font-weight: 400; font-family: var(--f-codigo); font-size: .78rem; color: var(--acento); margin-left: .25rem; }
+.forja-uso p { margin: .2rem 0 .3rem; font-size: .88rem; line-height: 1.5; }
+.forja-uso a { font-size: .82rem; }
+code, pre, kbd, samp { font-variant-ligatures: none; }
+[data-reto] > code { display: inline; }
 /* ===== FIN NÚCLEO FORJA: CSS ===== */
 
 /* ===== Estilo de la guía: cinta perforada ===== */
@@ -157,39 +206,52 @@ section[data-tono="oscuro"] .boton.principal { background: var(--oscuro-tinta); 
 .terminal .tenue { color: #B8AD95; }
 .terminal code { background: none; padding: 0; }
 
-/* Cinta perforada (SVG) */
+/* Cinta perforada (SVG). Trazo: 2.5 contorno · 1.25 detalle · 1 guías.
+   Cada commit apunta a su padre (flecha hijo -> padre). Ámbar = lo que crea la operación y la rama de HEAD. */
 .cinta { display: block; width: 100%; font-family: var(--f-codigo); }
 .c-banda { fill: var(--superficie); stroke: var(--borde); stroke-width: 1; }
-.c-guia { stroke: var(--borde); stroke-width: 3.5; stroke-linecap: round; stroke-dasharray: 0 10; }
-.c-liga { stroke: var(--tinta-suave); stroke-width: 2; fill: none; }
-.c-liga.empalme { stroke: var(--acento); stroke-width: 3; }
-.c-liga.punteada { stroke-dasharray: 5 4; }
-.c-seg { fill: var(--papel); stroke: var(--tinta); stroke-width: 1.5; }
+.c-perf { fill: var(--borde); }
+.c-liga { stroke: var(--tinta-suave); stroke-width: 1.25; fill: none; stroke-linejoin: round; stroke-linecap: round; }
+.c-pta { fill: var(--tinta-suave); }
+.c-enlace.empalme .c-liga { stroke: var(--acento); stroke-width: 2.5; }
+.c-enlace.empalme .c-pta { fill: var(--acento); }
+.c-enlace.punteada .c-liga { stroke-dasharray: 5 4; stroke-linecap: butt; }
+.c-seg { fill: var(--papel); stroke: var(--tinta); stroke-width: 1.25; }
 section[data-tono="oscuro"] .c-seg { stroke: var(--papel); }
 .c-hoyo { fill: var(--papel-tinta); }
-.c-hash { font-size: 9.5px; fill: var(--papel-tinta); }
-.c-commit.merge .c-seg { stroke: var(--acento); stroke-width: 3; }
+.c-hash { fill: var(--papel-tinta); }
+.c-commit.merge .c-seg { stroke: var(--acento); stroke-width: 2.5; }
 .c-commit.nuevo .c-seg { stroke: var(--acento); stroke-width: 2.5; fill: color-mix(in srgb, var(--acento) 22%, var(--papel)); }
 .c-commit.recorte { opacity: .5; }
 .c-commit.recorte .c-seg { fill: none; stroke: var(--tinta-suave); stroke-dasharray: 4 3; }
-.c-commit.recorte .c-hoyo { fill: var(--tinta-suave); }
-.c-commit.recorte .c-hash { fill: var(--tinta-suave); }
-.c-commit.pendiente .c-seg { fill: none; stroke: var(--acento); stroke-dasharray: 5 4; stroke-width: 2; }
-.c-commit.pendiente .c-hash { fill: var(--acento-texto); font-size: 16px; }
-section[data-tono="oscuro"] .c-commit.recorte .c-seg, section[data-tono="oscuro"] .c-commit.recorte .c-hash { stroke: var(--tinta-suave); }
-.c-tag rect { fill: var(--tinta); }
-.c-tag text { fill: var(--fondo); font-size: 11px; }
-section[data-tono="oscuro"] .c-tag rect { fill: var(--oscuro-tinta); }
+.c-commit.recorte .c-hoyo, .c-commit.recorte .c-hash { fill: var(--tinta-suave); }
+.c-commit.pendiente .c-seg { fill: none; stroke: var(--acento); stroke-dasharray: 5 4; stroke-width: 2.5; }
+.c-commit.pendiente .c-hash { fill: var(--acento-texto); }
+.c-tag path { fill: var(--tinta); }
+.c-tag text { fill: var(--fondo); }
+section[data-tono="oscuro"] .c-tag path { fill: var(--oscuro-tinta); }
 section[data-tono="oscuro"] .c-tag text { fill: var(--oscuro-fondo); }
-.c-tag.actual rect { fill: var(--acento); }
-.c-tag.actual text { fill: var(--sobre-acento); }
-.c-nota { font-size: 11px; fill: var(--tinta-suave); }
-.c-nota.fuerte { font-size: 12px; fill: currentColor; font-weight: 600; }
-.c-flecha { fill: none; stroke: var(--acento-texto); stroke-width: 1.5; stroke-dasharray: 3 3; }
-.c-choque { stroke: var(--rojo); stroke-width: 2; stroke-dasharray: 4 4; }
+.c-tag.actual path, section[data-tono="oscuro"] .c-tag.actual path { fill: var(--acento); }
+.c-tag.actual text, section[data-tono="oscuro"] .c-tag.actual text { fill: var(--sobre-acento); }
+/* La comparación usa .duelo .etiqueta para sus rótulos: que no alcance a las etiquetas del SVG */
+.duelo svg .etiqueta { text-transform: none; letter-spacing: normal; }
+.c-tag.fantasma path { fill: none; stroke: var(--tinta-suave); stroke-width: 1; stroke-dasharray: 3 3; }
+.c-tag.fantasma text { fill: var(--tinta-suave); }
+.c-mueve .c-liga { stroke: var(--acento-texto); stroke-dasharray: 4 3; stroke-linecap: butt; }
+.c-mueve .c-pta, .c-copia .c-pta { fill: var(--acento-texto); }
+.c-copia .flujo { fill: none; stroke: var(--acento-texto); stroke-width: 1.25; }
+.c-cmd { fill: var(--tinta); }
+.c-cmd .c-prompt { fill: var(--acento-texto); }
+.c-nota { fill: var(--tinta-suave); }
+.c-nota.fuerte { fill: currentColor; font-weight: 600; }
+.c-nota.acento { fill: var(--acento-texto); }
+.c-guia-nota { stroke: var(--acento-texto); stroke-width: 1; fill: none; opacity: .7; }
+.c-punto-nota { fill: var(--acento-texto); }
+.c-choque { stroke: var(--rojo); stroke-width: 1.25; stroke-dasharray: 5 4; }
 .lienzo { overflow-x: auto; -webkit-overflow-scrolling: touch; border: 1px solid var(--borde); border-radius: 4px; background: color-mix(in srgb, var(--fondo) 60%, transparent); padding: .5rem; }
 section[data-tono="oscuro"] .lienzo { background: #1C1A13; }
 .lienzo .cinta { min-width: 0; }
+/* El JS fija min-width = ancho del viewBox: así 1 unidad mide al menos 1 px y el texto no baja de 11 px */
 #svg-ramas, #svg-lab { min-width: 520px; }
 figure { margin: 0; }
 figcaption { font-size: .85rem; color: var(--tinta-suave); margin-top: .5rem; }
@@ -219,11 +281,13 @@ figcaption { font-size: .85rem; color: var(--tinta-suave); margin-top: .5rem; }
 .dividido ol.claves li { margin-bottom: .6rem; }
 .diagrama-svg [data-nodo] { cursor: pointer; transition: opacity .25s ease; }
 .diagrama-svg [data-nodo]:not(.activo) { opacity: .55; }
-.diagrama-svg [data-nodo].activo .c-seg { stroke: var(--acento); stroke-width: 3.5; }
+.diagrama-svg [data-nodo].activo .c-seg { stroke: var(--acento); stroke-width: 2.5; }
 .diagrama-svg [data-nodo]:focus-visible { outline: none; }
-.diagrama-svg [data-nodo]:focus-visible .c-seg { stroke: var(--acento); stroke-width: 4; stroke-dasharray: 3 2; }
-.diagrama-svg .c-liga[data-une] { opacity: .45; transition: opacity .25s ease; }
-.diagrama-svg .c-liga[data-une].activo { opacity: 1; stroke: var(--acento); stroke-width: 3.5; }
+.diagrama-svg [data-nodo]:focus-visible .c-seg { stroke: var(--acento); stroke-width: 2.5; stroke-dasharray: 3 2; }
+.diagrama-svg [data-une] { opacity: .45; transition: opacity .25s ease; }
+.diagrama-svg [data-une].activo { opacity: 1; }
+.diagrama-svg [data-une].activo .c-liga { stroke: var(--acento); stroke-width: 2.5; }
+.diagrama-svg [data-une].activo .c-pta { fill: var(--acento); }
 .ficha { border: 1px solid var(--borde); border-radius: 4px; padding: 1rem 1.1rem; margin-top: .75rem; min-height: 9rem; background: #1C1A13; }
 .ficha h3 { color: var(--acento); font-size: 1.2rem; }
 .ficha p { margin-bottom: .5rem; }
@@ -260,7 +324,7 @@ figcaption { font-size: .85rem; color: var(--tinta-suave); margin-top: .5rem; }
 section.banda-acento { background: var(--acento); color: var(--sobre-acento); --acento-texto: #4A2C00; --tinta-suave: #3B2A10; --superficie: #EEAE45; --borde: #B8780F; --papel: #FFF7E6; }
 .enfasis-rejilla { display: grid; grid-template-columns: 1.3fr 1fr; gap: clamp(1.5rem, 5vw, 4rem); align-items: center; }
 .regla { font-family: var(--f-titulos); font-size: clamp(1.8rem, 5vw, 3.2rem); line-height: 1.1; margin: 0 0 1.5rem; font-weight: 700; max-width: 22ch; }
-.banda-acento .c-tag.actual rect { fill: var(--tinta); }
+.banda-acento .c-tag.actual path { fill: var(--tinta); }
 .banda-acento .c-tag.actual text { fill: var(--fondo); }
 .banda-acento .c-commit.nuevo .c-seg { stroke: var(--tinta); fill: #FFE3A8; }
 .banda-acento code { background: rgb(255 255 255 / .35); }
@@ -357,7 +421,7 @@ section.banda-acento { background: var(--acento); color: var(--sobre-acento); --
         </dl>
       </div>
       <figure class="entra" style="--i:4">
-        <svg class="cinta" viewBox="0 0 430 230" role="img" xmlns="http://www.w3.org/2000/svg"><title>Cinta perforada con dos pistas: main y feature se empalman en un commit de fusión de dos padres</title><rect class="c-banda" x="16" y="56" width="398" height="48" rx="2"/><line class="c-guia" x1="22" y1="100" x2="408" y2="100"/><rect class="c-banda" x="120" y="156" width="170" height="48" rx="2"/><line class="c-guia" x1="126" y1="200" x2="284" y2="200"/><line class="c-liga " x1="74" y1="80" x2="96" y2="80"/><line class="c-liga " x1="144" y1="80" x2="166" y2="80"/><line class="c-liga " x1="144" y1="80" x2="166" y2="180"/><line class="c-liga " x1="214" y1="180" x2="236" y2="180"/><line class="c-liga empalme" x1="214" y1="80" x2="346" y2="80"/><line class="c-liga empalme" x1="284" y1="180" x2="346" y2="80"/><text class="c-nota" x="370" y="126" text-anchor="middle">2 padres</text><g class="c-commit "><rect class="c-seg" x="26" y="62" width="48" height="36" rx="2"/><circle class="c-hoyo" cx="35" cy="72" r="3.4"/><circle class="c-hoyo" cx="55" cy="72" r="3.4"/><text class="c-hash" x="50" y="91" text-anchor="middle">a3f9e21</text></g><g class="c-commit "><rect class="c-seg" x="96" y="62" width="48" height="36" rx="2"/><circle class="c-hoyo" cx="115" cy="72" r="3.4"/><circle class="c-hoyo" cx="125" cy="72" r="3.4"/><circle class="c-hoyo" cx="135" cy="72" r="3.4"/><text class="c-hash" x="120" y="91" text-anchor="middle">7c41d08</text></g><g class="c-commit "><rect class="c-seg" x="166" y="62" width="48" height="36" rx="2"/><circle class="c-hoyo" cx="185" cy="72" r="3.4"/><circle class="c-hoyo" cx="205" cy="72" r="3.4"/><text class="c-hash" x="190" y="91" text-anchor="middle">5d0a913</text></g><g class="c-commit "><rect class="c-seg" x="166" y="162" width="48" height="36" rx="2"/><circle class="c-hoyo" cx="195" cy="172" r="3.4"/><text class="c-hash" x="190" y="191" text-anchor="middle">2d8c3a1</text></g><g class="c-commit "><rect class="c-seg" x="236" y="162" width="48" height="36" rx="2"/><circle class="c-hoyo" cx="245" cy="172" r="3.4"/><circle class="c-hoyo" cx="265" cy="172" r="3.4"/><circle class="c-hoyo" cx="275" cy="172" r="3.4"/><text class="c-hash" x="260" y="191" text-anchor="middle">b06e7f4</text><g class="c-tag"><rect x="230.9" y="138" width="58.2" height="18" rx="2"/><text x="260" y="151" text-anchor="middle">feature</text></g></g><g class="c-commit merge"><rect class="c-seg" x="346" y="62" width="48" height="36" rx="2"/><circle class="c-hoyo" cx="355" cy="72" r="3.4"/><circle class="c-hoyo" cx="365" cy="72" r="3.4"/><circle class="c-hoyo" cx="375" cy="72" r="3.4"/><text class="c-hash" x="370" y="91" text-anchor="middle">e5b2c90</text><g class="c-tag actual"><rect x="350.8" y="38" width="38.4" height="18" rx="2"/><text x="370" y="51" text-anchor="middle">main</text></g></g></svg>
+        <div data-anima id="anima-portada"><svg class="cinta" viewBox="0 0 410 245" role="img" xmlns="http://www.w3.org/2000/svg"><title>Las mismas ramas, dos caminos: git merge crea un commit con dos padres; git rebase reaplica los commits de feature encima de main como copias con hash nuevo</title><text class="c-cmd" x="18" y="27.6" font-size="13.0"><tspan class="c-prompt">$ </tspan><tspan id="port-cmd">git switch main</tspan></text><rect class="c-banda" x="18" y="59.7" width="374" height="66" rx="3"/><circle class="c-perf" cx="25" cy="119.2" r="1.6"/><circle class="c-perf" cx="34" cy="119.2" r="1.6"/><circle class="c-perf" cx="43" cy="119.2" r="1.6"/><circle class="c-perf" cx="52" cy="119.2" r="1.6"/><circle class="c-perf" cx="61" cy="119.2" r="1.6"/><circle class="c-perf" cx="70" cy="119.2" r="1.6"/><circle class="c-perf" cx="79" cy="119.2" r="1.6"/><circle class="c-perf" cx="88" cy="119.2" r="1.6"/><circle class="c-perf" cx="97" cy="119.2" r="1.6"/><circle class="c-perf" cx="106" cy="119.2" r="1.6"/><circle class="c-perf" cx="115" cy="119.2" r="1.6"/><circle class="c-perf" cx="124" cy="119.2" r="1.6"/><circle class="c-perf" cx="133" cy="119.2" r="1.6"/><circle class="c-perf" cx="142" cy="119.2" r="1.6"/><circle class="c-perf" cx="151" cy="119.2" r="1.6"/><circle class="c-perf" cx="160" cy="119.2" r="1.6"/><circle class="c-perf" cx="169" cy="119.2" r="1.6"/><circle class="c-perf" cx="178" cy="119.2" r="1.6"/><circle class="c-perf" cx="187" cy="119.2" r="1.6"/><circle class="c-perf" cx="196" cy="119.2" r="1.6"/><circle class="c-perf" cx="205" cy="119.2" r="1.6"/><circle class="c-perf" cx="214" cy="119.2" r="1.6"/><circle class="c-perf" cx="223" cy="119.2" r="1.6"/><circle class="c-perf" cx="232" cy="119.2" r="1.6"/><circle class="c-perf" cx="241" cy="119.2" r="1.6"/><circle class="c-perf" cx="250" cy="119.2" r="1.6"/><circle class="c-perf" cx="259" cy="119.2" r="1.6"/><circle class="c-perf" cx="268" cy="119.2" r="1.6"/><circle class="c-perf" cx="277" cy="119.2" r="1.6"/><circle class="c-perf" cx="286" cy="119.2" r="1.6"/><circle class="c-perf" cx="295" cy="119.2" r="1.6"/><circle class="c-perf" cx="304" cy="119.2" r="1.6"/><circle class="c-perf" cx="313" cy="119.2" r="1.6"/><circle class="c-perf" cx="322" cy="119.2" r="1.6"/><circle class="c-perf" cx="331" cy="119.2" r="1.6"/><circle class="c-perf" cx="340" cy="119.2" r="1.6"/><circle class="c-perf" cx="349" cy="119.2" r="1.6"/><circle class="c-perf" cx="358" cy="119.2" r="1.6"/><circle class="c-perf" cx="367" cy="119.2" r="1.6"/><circle class="c-perf" cx="376" cy="119.2" r="1.6"/><circle class="c-perf" cx="385" cy="119.2" r="1.6"/><rect class="c-banda" x="113" y="160.7" width="184" height="66" rx="3"/><circle class="c-perf" cx="120" cy="220.2" r="1.6"/><circle class="c-perf" cx="129" cy="220.2" r="1.6"/><circle class="c-perf" cx="138" cy="220.2" r="1.6"/><circle class="c-perf" cx="147" cy="220.2" r="1.6"/><circle class="c-perf" cx="156" cy="220.2" r="1.6"/><circle class="c-perf" cx="165" cy="220.2" r="1.6"/><circle class="c-perf" cx="174" cy="220.2" r="1.6"/><circle class="c-perf" cx="183" cy="220.2" r="1.6"/><circle class="c-perf" cx="192" cy="220.2" r="1.6"/><circle class="c-perf" cx="201" cy="220.2" r="1.6"/><circle class="c-perf" cx="210" cy="220.2" r="1.6"/><circle class="c-perf" cx="219" cy="220.2" r="1.6"/><circle class="c-perf" cx="228" cy="220.2" r="1.6"/><circle class="c-perf" cx="237" cy="220.2" r="1.6"/><circle class="c-perf" cx="246" cy="220.2" r="1.6"/><circle class="c-perf" cx="255" cy="220.2" r="1.6"/><circle class="c-perf" cx="264" cy="220.2" r="1.6"/><circle class="c-perf" cx="273" cy="220.2" r="1.6"/><circle class="c-perf" cx="282" cy="220.2" r="1.6"/><circle class="c-perf" cx="291" cy="220.2" r="1.6"/><g class="c-enlace"><path class="c-liga" d="M123 88.7 L103.5 88.7"/><path class="c-pta" d="M97 88.7 L104.5 85 L104.5 92.5 Z"/></g><g class="c-enlace" id="port-l-o1"><path class="c-liga" d="M123 189.7 L70.5 189.7 Q62.5 189.7 62.5 181.7 L62.5 118.2"/><path class="c-pta" d="M62.5 111.7 L66.2 119.2 L58.8 119.2 Z"/></g><g class="c-enlace" id="port-l-o2"><path class="c-liga" d="M218 189.7 L198.5 189.7"/><path class="c-pta" d="M192 189.7 L199.5 186 L199.5 193.5 Z"/></g><g class="c-enlace empalme" id="port-l-m1" style="opacity:0"><path class="c-liga" d="M313 88.7 L200 88.7"/><path class="c-pta" d="M192 88.7 L201 84.2 L201 93.2 Z"/></g><g class="c-enlace empalme" id="port-l-m2" style="opacity:0"><path class="c-liga" d="M347.5 111.7 L347.5 181.7 Q347.5 189.7 339.5 189.7 L295 189.7"/><path class="c-pta" d="M287 189.7 L296 185.2 L296 194.2 Z"/></g><g class="c-enlace" id="port-l-c1" style="opacity:0"><path class="c-liga" d="M218 88.7 L198.5 88.7"/><path class="c-pta" d="M192 88.7 L199.5 85 L199.5 92.5 Z"/></g><g class="c-enlace" id="port-l-c2" style="opacity:0"><path class="c-liga" d="M313 88.7 L293.5 88.7"/><path class="c-pta" d="M287 88.7 L294.5 85 L294.5 92.5 Z"/></g><g class="c-copia" id="port-k1" style="opacity:0"><path class="flujo" d="M157.5 166.7 C157.5 119.7 252.5 133.7 252.5 118.2"/><path class="c-pta" d="M252.5 111.7 L248.8 119.2 L256.2 119.2 Z"/></g><g class="c-copia" id="port-k2" style="opacity:0"><path class="flujo" d="M287 179.7 C341.5 179.7 347.5 159.7 347.5 118.2"/><path class="c-pta" d="M347.5 111.7 L343.8 119.2 L351.2 119.2 Z"/></g><g class="c-commit"><rect class="c-seg" x="28" y="65.7" width="69" height="46" rx="3"/><circle class="c-hoyo" cx="55.9" cy="75.7" r="3.2"/><circle class="c-hoyo" cx="69.1" cy="75.7" r="3.2"/><circle class="c-hoyo" cx="82.4" cy="75.7" r="3.2"/><text x="62.5" y="103.7" font-size="13.0" fill="currentColor" text-anchor="middle" font-family="var(--f-codigo)" class="c-hash">7c41d08</text></g><g class="c-commit"><rect class="c-seg" x="123" y="65.7" width="69" height="46" rx="3"/><circle class="c-hoyo" cx="150.9" cy="75.7" r="3.2"/><circle class="c-hoyo" cx="177.4" cy="75.7" r="3.2"/><text x="157.5" y="103.7" font-size="13.0" fill="currentColor" text-anchor="middle" font-family="var(--f-codigo)" class="c-hash">5d0a913</text></g><g class="c-commit" id="port-o1"><rect class="c-seg" x="123" y="166.7" width="69" height="46" rx="3"/><circle class="c-hoyo" cx="164.1" cy="176.7" r="3.2"/><text x="157.5" y="204.7" font-size="13.0" fill="currentColor" text-anchor="middle" font-family="var(--f-codigo)" class="c-hash">2d8c3a1</text></g><g class="c-commit" id="port-o2"><rect class="c-seg" x="218" y="166.7" width="69" height="46" rx="3"/><circle class="c-hoyo" cx="232.6" cy="176.7" r="3.2"/><circle class="c-hoyo" cx="259.1" cy="176.7" r="3.2"/><circle class="c-hoyo" cx="272.4" cy="176.7" r="3.2"/><text x="252.5" y="204.7" font-size="13.0" fill="currentColor" text-anchor="middle" font-family="var(--f-codigo)" class="c-hash">b06e7f4</text></g><g class="c-commit merge" id="port-merge" style="opacity:0"><rect class="c-seg" x="313" y="65.7" width="69" height="46" rx="3"/><circle class="c-hoyo" cx="327.6" cy="75.7" r="3.2"/><circle class="c-hoyo" cx="340.9" cy="75.7" r="3.2"/><circle class="c-hoyo" cx="354.1" cy="75.7" r="3.2"/><text x="347.5" y="103.7" font-size="13.0" fill="currentColor" text-anchor="middle" font-family="var(--f-codigo)" class="c-hash">e5b2c90</text></g><g class="c-commit nuevo" id="port-c1" style="opacity:0"><rect class="c-seg" x="218" y="65.7" width="69" height="46" rx="3"/><circle class="c-hoyo" cx="245.9" cy="75.7" r="3.2"/><text x="252.5" y="103.7" font-size="13.0" fill="currentColor" text-anchor="middle" font-family="var(--f-codigo)" class="c-hash">4b7e0d2</text></g><g class="c-commit nuevo" id="port-c2" style="opacity:0"><rect class="c-seg" x="313" y="65.7" width="69" height="46" rx="3"/><circle class="c-hoyo" cx="327.6" cy="75.7" r="3.2"/><circle class="c-hoyo" cx="340.9" cy="75.7" r="3.2"/><text x="347.5" y="103.7" font-size="13.0" fill="currentColor" text-anchor="middle" font-family="var(--f-codigo)" class="c-hash">c19a5f3</text></g><g class="c-tag actual" id="port-tag-main" data-dx="190"><path d="M138.4 38.7 H176.6 Q179.1 38.7 179.1 41.2 V57.2 Q179.1 59.7 176.6 59.7 H162.5 L157.5 65.7 L152.5 59.7 H138.4 Q135.9 59.7 135.9 57.2 V41.2 Q135.9 38.7 138.4 38.7 Z"/><text x="157.5" y="53.8" font-size="13.0" fill="currentColor" text-anchor="middle" font-family="var(--f-codigo)">main</text></g><g class="c-tag" id="port-tag-f"><path d="M221.7 139.7 H283.3 Q285.8 139.7 285.8 142.2 V158.2 Q285.8 160.7 283.3 160.7 H257.5 L252.5 166.7 L247.5 160.7 H221.7 Q219.2 160.7 219.2 158.2 V142.2 Q219.2 139.7 221.7 139.7 Z"/><text x="252.5" y="154.8" font-size="13.0" fill="currentColor" text-anchor="middle" font-family="var(--f-codigo)">feature</text></g><g class="c-tag" id="port-tag-orig" style="opacity:0"><path d="M213.9 139.7 H291.1 Q293.6 139.7 293.6 142.2 V158.2 Q293.6 160.7 291.1 160.7 H257.5 L252.5 166.7 L247.5 160.7 H213.9 Q211.4 160.7 211.4 158.2 V142.2 Q211.4 139.7 213.9 139.7 Z"/><text x="252.5" y="154.8" font-size="13.0" fill="currentColor" text-anchor="middle" font-family="var(--f-codigo)">ORIG_HEAD</text></g><g class="c-tag actual" id="port-tag-f2" style="opacity:0"><path d="M316.7 38.7 H378.3 Q380.8 38.7 380.8 41.2 V57.2 Q380.8 59.7 378.3 59.7 H352.5 L347.5 65.7 L342.5 59.7 H316.7 Q314.2 59.7 314.2 57.2 V41.2 Q314.2 38.7 316.7 38.7 Z"/><text x="347.5" y="53.8" font-size="13.0" fill="currentColor" text-anchor="middle" font-family="var(--f-codigo)">feature</text></g></svg><p class="anima-fase"><b id="port-fase">Inicio</b><span id="port-texto">main y feature divergieron desde 7c41d08: cada una tiene commits que la otra no tiene. Estás en main.</span></p></div>
         <figcaption>Cada tramo es un commit; sus perforaciones salen de su hash. La etiqueta ámbar es la rama a la que apunta HEAD.</figcaption>
       </figure>
     </div>
@@ -375,7 +439,8 @@ section.banda-acento { background: var(--acento); color: var(--sobre-acento); --
       <div>
         <h2>Una rama no copia nada</h2>
         <p class="idea">Una rama es un puntero móvil a un commit. Crearla es escribir un archivo con un hash <a class="cita" href="https://git-scm.com/book/en/v2/Git-Branching-Branches-in-a-Nutshell">[1]</a>.</p>
-        <p><code>HEAD</code> apunta a la rama en la que estás. Cada <code>git commit</code> mueve hacia adelante <strong>solo esa rama</strong> <a class="cita" href="https://git-scm.com/book/en/v2/Git-Branching-Branches-in-a-Nutshell">[1]</a>.</p>
+        <p><code>HEAD</code> apunta a la rama en la que estás <a class="cita" href="https://git-scm.com/book/en/v2/Git-Branching-Branches-in-a-Nutshell">[1]</a>.</p>
+        <p data-tras-prediccion="pred-commit">Cada <code>git commit</code> mueve hacia adelante <strong>solo esa rama</strong> <a class="cita" href="https://git-scm.com/book/en/v2/Git-Branching-Branches-in-a-Nutshell">[1]</a>.</p>
         <p class="suave">Para crear una rama y cambiarte a ella: <code>git switch -c feature</code> (Git 2.23 o posterior) o <code>git checkout -b feature</code> <a class="cita" href="https://git-scm.com/book/en/v2/Git-Branching-Branches-in-a-Nutshell">[1]</a>.</p>
 
         <div data-interaccion="otra" id="terminal-ramas">
@@ -389,6 +454,14 @@ section.banda-acento { background: var(--acento); color: var(--sobre-acento); --
               <button type="button" data-opcion="d">Ninguna: HEAD se separa</button>
             </div>
             <p class="veredicto" hidden></p>
+            <div data-ayuda="pred-commit">
+              <ol>
+                <li>Una rama es solo un puntero móvil a un commit: crearla no copia nada.</li>
+                <li><code>HEAD</code> apunta a la rama en la que estás. Aquí estás en <code>feature</code>.</li>
+                <li>Cada <code>git commit</code> crea un commit hijo del actual y mueve hacia adelante una sola etiqueta: la rama a la que apunta <code>HEAD</code>. ¿Cuál es?</li>
+                <li data-respuesta><strong>Solo feature.</strong> HEAD apunta a feature, así que solo esa etiqueta avanza al commit nuevo; main se queda donde estaba.</li>
+              </ol>
+            </div>
           </div>
           <div class="fila-botones" role="group" aria-label="Comandos">
             <button type="button" class="boton principal" data-cmd="commit">git commit</button>
@@ -398,6 +471,15 @@ section.banda-acento { background: var(--acento); color: var(--sobre-acento); --
           </div>
           <div class="lienzo"><svg class="cinta" id="svg-ramas" viewBox="0 0 520 210" role="img" xmlns="http://www.w3.org/2000/svg"><title>Historial de commits con las etiquetas main y feature</title></svg></div>
           <p class="lectura" data-tras-prediccion="pred-commit" aria-live="polite" id="lectura-ramas">Estás en feature. main y feature apuntan al mismo commit.</p>
+          <div data-ayuda="ayuda-terminal">
+            <ol>
+              <li>Antes de tocar un botón, mira la etiqueta ámbar: es la rama a la que apunta <code>HEAD</code>.</li>
+              <li><code>git commit</code> agrega un tramo después de esa etiqueta y la mueve a él. La otra etiqueta se queda donde estaba.</li>
+              <li><code>git switch</code> no mueve ningún commit: solo cambia a qué rama apunta <code>HEAD</code>.</li>
+              <li>Para que las ramas diverjan, cada una necesita un commit que la otra no tenga. ¿Qué tienes que hacer entre un commit y el siguiente?</li>
+              <li data-respuesta>Haz <code>git commit</code> en feature, luego <code>git switch main</code> y otro <code>git commit</code>. Cada rama avanzó por su lado desde el mismo commit, que ahora es su ancestro común: divergieron.</li>
+            </ol>
+          </div>
           <ul data-retos>
             <li data-reto="reto-divergir"><span>Haz que las ramas diverjan: al menos un commit en main y otro en feature que la otra no tenga.</span></li>
           </ul>
@@ -411,9 +493,10 @@ section.banda-acento { background: var(--acento); color: var(--sobre-acento); --
     <div class="dividido">
       <div>
         <p class="sobre">git merge con ramas divergentes</p>
-        <h2>Tres versiones, un tramo nuevo</h2>
-        <p class="idea">Si las dos ramas avanzaron, Git usa las dos puntas y su ancestro común, y crea un commit de fusión con más de un padre <a class="cita" href="https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging">[2]</a>.</p>
-        <ol class="claves">
+        <h2>Un tramo nuevo: ¿con qué lo arma Git?</h2>
+        <p class="idea">Si las dos ramas avanzaron, Git crea un commit de fusión con más de un padre <a class="cita" href="https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging">[2]</a>. Para armarlo compara versiones del proyecto. ¿Cuáles?</p>
+        <ol class="claves" data-tras-prediccion="pred-tres">
+          <li>Git usa las dos puntas y su ancestro común <a class="cita" href="https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging">[2]</a>.</li>
           <li>El ancestro común dice qué había antes. Comparando cada punta contra él, Git sabe qué cambió de cada lado.</li>
           <li>Si solo un lado cambió un renglón, gana ese cambio. Si los dos lo cambiaron distinto, hay conflicto.</li>
           <li>La estrategia por defecto se llama <code>ort</code> y resuelve dos puntas con un merge de tres vías <a class="cita" href="https://git-scm.com/docs/git-merge">[4]</a>.</li>
@@ -429,12 +512,20 @@ section.banda-acento { background: var(--acento); color: var(--sobre-acento); --
             <button type="button" data-opcion="c">Todos los commits de ambas ramas</button>
           </div>
           <p class="veredicto" hidden></p>
+          <div data-ayuda="pred-tres">
+            <ol>
+              <li>Piensa en un solo renglón: para combinarlo, Git necesita saber si cambió y de qué lado.</li>
+              <li>Con solo las dos puntas ve que el renglón es distinto, pero no cuál de los dos lo cambió. Le falta saber qué había antes.</li>
+              <li>Lo que había antes está en el último commit que comparten las dos ramas: el ancestro común. Git compara cada punta contra él; los commits intermedios no le hacen falta. Cuenta cuántas versiones son.</li>
+              <li data-respuesta><strong>3: las dos puntas y el ancestro común.</strong> Comparando cada punta contra el ancestro, Git sabe qué cambió cada lado; por eso se llama three-way merge.</li>
+            </ol>
+          </div>
         </div>
-        <div class="lienzo"><svg class="cinta diagrama-svg" viewBox="0 0 470 250" role="img" xmlns="http://www.w3.org/2000/svg"><title>Three-way merge: el ancestro común, la punta de main, la punta de feature y el commit de fusión</title><rect class="c-banda" x="16" y="66" width="438" height="48" rx="2"/><line class="c-guia" x1="22" y1="110" x2="448" y2="110"/><rect class="c-banda" x="100" y="166" width="190" height="48" rx="2"/><line class="c-guia" x1="106" y1="210" x2="284" y2="210"/><line class="c-liga " data-une="base main" x1="84" y1="90" x2="106" y2="90"/><line class="c-liga " data-une="base main" x1="154" y1="90" x2="176" y2="90"/><line class="c-liga " data-une="base feature" x1="84" y1="90" x2="106" y2="190"/><line class="c-liga " data-une="base feature" x1="154" y1="190" x2="226" y2="190"/><line class="c-liga empalme" data-une="main merge" x1="224" y1="90" x2="376" y2="90"/><line class="c-liga empalme" data-une="feature merge" x1="274" y1="190" x2="376" y2="90"/><g class="c-commit " data-nodo="base" tabindex="0" role="button" aria-label="Ancestro común"><rect class="c-seg" x="36" y="72" width="48" height="36" rx="2"/><circle class="c-hoyo" cx="55" cy="82" r="3.4"/><circle class="c-hoyo" cx="65" cy="82" r="3.4"/><circle class="c-hoyo" cx="75" cy="82" r="3.4"/><text class="c-hash" x="60" y="101" text-anchor="middle">7c41d08</text></g><g class="c-commit "><rect class="c-seg" x="106" y="72" width="48" height="36" rx="2"/><circle class="c-hoyo" cx="125" cy="82" r="3.4"/><circle class="c-hoyo" cx="145" cy="82" r="3.4"/><text class="c-hash" x="130" y="101" text-anchor="middle">5d0a913</text></g><g class="c-commit " data-nodo="main" tabindex="0" role="button" aria-label="Punta de main"><rect class="c-seg" x="176" y="72" width="48" height="36" rx="2"/><circle class="c-hoyo" cx="185" cy="82" r="3.4"/><circle class="c-hoyo" cx="215" cy="82" r="3.4"/><text class="c-hash" x="200" y="101" text-anchor="middle">91be4c7</text><g class="c-tag actual"><rect x="180.8" y="48" width="38.4" height="18" rx="2"/><text x="200" y="61" text-anchor="middle">main</text></g></g><g class="c-commit "><rect class="c-seg" x="106" y="172" width="48" height="36" rx="2"/><circle class="c-hoyo" cx="135" cy="182" r="3.4"/><text class="c-hash" x="130" y="201" text-anchor="middle">2d8c3a1</text></g><g class="c-commit " data-nodo="feature" tabindex="0" role="button" aria-label="Punta de feature"><rect class="c-seg" x="226" y="172" width="48" height="36" rx="2"/><circle class="c-hoyo" cx="235" cy="182" r="3.4"/><circle class="c-hoyo" cx="255" cy="182" r="3.4"/><circle class="c-hoyo" cx="265" cy="182" r="3.4"/><text class="c-hash" x="250" y="201" text-anchor="middle">b06e7f4</text><g class="c-tag"><rect x="220.9" y="148" width="58.2" height="18" rx="2"/><text x="250" y="161" text-anchor="middle">feature</text></g></g><g class="c-commit merge" data-nodo="merge" tabindex="0" role="button" aria-label="Commit de fusión"><rect class="c-seg" x="376" y="72" width="48" height="36" rx="2"/><circle class="c-hoyo" cx="385" cy="82" r="3.4"/><circle class="c-hoyo" cx="395" cy="82" r="3.4"/><circle class="c-hoyo" cx="405" cy="82" r="3.4"/><text class="c-hash" x="400" y="101" text-anchor="middle">e5b2c90</text></g></svg></div>
+        <div class="lienzo"><svg class="cinta diagrama-svg" viewBox="0 0 434 264" role="img" xmlns="http://www.w3.org/2000/svg"><title>Three-way merge: el ancestro común, la punta de main, la punta de feature y el commit de fusión, que apunta a las dos puntas</title><rect class="c-banda" x="18" y="40.5" width="398" height="69" rx="3"/><circle class="c-perf" cx="25" cy="103" r="1.6"/><circle class="c-perf" cx="34" cy="103" r="1.6"/><circle class="c-perf" cx="43" cy="103" r="1.6"/><circle class="c-perf" cx="52" cy="103" r="1.6"/><circle class="c-perf" cx="61" cy="103" r="1.6"/><circle class="c-perf" cx="70" cy="103" r="1.6"/><circle class="c-perf" cx="79" cy="103" r="1.6"/><circle class="c-perf" cx="88" cy="103" r="1.6"/><circle class="c-perf" cx="97" cy="103" r="1.6"/><circle class="c-perf" cx="106" cy="103" r="1.6"/><circle class="c-perf" cx="115" cy="103" r="1.6"/><circle class="c-perf" cx="124" cy="103" r="1.6"/><circle class="c-perf" cx="133" cy="103" r="1.6"/><circle class="c-perf" cx="142" cy="103" r="1.6"/><circle class="c-perf" cx="151" cy="103" r="1.6"/><circle class="c-perf" cx="160" cy="103" r="1.6"/><circle class="c-perf" cx="169" cy="103" r="1.6"/><circle class="c-perf" cx="178" cy="103" r="1.6"/><circle class="c-perf" cx="187" cy="103" r="1.6"/><circle class="c-perf" cx="196" cy="103" r="1.6"/><circle class="c-perf" cx="205" cy="103" r="1.6"/><circle class="c-perf" cx="214" cy="103" r="1.6"/><circle class="c-perf" cx="223" cy="103" r="1.6"/><circle class="c-perf" cx="232" cy="103" r="1.6"/><circle class="c-perf" cx="241" cy="103" r="1.6"/><circle class="c-perf" cx="250" cy="103" r="1.6"/><circle class="c-perf" cx="259" cy="103" r="1.6"/><circle class="c-perf" cx="268" cy="103" r="1.6"/><circle class="c-perf" cx="277" cy="103" r="1.6"/><circle class="c-perf" cx="286" cy="103" r="1.6"/><circle class="c-perf" cx="295" cy="103" r="1.6"/><circle class="c-perf" cx="304" cy="103" r="1.6"/><circle class="c-perf" cx="313" cy="103" r="1.6"/><circle class="c-perf" cx="322" cy="103" r="1.6"/><circle class="c-perf" cx="331" cy="103" r="1.6"/><circle class="c-perf" cx="340" cy="103" r="1.6"/><circle class="c-perf" cx="349" cy="103" r="1.6"/><circle class="c-perf" cx="358" cy="103" r="1.6"/><circle class="c-perf" cx="367" cy="103" r="1.6"/><circle class="c-perf" cx="376" cy="103" r="1.6"/><circle class="c-perf" cx="385" cy="103" r="1.6"/><circle class="c-perf" cx="394" cy="103" r="1.6"/><circle class="c-perf" cx="403" cy="103" r="1.6"/><rect class="c-banda" x="119" y="146" width="196" height="69" rx="3"/><circle class="c-perf" cx="126" cy="208.5" r="1.6"/><circle class="c-perf" cx="135" cy="208.5" r="1.6"/><circle class="c-perf" cx="144" cy="208.5" r="1.6"/><circle class="c-perf" cx="153" cy="208.5" r="1.6"/><circle class="c-perf" cx="162" cy="208.5" r="1.6"/><circle class="c-perf" cx="171" cy="208.5" r="1.6"/><circle class="c-perf" cx="180" cy="208.5" r="1.6"/><circle class="c-perf" cx="189" cy="208.5" r="1.6"/><circle class="c-perf" cx="198" cy="208.5" r="1.6"/><circle class="c-perf" cx="207" cy="208.5" r="1.6"/><circle class="c-perf" cx="216" cy="208.5" r="1.6"/><circle class="c-perf" cx="225" cy="208.5" r="1.6"/><circle class="c-perf" cx="234" cy="208.5" r="1.6"/><circle class="c-perf" cx="243" cy="208.5" r="1.6"/><circle class="c-perf" cx="252" cy="208.5" r="1.6"/><circle class="c-perf" cx="261" cy="208.5" r="1.6"/><circle class="c-perf" cx="270" cy="208.5" r="1.6"/><circle class="c-perf" cx="279" cy="208.5" r="1.6"/><circle class="c-perf" cx="288" cy="208.5" r="1.6"/><circle class="c-perf" cx="297" cy="208.5" r="1.6"/><circle class="c-perf" cx="306" cy="208.5" r="1.6"/><g class="c-enlace" data-une="base main"><path class="c-liga" d="M129 71 L109.5 71"/><path class="c-pta" d="M103 71 L110.5 67.2 L110.5 74.8 Z"/></g><g class="c-enlace" data-une="base main"><path class="c-liga" d="M230 71 L210.5 71"/><path class="c-pta" d="M204 71 L211.5 67.2 L211.5 74.8 Z"/></g><g class="c-enlace" data-une="base feature"><path class="c-liga" d="M129 176.5 L73.5 176.5 Q65.5 176.5 65.5 168.5 L65.5 102"/><path class="c-pta" d="M65.5 95.5 L69.2 103 L61.8 103 Z"/></g><g class="c-enlace" data-une="base feature"><path class="c-liga" d="M230 176.5 L210.5 176.5"/><path class="c-pta" d="M204 176.5 L211.5 172.8 L211.5 180.2 Z"/></g><g class="c-enlace empalme" data-une="main merge"><path class="c-liga" d="M331 71 L313 71"/><path class="c-pta" d="M305 71 L314 66.5 L314 75.5 Z"/></g><g class="c-enlace empalme" data-une="feature merge"><path class="c-liga" d="M368.5 95.5 L368.5 168.5 Q368.5 176.5 360.5 176.5 L313 176.5"/><path class="c-pta" d="M305 176.5 L314 172 L314 181 Z"/></g><g class="c-commit" data-nodo="base" tabindex="0" role="button" aria-label="Ancestro común"><rect class="c-seg" x="28" y="46.5" width="75" height="49" rx="3"/><circle class="c-hoyo" cx="58.3" cy="56.5" r="3.2"/><circle class="c-hoyo" cx="72.7" cy="56.5" r="3.2"/><circle class="c-hoyo" cx="87.1" cy="56.5" r="3.2"/><text x="65.5" y="87.5" font-size="14.5" fill="currentColor" text-anchor="middle" font-family="var(--f-codigo)" class="c-hash">7c41d08</text></g><g class="c-commit"><rect class="c-seg" x="129" y="46.5" width="75" height="49" rx="3"/><circle class="c-hoyo" cx="159.3" cy="56.5" r="3.2"/><circle class="c-hoyo" cx="188.1" cy="56.5" r="3.2"/><text x="166.5" y="87.5" font-size="14.5" fill="currentColor" text-anchor="middle" font-family="var(--f-codigo)" class="c-hash">5d0a913</text></g><g class="c-commit" data-nodo="main" tabindex="0" role="button" aria-label="Punta de main"><rect class="c-seg" x="230" y="46.5" width="75" height="49" rx="3"/><circle class="c-hoyo" cx="245.9" cy="56.5" r="3.2"/><circle class="c-hoyo" cx="289.1" cy="56.5" r="3.2"/><text x="267.5" y="87.5" font-size="14.5" fill="currentColor" text-anchor="middle" font-family="var(--f-codigo)" class="c-hash">91be4c7</text><g class="c-tag actual"><path d="M246.6 18 H288.4 Q290.9 18 290.9 20.5 V38 Q290.9 40.5 288.4 40.5 H272.5 L267.5 46.5 L262.5 40.5 H246.6 Q244.1 40.5 244.1 38 V20.5 Q244.1 18 246.6 18 Z"/><text x="267.5" y="34.3" font-size="14.5" fill="currentColor" text-anchor="middle" font-family="var(--f-codigo)">main</text></g></g><g class="c-commit"><rect class="c-seg" x="129" y="152" width="75" height="49" rx="3"/><circle class="c-hoyo" cx="173.7" cy="162" r="3.2"/><text x="166.5" y="193" font-size="14.5" fill="currentColor" text-anchor="middle" font-family="var(--f-codigo)" class="c-hash">2d8c3a1</text></g><g class="c-commit" data-nodo="feature" tabindex="0" role="button" aria-label="Punta de feature"><rect class="c-seg" x="230" y="152" width="75" height="49" rx="3"/><circle class="c-hoyo" cx="245.9" cy="162" r="3.2"/><circle class="c-hoyo" cx="274.7" cy="162" r="3.2"/><circle class="c-hoyo" cx="289.1" cy="162" r="3.2"/><text x="267.5" y="193" font-size="14.5" fill="currentColor" text-anchor="middle" font-family="var(--f-codigo)" class="c-hash">b06e7f4</text><g class="c-tag"><path d="M233.6 123.5 H301.4 Q303.9 123.5 303.9 126 V143.5 Q303.9 146 301.4 146 H272.5 L267.5 152 L262.5 146 H233.6 Q231.1 146 231.1 143.5 V126 Q231.1 123.5 233.6 123.5 Z"/><text x="267.5" y="139.8" font-size="14.5" fill="currentColor" text-anchor="middle" font-family="var(--f-codigo)">feature</text></g></g><g class="c-commit merge" data-nodo="merge" tabindex="0" role="button" aria-label="Commit de fusión"><rect class="c-seg" x="331" y="46.5" width="75" height="49" rx="3"/><circle class="c-hoyo" cx="346.9" cy="56.5" r="3.2"/><circle class="c-hoyo" cx="361.3" cy="56.5" r="3.2"/><circle class="c-hoyo" cx="375.7" cy="56.5" r="3.2"/><text x="368.5" y="87.5" font-size="14.5" fill="currentColor" text-anchor="middle" font-family="var(--f-codigo)" class="c-hash">e5b2c90</text></g><path class="c-guia-nota" d="M388.5 95.5 V225.6"/><circle class="c-punto-nota" cx="388.5" cy="95.5" r="3"/><text x="416" y="242.1" font-size="14.5" fill="currentColor" text-anchor="end" font-family="var(--f-codigo)" class="c-nota fuerte acento">commit de fusión · 2 padres</text></svg></div>
         <p class="nodos-ayuda">Toca un tramo con borde (o usa Tab y Enter) para ver su papel.</p>
         <div class="ficha" id="ficha-tres" data-tras-prediccion="pred-tres" aria-live="polite"></div>
         <ul data-retos>
-          <li data-reto="reto-base"><span>Encuentra el tramo que ninguna rama tiene en la punta pero sin el cual no hay three-way merge.</span></li>
+          <li data-reto="reto-base"><span>Toca los tramos resaltados del dibujo y descubre qué papel tiene cada uno en la fusión.</span></li>
         </ul>
       </div>
     </div>
@@ -443,7 +534,7 @@ section.banda-acento { background: var(--acento); color: var(--sobre-acento); --
   <!-- 4. FAST-FORWARD VS FUSIÓN: COMPARACIÓN -->
   <section id="fast-forward" data-layout="comparacion" data-minutos="3">
     <h2>Fast-forward o commit de fusión</h2>
-    <p class="idea">Si la rama que fusionas desciende de la tuya, no hay trabajo divergente: Git solo mueve el puntero hacia adelante <a class="cita" href="https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging">[2]</a>.</p>
+    <p class="idea">Antes de fusionar, Git se fija en si hay trabajo divergente: si las dos ramas avanzaron desde que se separaron. ¿Qué cambia cuando solo avanzó una?</p>
     <div data-prediccion id="pred-ff" data-correcta="b"
          data-explicacion="hotfix desciende de main, así que no hay nada que combinar: main avanza hasta el commit de hotfix y no aparece un commit nuevo.">
       <p><strong>Predice:</strong> creaste <code>hotfix</code> desde <code>main</code>, hiciste un commit y <code>main</code> no se movió. Estando en <code>main</code> corres <code>git merge hotfix</code>. ¿Qué queda?</p>
@@ -453,27 +544,35 @@ section.banda-acento { background: var(--acento); color: var(--sobre-acento); --
         <button type="button" data-opcion="c">Un conflicto que hay que resolver</button>
       </div>
       <p class="veredicto" hidden></p>
+      <div data-ayuda="pred-ff">
+        <ol>
+          <li>Primero pregúntate si hay trabajo divergente: ¿<code>main</code> avanzó después de que creaste <code>hotfix</code>?</li>
+          <li>No: <code>main</code> no se movió, así que el commit de <code>hotfix</code> desciende directamente de <code>main</code>.</li>
+          <li>Si la rama que fusionas desciende de la tuya, no hay dos lados que combinar ni renglones que puedan chocar. ¿Hace falta un commit nuevo, o basta con mover algo?</li>
+          <li data-respuesta><strong>main avanza al commit de hotfix, sin commit nuevo.</strong> Es un fast-forward: como no hay divergencia, Git solo mueve el puntero de main hacia adelante.</li>
+        </ol>
+      </div>
     </div>
     <div class="duelo">
       <div>
         <p class="etiqueta v">Sin divergencia</p>
         <h3>Fast-forward</h3>
-        <svg class="cinta" viewBox="0 0 300 130" role="img" xmlns="http://www.w3.org/2000/svg"><title>Fast-forward: main solo avanza su etiqueta hasta el commit de hotfix</title><rect class="c-banda" x="16" y="56" width="268" height="48" rx="2"/><line class="c-guia" x1="22" y1="100" x2="278" y2="100"/><line class="c-liga " x1="74" y1="80" x2="96" y2="80"/><line class="c-liga " x1="144" y1="80" x2="166" y2="80"/><text class="c-nota" x="250" y="78" text-anchor="middle">sin commit</text><text class="c-nota" x="250" y="92" text-anchor="middle">nuevo</text><g class="c-commit "><rect class="c-seg" x="26" y="62" width="48" height="36" rx="2"/><circle class="c-hoyo" cx="35" cy="72" r="3.4"/><circle class="c-hoyo" cx="55" cy="72" r="3.4"/><text class="c-hash" x="50" y="91" text-anchor="middle">a3f9e21</text></g><g class="c-commit "><rect class="c-seg" x="96" y="62" width="48" height="36" rx="2"/><circle class="c-hoyo" cx="105" cy="72" r="3.4"/><circle class="c-hoyo" cx="115" cy="72" r="3.4"/><circle class="c-hoyo" cx="125" cy="72" r="3.4"/><circle class="c-hoyo" cx="135" cy="72" r="3.4"/><text class="c-hash" x="120" y="91" text-anchor="middle">f42c576</text></g><g class="c-commit "><rect class="c-seg" x="166" y="62" width="48" height="36" rx="2"/><circle class="c-hoyo" cx="195" cy="72" r="3.4"/><circle class="c-hoyo" cx="205" cy="72" r="3.4"/><text class="c-hash" x="190" y="91" text-anchor="middle">3a0874c</text><g class="c-tag"><rect x="164.2" y="38" width="51.6" height="18" rx="2"/><text x="190" y="51" text-anchor="middle">hotfix</text></g><g class="c-tag actual"><rect x="170.8" y="16" width="38.4" height="18" rx="2"/><text x="190" y="29" text-anchor="middle">main</text></g></g></svg>
+        <svg class="cinta" data-tras-prediccion="pred-ff" viewBox="0 0 288 161" role="img" xmlns="http://www.w3.org/2000/svg"><title>Fast-forward: main solo avanza su etiqueta hasta el commit de hotfix</title><rect class="c-banda" x="18" y="62" width="252" height="62" rx="3"/><circle class="c-perf" cx="25" cy="117.5" r="1.6"/><circle class="c-perf" cx="34" cy="117.5" r="1.6"/><circle class="c-perf" cx="43" cy="117.5" r="1.6"/><circle class="c-perf" cx="52" cy="117.5" r="1.6"/><circle class="c-perf" cx="61" cy="117.5" r="1.6"/><circle class="c-perf" cx="70" cy="117.5" r="1.6"/><circle class="c-perf" cx="79" cy="117.5" r="1.6"/><circle class="c-perf" cx="88" cy="117.5" r="1.6"/><circle class="c-perf" cx="97" cy="117.5" r="1.6"/><circle class="c-perf" cx="106" cy="117.5" r="1.6"/><circle class="c-perf" cx="115" cy="117.5" r="1.6"/><circle class="c-perf" cx="124" cy="117.5" r="1.6"/><circle class="c-perf" cx="133" cy="117.5" r="1.6"/><circle class="c-perf" cx="142" cy="117.5" r="1.6"/><circle class="c-perf" cx="151" cy="117.5" r="1.6"/><circle class="c-perf" cx="160" cy="117.5" r="1.6"/><circle class="c-perf" cx="169" cy="117.5" r="1.6"/><circle class="c-perf" cx="178" cy="117.5" r="1.6"/><circle class="c-perf" cx="187" cy="117.5" r="1.6"/><circle class="c-perf" cx="196" cy="117.5" r="1.6"/><circle class="c-perf" cx="205" cy="117.5" r="1.6"/><circle class="c-perf" cx="214" cy="117.5" r="1.6"/><circle class="c-perf" cx="223" cy="117.5" r="1.6"/><circle class="c-perf" cx="232" cy="117.5" r="1.6"/><circle class="c-perf" cx="241" cy="117.5" r="1.6"/><circle class="c-perf" cx="250" cy="117.5" r="1.6"/><circle class="c-perf" cx="259" cy="117.5" r="1.6"/><g class="c-enlace"><path class="c-liga" d="M114 89 L94.5 89"/><path class="c-pta" d="M88 89 L95.5 85.2 L95.5 92.8 Z"/></g><g class="c-enlace"><path class="c-liga" d="M200 89 L180.5 89"/><path class="c-pta" d="M174 89 L181.5 85.2 L181.5 92.8 Z"/></g><g class="c-commit"><rect class="c-seg" x="28" y="68" width="60" height="42" rx="3"/><circle class="c-hoyo" cx="40.7" cy="78" r="3.2"/><circle class="c-hoyo" cx="63.8" cy="78" r="3.2"/><text x="58" y="102" font-size="11" fill="currentColor" text-anchor="middle" font-family="var(--f-codigo)" class="c-hash">a3f9e21</text></g><g class="c-commit"><rect class="c-seg" x="114" y="68" width="60" height="42" rx="3"/><circle class="c-hoyo" cx="126.7" cy="78" r="3.2"/><circle class="c-hoyo" cx="138.2" cy="78" r="3.2"/><circle class="c-hoyo" cx="149.8" cy="78" r="3.2"/><circle class="c-hoyo" cx="161.3" cy="78" r="3.2"/><text x="144" y="102" font-size="11" fill="currentColor" text-anchor="middle" font-family="var(--f-codigo)" class="c-hash">f42c576</text></g><g class="c-commit"><rect class="c-seg" x="200" y="68" width="60" height="42" rx="3"/><circle class="c-hoyo" cx="235.8" cy="78" r="3.2"/><circle class="c-hoyo" cx="247.3" cy="78" r="3.2"/><text x="230" y="102" font-size="11" fill="currentColor" text-anchor="middle" font-family="var(--f-codigo)" class="c-hash">3a0874c</text><g class="c-tag actual"><path d="M213.3 43 H246.7 Q249.2 43 249.2 45.5 V59.5 Q249.2 62 246.7 62 H235 L230 68 L225 62 H213.3 Q210.8 62 210.8 59.5 V45.5 Q210.8 43 213.3 43 Z"/><text x="230" y="56.4" font-size="11" fill="currentColor" text-anchor="middle" font-family="var(--f-codigo)">main</text></g><g class="c-tag"><path d="M206.7 18 H253.3 Q255.8 18 255.8 20.5 V34.5 Q255.8 37 253.3 37 H235 L230 43 L225 37 H206.7 Q204.2 37 204.2 34.5 V20.5 Q204.2 18 206.7 18 Z"/><text x="230" y="31.4" font-size="11" fill="currentColor" text-anchor="middle" font-family="var(--f-codigo)">hotfix</text></g></g><g class="c-tag fantasma"><path d="M127.3 43 H160.7 Q163.2 43 163.2 45.5 V59.5 Q163.2 62 160.7 62 H149 L144 68 L139 62 H127.3 Q124.8 62 124.8 59.5 V45.5 Q124.8 43 127.3 43 Z"/><text x="144" y="56.4" font-size="11" fill="currentColor" text-anchor="middle" font-family="var(--f-codigo)">main</text></g><g class="c-mueve"><path class="c-liga" d="M167.2 52.5 L201.3 52.5"/><path class="c-pta" d="M207.8 52.5 L200.3 56.2 L200.3 48.8 Z"/></g><text x="144" y="140.1" font-size="11" fill="currentColor" text-anchor="middle" font-family="var(--f-codigo)" class="c-nota">solo avanza la etiqueta</text></svg>
         <pre class="terminal" data-tras-prediccion="pred-ff"><span class="p">$</span> git merge hotfix
 Updating f42c576..3a0874c
 <span class="ok">Fast-forward</span>
  index.html | 2 ++
  1 file changed, 2 insertions(+)</pre>
-        <p>La salida dice <code>Fast-forward</code> y no hay commit nuevo <a class="cita" href="https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging">[2]</a>.</p>
+        <p data-tras-prediccion="pred-ff">Si la rama que fusionas desciende de la tuya, no hay trabajo divergente: Git solo mueve el puntero hacia adelante. La salida dice <code>Fast-forward</code> y no hay commit nuevo <a class="cita" href="https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging">[2]</a>.</p>
       </div>
       <div>
         <p class="etiqueta a">Las dos avanzaron</p>
         <h3>Commit de fusión</h3>
-        <svg class="cinta" viewBox="0 0 320 220" role="img" xmlns="http://www.w3.org/2000/svg"><title>Commit de fusión: main y feature avanzaron y se unen en un commit con dos padres</title><rect class="c-banda" x="16" y="56" width="288" height="48" rx="2"/><line class="c-guia" x1="22" y1="100" x2="298" y2="100"/><rect class="c-banda" x="100" y="151" width="120" height="48" rx="2"/><line class="c-guia" x1="106" y1="195" x2="214" y2="195"/><line class="c-liga " x1="74" y1="80" x2="96" y2="80"/><line class="c-liga " x1="74" y1="80" x2="136" y2="175"/><line class="c-liga empalme" x1="144" y1="80" x2="236" y2="80"/><line class="c-liga empalme" x1="184" y1="175" x2="236" y2="80"/><g class="c-commit "><rect class="c-seg" x="26" y="62" width="48" height="36" rx="2"/><circle class="c-hoyo" cx="35" cy="72" r="3.4"/><circle class="c-hoyo" cx="55" cy="72" r="3.4"/><text class="c-hash" x="50" y="91" text-anchor="middle">a3f9e21</text></g><g class="c-commit "><rect class="c-seg" x="96" y="62" width="48" height="36" rx="2"/><circle class="c-hoyo" cx="105" cy="72" r="3.4"/><circle class="c-hoyo" cx="135" cy="72" r="3.4"/><text class="c-hash" x="120" y="91" text-anchor="middle">91be4c7</text></g><g class="c-commit "><rect class="c-seg" x="136" y="157" width="48" height="36" rx="2"/><circle class="c-hoyo" cx="145" cy="167" r="3.4"/><circle class="c-hoyo" cx="165" cy="167" r="3.4"/><circle class="c-hoyo" cx="175" cy="167" r="3.4"/><text class="c-hash" x="160" y="186" text-anchor="middle">b06e7f4</text><g class="c-tag"><rect x="130.9" y="133" width="58.2" height="18" rx="2"/><text x="160" y="146" text-anchor="middle">feature</text></g></g><g class="c-commit merge"><rect class="c-seg" x="236" y="62" width="48" height="36" rx="2"/><circle class="c-hoyo" cx="245" cy="72" r="3.4"/><circle class="c-hoyo" cx="255" cy="72" r="3.4"/><circle class="c-hoyo" cx="265" cy="72" r="3.4"/><text class="c-hash" x="260" y="91" text-anchor="middle">e5b2c90</text><g class="c-tag actual"><rect x="240.8" y="38" width="38.4" height="18" rx="2"/><text x="260" y="51" text-anchor="middle">main</text></g></g></svg>
+        <svg class="cinta" viewBox="0 0 288 258" role="img" xmlns="http://www.w3.org/2000/svg"><title>Commit de fusión: main y feature avanzaron y se unen en un commit con dos padres</title><rect class="c-banda" x="18" y="37" width="252" height="62" rx="3"/><circle class="c-perf" cx="25" cy="92.5" r="1.6"/><circle class="c-perf" cx="34" cy="92.5" r="1.6"/><circle class="c-perf" cx="43" cy="92.5" r="1.6"/><circle class="c-perf" cx="52" cy="92.5" r="1.6"/><circle class="c-perf" cx="61" cy="92.5" r="1.6"/><circle class="c-perf" cx="70" cy="92.5" r="1.6"/><circle class="c-perf" cx="79" cy="92.5" r="1.6"/><circle class="c-perf" cx="88" cy="92.5" r="1.6"/><circle class="c-perf" cx="97" cy="92.5" r="1.6"/><circle class="c-perf" cx="106" cy="92.5" r="1.6"/><circle class="c-perf" cx="115" cy="92.5" r="1.6"/><circle class="c-perf" cx="124" cy="92.5" r="1.6"/><circle class="c-perf" cx="133" cy="92.5" r="1.6"/><circle class="c-perf" cx="142" cy="92.5" r="1.6"/><circle class="c-perf" cx="151" cy="92.5" r="1.6"/><circle class="c-perf" cx="160" cy="92.5" r="1.6"/><circle class="c-perf" cx="169" cy="92.5" r="1.6"/><circle class="c-perf" cx="178" cy="92.5" r="1.6"/><circle class="c-perf" cx="187" cy="92.5" r="1.6"/><circle class="c-perf" cx="196" cy="92.5" r="1.6"/><circle class="c-perf" cx="205" cy="92.5" r="1.6"/><circle class="c-perf" cx="214" cy="92.5" r="1.6"/><circle class="c-perf" cx="223" cy="92.5" r="1.6"/><circle class="c-perf" cx="232" cy="92.5" r="1.6"/><circle class="c-perf" cx="241" cy="92.5" r="1.6"/><circle class="c-perf" cx="250" cy="92.5" r="1.6"/><circle class="c-perf" cx="259" cy="92.5" r="1.6"/><rect class="c-banda" x="104" y="132" width="80" height="62" rx="3"/><circle class="c-perf" cx="111" cy="187.5" r="1.6"/><circle class="c-perf" cx="120" cy="187.5" r="1.6"/><circle class="c-perf" cx="129" cy="187.5" r="1.6"/><circle class="c-perf" cx="138" cy="187.5" r="1.6"/><circle class="c-perf" cx="147" cy="187.5" r="1.6"/><circle class="c-perf" cx="156" cy="187.5" r="1.6"/><circle class="c-perf" cx="165" cy="187.5" r="1.6"/><circle class="c-perf" cx="174" cy="187.5" r="1.6"/><g class="c-enlace"><path class="c-liga" d="M114 64 L94.5 64"/><path class="c-pta" d="M88 64 L95.5 60.2 L95.5 67.8 Z"/></g><g class="c-enlace"><path class="c-liga" d="M114 159 L66 159 Q58 159 58 151 L58 91.5"/><path class="c-pta" d="M58 85 L61.8 92.5 L54.2 92.5 Z"/></g><g class="c-enlace empalme"><path class="c-liga" d="M200 64 L182 64"/><path class="c-pta" d="M174 64 L183 59.5 L183 68.5 Z"/></g><g class="c-enlace empalme"><path class="c-liga" d="M230 85 L230 151 Q230 159 222 159 L182 159"/><path class="c-pta" d="M174 159 L183 154.5 L183 163.5 Z"/></g><g class="c-commit"><rect class="c-seg" x="28" y="43" width="60" height="42" rx="3"/><circle class="c-hoyo" cx="40.7" cy="53" r="3.2"/><circle class="c-hoyo" cx="63.8" cy="53" r="3.2"/><text x="58" y="77" font-size="11" fill="currentColor" text-anchor="middle" font-family="var(--f-codigo)" class="c-hash">a3f9e21</text></g><g class="c-commit"><rect class="c-seg" x="114" y="43" width="60" height="42" rx="3"/><circle class="c-hoyo" cx="126.7" cy="53" r="3.2"/><circle class="c-hoyo" cx="161.3" cy="53" r="3.2"/><text x="144" y="77" font-size="11" fill="currentColor" text-anchor="middle" font-family="var(--f-codigo)" class="c-hash">91be4c7</text></g><g class="c-commit"><rect class="c-seg" x="114" y="138" width="60" height="42" rx="3"/><circle class="c-hoyo" cx="126.7" cy="148" r="3.2"/><circle class="c-hoyo" cx="149.8" cy="148" r="3.2"/><circle class="c-hoyo" cx="161.3" cy="148" r="3.2"/><text x="144" y="172" font-size="11" fill="currentColor" text-anchor="middle" font-family="var(--f-codigo)" class="c-hash">b06e7f4</text><g class="c-tag"><path d="M117.4 113 H170.6 Q173.1 113 173.1 115.5 V129.5 Q173.1 132 170.6 132 H149 L144 138 L139 132 H117.4 Q114.9 132 114.9 129.5 V115.5 Q114.9 113 117.4 113 Z"/><text x="144" y="126.3" font-size="11" fill="currentColor" text-anchor="middle" font-family="var(--f-codigo)">feature</text></g></g><g class="c-commit merge"><rect class="c-seg" x="200" y="43" width="60" height="42" rx="3"/><circle class="c-hoyo" cx="212.7" cy="53" r="3.2"/><circle class="c-hoyo" cx="224.2" cy="53" r="3.2"/><circle class="c-hoyo" cx="235.8" cy="53" r="3.2"/><text x="230" y="77" font-size="11" fill="currentColor" text-anchor="middle" font-family="var(--f-codigo)" class="c-hash">e5b2c90</text><g class="c-tag actual"><path d="M213.3 18 H246.7 Q249.2 18 249.2 20.5 V34.5 Q249.2 37 246.7 37 H235 L230 43 L225 37 H213.3 Q210.8 37 210.8 34.5 V20.5 Q210.8 18 213.3 18 Z"/><text x="230" y="31.4" font-size="11" fill="currentColor" text-anchor="middle" font-family="var(--f-codigo)">main</text></g></g><g class="etiqueta" data-punto="248 85"><path d="M248 85 L248 214" stroke="var(--acento-texto)" stroke-width="1" fill="none" opacity=".7"/><circle cx="248" cy="85" r="3" fill="var(--acento-texto)"/><text font-family="var(--f-cuerpo)" x="242" y="218.5" font-size="13.5" font-weight="600" fill="var(--acento-texto)" text-anchor="end">Commit de fusión</text><text font-family="var(--f-cuerpo)" x="242" y="235.5" font-size="12" fill="currentColor" opacity=".75" text-anchor="end">apunta a dos padres</text></g></svg>
         <p>Git crea un snapshot nuevo con el resultado del three-way merge y un commit que apunta a él, con dos padres <a class="cita" href="https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging">[2]</a>.</p>
       </div>
     </div>
-    <div class="tabla-scroll">
+    <div class="tabla-scroll" data-tras-prediccion="pred-ff">
       <table class="banderas">
         <caption class="sobre" style="text-align:left">Cómo controlarlo <a class="cita" href="https://git-scm.com/docs/git-merge">[4]</a></caption>
         <tr><th>--ff</th><td>Por defecto. Fast-forward cuando se puede; si no, commit de fusión.</td></tr>
@@ -487,8 +586,9 @@ Updating f42c576..3a0874c
   <section id="laboratorio" data-layout="laboratorio" data-tono="oscuro" data-minutos="6">
     <p class="sobre">simulador</p>
     <h2>Merge contra rebase, con las mismas ramas</h2>
-    <p class="idea">Rebase reaplica cada commit tuyo encima de la otra rama, en orden; merge toma las dos puntas y las une <a class="cita" href="https://git-scm.com/book/en/v2/Git-Branching-Rebasing">[3]</a>.</p>
-    <p>Un commit guarda el ID de su padre, y su ID es un hash de su contenido <a class="cita" href="https://git-scm.com/docs/gitdatamodel">[7]</a>. Por eso una copia sobre otro padre tiene otro hash: rebase abandona commits y crea otros parecidos pero distintos <a class="cita" href="https://git-scm.com/book/en/v2/Git-Branching-Rebasing">[3]</a>.</p>
+    <p class="idea">Merge y rebase llevan tu trabajo a la otra rama por caminos distintos. ¿Qué les pasa a tus commits en cada caso?</p>
+    <p>Un commit guarda el ID de su padre, y su ID es un hash de su contenido <a class="cita" href="https://git-scm.com/docs/gitdatamodel">[7]</a>.</p>
+    <p data-tras-prediccion="pred-rebase">Rebase reaplica cada commit tuyo encima de la otra rama, en orden; merge toma las dos puntas y las une <a class="cita" href="https://git-scm.com/book/en/v2/Git-Branching-Rebasing">[3]</a>. Como cada copia queda sobre otro padre, tiene otro hash: rebase abandona commits y crea otros parecidos pero distintos <a class="cita" href="https://git-scm.com/book/en/v2/Git-Branching-Rebasing">[3]</a>.</p>
 
     <div class="lab" data-interaccion="simulador" id="lab">
       <div data-prediccion id="pred-rebase" data-correcta="b"
@@ -501,6 +601,14 @@ Updating f42c576..3a0874c
           <button type="button" data-opcion="d">1: un commit que junta todo</button>
         </div>
         <p class="veredicto" hidden></p>
+        <div data-ayuda="pred-rebase">
+          <ol>
+            <li>Recuerda qué hace rebase: reaplica cada commit tuyo, en orden, encima de la otra rama. No junta nada en un solo commit.</li>
+            <li>¿Cuáles son tus commits? Los de feature desde que se separó de main. Los de main ya están en la base sobre la que reaplicas y no se tocan.</li>
+            <li>Un commit guarda el ID de su padre, y su ID es un hash de su contenido. Si la copia tiene otro padre, ¿puede conservar el mismo hash?</li>
+            <li data-respuesta><strong>3: una copia por commit de feature.</strong> Cada uno se reaplica sobre un padre distinto y recibe un hash nuevo; los 2 commits de main se quedan igual.</li>
+          </ol>
+        </div>
       </div>
 
       <div class="lab-controles">
@@ -552,7 +660,7 @@ Updating f42c576..3a0874c
         <p>Si de verdad tienes que reescribir algo publicado, <code>git push --force-with-lease</code> solo sobrescribe si la rama remota sigue donde esperabas; si no, falla <a class="cita" href="https://git-scm.com/docs/git-push">[10]</a>.</p>
       </div>
       <figure>
-        <svg class="cinta" viewBox="0 0 430 260" role="img" xmlns="http://www.w3.org/2000/svg"><title>Tu máquina tiene copias reperforadas; la de tu equipo sigue construyendo sobre los tramos originales</title><rect class="c-banda" x="16" y="46" width="398" height="48" rx="2"/><line class="c-guia" x1="22" y1="90" x2="408" y2="90"/><rect class="c-banda" x="16" y="176" width="328" height="48" rx="2"/><line class="c-guia" x1="22" y1="220" x2="338" y2="220"/><line class="c-liga " x1="74" y1="70" x2="96" y2="70"/><line class="c-liga " x1="144" y1="70" x2="166" y2="70"/><line class="c-liga " x1="214" y1="70" x2="236" y2="70"/><line class="c-liga " x1="74" y1="200" x2="96" y2="200"/><line class="c-liga " x1="144" y1="200" x2="166" y2="200"/><line class="c-liga " x1="214" y1="200" x2="236" y2="200"/><text class="c-nota fuerte" x="330" y="74">tu máquina</text><text class="c-nota fuerte" x="300" y="246">la de tu equipo</text><line class="c-choque" x1="190" y1="94" x2="190" y2="176"/><g class="c-commit "><rect class="c-seg" x="26" y="52" width="48" height="36" rx="2"/><circle class="c-hoyo" cx="45" cy="62" r="3.4"/><circle class="c-hoyo" cx="55" cy="62" r="3.4"/><circle class="c-hoyo" cx="65" cy="62" r="3.4"/><text class="c-hash" x="50" y="81" text-anchor="middle">7c41d08</text></g><g class="c-commit "><rect class="c-seg" x="96" y="52" width="48" height="36" rx="2"/><circle class="c-hoyo" cx="105" cy="62" r="3.4"/><circle class="c-hoyo" cx="135" cy="62" r="3.4"/><text class="c-hash" x="120" y="81" text-anchor="middle">91be4c7</text></g><g class="c-commit nuevo"><rect class="c-seg" x="166" y="52" width="48" height="36" rx="2"/><circle class="c-hoyo" cx="185" cy="62" r="3.4"/><text class="c-hash" x="190" y="81" text-anchor="middle">4b7e0d2</text></g><g class="c-commit nuevo"><rect class="c-seg" x="236" y="52" width="48" height="36" rx="2"/><circle class="c-hoyo" cx="245" cy="62" r="3.4"/><circle class="c-hoyo" cx="255" cy="62" r="3.4"/><text class="c-hash" x="260" y="81" text-anchor="middle">c19a5f3</text><g class="c-tag actual"><rect x="230.9" y="28" width="58.2" height="18" rx="2"/><text x="260" y="41" text-anchor="middle">feature</text></g></g><g class="c-commit "><rect class="c-seg" x="26" y="182" width="48" height="36" rx="2"/><circle class="c-hoyo" cx="45" cy="192" r="3.4"/><circle class="c-hoyo" cx="55" cy="192" r="3.4"/><circle class="c-hoyo" cx="65" cy="192" r="3.4"/><text class="c-hash" x="50" y="211" text-anchor="middle">7c41d08</text></g><g class="c-commit recorte"><rect class="c-seg" x="96" y="182" width="48" height="36" rx="2"/><circle class="c-hoyo" cx="125" cy="192" r="3.4"/><text class="c-hash" x="120" y="211" text-anchor="middle">2d8c3a1</text></g><g class="c-commit recorte"><rect class="c-seg" x="166" y="182" width="48" height="36" rx="2"/><circle class="c-hoyo" cx="175" cy="192" r="3.4"/><circle class="c-hoyo" cx="195" cy="192" r="3.4"/><circle class="c-hoyo" cx="205" cy="192" r="3.4"/><text class="c-hash" x="190" y="211" text-anchor="middle">b06e7f4</text></g><g class="c-commit "><rect class="c-seg" x="236" y="182" width="48" height="36" rx="2"/><circle class="c-hoyo" cx="255" cy="192" r="3.4"/><circle class="c-hoyo" cx="265" cy="192" r="3.4"/><text class="c-hash" x="260" y="211" text-anchor="middle">6e3d1a8</text><g class="c-tag"><rect x="221.0" y="158" width="78.0" height="18" rx="2"/><text x="260" y="171" text-anchor="middle">su trabajo</text></g></g></svg>
+        <svg class="cinta" viewBox="0 0 410 277" role="img" xmlns="http://www.w3.org/2000/svg"><title>Tu máquina tiene copias reperforadas; la de tu equipo sigue construyendo sobre los tramos originales</title><rect class="c-banda" x="18" y="59.7" width="374" height="66" rx="3"/><circle class="c-perf" cx="25" cy="119.2" r="1.6"/><circle class="c-perf" cx="34" cy="119.2" r="1.6"/><circle class="c-perf" cx="43" cy="119.2" r="1.6"/><circle class="c-perf" cx="52" cy="119.2" r="1.6"/><circle class="c-perf" cx="61" cy="119.2" r="1.6"/><circle class="c-perf" cx="70" cy="119.2" r="1.6"/><circle class="c-perf" cx="79" cy="119.2" r="1.6"/><circle class="c-perf" cx="88" cy="119.2" r="1.6"/><circle class="c-perf" cx="97" cy="119.2" r="1.6"/><circle class="c-perf" cx="106" cy="119.2" r="1.6"/><circle class="c-perf" cx="115" cy="119.2" r="1.6"/><circle class="c-perf" cx="124" cy="119.2" r="1.6"/><circle class="c-perf" cx="133" cy="119.2" r="1.6"/><circle class="c-perf" cx="142" cy="119.2" r="1.6"/><circle class="c-perf" cx="151" cy="119.2" r="1.6"/><circle class="c-perf" cx="160" cy="119.2" r="1.6"/><circle class="c-perf" cx="169" cy="119.2" r="1.6"/><circle class="c-perf" cx="178" cy="119.2" r="1.6"/><circle class="c-perf" cx="187" cy="119.2" r="1.6"/><circle class="c-perf" cx="196" cy="119.2" r="1.6"/><circle class="c-perf" cx="205" cy="119.2" r="1.6"/><circle class="c-perf" cx="214" cy="119.2" r="1.6"/><circle class="c-perf" cx="223" cy="119.2" r="1.6"/><circle class="c-perf" cx="232" cy="119.2" r="1.6"/><circle class="c-perf" cx="241" cy="119.2" r="1.6"/><circle class="c-perf" cx="250" cy="119.2" r="1.6"/><circle class="c-perf" cx="259" cy="119.2" r="1.6"/><circle class="c-perf" cx="268" cy="119.2" r="1.6"/><circle class="c-perf" cx="277" cy="119.2" r="1.6"/><circle class="c-perf" cx="286" cy="119.2" r="1.6"/><circle class="c-perf" cx="295" cy="119.2" r="1.6"/><circle class="c-perf" cx="304" cy="119.2" r="1.6"/><circle class="c-perf" cx="313" cy="119.2" r="1.6"/><circle class="c-perf" cx="322" cy="119.2" r="1.6"/><circle class="c-perf" cx="331" cy="119.2" r="1.6"/><circle class="c-perf" cx="340" cy="119.2" r="1.6"/><circle class="c-perf" cx="349" cy="119.2" r="1.6"/><circle class="c-perf" cx="358" cy="119.2" r="1.6"/><circle class="c-perf" cx="367" cy="119.2" r="1.6"/><circle class="c-perf" cx="376" cy="119.2" r="1.6"/><circle class="c-perf" cx="385" cy="119.2" r="1.6"/><rect class="c-banda" x="18" y="192.7" width="374" height="66" rx="3"/><circle class="c-perf" cx="25" cy="252.2" r="1.6"/><circle class="c-perf" cx="34" cy="252.2" r="1.6"/><circle class="c-perf" cx="43" cy="252.2" r="1.6"/><circle class="c-perf" cx="52" cy="252.2" r="1.6"/><circle class="c-perf" cx="61" cy="252.2" r="1.6"/><circle class="c-perf" cx="70" cy="252.2" r="1.6"/><circle class="c-perf" cx="79" cy="252.2" r="1.6"/><circle class="c-perf" cx="88" cy="252.2" r="1.6"/><circle class="c-perf" cx="97" cy="252.2" r="1.6"/><circle class="c-perf" cx="106" cy="252.2" r="1.6"/><circle class="c-perf" cx="115" cy="252.2" r="1.6"/><circle class="c-perf" cx="124" cy="252.2" r="1.6"/><circle class="c-perf" cx="133" cy="252.2" r="1.6"/><circle class="c-perf" cx="142" cy="252.2" r="1.6"/><circle class="c-perf" cx="151" cy="252.2" r="1.6"/><circle class="c-perf" cx="160" cy="252.2" r="1.6"/><circle class="c-perf" cx="169" cy="252.2" r="1.6"/><circle class="c-perf" cx="178" cy="252.2" r="1.6"/><circle class="c-perf" cx="187" cy="252.2" r="1.6"/><circle class="c-perf" cx="196" cy="252.2" r="1.6"/><circle class="c-perf" cx="205" cy="252.2" r="1.6"/><circle class="c-perf" cx="214" cy="252.2" r="1.6"/><circle class="c-perf" cx="223" cy="252.2" r="1.6"/><circle class="c-perf" cx="232" cy="252.2" r="1.6"/><circle class="c-perf" cx="241" cy="252.2" r="1.6"/><circle class="c-perf" cx="250" cy="252.2" r="1.6"/><circle class="c-perf" cx="259" cy="252.2" r="1.6"/><circle class="c-perf" cx="268" cy="252.2" r="1.6"/><circle class="c-perf" cx="277" cy="252.2" r="1.6"/><circle class="c-perf" cx="286" cy="252.2" r="1.6"/><circle class="c-perf" cx="295" cy="252.2" r="1.6"/><circle class="c-perf" cx="304" cy="252.2" r="1.6"/><circle class="c-perf" cx="313" cy="252.2" r="1.6"/><circle class="c-perf" cx="322" cy="252.2" r="1.6"/><circle class="c-perf" cx="331" cy="252.2" r="1.6"/><circle class="c-perf" cx="340" cy="252.2" r="1.6"/><circle class="c-perf" cx="349" cy="252.2" r="1.6"/><circle class="c-perf" cx="358" cy="252.2" r="1.6"/><circle class="c-perf" cx="367" cy="252.2" r="1.6"/><circle class="c-perf" cx="376" cy="252.2" r="1.6"/><circle class="c-perf" cx="385" cy="252.2" r="1.6"/><g class="c-enlace"><path class="c-liga" d="M123 88.7 L103.5 88.7"/><path class="c-pta" d="M97 88.7 L104.5 85 L104.5 92.5 Z"/></g><g class="c-enlace"><path class="c-liga" d="M218 88.7 L198.5 88.7"/><path class="c-pta" d="M192 88.7 L199.5 85 L199.5 92.5 Z"/></g><g class="c-enlace"><path class="c-liga" d="M313 88.7 L293.5 88.7"/><path class="c-pta" d="M287 88.7 L294.5 85 L294.5 92.5 Z"/></g><g class="c-enlace"><path class="c-liga" d="M123 221.7 L103.5 221.7"/><path class="c-pta" d="M97 221.7 L104.5 218 L104.5 225.5 Z"/></g><g class="c-enlace"><path class="c-liga" d="M218 221.7 L198.5 221.7"/><path class="c-pta" d="M192 221.7 L199.5 218 L199.5 225.5 Z"/></g><g class="c-enlace"><path class="c-liga" d="M313 221.7 L293.5 221.7"/><path class="c-pta" d="M287 221.7 L294.5 218 L294.5 225.5 Z"/></g><line class="c-choque" x1="157.5" y1="198.7" x2="252.5" y2="111.7"/><line class="c-choque" x1="252.5" y1="198.7" x2="347.5" y2="111.7"/><g class="c-commit"><rect class="c-seg" x="28" y="65.7" width="69" height="46" rx="3"/><circle class="c-hoyo" cx="55.9" cy="75.7" r="3.2"/><circle class="c-hoyo" cx="69.1" cy="75.7" r="3.2"/><circle class="c-hoyo" cx="82.4" cy="75.7" r="3.2"/><text x="62.5" y="103.7" font-size="13.0" fill="currentColor" text-anchor="middle" font-family="var(--f-codigo)" class="c-hash">7c41d08</text></g><g class="c-commit"><rect class="c-seg" x="123" y="65.7" width="69" height="46" rx="3"/><circle class="c-hoyo" cx="137.6" cy="75.7" r="3.2"/><circle class="c-hoyo" cx="177.4" cy="75.7" r="3.2"/><text x="157.5" y="103.7" font-size="13.0" fill="currentColor" text-anchor="middle" font-family="var(--f-codigo)" class="c-hash">91be4c7</text></g><g class="c-commit nuevo"><rect class="c-seg" x="218" y="65.7" width="69" height="46" rx="3"/><circle class="c-hoyo" cx="245.9" cy="75.7" r="3.2"/><text x="252.5" y="103.7" font-size="13.0" fill="currentColor" text-anchor="middle" font-family="var(--f-codigo)" class="c-hash">4b7e0d2</text></g><g class="c-commit nuevo"><rect class="c-seg" x="313" y="65.7" width="69" height="46" rx="3"/><circle class="c-hoyo" cx="327.6" cy="75.7" r="3.2"/><circle class="c-hoyo" cx="340.9" cy="75.7" r="3.2"/><text x="347.5" y="103.7" font-size="13.0" fill="currentColor" text-anchor="middle" font-family="var(--f-codigo)" class="c-hash">c19a5f3</text><g class="c-tag actual"><path d="M316.7 38.7 H378.3 Q380.8 38.7 380.8 41.2 V57.2 Q380.8 59.7 378.3 59.7 H352.5 L347.5 65.7 L342.5 59.7 H316.7 Q314.2 59.7 314.2 57.2 V41.2 Q314.2 38.7 316.7 38.7 Z"/><text x="347.5" y="53.8" font-size="13.0" fill="currentColor" text-anchor="middle" font-family="var(--f-codigo)">feature</text></g></g><g class="c-commit"><rect class="c-seg" x="28" y="198.7" width="69" height="46" rx="3"/><circle class="c-hoyo" cx="55.9" cy="208.7" r="3.2"/><circle class="c-hoyo" cx="69.1" cy="208.7" r="3.2"/><circle class="c-hoyo" cx="82.4" cy="208.7" r="3.2"/><text x="62.5" y="236.7" font-size="13.0" fill="currentColor" text-anchor="middle" font-family="var(--f-codigo)" class="c-hash">7c41d08</text></g><g class="c-commit recorte"><rect class="c-seg" x="123" y="198.7" width="69" height="46" rx="3"/><circle class="c-hoyo" cx="164.1" cy="208.7" r="3.2"/><text x="157.5" y="236.7" font-size="13.0" fill="currentColor" text-anchor="middle" font-family="var(--f-codigo)" class="c-hash">2d8c3a1</text></g><g class="c-commit recorte"><rect class="c-seg" x="218" y="198.7" width="69" height="46" rx="3"/><circle class="c-hoyo" cx="232.6" cy="208.7" r="3.2"/><circle class="c-hoyo" cx="259.1" cy="208.7" r="3.2"/><circle class="c-hoyo" cx="272.4" cy="208.7" r="3.2"/><text x="252.5" y="236.7" font-size="13.0" fill="currentColor" text-anchor="middle" font-family="var(--f-codigo)" class="c-hash">b06e7f4</text></g><g class="c-commit"><rect class="c-seg" x="313" y="198.7" width="69" height="46" rx="3"/><circle class="c-hoyo" cx="340.9" cy="208.7" r="3.2"/><circle class="c-hoyo" cx="354.1" cy="208.7" r="3.2"/><text x="347.5" y="236.7" font-size="13.0" fill="currentColor" text-anchor="middle" font-family="var(--f-codigo)" class="c-hash">6e3d1a8</text><g class="c-tag"><path d="M305 171.7 H390 Q392.5 171.7 392.5 174.2 V190.2 Q392.5 192.7 390 192.7 H352.5 L347.5 198.7 L342.5 192.7 H305 Q302.5 192.7 302.5 190.2 V174.2 Q302.5 171.7 305 171.7 Z"/><text x="347.5" y="186.8" font-size="13.0" fill="currentColor" text-anchor="middle" font-family="var(--f-codigo)">su trabajo</text></g></g><text x="18" y="27.6" font-size="13.0" fill="currentColor" font-family="var(--f-codigo)" class="c-nota fuerte">tu máquina</text><text x="18" y="182.7" font-size="13.0" fill="currentColor" font-family="var(--f-codigo)" class="c-nota fuerte">la de tu equipo</text></svg>
         <figcaption>Arriba, tus copias reperforadas. Abajo, tu equipo sigue sobre los tramos originales: ahora hay dos versiones del mismo trabajo.</figcaption>
       </figure>
     </div>
@@ -609,6 +717,14 @@ Unmerged paths:
                 <button type="button" data-opcion="c">La versión del ancestro común</button>
               </div>
               <p class="veredicto" hidden></p>
+              <div data-ayuda="pred-marcadores">
+                <ol>
+                  <li><code>HEAD</code> es la rama en la que estabas parado al correr <code>git merge</code>. Aquí estás en <code>main</code> y fusionas <code>feature</code>.</li>
+                  <li>Cada marcador nombra su lado: <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</code> abre el bloque de arriba, <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature</code> cierra el de abajo y <code>=======</code> los separa.</li>
+                  <li>El texto del ancestro común solo aparece con el estilo <code>diff3</code>, tras <code>|||||||</code>. Aquí no hay ese marcador.</li>
+                  <li data-respuesta><strong>Lo de HEAD: tu rama actual, main</strong> (<code>timeout = 45</code>). Arriba del <code>=======</code> va HEAD (ours) y abajo la rama que fusionas, feature (theirs).</li>
+                </ol>
+              </div>
             </div>
             <p data-tras-prediccion="pred-marcadores">Arriba: <code>timeout = 45</code>, de main. Abajo: <code>timeout = 60</code>, de feature <a class="cita" href="https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging">[2]</a>. Borras los marcadores y dejas lo que debe quedar.</p>
             <details><summary>¿Por qué funciona? Piénsalo y luego ábrelo</summary><p>HEAD es la rama en la que estás parado. Al fusionar, tu rama es "ours" (stage 2) y la que entra es "theirs" (stage 3); los marcadores siguen ese orden.</p></details>
@@ -625,6 +741,14 @@ Unmerged paths:
                 <button type="button" data-opcion="c">git merge --abort</button>
               </div>
               <p class="veredicto" hidden></p>
+              <div data-ayuda="pred-add">
+                <ol>
+                  <li>Recuerda dónde vive el conflicto: en el índice, que guarda tres stages del mismo archivo (base, HEAD y feature).</li>
+                  <li>Guardar el archivo cambia lo que tienes en disco, pero el índice sigue con sus tres stages: para Git el conflicto sigue ahí.</li>
+                  <li>Necesitas un comando que ponga en el índice una sola versión, la que dejaste. <code>git merge --abort</code> no sirve: tira toda la fusión.</li>
+                  <li data-respuesta><strong>git add app.conf.</strong> Al agregar el archivo al staging, sus tres stages se reemplazan por tu versión y Git lo marca como resuelto.</li>
+                </ol>
+              </div>
             </div>
             <pre class="terminal" data-tras-prediccion="pred-add"><span class="p">$</span> git add app.conf
 <span class="p">$</span> git status
@@ -645,6 +769,14 @@ On branch main
                 <button type="button" data-opcion="c">git push</button>
               </div>
               <p class="veredicto" hidden></p>
+              <div data-ayuda="pred-cierre">
+                <ol>
+                  <li>Pregúntate qué operación está en curso. <code>git status</code> lo dijo en el paso anterior: "you are still merging".</li>
+                  <li>El comando que cierra tiene que ser de esa operación. <code>git rebase --continue</code> es para un rebase en curso, y aquí no hay ninguno.</li>
+                  <li><code>git push</code> manda tu rama al remoto; no crea commits, y el commit de fusión todavía no existe.</li>
+                  <li data-respuesta><strong>git merge --continue (o git commit).</strong> Revisa que haya una fusión en curso y llama a <code>git commit</code>, que crea el commit con dos padres: el HEAD de antes y <code>MERGE_HEAD</code>.</li>
+                </ol>
+              </div>
             </div>
             <pre class="terminal" data-tras-prediccion="pred-cierre"><span class="p">$</span> git merge --continue
 <span class="ok">[main e5b2c90] Merge branch 'feature'</span></pre>
@@ -663,6 +795,14 @@ On branch main
                 <button type="button" data-opcion="c">editar → git commit → git push</button>
               </div>
               <p class="veredicto" hidden></p>
+              <div data-ayuda="pred-secuencia">
+                <ol>
+                  <li>Resolver el conflicto en sí no cambia: editas <code>app.conf</code> y lo marcas como resuelto con <code>git add</code>, igual que en el merge.</li>
+                  <li>Lo que cambia es la operación en curso: ahora es un rebase, no un merge.</li>
+                  <li>Cada operación sigue con su propio <code>--continue</code>: el merge con <code>git merge --continue</code>, y el rebase con…</li>
+                  <li data-respuesta><strong>editar → git add app.conf → git rebase --continue.</strong> Rebase es una serie de fusiones pequeñas, una por commit reaplicado: cada una se resuelve igual y se sigue con el rebase, que puede volver a pararse en el siguiente commit.</li>
+                </ol>
+              </div>
             </div>
             <pre class="terminal" data-tras-prediccion="pred-secuencia"><span class="p">$</span> git rebase main
 <span class="mal">CONFLICT (content): Merge conflict in app.conf</span>
@@ -700,7 +840,7 @@ On branch main
   <!-- 8. OURS / THEIRS: MOSAICO -->
   <section id="ours-theirs" data-layout="mosaico" data-tono="oscuro" data-minutos="6">
     <h2>ours, theirs y las salidas de emergencia</h2>
-    <p class="idea"><code>--ours</code> y <code>--theirs</code> señalan stages del índice, no ramas. En un rebase se ven al revés <a class="cita" href="https://git-scm.com/docs/git-checkout">[6]</a>.</p>
+    <p class="idea"><code>--ours</code> y <code>--theirs</code> señalan stages del índice, no ramas <a class="cita" href="https://git-scm.com/docs/git-checkout">[6]</a>. ¿Señalan el mismo lado en un merge que en un rebase?</p>
     <div class="mosaico">
       <div class="pieza grande" data-interaccion="otra" id="probador">
         <h3>Probador: ¿qué versión te queda?</h3>
@@ -713,6 +853,14 @@ On branch main
             <button type="button" data-opcion="b">git checkout --theirs app.conf</button>
           </div>
           <p class="veredicto" hidden></p>
+          <div data-ayuda="pred-swap">
+            <ol>
+              <li><code>--ours</code> y <code>--theirs</code> señalan stages del índice, no ramas: ours es el stage 2 y theirs el stage 3.</li>
+              <li>Piensa qué hace rebase: parte de la punta de <code>main</code> y reaplica encima tus commits, uno por uno.</li>
+              <li>El punto de partida, la rama sobre la que reaplicas, ocupa el lugar de ours. Tu trabajo es lo que va entrando. ¿Qué lado es entonces tu versión?</li>
+              <li data-respuesta><strong>git checkout --theirs app.conf.</strong> Durante un rebase los lados se ven intercambiados: <code>--ours</code> es main, la rama sobre la que reaplicas, y <code>--theirs</code> es tu commit que se está reaplicando.</li>
+            </ol>
+          </div>
         </div>
         <div class="probador-fila" role="group" aria-label="Operación en curso">
           <span>Operación</span>
@@ -736,6 +884,7 @@ On branch main
           <div class="archivo"><div class="archivo-cab"><span>app.conf queda así</span></div><pre id="prob-archivo"></pre></div>
           <p id="prob-explica" style="margin-top:.75rem"></p>
         </div>
+        <div data-ayuda data-ayuda-dinamica id="ayuda-probador"></div>
         <ul data-retos>
           <li data-reto="reto-swap"><span>Durante un rebase, consigue que app.conf quede con tu versión.</span></li>
           <li data-reto="reto-s-ours"><span>Encuentra la opción que descarta incluso el <code>log = info</code> de main, que no chocaba con nada.</span></li>
@@ -744,7 +893,7 @@ On branch main
       <div class="pieza">
         <h3>Ver la base</h3>
         <p>Con el estilo <code>diff3</code>, el conflicto muestra también el texto original tras <code>|||||||</code> <a class="cita" href="https://git-scm.com/docs/git-merge">[4]</a>.</p>
-        <pre class="terminal">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+        <pre class="terminal" data-tras-prediccion="pred-swap">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
 timeout = 45
 <span class="tenue">||||||| base
 timeout = 30</span>
@@ -866,12 +1015,175 @@ timeout = 60
   }), { rootMargin: '-45% 0px -50% 0px' });
   secciones.forEach(s => obs.observe(s));
 
+  // Texto legible sobre un fondo de acento: elige claro u oscuro según el contraste (WCAG).
+  function contrastar(el) {
+    const rgb = c => (c.match(/[\d.]+/g) || [255, 255, 255]).slice(0, 3).map(Number);
+    const lum = c => { const [r, g, b] = c.map(v => { v /= 255; return v <= .03928 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4; });
+      return .2126 * r + .7152 * g + .0722 * b; };
+    const ratio = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((m, n) => n - m); return (x + .05) / (y + .05); };
+    el.style.color = '';
+    const fondo = rgb(getComputedStyle(el).backgroundColor), raiz = getComputedStyle(document.documentElement);
+    const claro = getComputedStyle(document.body).backgroundColor, oscuro = raiz.getPropertyValue('--tinta').trim() || '#111';
+    const prueba = document.createElement('span'); prueba.style.color = oscuro; document.body.append(prueba);
+    const cOscuro = rgb(getComputedStyle(prueba).color); prueba.remove();
+    el.style.color = ratio(fondo, rgb(claro)) >= ratio(fondo, cOscuro) ? claro : `rgb(${cOscuro.join(',')})`;
+  }
+
+  // --- Ayuda paso a paso: "Explícamelo paso a paso" ---
+  // Un paso por clic, "Ya entendí, lo intento" para volver a intentarlo, y la respuesta al final.
+  const ayudas = {}; // id de la predicción -> se pidió ayuda antes de responder
+  function montarAyuda(caja, pasos, respuesta) {
+    caja.querySelector(':scope > .ayuda-ui')?.remove();
+    if (!pasos.length && !respuesta) return;
+    const ui = document.createElement('div');
+    ui.className = 'ayuda-ui';
+    ui.innerHTML = `<button type="button" class="ayuda-abrir">${caja.dataset.ayudaTexto || 'Explícamelo paso a paso'}</button>
+      <div class="ayuda-panel" hidden aria-live="polite"><ol></ol>
+      <div class="ayuda-botones"><button type="button" class="ayuda-siguiente">Siguiente paso</button>
+      <button type="button" class="ayuda-cerrar">Ya entendí, lo intento</button></div></div>`;
+    caja.append(ui);
+    const abrir = ui.querySelector('.ayuda-abrir'), panel = ui.querySelector('.ayuda-panel');
+    const lista = panel.querySelector('ol'), sig = panel.querySelector('.ayuda-siguiente');
+    const total = pasos.length + (respuesta ? 1 : 0);
+    let n = 0;
+    const mostrar = () => {
+      const li = document.createElement('li');
+      if (n < pasos.length) li.innerHTML = pasos[n];
+      else { li.className = 'respuesta'; li.innerHTML = respuesta; }
+      lista.append(li);
+      n++;
+      sig.hidden = n >= total;
+      sig.textContent = n === pasos.length && respuesta ? 'Ver la respuesta' : 'Siguiente paso';
+    };
+    abrir.addEventListener('click', () => {
+      if (caja.dataset.ayuda) ayudas[caja.dataset.ayuda] = true;
+      panel.hidden = false; abrir.hidden = true;
+      if (!n) mostrar();
+      (sig.hidden ? panel.querySelector('.ayuda-cerrar') : sig).focus();
+    });
+    sig.addEventListener('click', mostrar);
+    panel.querySelector('.ayuda-cerrar').addEventListener('click', () => {
+      panel.hidden = true; abrir.hidden = false;
+      abrir.textContent = n >= total ? 'Ver la explicación' : 'Seguir con la explicación';
+      abrir.focus();
+    });
+  }
+
+  // --- Animaciones de proceso: forja.animar(caja, dibujar, opciones) ---
+  // dibujar(fase) recibe la fase del ciclo de 0 a 1 y coloca TODO a partir de ella (física real, no adorno).
+  // Trae pausa, velocidad, "Paso a paso", respeta reducir movimiento y se detiene fuera de pantalla.
+  const reducir = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function animar(caja, dibujar, { periodo = 4, inicio = 0, pasos = 12 } = {}) {
+    let fase = inicio, vel = 1, corriendo = !reducir, visible = true, t0 = null;
+    const ctl = document.createElement('div');
+    ctl.className = 'anima-ctl';
+    ctl.innerHTML = `<button type="button" class="anima-play"></button>
+      <button type="button" class="anima-paso">Paso a paso ›</button>
+      <label>Velocidad <input type="range" min="0.25" max="2" step="0.25" value="1"><span class="anima-vel">1×</span></label>`;
+    caja.append(ctl);
+    const play = ctl.querySelector('.anima-play');
+    const boton = () => { play.textContent = corriendo ? 'Pausa' : 'Reproducir'; caja.classList.toggle('pausado', !corriendo); contrastar(play); };
+    play.addEventListener('click', () => { corriendo = !corriendo; boton(); });
+    ctl.querySelector('.anima-paso').addEventListener('click', () => { corriendo = false; boton(); fase = (Math.round(fase * pasos) + 1) % pasos / pasos; dibujar(fase); });
+    ctl.querySelector('input').addEventListener('input', e => { vel = +e.target.value; ctl.querySelector('.anima-vel').textContent = vel + '×'; });
+    new IntersectionObserver(es => { visible = es[0].isIntersecting; }).observe(caja);
+    const bucle = ts => {
+      if (t0 !== null && corriendo && visible) { fase = (fase + (ts - t0) / 1000 * vel / periodo) % 1; dibujar(fase); }
+      t0 = ts; requestAnimationFrame(bucle);
+    };
+    caja.__fijar = f => { corriendo = false; boton(); fase = f; dibujar(f); };  // lo usa revisar_ilustraciones.py
+    boton(); dibujar(fase); requestAnimationFrame(bucle);
+  }
+  // Ayudas de dibujo calculado: úsalas en lugar de poner coordenadas a ojo.
+  const kit = {
+    // Flecha ondulada (calor, flujo): de (x, y0) a (x, y1), vertical.
+    onda(x, y0, y1, amp = 5, n = 4) {
+      // Termina con un tramo recto para que la punta de flecha quede derecha.
+      const cola = Math.min(6, Math.abs(y0 - y1) * .15) * (Math.sign(y0 - y1) || 1);
+      let d = `M${x} ${y0}`; const s = (y0 - y1 - cola) / n;
+      for (let k = 0; k < n; k++) d += ` Q${x + (k % 2 ? -amp : amp)} ${y0 - s * (k + .5)} ${x} ${y0 - s * (k + 1)}`;
+      return d + ` L${x} ${y1}`;
+    },
+    // Biela-manivela: centro (cx, cy), radio de manivela r, largo de biela L, ángulo a (rad), eje horizontal en y = cy.
+    // Devuelve el perno de la manivela {px, py} y la posición del perno del pistón {wx}. La biela mide L siempre.
+    bielaManivela(cx, cy, r, L, a, lado = -1) {
+      const px = cx + r * Math.cos(a), py = cy + r * Math.sin(a);
+      return { px, py, wx: px + lado * Math.sqrt(L * L - (py - cy) ** 2), wy: cy };
+    },
+    // Mezcla dos colores hex (#rrggbb) con t de 0 a 1.
+    mezcla(c1, c2, t) {
+      const a = c1.slice(1).match(/../g).map(h => parseInt(h, 16)), b = c2.slice(1).match(/../g).map(h => parseInt(h, 16));
+      return '#' + a.map((v, i) => Math.round(v + (b[i] - v) * Math.max(0, Math.min(1, t))).toString(16).padStart(2, '0')).join('');
+    },
+  };
+
   // La API se define antes de dibujar nada: las flashcards y las predicciones restauradas pueden usarla.
   window.forja = {
     reto(id) { if (!estado.retos.includes(id)) { estado.retos.push(id); guardar(); pintar(); } },
     guardar(clave, valor) { estado.extra[clave] = valor; guardar(); },
     leer(clave) { return estado.extra[clave]; },
+    // Para ejercicios generados por JS: forja.ayuda(elemento, ['paso 1', 'paso 2'], 'respuesta')
+    ayuda(caja, pasos, respuesta) { montarAyuda(caja, pasos, respuesta); },
+    // forja.animar(caja, fase => {...}, { periodo: segundos por ciclo })
+    animar,
+    kit,
   };
+
+  // Etiquetas de ilustración: <g class="etiqueta" data-punto="x y"> con un título y una frase.
+  // En pantallas angostas se ocultan y quedan un número sobre la pieza + una leyenda debajo del dibujo.
+  // El número se mide con el ancho REAL del SVG para que siempre se vea de ~13 px.
+  const NS = 'http://www.w3.org/2000/svg';
+  const numeros = [];
+  document.querySelectorAll('svg').forEach(svg => {
+    const ets = [...svg.querySelectorAll('g.etiqueta[data-punto]')];
+    if (!ets.length) return;
+    const ol = document.createElement('ol');
+    ol.className = 'et-leyenda';
+    ets.forEach((g, i) => {
+      const [x, y] = g.dataset.punto.split(/[ ,]+/).map(Number);
+      const t0 = g.querySelector('text');
+      let ux = 0, uy = 0;
+      if (t0) {
+        const dx = +t0.getAttribute('x') - x, dy = +t0.getAttribute('y') - y, d = Math.hypot(dx, dy) || 1;
+        ux = dx / d; uy = dy / d;
+      }
+      const n = document.createElementNS(NS, 'g');
+      n.setAttribute('class', 'et-num');
+      n.innerHTML = `<circle/><text text-anchor="middle" dominant-baseline="central">${i + 1}</text>`;
+      svg.appendChild(n);
+      numeros.push({ svg, n, x, y, ux, uy });
+      const [t, ...resto] = g.querySelectorAll('text');
+      const li = document.createElement('li');
+      li.innerHTML = `<b>${t ? t.textContent : ''}</b> ${resto.map(e => e.textContent).join(' ')}`;
+      ol.appendChild(li);
+    });
+    const tras = svg.closest('[data-anima]') ? svg : (svg.closest('figure') || svg);
+    tras.after(ol);
+  });
+  function colocarNumeros() {
+    for (const { svg, n, x, y, ux, uy } of numeros) {
+      const vb = svg.viewBox.baseVal, ancho = svg.getBoundingClientRect().width;
+      if (!vb || !vb.width || !ancho) continue;
+      const r = 12 * vb.width / ancho;   // radio de 12 px en pantalla
+      // El número no tapa la pieza: se corre del punto hacia donde estaba el texto, sin salir del viewBox.
+      const cx = Math.min(Math.max(x + ux * r * 1.6, vb.x + r), vb.x + vb.width - r);
+      const cy = Math.min(Math.max(y + uy * r * 1.6, vb.y + r), vb.y + vb.height - r);
+      const [c, t] = n.children;
+      c.setAttribute('cx', cx); c.setAttribute('cy', cy); c.setAttribute('r', r);
+      t.setAttribute('x', cx); t.setAttribute('y', cy); t.setAttribute('font-size', r * 1.1);
+    }
+  }
+  if (numeros.length) {
+    colocarNumeros();
+    addEventListener('resize', colocarNumeros);
+    if ('ResizeObserver' in window) new ResizeObserver(colocarNumeros).observe(document.body);
+  }
+
+  document.querySelectorAll('[data-ayuda]').forEach(caja => {
+    const items = [...caja.querySelectorAll(':scope > ol > li')];
+    const resp = items.find(li => li.hasAttribute('data-respuesta'));
+    montarAyuda(caja, items.filter(li => li !== resp).map(li => li.innerHTML), resp?.innerHTML);
+  });
 
   predicciones.forEach((p, i) => {
     const id = p.id || `prediccion-${i + 1}`;
@@ -890,14 +1202,15 @@ timeout = 60
         b.disabled = true;
         b.classList.toggle('elegida', b === elegido);
         b.classList.toggle('correcta', b.dataset.opcion === p.dataset.correcta);
+        if (b.classList.contains('correcta')) contrastar(b); else b.style.color = '';
       });
       if (veredicto) {
         veredicto.hidden = false;
-        veredicto.innerHTML = (acierto ? '<strong>Acertaste.</strong> ' : `<strong>Predijiste «${elegido?.textContent.trim()}».</strong> Mira qué pasa en realidad. `) +
+        veredicto.innerHTML = (acierto ? `<strong>${ayudas[id] ? 'Acertaste con ayuda.' : 'Acertaste.'}</strong> ` : `<strong>Predijiste «${elegido?.textContent.trim()}».</strong> Mira qué pasa en realidad. `) +
           (p.dataset.explicacion || '') + ' <button type="button" class="rehacer">Volver a predecir</button>';
         veredicto.querySelector('.rehacer').addEventListener('click', () => {
           delete estado.predicciones[id]; guardar();
-          botones.forEach(b => { b.disabled = false; b.classList.remove('elegida', 'correcta'); });
+          botones.forEach(b => { b.disabled = false; b.classList.remove('elegida', 'correcta'); b.style.color = ''; });
           veredicto.hidden = true; objetivos().forEach(o => o.classList.remove('revelado')); pintar();
         });
       }
@@ -983,6 +1296,70 @@ timeout = 60
     location.hash = ''; location.reload();
   }));
   document.querySelectorAll('[data-forja-mapa] a').forEach(a => a.addEventListener('click', () => a.closest('details')?.removeAttribute('open')));
+  // "Cómo usar esta guía": se arma solo, contando lo que trae la guía. Va debajo del mapa de la portada.
+  (function instrucciones() {
+    const ancla = document.querySelector('nav.mapa-portada');
+    if (!ancla || document.querySelector('.forja-uso')) return;
+    const todos = sel => [...document.querySelectorAll(sel)];
+    const ir = els => { const s = els[0]?.closest('section[id]'); return s ? `<a href="#${s.id}">Ir a la primera ›</a>` : ''; };
+    const ico = d => `<svg viewBox="0 0 28 28" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
+    let nTarjetas = 0;
+    try { nTarjetas = JSON.parse(document.getElementById('forja-tarjetas')?.textContent || '[]').length; } catch {}
+    const minutos = todos('section[data-minutos]').reduce((a, s) => a + (+s.dataset.minutos || 0), 0);
+    const preds = todos('[data-prediccion][data-correcta]'), retos = todos('[data-reto]'), animas = todos('[data-anima]');
+    const ayudas = todos('[data-ayuda], [data-ayuda-dinamica], .ayuda-abrir');
+    const tipo = t => todos(`[data-interaccion="${t}"]:not([data-prediccion])`);
+    const items = [
+      [preds.length, 'pregunta', 'preguntas', 'Antes de ver, adivina',
+        'Elige lo que crees que pasa. Lo que está borroso se aclara y te dice si acertaste y por qué. Equivocarte también sirve: así se recuerda mejor. Puedes tocar «Volver a predecir».',
+        ico('<circle cx="14" cy="14" r="10"/><path d="M11 11a3 3 0 1 1 4 2.8c-.7.3-1 .9-1 1.6"/><circle cx="14" cy="19.5" r=".6" fill="currentColor"/>'), preds],
+      [ayudas.length ? 1 : 0, '', '', '¿Te atoraste?',
+        'Toca «Explícamelo paso a paso»: te da una pista a la vez. Con «Ya entendí, lo intento» vuelves a intentarlo tú. La respuesta solo aparece al final, si la pides.',
+        ico('<path d="M6 21h4l11-11-4-4L6 17z"/><path d="M15 8l4 4"/>'), []],
+      [retos.length, 'reto', 'retos', 'Retos',
+        'Las casillas se marcan solas cuando haces lo que piden (no hay que palomearlas). Cuentan para tu avance.',
+        ico('<rect x="5" y="5" width="18" height="18" rx="3"/><path d="M9.5 14.5l3 3 6-7"/>'), retos],
+      [animas.length, 'animación', 'animaciones', 'Animaciones',
+        'Se mueven solas. «Pausa» la detiene, «Paso a paso ›» avanza un momento a la vez y la barra cambia la velocidad. El texto de abajo dice qué pasa en cada momento.',
+        ico('<circle cx="14" cy="14" r="10"/><path d="M12 10l6 4-6 4z" fill="currentColor"/>'), animas],
+      [tipo('diagrama').length, 'diagrama', 'diagramas', 'Diagramas',
+        'Toca cada pieza del dibujo para ver qué es y para qué sirve.',
+        ico('<rect x="4" y="5" width="8" height="6" rx="1.5"/><rect x="16" y="17" width="8" height="6" rx="1.5"/><path d="M8 11v4a2 2 0 0 0 2 2h6"/>'), tipo('diagrama')],
+      [tipo('simulador').length, 'simulador', 'simuladores', 'Simuladores',
+        'Mueve el control o elige opciones y mira qué cambia. Prueba casos extremos: ahí se entiende la idea.',
+        ico('<path d="M5 9h18M5 19h18"/><circle cx="10" cy="9" r="2.5" fill="currentColor"/><circle cx="18" cy="19" r="2.5" fill="currentColor"/>'), tipo('simulador')],
+      [tipo('pasos').length, '', '', 'Paso a paso guiado',
+        'Los primeros pasos vienen resueltos; después completas tú lo que falta y ves el porqué.',
+        ico('<path d="M5 22h5v-5h5v-5h5V7h3"/>'), tipo('pasos')],
+      [tipo('otra').length, 'ejercicio', 'ejercicios', 'Ejercicios',
+        'Para practicar: responde y la guía te dice si vas bien y qué revisar.',
+        ico('<path d="M8 4h10l4 4v16H8z"/><path d="M12 13h6M12 17h6M12 9h3"/>'), tipo('otra')],
+      [nTarjetas, 'tarjeta', 'tarjetas', 'Tarjetas de repaso',
+        'Lee la pregunta, respóndela en tu cabeza y toca la tarjeta para voltearla. Luego «Lo sabía» o «Repasar». Las que repasas vuelven después de unos días (1, 3, 7…), para que no se olviden.',
+        ico('<rect x="4" y="8" width="16" height="12" rx="2"/><path d="M8 5h14a2 2 0 0 1 2 2v10"/>'), todos('[data-forja-flashcards]')],
+    ].filter(i => i[0] > 0);
+    const resumen = [
+      preds.length && `${preds.length} ${preds.length === 1 ? 'pregunta' : 'preguntas'}`,
+      retos.length && `${retos.length} retos`,
+      animas.length && `${animas.length} ${animas.length === 1 ? 'animación' : 'animaciones'}`,
+      nTarjetas && `${nTarjetas} tarjetas`,
+      minutos && `unos ${minutos} min`,
+    ].filter(Boolean);
+    const caja = document.createElement('details');
+    caja.className = 'forja-uso';
+    const nueva = !estado.vistas.length || (estado.vistas.length <= 1 && !Object.keys(estado.predicciones).length);
+    if (nueva) caja.open = true;
+    caja.innerHTML = `<summary><span>Cómo usar esta guía</span><small>${resumen.join(' · ')}</small></summary>
+      <ul>${items.map(([n, uno, varios, titulo, texto, icono, els]) => `<li>${icono}<div>
+        <b>${titulo}${n > 1 || uno ? ` <em>${n} ${n === 1 ? uno : varios}</em>` : ''}</b>
+        <p>${texto}</p>${ir(els)}</div></li>`).join('')}
+        <li>${ico('<path d="M4 7l6-2 8 3 6-2v15l-6 2-8-3-6 2z"/><path d="M10 5v15M18 8v15"/>')}<div>
+        <b>Mapa y avance</b><p>Arriba, «Mapa» muestra las secciones y tu porcentaje. Tu avance se guarda en este navegador: puedes cerrar y seguir después con «Continuar donde ibas». No necesitas cuenta.</p></div></li>
+      </ul>`;
+    const cont = ancla.nextElementSibling?.matches('[data-forja-continuar]') ? ancla.nextElementSibling : ancla;
+    cont.after(caja);
+  })();
+
   pintar();
 })();
 /* ===== FIN NÚCLEO FORJA: JS ===== */
@@ -990,46 +1367,135 @@ timeout = 60
 // Interacciones de la guía: un bloque por interacción, independientes entre sí.
 
 /* --- Utilidades de la cinta (compartidas) --- */
+// Misma geometría que el generador de los SVG fijos: cada commit es un tramo de cinta con perforaciones
+// que salen del primer dígito de su hash, y apunta a su padre con una flecha (hijo -> padre).
+// Modelo: commits [{ id, col, pista: 0 | 1, hash, tipo, etiquetas: [{ t, actual }] }], ligas [{ a: padre, b: hijo, tipo }].
 const Cinta = (() => {
-  const hoyos = h => { const v = parseInt(h[0], 16) || 8; return [[8, -15], [4, -5], [2, 5], [1, 15]].filter(([b]) => v & b).map(([, dx]) => dx); };
+  const S = 11, BW = Math.round(4.2 * S + 14), BH = Math.round(2 * S + 20), TH = S + 8, GAP = 26, PASO = BW + GAP, M = 10;
+  const r1 = v => Math.round(v * 10) / 10;
+  const hoyos = h => { const v = parseInt(h[0], 16) || 8; return [8, 4, 2, 1].map((b, k) => (v & b ? k : -1)).filter(k => k >= 0); };
+  const etiqueta = (x, yb, e) => {
+    const w = e.t.length * 0.6 * S + 12, x0 = x - w / 2, x1 = x + w / 2, y0 = yb - TH, r = 2.5;
+    const d = `M${r1(x0 + r)} ${r1(y0)} H${r1(x1 - r)} Q${r1(x1)} ${r1(y0)} ${r1(x1)} ${r1(y0 + r)} V${r1(yb - r)} Q${r1(x1)} ${r1(yb)} ${r1(x1 - r)} ${r1(yb)} H${r1(x + 5)} L${r1(x)} ${r1(yb + 6)} L${r1(x - 5)} ${r1(yb)} H${r1(x0 + r)} Q${r1(x0)} ${r1(yb)} ${r1(x0)} ${r1(yb - r)} V${r1(y0 + r)} Q${r1(x0)} ${r1(y0)} ${r1(x0 + r)} ${r1(y0)} Z`;
+    return `<g class="c-tag${e.actual ? ' actual' : ''}"><path d="${d}"/><text x="${r1(x)}" y="${r1(y0 + TH / 2 + S * 0.35)}" font-size="${S}" text-anchor="middle">${e.t}</text></g>`;
+  };
   const segmento = c => {
-    let g = `<g class="c-commit ${c.tipo || ''}">`;
-    g += `<rect class="c-seg" x="${c.x - 24}" y="${c.y - 18}" width="48" height="36" rx="2"/>`;
-    if (c.tipo === 'pendiente') g += `<text class="c-hash" x="${c.x}" y="${c.y + 5}" text-anchor="middle">?</text>`;
+    const x0 = c.x - BW / 2, y0 = c.y - BH / 2;
+    let g = `<g class="c-commit ${c.tipo || ''}"><rect class="c-seg" x="${r1(x0)}" y="${r1(y0)}" width="${BW}" height="${BH}" rx="3"/>`;
+    if (c.tipo === 'pendiente') g += `<text class="c-hash" x="${r1(c.x)}" y="${r1(c.y + (S + 5) * 0.35)}" font-size="${S + 5}" text-anchor="middle">?</text>`;
     else {
-      hoyos(c.hash).forEach(dx => { g += `<circle class="c-hoyo" cx="${c.x + dx}" cy="${c.y - 8}" r="3.4"/>`; });
-      g += `<text class="c-hash" x="${c.x}" y="${c.y + 11}" text-anchor="middle">${c.hash}</text>`;
+      hoyos(c.hash).forEach(k => { g += `<circle class="c-hoyo" cx="${r1(c.x + (k - 1.5) * BW / 5.2)}" cy="${r1(y0 + 10)}" r="3.2"/>`; });
+      g += `<text class="c-hash" x="${r1(c.x)}" y="${r1(y0 + BH - 8)}" font-size="${S}" text-anchor="middle">${c.hash}</text>`;
     }
-    (c.etiquetas || []).forEach((e, k) => {
-      const w = 12 + e.t.length * 6.6, y = c.y - 42 - k * 22;
-      g += `<g class="c-tag${e.actual ? ' actual' : ''}"><rect x="${(c.x - w / 2).toFixed(1)}" y="${y}" width="${w.toFixed(1)}" height="18" rx="2"/><text x="${c.x}" y="${y + 13}" text-anchor="middle">${e.t}</text></g>`;
-    });
+    (c.etiquetas || []).forEach((e, k) => { g += etiqueta(c.x, y0 - 6 - k * (TH + 6), e); });
     return g + '</g>';
   };
+  // Puntero hijo -> padre: recto en la misma pista; con un codo si cambia de pista
+  const ruta = (h, p) => {
+    if (h.y === p.y) return [[h.x - BW / 2, h.y], [p.x + BW / 2, p.y]];
+    if (h.y > p.y) return [[h.x - BW / 2, h.y], [p.x, h.y], [p.x, p.y + BH / 2]];
+    return [[h.x, h.y + BH / 2], [h.x, p.y], [p.x + BW / 2, p.y]];
+  };
+  const enlace = (pts, tipo) => {
+    const w = tipo === 'empalme' ? 2.5 : 1.25, L = 6 + w * 1.2, A = 3 + w * 0.6;
+    const [xa, ya] = pts.at(-2), [xb, yb] = pts.at(-1), d0 = Math.hypot(xb - xa, yb - ya), ux = (xb - xa) / d0, uy = (yb - ya) / d0;
+    let d = `M${r1(pts[0][0])} ${r1(pts[0][1])}`;
+    for (let i = 1; i < pts.length - 1; i++) {
+      const [px, py] = pts[i - 1], [cx, cy] = pts[i], [nx, ny] = pts[i + 1];
+      const a1 = Math.hypot(cx - px, cy - py), a2 = Math.hypot(nx - cx, ny - cy), r = Math.min(8, a1 / 2, a2 / 2);
+      d += ` L${r1(cx - (cx - px) / a1 * r)} ${r1(cy - (cy - py) / a1 * r)} Q${r1(cx)} ${r1(cy)} ${r1(cx + (nx - cx) / a2 * r)} ${r1(cy + (ny - cy) / a2 * r)}`;
+    }
+    d += ` L${r1(xb - ux * (L - 1))} ${r1(yb - uy * (L - 1))}`;
+    const bx = xb - ux * L, by = yb - uy * L;
+    const pta = `M${r1(xb)} ${r1(yb)} L${r1(bx - uy * A)} ${r1(by + ux * A)} L${r1(bx + uy * A)} ${r1(by - ux * A)} Z`;
+    return `<g class="c-enlace ${tipo || ''}"><path class="c-liga" d="${d}"/><path class="c-pta" d="${pta}"/></g>`;
+  };
+  const banda = (xs, y) => {
+    const x0 = Math.min(...xs) - BW / 2 - 10, x1 = Math.max(...xs) + BW / 2 + 10;
+    let s = `<rect class="c-banda" x="${r1(x0)}" y="${r1(y - BH / 2 - 6)}" width="${r1(x1 - x0)}" height="${BH + 20}" rx="3"/>`;
+    for (let x = x0 + 7; x <= x1 - 6; x += 9) s += `<circle class="c-perf" cx="${r1(x)}" cy="${r1(y + BH / 2 + 7.5)}" r="1.6"/>`;
+    return s;
+  };
+  // m.minimo: ancho mínimo del viewBox; m.escala: el SVG nunca se encoge (min-width = ancho del viewBox en px)
   const dibujar = (svg, m) => {
-    const porId = Object.fromEntries(m.commits.map(c => [c.id, c]));
-    const titulo = svg.querySelector('title')?.outerHTML || '';
-    let s = titulo;
-    m.pistas.forEach(p => {
-      s += `<rect class="c-banda" x="${p.x0}" y="${p.y - 24}" width="${p.x1 - p.x0}" height="48" rx="2"/>`;
-      s += `<line class="c-guia" x1="${p.x0 + 6}" y1="${p.y + 20}" x2="${p.x1 - 6}" y2="${p.y + 20}"/>`;
-    });
-    (m.ligas || []).forEach(l => {
-      const a = porId[l.a], b = porId[l.b];
-      if (a && b) s += `<line class="c-liga ${l.tipo || ''}" x1="${a.x + 24}" y1="${a.y}" x2="${b.x - 24}" y2="${b.y}"/>`;
-    });
-    s += m.extra || '';
-    m.commits.forEach(c => { s += segmento(c); });
-    if (m.ancho) svg.setAttribute('viewBox', `0 0 ${m.ancho} ${m.alto || 210}`);
+    const pistas = [...new Set(m.commits.map(c => c.pista))].sort();
+    const filas = p => Math.max(0, ...m.commits.filter(c => c.pista === p).map(c => (c.etiquetas || []).length));
+    const Y = {};
+    let top = M;
+    pistas.forEach(p => { top += Math.max(filas(p) * (TH + 6), 6); Y[p] = top + BH / 2; top = Y[p] + BH / 2 + 28; });
+    const alto = Math.round(top - 14 + M);
+    const X = col => M + 10 + BW / 2 + col * PASO;
+    const cs = m.commits.map(c => ({ ...c, x: X(c.col), y: Y[c.pista] }));
+    const porId = Object.fromEntries(cs.map(c => [c.id, c]));
+    const ancho = Math.max(m.minimo || 0, Math.round(Math.max(...cs.map(c => c.x)) + BW / 2 + 10 + M));
+    let s = svg.querySelector('title')?.outerHTML || '';
+    pistas.forEach(p => { s += banda(cs.filter(c => c.pista === p).map(c => c.x), Y[p]); });
+    (m.ligas || []).forEach(l => { const p = porId[l.a], h = porId[l.b]; if (p && h) s += enlace(ruta(h, p), l.tipo); });
+    cs.forEach(c => { s += segmento(c); });
+    svg.setAttribute('viewBox', `0 0 ${ancho} ${alto}`);
+    if (m.escala) svg.style.minWidth = ancho + 'px';
     svg.innerHTML = s;
   };
   const hash = txt => { let h = 2166136261; for (const ch of txt) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619) >>> 0; } return (h >>> 0).toString(16).padStart(8, '0').slice(0, 7); };
-  // Pistas: una banda por pista, del primer al último commit que tenga
-  const pistasDe = (commits, ys) => ys.map(y => {
-    const xs = commits.filter(c => c.y === y).map(c => c.x);
-    return xs.length ? { y, x0: Math.min(...xs) - 34, x1: Math.max(...xs) + 34 } : null;
-  }).filter(Boolean);
-  return { dibujar, hash, pistasDe };
+  return { dibujar, hash };
+})();
+
+/* --- 1. Portada: las mismas ramas, primero git merge y luego git rebase --- */
+// Todo sale de la fase (0 a 1). Primera mitad: merge crea un commit con dos padres y main avanza.
+// Segunda mitad: rebase reaplica cada commit de feature encima de main; cada copia tiene otro padre y otro hash.
+(() => {
+  const caja = document.getElementById('anima-portada');
+  if (!caja) return;
+  const $ = id => caja.querySelector('#' + id);
+  const tramo = (u, a, b) => Math.min(1, Math.max(0, (u - a) / (b - a)));
+  const suave = t => t * t * (3 - 2 * t);
+  const ver = (id, o) => { $(id).style.opacity = o; };
+  // Traza un puntero de padre de 0 a 1; la punta aparece al llegar
+  const trazar = (id, p) => {
+    const g = $(id), l = g.querySelector('.c-liga'), L = l.getTotalLength();
+    l.style.strokeDasharray = `${L} ${L}`; l.style.strokeDashoffset = L * (1 - p);
+    g.querySelector('.c-pta').style.opacity = p > .97 ? 1 : 0;
+    g.style.opacity = p > 0 ? 1 : 0;
+  };
+  const DX = Number($('port-tag-main').dataset.dx);
+  forja.animar(caja, fase => {
+    const merge = fase < .5, u = merge ? fase / .5 : (fase - .5) / .5;
+    // --- git merge feature (estás en main) ---
+    const pm = merge ? suave(tramo(u, .15, .3)) : 0;      // nace el commit de fusión
+    const pl = merge ? tramo(u, .3, .55) : 0;             // apunta a sus dos padres
+    const pt = merge ? suave(tramo(u, .55, .72)) : 0;     // main avanza hasta él
+    ver('port-merge', pm); trazar('port-l-m1', pl); trazar('port-l-m2', pl);
+    $('port-tag-main').setAttribute('transform', `translate(${(DX * pt).toFixed(1)} 0)`);
+    $('port-tag-main').classList.toggle('actual', merge);
+    // --- git rebase main (estás en feature) ---
+    const c1 = merge ? 0 : tramo(u, .15, .4), c2 = merge ? 0 : tramo(u, .4, .65);
+    ver('port-k1', c1 > 0 && c1 < 1 ? 1 : 0); ver('port-k2', c2 > 0 && c2 < 1 ? 1 : 0);
+    ver('port-c1', suave(tramo(c1, .3, .7))); trazar('port-l-c1', tramo(c1, .7, 1));
+    ver('port-c2', suave(tramo(c2, .3, .7))); trazar('port-l-c2', tramo(c2, .7, 1));
+    const sale = merge ? 0 : suave(tramo(u, .65, .72)), entra = merge ? 0 : suave(tramo(u, .73, .8));
+    ver('port-tag-f', 1 - sale); ver('port-tag-f2', entra); ver('port-tag-orig', entra);
+    $('port-tag-f').classList.toggle('actual', !merge);
+    const abandonados = entra > .5;
+    ['port-o1', 'port-o2'].forEach(id => $(id).classList.toggle('recorte', abandonados));
+    ['port-l-o1', 'port-l-o2'].forEach(id => $(id).classList.toggle('punteada', abandonados));
+    // --- narración ---
+    let cmd, et, tx;
+    if (merge) {
+      cmd = u < .15 ? 'git switch main' : 'git merge feature';
+      if (u < .15) [et, tx] = ['Inicio', 'main y feature divergieron desde 7c41d08: cada una tiene commits que la otra no tiene. Estás en main.'];
+      else if (u < .55) [et, tx] = ['merge', 'Git crea un commit nuevo, e5b2c90, que apunta a dos padres: la punta de main y la de feature.'];
+      else if (u < .75) [et, tx] = ['merge', 'main avanza hasta el commit de fusión. feature se queda donde estaba.'];
+      else [et, tx] = ['Resultado', 'Ningún commit cambió de hash: el historial guarda las dos ramas y el punto donde se unieron.'];
+    } else {
+      cmd = u < .15 ? 'git switch feature' : 'git rebase main';
+      if (u < .15) [et, tx] = ['Inicio', 'Las mismas ramas, desde el mismo punto. Ahora estás en feature.'];
+      else if (u < .4) [et, tx] = ['rebase', 'Git reaplica 2d8c3a1 encima de 5d0a913. La copia tiene otro padre, así que tiene otro hash: 4b7e0d2.'];
+      else if (u < .65) [et, tx] = ['rebase', 'Luego reaplica b06e7f4 encima de la copia anterior: nace c19a5f3.'];
+      else if (u < .8) [et, tx] = ['rebase', 'feature salta a la última copia. Los originales quedan abandonados; ORIG_HEAD aún apunta al último.'];
+      else [et, tx] = ['Resultado', 'Historial lineal, sin commit de fusión: los mismos cambios, en commits nuevos con hash nuevo.'];
+    }
+    $('port-cmd').textContent = cmd; $('port-fase').textContent = et; $('port-texto').textContent = tx;
+  }, { periodo: 14 });
 })();
 
 /* --- 2. Terminal de ramas --- */
@@ -1038,7 +1504,7 @@ const Cinta = (() => {
   if (!caja) return;
   const svg = document.getElementById('svg-ramas');
   const lectura = document.getElementById('lectura-ramas');
-  const Y = [70, 165], MAX = 8;
+  const MAX = 8;
   let st;
   const inicial = () => ({
     commits: [{ id: 'c1', pista: 0, padre: null, hash: '98ca9e0' }, { id: 'c2', pista: 0, padre: 'c1', hash: '34ac2b7' }],
@@ -1051,10 +1517,10 @@ const Cinta = (() => {
   const pintar = () => {
     const commits = st.commits.map((c, i) => {
       const etiquetas = ['main', 'feature'].filter(r => st.ramas[r] === c.id).map(r => ({ t: r, actual: r === st.head }));
-      return { id: c.id, x: 46 + i * 66, y: Y[c.pista], hash: c.hash, etiquetas };
+      return { id: c.id, col: i, pista: c.pista, hash: c.hash, etiquetas };
     });
     const ligas = st.commits.filter(c => c.padre).map(c => ({ a: c.padre, b: c.id }));
-    Cinta.dibujar(svg, { commits, ligas, pistas: Cinta.pistasDe(commits, Y), ancho: Math.max(520, 46 + st.commits.length * 66 + 30), alto: 210 });
+    Cinta.dibujar(svg, { commits, ligas, minimo: 520, escala: true });
     caja.querySelector('[data-cmd="commit"]').disabled = st.commits.length >= MAX;
     caja.querySelector('[data-cmd="main"]').setAttribute('aria-pressed', String(st.head === 'main'));
     caja.querySelector('[data-cmd="feature"]').setAttribute('aria-pressed', String(st.head === 'feature'));
@@ -1122,32 +1588,42 @@ const Cinta = (() => {
   const svg = document.getElementById('svg-lab');
   const $ = id => document.getElementById(id);
   let modo = forja.leer('lab-modo') || 'rebase';
-  const X = i => 46 + i * 66, Y = [80, 180];
+  // Antes de la predicción el dibujo muestra solo el punto de partida, para no dar la respuesta
+  const revelado = () => document.querySelector('[data-tras-prediccion="pred-rebase"]')?.classList.contains('revelado');
   const hm = ['91be4c7', '5d0a913', 'c3f1a62', '0e8b2d4'];
   const hf = ['2d8c3a1', 'b06e7f4', '7a13c5e', 'e94d0b8', '46f2a7c'];
   const hc = ['4b7e0d2', 'c19a5f3', '8d2e6b1', 'f05c3a9', '1a7d9e4'];
+  // Punto de partida: main avanzó M commits y feature F desde 7c41d08 (si M = 0, feature sigue a main en línea)
+  const antes = (F, M) => {
+    const commits = [{ id: 'b', col: 0, pista: 0, hash: '7c41d08' }], ligas = [];
+    for (let i = 1; i <= M; i++) { commits.push({ id: 'm' + i, col: i, pista: 0, hash: hm[i - 1] }); ligas.push({ a: i === 1 ? 'b' : 'm' + (i - 1), b: 'm' + i }); }
+    for (let i = 1; i <= F; i++) { commits.push({ id: 'f' + i, col: i, pista: M ? 1 : 0, hash: hf[i - 1] }); ligas.push({ a: i === 1 ? 'b' : 'f' + (i - 1), b: 'f' + i }); }
+    commits.find(c => c.id === (M ? 'm' + M : 'b')).etiquetas = [{ t: 'main', actual: modo === 'merge' }];
+    commits.at(-1).etiquetas = [{ t: 'feature', actual: modo !== 'merge' }];
+    return { commits, ligas, minimo: 520, escala: true };
+  };
   const pintar = () => {
     const F = Number(rf.value), M = Number(rm.value);
     $('o-feature').textContent = F; $('o-main').textContent = M;
     caja.querySelectorAll('[data-modo]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.modo === modo)));
-    const commits = [{ id: 'b', x: X(0), y: Y[0], hash: '7c41d08' }];
+    const commits = [{ id: 'b', col: 0, pista: 0, hash: '7c41d08' }];
     const ligas = [];
-    for (let i = 1; i <= M; i++) { commits.push({ id: 'm' + i, x: X(i), y: Y[0], hash: hm[i - 1] }); ligas.push({ a: i === 1 ? 'b' : 'm' + (i - 1), b: 'm' + i }); }
+    for (let i = 1; i <= M; i++) { commits.push({ id: 'm' + i, col: i, pista: 0, hash: hm[i - 1] }); ligas.push({ a: i === 1 ? 'b' : 'm' + (i - 1), b: 'm' + i }); }
     const puntaMain = M ? 'm' + M : 'b';
     let nuevos, hashes, fusion, paradas, comando, frase;
     if (modo === 'merge') {
       if (M === 0) {
-        for (let i = 1; i <= F; i++) { commits.push({ id: 'f' + i, x: X(i), y: Y[0], hash: hf[i - 1] }); ligas.push({ a: i === 1 ? 'b' : 'f' + (i - 1), b: 'f' + i }); }
+        for (let i = 1; i <= F; i++) { commits.push({ id: 'f' + i, col: i, pista: 0, hash: hf[i - 1] }); ligas.push({ a: i === 1 ? 'b' : 'f' + (i - 1), b: 'f' + i }); }
         commits.at(-1).etiquetas = [{ t: 'feature' }, { t: 'main', actual: true }];
         nuevos = 0; hashes = 0; fusion = 0; paradas = 0;
         comando = '<span class="p">$</span> git switch main\n<span class="p">$</span> git merge feature\nUpdating 7c41d08..' + hf[F - 1] + '\n<span class="ok">Fast-forward</span>';
         frase = 'main no avanzó, así que no hay nada que combinar: fast-forward. main salta a la punta de feature y no hay commit nuevo ni conflicto posible.';
         forja.reto('reto-ff');
       } else {
-        for (let i = 1; i <= F; i++) { commits.push({ id: 'f' + i, x: X(i), y: Y[1], hash: hf[i - 1] }); ligas.push({ a: i === 1 ? 'b' : 'f' + (i - 1), b: 'f' + i }); }
+        for (let i = 1; i <= F; i++) { commits.push({ id: 'f' + i, col: i, pista: 1, hash: hf[i - 1] }); ligas.push({ a: i === 1 ? 'b' : 'f' + (i - 1), b: 'f' + i }); }
         commits.at(-1).etiquetas = [{ t: 'feature' }];
-        const xm = X(Math.max(M, F) + 1);
-        commits.push({ id: 'mm', x: xm, y: Y[0], hash: 'e5b2c90', tipo: 'merge', etiquetas: [{ t: 'main', actual: true }] });
+        const xm = Math.max(M, F) + 1;
+        commits.push({ id: 'mm', col: xm, pista: 0, hash: 'e5b2c90', tipo: 'merge', etiquetas: [{ t: 'main', actual: true }] });
         ligas.push({ a: puntaMain, b: 'mm', tipo: 'empalme' }, { a: 'f' + F, b: 'mm', tipo: 'empalme' });
         nuevos = 1; hashes = 0; fusion = 1; paradas = 1;
         comando = '<span class="p">$</span> git switch main\n<span class="p">$</span> git merge feature\nMerge made by the \'ort\' strategy.';
@@ -1155,7 +1631,7 @@ const Cinta = (() => {
       }
     } else {
       if (M === 0) {
-        for (let i = 1; i <= F; i++) { commits.push({ id: 'f' + i, x: X(i), y: Y[0], hash: hf[i - 1] }); ligas.push({ a: i === 1 ? 'b' : 'f' + (i - 1), b: 'f' + i }); }
+        for (let i = 1; i <= F; i++) { commits.push({ id: 'f' + i, col: i, pista: 0, hash: hf[i - 1] }); ligas.push({ a: i === 1 ? 'b' : 'f' + (i - 1), b: 'f' + i }); }
         commits[0].etiquetas = [{ t: 'main' }];
         commits.at(-1).etiquetas = [{ t: 'feature', actual: true }];
         nuevos = 0; hashes = 0; fusion = 0; paradas = 0;
@@ -1165,9 +1641,9 @@ const Cinta = (() => {
       } else {
         commits.find(c => c.id === puntaMain).etiquetas = [{ t: 'main' }];
         for (let i = 1; i <= F; i++) {
-          commits.push({ id: 'o' + i, x: X(i), y: Y[1], hash: hf[i - 1], tipo: 'recorte' });
+          commits.push({ id: 'o' + i, col: i, pista: 1, hash: hf[i - 1], tipo: 'recorte' });
           ligas.push({ a: i === 1 ? 'b' : 'o' + (i - 1), b: 'o' + i, tipo: 'punteada' });
-          commits.push({ id: 'c' + i, x: X(M + i), y: Y[0], hash: hc[i - 1], tipo: 'nuevo' });
+          commits.push({ id: 'c' + i, col: M + i, pista: 0, hash: hc[i - 1], tipo: 'nuevo' });
           ligas.push({ a: i === 1 ? puntaMain : 'c' + (i - 1), b: 'c' + i });
         }
         commits.find(c => c.id === 'o' + F).etiquetas = [{ t: 'ORIG_HEAD' }];
@@ -1178,15 +1654,15 @@ const Cinta = (() => {
         if (F === 5) forja.reto('reto-paradas');
       }
     }
-    const ys = [...new Set(commits.map(c => c.y))];
-    const maxX = Math.max(...commits.map(c => c.x));
-    Cinta.dibujar(svg, { commits, ligas, pistas: Cinta.pistasDe(commits, ys), ancho: Math.max(520, maxX + 50), alto: ys.length > 1 ? 225 : 125 });
+    Cinta.dibujar(svg, revelado() ? { commits, ligas, minimo: 520, escala: true } : antes(F, M));
     $('lab-comando').innerHTML = comando;
     $('m-nuevos').textContent = nuevos; $('m-hashes').textContent = hashes;
     $('m-fusion').textContent = fusion; $('m-paradas').textContent = paradas;
     $('lab-explicacion').innerHTML = frase;
   };
   rf.addEventListener('input', pintar); rm.addEventListener('input', pintar);
+  caja.addEventListener('forja:revelado', pintar);
+  caja.addEventListener('click', e => { if (e.target.closest('.rehacer')) setTimeout(pintar, 0); });
   caja.querySelectorAll('[data-modo]').forEach(b => b.addEventListener('click', () => { modo = b.dataset.modo; forja.guardar('lab-modo', modo); pintar(); }));
   pintar();
 })();
@@ -1207,28 +1683,28 @@ const Cinta = (() => {
   const LIMPIO = 'port = 8080\ntimeout = 60';
   const historial = (fase) => {
     const c = [
-      { id: 'b', x: 46, y: 80, hash: '7c41d08' },
-      { id: 'm', x: 112, y: 80, hash: '91be4c7', etiquetas: [{ t: 'main', actual: fase !== 'rebase' && fase !== 'rebase-ok' }] },
+      { id: 'b', col: 0, pista: 0, hash: '7c41d08' },
+      { id: 'm', col: 1, pista: 0, hash: '91be4c7', etiquetas: [{ t: 'main', actual: fase !== 'rebase' && fase !== 'rebase-ok' }] },
     ];
     const l = [{ a: 'b', b: 'm' }];
     if (fase === 'rebase' || fase === 'rebase-ok') {
-      c.push({ id: 'f', x: 112, y: 175, hash: 'b06e7f4', tipo: 'recorte', etiquetas: [{ t: 'ORIG_HEAD' }] });
+      c.push({ id: 'f', col: 1, pista: 1, hash: 'b06e7f4', tipo: 'recorte', etiquetas: [{ t: 'ORIG_HEAD' }] });
       l.push({ a: 'b', b: 'f', tipo: 'punteada' });
       c.push(fase === 'rebase-ok'
-        ? { id: 'n', x: 200, y: 80, hash: '4b7e0d2', tipo: 'nuevo', etiquetas: [{ t: 'feature', actual: true }] }
-        : { id: 'n', x: 200, y: 80, tipo: 'pendiente' });
+        ? { id: 'n', col: 2, pista: 0, hash: '4b7e0d2', tipo: 'nuevo', etiquetas: [{ t: 'feature', actual: true }] }
+        : { id: 'n', col: 2, pista: 0, tipo: 'pendiente' });
       l.push({ a: 'm', b: 'n' });
     } else {
       const cerrado = fase === 'cerrado';
-      c.push({ id: 'f', x: 112, y: 175, hash: 'b06e7f4', etiquetas: cerrado ? [{ t: 'feature' }] : [{ t: 'feature' }, { t: 'MERGE_HEAD' }] });
+      c.push({ id: 'f', col: 1, pista: 1, hash: 'b06e7f4', etiquetas: cerrado ? [{ t: 'feature' }] : [{ t: 'feature' }, { t: 'MERGE_HEAD' }] });
       l.push({ a: 'b', b: 'f' });
       if (cerrado) {
         c[1].etiquetas = [];
-        c.push({ id: 'mm', x: 250, y: 80, hash: 'e5b2c90', tipo: 'merge', etiquetas: [{ t: 'main', actual: true }] });
-      } else c.push({ id: 'mm', x: 250, y: 80, tipo: 'pendiente' });
+        c.push({ id: 'mm', col: 2, pista: 0, hash: 'e5b2c90', tipo: 'merge', etiquetas: [{ t: 'main', actual: true }] });
+      } else c.push({ id: 'mm', col: 2, pista: 0, tipo: 'pendiente' });
       l.push({ a: 'm', b: 'mm', tipo: 'empalme' }, { a: 'f', b: 'mm', tipo: 'empalme' });
     }
-    Cinta.dibujar(svg, { commits: c, ligas: l, pistas: Cinta.pistasDe(c, [80, 175]), ancho: 330, alto: 210 });
+    Cinta.dibujar(svg, { commits: c, ligas: l });
   };
   const pintar = () => {
     pasos.forEach(p => { p.hidden = Number(p.dataset.paso) !== n; });
@@ -1296,7 +1772,48 @@ const Cinta = (() => {
     $('prob-explica').textContent = c.frase + (op === 'rebase' ? ' (-X y -s aquí se muestran solo con git merge.)' : '');
     if (op === 'rebase' && cm === 'theirs') forja.reto('reto-swap');
     if (cm === 'sours') forja.reto('reto-s-ours');
+    ayudarCaso();
   };
+  // "Explícamelo paso a paso" del caso elegido. Solo aparece después de la predicción, para no dar la respuesta antes.
+  const ayudaDiv = $('ayuda-probador');
+  let ayudaClave = null;
+  const pasosCaso = {
+    'merge:ours': [['Estás en <code>feature</code> y corres <code>git merge main</code>: HEAD es feature y la rama que entra, <code>MERGE_HEAD</code>, es main.',
+      'En un merge, el stage 2 (ours) es HEAD y el stage 3 (theirs) es <code>MERGE_HEAD</code>.',
+      '<code>git checkout --ours</code> no mezcla nada: copia el archivo completo del stage 2. ¿Qué tiene el app.conf de ese lado: timeout = 60 o 45? ¿Tiene log = info?'],
+      'Te queda tu versión: <code>timeout = 60</code>, sin <code>log = info</code>. En un merge, --ours es el stage 2, HEAD = feature, y se copia el archivo completo.'],
+    'merge:theirs': [['Estás en <code>feature</code> y corres <code>git merge main</code>: HEAD es feature y la rama que entra, <code>MERGE_HEAD</code>, es main.',
+      'En un merge, el stage 2 (ours) es HEAD y el stage 3 (theirs) es <code>MERGE_HEAD</code>.',
+      '<code>git checkout --theirs</code> no mezcla nada: copia el archivo completo del stage 3. ¿Qué tiene el app.conf de ese lado?'],
+      'Te queda la versión de main: <code>timeout = 45</code> y <code>log = info</code>. En un merge, --theirs es el stage 3, MERGE_HEAD = main.'],
+    'rebase:ours': [['Estás en <code>feature</code> y corres <code>git rebase main</code>: Git parte de la punta de main y reaplica encima tus commits, uno por uno.',
+      'Por eso, en un rebase, el stage 2 (ours) es la rama sobre la que reaplicas, y el stage 3 (theirs) es el commit tuyo que se está reaplicando.',
+      '<code>git checkout --ours</code> copia el archivo completo del stage 2. ¿De qué rama es ese lado aquí?'],
+      'Te queda la versión de main: <code>timeout = 45</code> y <code>log = info</code>. En un rebase, --ours es main, la rama sobre la que reaplicas: es la trampa más común.'],
+    'rebase:theirs': [['Estás en <code>feature</code> y corres <code>git rebase main</code>: Git parte de la punta de main y reaplica encima tus commits, uno por uno.',
+      'Por eso, en un rebase, el stage 2 (ours) es la rama sobre la que reaplicas, y el stage 3 (theirs) es el commit tuyo que se está reaplicando.',
+      '<code>git checkout --theirs</code> copia el archivo completo del stage 3. ¿De quién es ese lado aquí?'],
+      'Te queda tu versión: <code>timeout = 60</code>, sin <code>log = info</code>. En un rebase, --theirs es tu commit que se está reaplicando.'],
+    'merge:xours': [['Estás en <code>feature</code> y corres <code>git merge -X ours main</code>: "ours" es tu lado, HEAD = feature.',
+      '<code>-X ours</code> es una opción de la estrategia <code>ort</code>: el three-way merge corre normal, y lo que cambió un solo lado entra sin conflicto.',
+      'La opción solo decide los trozos donde los dos lados chocaron. timeout chocó (60 contra 45); ¿chocó log = info con algo?'],
+      'Te queda <code>timeout = 60</code> y también <code>log = info</code>: el trozo en conflicto se resuelve a tu favor y lo que main cambió sin chocar sí entra.'],
+    'merge:sours': [['Estás en <code>feature</code> y corres <code>git merge -s ours main</code>: "ours" es tu lado, HEAD = feature.',
+      '<code>-s</code> no elige una opción de <code>ort</code>: elige otra estrategia, llamada ours.',
+      'Esa estrategia crea el commit de fusión, pero su resultado es siempre el árbol de tu rama: no mira lo que trae main. ¿Qué tiene tu app.conf?'],
+      'Te queda exactamente tu app.conf: <code>timeout = 60</code>, sin <code>log = info</code>. -s ours descarta todo lo de main, incluso lo que no chocaba.'],
+  };
+  const ayudarCaso = () => {
+    const visible = $('prob-toma').closest('[data-tras-prediccion]')?.classList.contains('revelado');
+    const clave = visible ? `${op}:${cm}` : '';
+    if (clave === ayudaClave) return;
+    ayudaClave = clave;
+    const caso = pasosCaso[clave];
+    forja.ayuda(ayudaDiv, caso ? caso[0] : [], caso ? caso[1] : '');
+  };
+  caja.addEventListener('forja:revelado', ayudarCaso);
+  // Volver a predecir esconde otra vez la ayuda del caso
+  caja.addEventListener('click', e => { if (e.target.closest('.rehacer')) setTimeout(ayudarCaso, 0); });
   caja.querySelectorAll('[data-op]').forEach(b => b.addEventListener('click', () => { op = b.dataset.op; if (op === 'rebase' && (cm === 'xours' || cm === 'sours')) cm = 'ours'; pintar(); }));
   caja.querySelectorAll('[data-cm]').forEach(b => b.addEventListener('click', () => { cm = b.dataset.cm; pintar(); }));
   pintar();

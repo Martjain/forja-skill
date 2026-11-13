@@ -106,6 +106,9 @@ class Lector(HTMLParser):
         self.en_fuentes = 0
         self.links_fuentes = []
         self.citas = 0
+        self.hrefs_citas = []
+        self.controles_sim = 0
+        self.en_sim = 0
         self.svgs = 0
         self.secciones = []  # (id, data-layout) en orden
         self.oscuras = 0
@@ -119,6 +122,9 @@ class Lector(HTMLParser):
         self._abiertos = []  # (tag, dentro_de_tras, indice_de_pasos o None)
         self.tras_con_controles = []  # descripciones de controles escondidos tras una predicción
         self.pasos = []  # por cada data-interaccion="pasos": cuántas predicciones tiene dentro
+        self.pred_ids = []  # ids de las predicciones
+        self.ayudas = {}  # data-ayuda -> {"lis", "resp", "din"}
+        self.otras = []  # por cada data-interaccion="otra": cuántas ayudas tiene dentro
         self._pila = []
         self._ignorar = 0
 
@@ -154,6 +160,13 @@ class Lector(HTMLParser):
             self.links_fuentes.append(a["href"])
         if tag == "a" and not self.en_fuentes and "cita" in (a.get("class") or "").split():
             self.citas += 1
+            self.hrefs_citas.append(a.get("href") or "")
+        if a.get("data-interaccion") == "simulador":
+            self.en_sim = 1
+        elif self.en_sim and tag not in ("br", "img", "meta", "input", "hr"):
+            self.en_sim += 1
+        if self.en_sim and (tag in ("button", "select") or (tag == "input" and a.get("type") in ("range", "checkbox", "radio", "number"))):
+            self.controles_sim += 1
         if tag == "svg":
             self.svgs += 1
         if tag == "section":
@@ -174,6 +187,24 @@ class Lector(HTMLParser):
 
         tras_padre = self._abiertos[-1][1] if self._abiertos else False
         pasos_padre = self._abiertos[-1][2] if self._abiertos else None
+        ayuda_padre = self._abiertos[-1][3] if self._abiertos else None
+        otra_padre = self._abiertos[-1][4] if self._abiertos else None
+        if "data-prediccion" in a and a.get("id"):
+            self.pred_ids.append(a["id"])
+        ayuda = ayuda_padre
+        if "data-ayuda" in a:
+            ayuda = a.get("data-ayuda") or f"_dinamica_{len(self.ayudas)}"
+            self.ayudas[ayuda] = {"lis": 0, "resp": False, "din": "data-ayuda-dinamica" in a}
+            if otra_padre is not None:
+                self.otras[otra_padre] += 1
+        if tag == "li" and ayuda_padre:
+            self.ayudas[ayuda_padre]["lis"] += 1
+            if "data-respuesta" in a:
+                self.ayudas[ayuda_padre]["resp"] = True
+        otra = otra_padre
+        if (a.get("data-interaccion") or "").strip().lower() == "otra":
+            self.otras.append(0)
+            otra = len(self.otras) - 1
         if tras_padre and (tag in ("button", "input", "select", "textarea") or "data-nodo" in a):
             self.tras_con_controles.append(f"<{tag}{' data-nodo' if 'data-nodo' in a else ''}>")
         if "data-prediccion" in a and pasos_padre is not None:
@@ -184,7 +215,7 @@ class Lector(HTMLParser):
             self.pasos.append(0)
             pasos = len(self.pasos) - 1
         if tag not in VACIOS:
-            self._abiertos.append((tag, tras, pasos))
+            self._abiertos.append((tag, tras, pasos, ayuda, otra))
         if tag not in ("br", "img", "meta", "input", "hr", "link"):
             self._pila.append(tag)
 
@@ -198,6 +229,8 @@ class Lector(HTMLParser):
             self._ignorar = max(0, self._ignorar - 1)
         if self.en_fuentes and tag not in ("br", "img", "meta", "input", "hr"):
             self.en_fuentes -= 1
+        if self.en_sim and tag not in ("br", "img", "meta", "input", "hr"):
+            self.en_sim -= 1
 
     def handle_data(self, data):
         if self._ignorar:
@@ -246,7 +279,9 @@ def validar(ruta: Path):
         errores.append(f"La sección de fuentes tiene {len(lector.links_fuentes)} enlace(s); se esperan al menos 2")
 
     # 3. Texto de relleno
-    bajo = texto.lower()
+    # Lo que va entre comillas «…» o "…" es un ejemplo que se analiza (una guía de redacción puede
+    # enseñar el conector «en conclusión,»): no cuenta como relleno de la guía.
+    bajo = re.sub(r"«[^»]{0,400}»|“[^”]{0,400}”", " ", texto.lower())
     encontradas = sorted({m.group(0) for p in FRASES_RELLENO for m in re.finditer(p, bajo)})
     if encontradas:
         errores.append(f"Texto de relleno: {', '.join(repr(f) for f in encontradas)}")
@@ -276,8 +311,15 @@ def validar(ruta: Path):
         )
     elif len(tipos) < len(TIPOS_INTERACCION):
         advertencias.append(f"Faltan tipos de interacción: {sorted(TIPOS_INTERACCION - tipos)}")
-    if "simulador" in tipos and not lector.tiene_slider:
-        errores.append('Hay data-interaccion="simulador" pero ningún <input type="range">')
+    if "simulador" in tipos and not lector.tiene_slider and lector.controles_sim < 2:
+        errores.append('Hay data-interaccion="simulador" sin controles: necesita un <input type="range"> '
+                       'o al menos 2 controles (botones, casillas, select) que cambien el resultado')
+    # Cada cita apunta a una fuente de la lista
+    sin_ancla = lambda u: u.split("#")[0].rstrip("/")
+    lista = {sin_ancla(u) for u in lector.links_fuentes}
+    fuera = sorted({h for h in lector.hrefs_citas if h.startswith("http") and sin_ancla(h) not in lista})
+    if fuera:
+        advertencias.append(f"Citas que no están en la sección de fuentes: {fuera[:4]}")
 
     # 7. Layouts, tono, ilustraciones y citas
     secciones = [(i, l) for i, l in lector.secciones if i != "fuentes"]
@@ -323,6 +365,17 @@ def validar(ruta: Path):
     if sin_hueco:
         errores.append(f"Paso a paso sin huecos (#{sin_hueco}): desde el paso 3 el usuario completa con una data-prediccion")
 
+    # 7b''. "Explícamelo paso a paso"
+    sin_ayuda = [i for i in lector.pred_ids if i not in lector.ayudas]
+    if sin_ayuda:
+        errores.append(f'Predicciones sin "Explícamelo paso a paso" (data-ayuda="<id>"): {sin_ayuda}')
+    cortas = [k for k, v in lector.ayudas.items() if not v["din"] and (v["lis"] < 3 or not v["resp"])]
+    if cortas:
+        errores.append(f"Ayudas con menos de 2 pasos o sin <li data-respuesta> al final: {cortas}")
+    sin_ayuda_otra = sum(1 for n in lector.otras if n == 0)
+    if sin_ayuda_otra:
+        advertencias.append(f'{sin_ayuda_otra} interacción(es) "otra" sin ayuda paso a paso (usa data-ayuda-dinamica y forja.ayuda)')
+
     # 7b'. Flashcards del núcleo y repaso espaciado
     if "data-forja-flashcards" not in lector.atributos:
         errores.append('Falta <div data-forja-flashcards>: las flashcards las dibuja el núcleo')
@@ -345,6 +398,15 @@ def validar(ruta: Path):
     n_sin_fuente = len(re.findall(r'class="[^"]*\bsin-fuente\b', re.sub(r"<!--.*?-->", "", html, flags=re.S)))
     if n_sin_fuente:
         advertencias.append(f"{n_sin_fuente} dato(s) marcado(s) sin fuente oficial (se muestran con †). Revisa si se pueden verificar")
+
+    # Ilustraciones: animación del proceso central y etiquetas adaptables al celular
+    contenido = re.sub(r"NÚCLEO FORJA: (CSS|JS).*?FIN NÚCLEO FORJA: \1", "", html, flags=re.S)
+    if not re.search(r"<(?:div|figure|section)\b[^>]*\sdata-anima\b", contenido):
+        advertencias.append("Ninguna ilustración animada (data-anima). Si el tema es un proceso, un mecanismo o un ciclo, "
+                            "anima su ilustración central con forja.animar (reference/ilustracion.md, sección 7)")
+    if not re.search(r'<g\b[^>]*\bclass="[^"]*\betiqueta\b[^"]*"[^>]*\bdata-punto=', contenido):
+        advertencias.append('Las etiquetas de los SVG no usan <g class="etiqueta" data-punto="x y">: en el celular no se adaptan '
+                            "(reference/ilustracion.md, sección 5)")
 
     sin_min = [i or "?" for i, m in lector.minutos if not m]
     if sin_min:

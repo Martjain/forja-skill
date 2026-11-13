@@ -79,7 +79,7 @@ Cada `<section>` declara uno con `data-layout`. No repitas el mismo en secciones
 
 - **Inline**, con `viewBox` y `role="img"` + `<title>`. Usa los colores de la familia con variables CSS (`fill="var(--acento)"`) o `currentColor`.
 - **Esquemáticas, no decorativas.** Dibujan el mecanismo del concepto con el motivo de la guía: capas que se abren, eventos sobre una línea de tiempo, una rama que se separa. Una mancha abstracta o un "blob" no enseña nada.
-- **Simples.** Menos de 40 elementos por ilustración. Formas reconocibles antes que detalle.
+- **Con calidad de ilustración técnica**, no de boceto: sistema de trazo, materiales, geometría calculada, etiquetas limpias y, si el tema es un proceso, animación. Todas las reglas, el kit y la rúbrica (mínimo 8/10) están en [ilustracion.md](ilustracion.md).
 - **Una por sección clave**, mínimo 3 por guía. La de `portada` presenta el motivo y las siguientes lo reutilizan.
 - Íconos pequeños, si hacen falta: SVG de trazo simple, nunca emojis.
 
@@ -120,7 +120,7 @@ Las guías las lee alguien que aprende mejor viendo y haciendo, y que puede perd
 
 - **El mapa va en la portada.** Que el recorrido completo se vea desde el inicio (el `<nav data-forja-mapa>` de la portada).
 - **Secciones de 3 a 8 minutos** (`data-minutos`). Si una pasa de 8, divídela.
-- **Cada sección abre con su idea en una frase**, visible antes de cualquier párrafo.
+- **Cada sección abre con su idea en una frase**, visible antes de cualquier párrafo. **Excepción, y es la regla que más se rompió:** si la sección tiene una predicción, esa frase de apertura (y el título) **plantea la pregunta o la tensión, no la respuesta**: «¿Qué se lleva el commit si editas después de git add?» en lugar de «El commit se lleva la versión que añadiste». La idea en una frase aparece después de responder, detrás de la predicción. En una revisión ciega de 27 predicciones, 20 tenían la respuesta a la vista y en 13 la delataba el título o el subtítulo.
 - **Párrafos de 3 líneas como máximo** en celular. Si necesitas más, lo que falta es una ilustración o una interacción.
 - **Algo que hacer cada 1 o 2 pantallas**: una predicción, un reto o un control. Nunca más de 2 pantallas seguidas de solo leer.
 - **Feedback inmediato**: cada acción del usuario tiene una respuesta visible en menos de un segundo.

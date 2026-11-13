@@ -134,3 +134,160 @@ Las 3 pasan el validador y la revisión en celular.
 
 1. **Bug en el núcleo:** la API `forja` se definía después de dibujar las flashcards. Con el reto `flashcards` cumplido, al recargar fallaba todo el núcleo. Corregido en el esqueleto y propagado a las 4 guías con el script nuevo `scripts/actualizar_nucleo.py`, que solo reemplaza los bloques del núcleo. Probado: dominar el mazo y recargar ya no da errores.
 2. **`revisar_movil.py` compartía la carpeta de capturas** entre procesos paralelos. Ahora usa una carpeta por guía.
+
+## Prueba fuera de Claude Code: derivadas (Cálculo I, principiante)
+
+- **Familia nueva `matematicas`:** papel milimétrico crema con cuadrícula, grafito para el texto, rojo de profesor como acento, azul de bolígrafo para las curvas y pizarrón verde con gis en los bloques oscuros. Fuentes: Source Serif 4 (libro de texto), Atkinson Hyperlegible (distingue 1, l e I en texto con símbolos) e IBM Plex Mono.
+- **Motivo:** la secante que gira hasta volverse tangente.
+- **Fuentes:** OpenStax Calculus Vol. 1 (Rice University), Paul's Online Notes (Lamar University), MAA Convergence y MacTutor (St Andrews). Un dato sin fuente: el consejo de no "tachar las d" en dy/dx.
+- **Matemáticas verificadas a mano:** pendiente de (0,5) a (2,1) = −2; f(x)=x²+3x da f′(x)=2x+3; simulador con a=1 y h=0.1 da Δy=0.21 y pendiente 2.1; f(x)=x²−2x tiene f′(1)=0 en su mínimo; la regla de la potencia maneja n=0.
+- **Distractores pedagógicos:** "f′(1) = −1, lo mismo que f(1)" (confundir altura con inclinación), "0/0" y "2x + h + 3" (olvidar el límite).
+- Validador: sin errores (1 advertencia †). Celular: OK. 234k tokens, 16.5 min.
+
+## "Explícamelo paso a paso" (pedido por el usuario)
+
+Botón en el núcleo para cuando el usuario no puede resolver algo. Muestra el razonamiento **un paso por clic**, con "Ya entendí, lo intento" para volver a intentarlo, y la respuesta solo al final. Si se abre antes de responder, el veredicto dice "Acertaste con ayuda.", sin castigo. Para ejercicios generados por JS existe `forja.ayuda(el, pasos, respuesta)`.
+
+- Núcleo propagado a las 5 guías.
+- **Derivadas:** ayuda escrita para las 6 predicciones y ayuda dinámica en el probador (cambia con cada ejercicio; para n = 0 explica la constante). Probado en Chrome: un paso por clic, cerrar y retomar ("Seguir con la explicación"), "Acertaste con ayuda", reinicio con "Otro ejercicio", sin errores de JS.
+- **Pendiente:** hooks, git, git-merge-rebase y subagentes tienen el botón en su núcleo, pero no tienen los pasos escritos. El validador ahora lo marca como error. Hay que escribir sus ayudas o regenerarlas.
+- **Hecho (2026-11-12):** ayudas agregadas a las 4 guías restantes, solo con líneas nuevas y sin borrar ninguna:
+  - hooks: 9 (8 de predicciones + probador de matchers)
+  - git: 10 (9 + laboratorio de zonas)
+  - git-merge-rebase: 11 (9 + terminal + **ayuda dinámica en el probador de ours/theirs**, que solo aparece después de responder `pred-swap` para no dar la respuesta antes de tiempo)
+  - subagentes: 7 (5 + 2 clasificadores; dan el criterio y un caso de ejemplo, no las 6 respuestas)
+
+  Las 5 guías pasan el validador sin errores de ayuda y no tienen errores de JS.
+- **Aclaración de regla:** un subagente creó `git-v2` en vez de editar la original, porque la regla "nunca sobrescribir" era ambigua. Se aplicó el cambio a la original y se quitó la copia. Ahora CLAUDE.md y el mensaje del hook distinguen entre *generar* una guía (nunca sobrescribir) y un *cambio pedido por el usuario* (se edita la original, solo lo pedido, mostrando el diff).
+- **Nota:** el hook de protección no corre en sesiones que no se abren desde el repo (como los subagentes de esta sesión). En las sesiones de Claude Code abiertas en `forja-skill` sí se aplica.
+
+## Prueba con pedido natural: "quiero una guía del proceso de un motor de combustión externa"
+
+- **Activación y preguntas:** cargó forja sola y, antes de crear nada, preguntó el **nivel** y además **qué motor** (Stirling, vapor o los dos). La segunda pregunta no está en la skill; salió del criterio de Claude ante un tema ambiguo. Respuesta del usuario: principiante, los dos.
+- **Familia nueva `maquinas-termicas`:** crema de plano técnico, negro de hierro fundido, naranja de brasa como acento y azul acero del agua fría. Regla fija: naranja = caliente y azul = frío en toda la guía. Fuentes: Fraunces, IBM Plex Sans e IBM Plex Mono.
+- **Motivo:** la pared que separa el fuego del fluido.
+- **Estructura:** 3 partes (lo común, Stirling, vapor), 9 secciones, 6 predicciones (3 son huecos del paso a paso), 8 ayudas (2 dinámicas), 7 retos, 13 flashcards.
+- **Fuentes:** NASA (science.nasa.gov y NTRS), DOE, OpenStax, Ohio University, FAMU-FSU, Penn State, MSU, HyperPhysics y ASME. Dos datos con †: volumen ×1,600 del vapor y que bombear líquido cuesta menos que comprimir vapor.
+- **Física verificada a mano:** Carnot con T en kelvin (30 °C de lado frío: 47 % → 65 % al subir de 300 a 600 °C: "sube, pero no al doble"); regenerador con modelo de gas ideal (68 % = Carnot entre 850 y 90 °C; sin regenerador, 20 % con aire y 27 % con helio, reproducido con cv/R = 2.5 y 1.5). La guía aclara que son cálculos de modelo, no datos publicados.
+- Validador sin errores, celular OK, sin errores de JS.
+
+## Ilustraciones técnicas y animación
+
+- **Punto de partida:** el usuario calificó las ilustraciones de la guía del motor con **2/10**. Un redibujo técnico (corte con achurado, sistema de trazo, geometría calculada) llegó a **6/10**, y animado con la física real a **8/10**. El usuario aprobó integrarlo a la skill.
+- **Integrado:**
+  - `reference/ilustracion.md` con reglas y una rúbrica de 10 puntos (mínimo 8);
+  - `forja.animar` y `forja.kit` en el núcleo;
+  - etiquetas `g.etiqueta` que en el celular se cambian por números y leyenda;
+  - `assets/kit-svg.svg`, `scripts/svg_kit.py` y `scripts/revisar_ilustraciones.py`;
+  - nuevo paso 8 en SKILL.md y avisos en `validar.py`.
+- **Hallazgo del revisor nuevo:** en el celular, el ejemplo del motor mostraba el texto de unos 5 px. Por eso se agregaron las etiquetas adaptables.
+- **Prueba de generalización (derivadas, en una copia):** un subagente limpio rehízo los 9 SVG y agregó la animación de la secante que se vuelve tangente.
+  - Se calificó de 8 a 9 en cada dibujo.
+  - Matemáticas verificadas en el navegador: 0 px de error; la pendiente medida es 3 + h en cada fase.
+  - Corrigió 2 errores de los dibujos anteriores: las barras de f(a) y f(a+h) estaban corridas 18–20 px de P y Q, y el pico de |x| estaba fuera del eje.
+- **Mejoras a partir de los reportes de esa prueba:**
+  - Letra mínima en unidades del viewBox (11 × ancho ÷ 350), calculada por `Lienzo` e impresa por el revisor.
+  - Etiquetas en las zonas vacías del plano para gráficas; letras móviles para las piezas que se mueven.
+  - Profundidad alternativa cuando el lenguaje no tiene materiales.
+  - Jerarquía de líneas en gráficas.
+  - Kit pegado una sola vez, con prefijos por SVG y copia para secciones oscuras.
+  - La animación no debe revelar una predicción.
+  - El número de la etiqueta en el celular se corre para no tapar la pieza.
+  - El revisor guarda cada fase por separado y revisa choques en escritorio en las 4 fases.
+  - "Velocidad" ya no se parte en dos líneas.
+
+## Redibujo de las 6 guías con la skill nueva
+
+Lo pidió el usuario. Un agente por guía, en paralelo, editando la guía original y cambiando solo las ilustraciones (más su JS/CSS). Las 6 pasan el validador, la revisión en celular y el revisor de ilustraciones, sin errores de JS.
+
+| Guía | SVG | Animación | Calificación |
+|---|---|---|---|
+| derivadas | 9 + 1 nueva | la secante se vuelve tangente (h → 0) | 8–9 |
+| git | 8 | editar → git add → git commit (tres zonas) | 8–9 |
+| git-merge-rebase | 8 | merge (dos padres) contra rebase (copias con hash nuevo) | 8–9 |
+| hooks | 7 | ciclo de una sesión con el bucle agéntico | 8–9 |
+| subagentes | 7 + 1 nueva | delegación: elegir por description → trabajar aparte → solo vuelve el resultado | 8–9 |
+| motor | 13 | Stirling de dos pistones a 90° y ciclo de vapor | 8–9 |
+
+- **Errores encontrados al calcular la geometría:**
+  - en derivadas, barras desalineadas y el pico de |x| fuera del eje;
+  - en hooks, Notification aparecía entre PostToolUse y Stop.
+- **Respuestas que se revelaban antes de tiempo** (las 4 se corrigieron):
+  - en hooks, "exit 1 → sigue + aviso";
+  - en merge-rebase, el laboratorio dibujaba el rebase y el fast-forward se veía;
+  - en motor, dos etiquetas.
+- **Mejoras a la skill a partir de los reportes:** el número de etiqueta en el celular se mide con el ancho real; `svg_kit` suma `registrar`, `conector`, `color_sub`, `em` y atributos del svg; el revisor tiene `data-fases` y captura sin el desenfoque; `onda` termina recta; se documentaron la clase `.etiqueta` reservada, `ancho_movil` con min-width, cómo animar ilustraciones interactivas y los degradados con `userSpaceOnUse`.
+
+## Guía nueva: el ensayo (secundaria), primera guía con la skill de ilustración
+
+- **Pedido:** una alumna de secundaria estudia para su examen de Español y no entiende el ensayo (características, estructura, tipos y propósitos). Nivel: secundaria, principiante.
+- **Familia nueva `lengua-y-literatura`:** cuaderno de rayas con margen rojo, tinta azul y pasta azul marino. Los marcatextos tienen significado fijo: amarillo = tesis, azul = argumentos, verde = conclusión, rosa = ejemplos y datos. Fuentes: Literata, Atkinson Hyperlegible y Courier Prime.
+- **Motivo:** la mesa. La tesis es la tabla y los argumentos son las patas.
+- **Fuentes:** fichas de la SEP de 3.º de secundaria, CCH UNAM (tutoría y examen diagnóstico), UANL, UAEMex, publicaciones de la UNAM, UNLP y SEP Jalisco.
+- **Contenido:**
+  - 9 secciones, 3 de ellas oscuras.
+  - Un probador "¿es ensayo o no?" con 6 borradores.
+  - Una animación de un ensayo que se escribe y se marca.
+  - Un diagrama de párrafos y un laboratorio de la mesa (8 argumentos y qué tan absoluta es la tesis).
+  - Un clasificador de tipos y un paso a paso que se desvanece para escribir una tesis.
+  - 13 flashcards y un mini examen.
+- **Calificación de las ilustraciones:** de 8 a 9.5. Validador, celular e ilustraciones sin problemas; 10 retos recorridos con Playwright.
+- **Ajustes a la skill a partir de esta guía:**
+  - `svg_kit` pone la letra monoespaciada con `style`, porque el atributo no acepta `var()`.
+  - El validador ya no cuenta como relleno los conectores citados entre comillas: una guía de redacción puede enseñar «en conclusión,».
+- **Pendiente:**
+  - documentar cómo ocultar una animación que revela una predicción;
+  - avisar del `min-width: 0` en cuadrículas;
+  - que el revisor capture los diagramas después de responder la predicción;
+  - revisar si el simulador debe exigir un control deslizante.
+
+## Instrucciones de uso en cada guía
+
+- **Pedido del usuario:** que cada guía explique cuántas preguntas tiene, cómo se contestan, qué hay que tocar y si tiene animaciones.
+- **Solución en el núcleo:** el panel «Cómo usar esta guía» se arma solo debajo del mapa de la portada.
+  - Cuenta las predicciones, retos, animaciones, diagramas, simuladores, pasos, ejercicios y tarjetas que trae la guía.
+  - Suma los minutos de las secciones.
+  - Explica cómo se usa cada cosa, con un ícono, y enlaza a la primera de cada tipo.
+  - Se abre la primera vez que se visita la guía y después queda cerrado.
+- **Por qué en el núcleo:** las cuentas siempre coinciden con la guía y ninguna guía tiene que escribir sus propias instrucciones.
+- Propagado a las 7 guías; todas pasan el validador y la revisión en celular.
+
+## Auditoría: ¿el validador revisa lo que importa?
+
+- **Lo que revisaba:** solo estructura (que existan predicciones, retos, citas, layouts y SVG; offline; fuentes; relleno).
+- **Lo que no revisaba**, y en 6 guías ya había causado problemas:
+  - predicciones con la respuesta a la vista: 4 fugas encontradas a mano por los agentes y 2 más al probar esta herramienta en el ensayo;
+  - interacciones que no hacen nada;
+  - retos que ningún código cumple;
+  - contraste insuficiente (botones de respuesta correcta a 3:1 en hooks).
+- **Nuevo `scripts/probar_guia.py` (paso 9 de SKILL.md):**
+  - recorre la guía como una persona: predicciones (mal, «Volver a predecir» y bien), ayudas hasta la respuesta, piezas de diagrama, controles, pasos, animaciones y tarjetas;
+  - marca errores de JS, resultados que no se ocultan o no se revelan, controles que no cambian nada y retos sin `forja.reto`;
+  - avisa de dibujos, tablas y código a la vista después de una pregunta, guarda una captura de cada sección antes de contestar, y revisa contraste WCAG y muros de texto.
+  - Calibrado con las 7 guías y con las versiones viejas de hooks y merge-rebase: detecta las fugas de pred-ff y pred-rebase que antes encontraron los agentes.
+- **Fugas reales confirmadas en el ensayo:**
+  - pred-tesis: el texto junto a la animación dice «Primero la introducción, con la tesis en amarillo»;
+  - pred-proposito: el subtítulo dice «El que más te van a preguntar: convencer» y el diagrama resalta Argumentativo → Convencer.
+  - Quedan 18 avisos de posibles fugas en las 7 guías, pendientes de revisión.
+- **Núcleo:** `contrastar()` elige texto claro u oscuro sobre los botones de acento (respuesta correcta y Reproducir).
+- **Validador:**
+  - el simulador acepta 2 o más controles en lugar de exigir un slider;
+  - avisa de citas que no están en la lista de fuentes.
+- **Reglas que estaban confusas, ya documentadas:**
+  - la prueba de la fuga y cómo corregirla (`data-tras-prediccion` en el SVG y la narración, no en el contenedor de la animación);
+  - cuándo mostrar la estructura no cuenta como fuga;
+  - cada reto necesita su `forja.reto('id')` literal;
+  - `min-width: 0` en cuadrículas;
+  - el simulador sin slider;
+  - `Lienzo.registrar` con varios valores.
+
+## Fugas: antes y después de corregir
+
+- **Revisión ciega 1:** un subagente vio solo las capturas de lo visible antes de cada pregunta, sin el HTML. Resultado en 27 predicciones: **20 fugas**, 3 pistas y 4 limpias.
+- **Causa:** la regla de abrir cada sección con su idea en una frase (13 casos). Ya se corrigió en diseno.md.
+- **Corrección:** 4 agentes en paralelo, pedido por el usuario. Además el desenfoque del núcleo pasó de 3px a 7px, porque con 3px los textos grandes se leían.
+- **Revisión ciega 2:** **3 fugas**, 18 pistas y 6 limpias. Las 3 fugas:
+  - **merge-rebase pred-tres:** un reto describía el ancestro. Corregido.
+  - **merge-rebase pred-ff:** caso límite; el término «Fast-forward» de la columna es el tema que se enseña.
+  - **ensayo pred-tipo:** el borrador se parece al ejemplo literario anotado. Es práctica guiada (ejemplo resuelto → aplicar), así que se deja como pista.
+- **Aprendizaje:** las pistas (descartar opciones razonando con lo visible) son deseables. La revisión ciega con un agente que no conoce las respuestas encuentra lo que el autor no ve.

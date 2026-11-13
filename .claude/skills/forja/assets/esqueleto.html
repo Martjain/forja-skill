@@ -65,7 +65,7 @@ button, input { font: inherit; min-height: 44px; }
 [data-forja-continuar][hidden] { display: none; }
 [data-forja-continuar] a { display: inline-flex; align-items: center; min-height: 44px; padding: .5rem 1.1rem; border-radius: 8px; background: var(--acento); color: var(--fondo); text-decoration: none; font-weight: 600; }
 [data-forja-reiniciar] { background: none; border: 0; color: inherit; text-decoration: underline; opacity: .7; cursor: pointer; }
-[data-tras-prediccion]:not(.revelado) { filter: blur(3px) grayscale(.5); opacity: .5; pointer-events: none; user-select: none; }
+[data-tras-prediccion]:not(.revelado) { filter: blur(7px) grayscale(.6); opacity: .4; pointer-events: none; user-select: none; }
 [data-tras-prediccion] { transition: filter .5s ease, opacity .5s ease; }
 .sin-fuente { text-decoration: underline dotted; text-underline-offset: 3px; }
 .sin-fuente::after { content: "†"; color: var(--acento); font-size: .75em; vertical-align: super; margin-left: .1em; }
@@ -80,6 +80,18 @@ button, input { font: inherit; min-height: 44px; }
 .fc-botones button { padding: .5rem 1.1rem; border-radius: 8px; border: 1.5px solid currentColor; background: transparent; color: inherit; cursor: pointer; }
 .fc-botones .fc-sabia { background: var(--acento); border-color: var(--acento); color: var(--fondo); }
 @media (prefers-reduced-motion: no-preference) { .fc-tarjeta .fc-texto { animation: forja-entra .35s ease both; } }
+[data-ayuda] { margin: .75rem 0 0; }
+[data-ayuda] > ol { display: none; } /* fuente de los pasos: el núcleo los muestra uno por uno */
+.ayuda-abrir { min-height: 40px; padding: .4rem .9rem; border-radius: 8px; border: 1.5px dashed currentColor; background: transparent; color: inherit; cursor: pointer; font-size: .9rem; opacity: .85; }
+.ayuda-abrir:hover { opacity: 1; }
+.ayuda-panel { margin-top: .6rem; padding: .9rem 1rem; border-radius: 10px; background: color-mix(in srgb, var(--acento) 10%, transparent); }
+.ayuda-panel ol { margin: 0 0 .75rem; padding-left: 1.4rem; display: grid; gap: .55rem; }
+.ayuda-panel li::marker { color: var(--acento); font-weight: 600; }
+.ayuda-panel li.respuesta { list-style: none; margin-left: -1.4rem; padding-top: .55rem; border-top: 1px solid color-mix(in srgb, currentColor 25%, transparent); font-weight: 600; }
+.ayuda-botones { display: flex; gap: .5rem; flex-wrap: wrap; }
+.ayuda-botones button { min-height: 40px; padding: .4rem .95rem; border-radius: 8px; border: 1.5px solid currentColor; background: transparent; color: inherit; cursor: pointer; font-size: .9rem; }
+.ayuda-botones .ayuda-siguiente { background: var(--acento); border-color: var(--acento); color: var(--fondo); }
+@media (prefers-reduced-motion: no-preference) { .ayuda-panel li { animation: forja-entra .35s ease both; } }
 [data-prediccion] .opciones { display: flex; flex-wrap: wrap; gap: .5rem; margin: .75rem 0; }
 [data-prediccion] [data-opcion] { cursor: pointer; padding: .5rem 1rem; border-radius: 8px; border: 1.5px solid currentColor; background: transparent; color: inherit; }
 [data-prediccion] [data-opcion]:disabled { cursor: default; opacity: .55; }
@@ -99,6 +111,43 @@ button, input { font: inherit; min-height: 44px; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+/* Animaciones de proceso (forja.animar) */
+.anima-ctl { display: flex; flex-wrap: wrap; gap: .5rem 1rem; align-items: center; margin-top: .75rem; font-size: .875rem; }
+.anima-ctl button { min-height: 40px; padding: .4rem .95rem; border-radius: 8px; border: 1.5px solid currentColor; background: transparent; color: inherit; cursor: pointer; font: inherit; }
+.anima-ctl .anima-play { background: var(--acento); border-color: var(--acento); color: var(--fondo); min-width: 7.5rem; }
+.anima-ctl input { accent-color: var(--acento); width: 7rem; }
+.anima-ctl label { display: inline-flex; gap: .5rem; align-items: center; white-space: nowrap; overflow-wrap: normal; }
+.anima-ctl .anima-vel { font-family: var(--f-codigo); min-width: 2.5rem; }
+.anima-fase { display: flex; gap: .75rem; align-items: baseline; min-height: 3rem; margin: .5rem 0 0; }
+.anima-fase b { flex: none; font-family: var(--f-codigo); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; padding: .15rem .5rem; border-radius: 4px; background: var(--acento); color: var(--fondo); }
+.flujo { stroke-dasharray: 6 5; animation: forja-flujo 1s linear infinite; }
+@keyframes forja-flujo { to { stroke-dashoffset: -22; } }
+.titila { transform-box: fill-box; transform-origin: 50% 100%; animation: forja-titila .9s ease-in-out infinite alternate; }
+@keyframes forja-titila { from { transform: scaleY(1); } to { transform: scaleY(.86) scaleX(1.04); } }
+.pausado .flujo, .pausado .titila { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) { .flujo, .titila { animation: none; } }
+.et-num, .et-leyenda { display: none; }
+.et-num circle { fill: var(--tinta); stroke: var(--fondo); stroke-width: 2; vector-effect: non-scaling-stroke; }
+.et-num text { fill: var(--fondo); font-family: var(--f-codigo); font-weight: 700; }
+.et-leyenda { margin: .5rem 0 0; padding-left: 1.6rem; gap: .25rem; font-size: .9rem; }
+.et-leyenda b { font-weight: 600; }
+@media (max-width: 640px) {
+  svg .etiqueta { display: none; }
+  svg .et-num { display: inline; }
+  .et-leyenda { display: grid; }
+}
+.forja-uso { margin: 1.25rem 0 0; border: 1px solid var(--borde); border-radius: 12px; background: color-mix(in srgb, var(--fondo) 85%, var(--tinta) 4%); }
+.forja-uso > summary { cursor: pointer; display: flex; flex-wrap: wrap; gap: .25rem .75rem; align-items: baseline; padding: .8rem 1rem; font-weight: 700; }
+.forja-uso > summary small { font-weight: 400; font-family: var(--f-codigo); font-size: .78rem; opacity: .75; }
+.forja-uso ul { list-style: none; margin: 0; padding: 0 1rem 1rem; display: grid; gap: .9rem; grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); }
+.forja-uso li { display: grid; grid-template-columns: 1.75rem 1fr; gap: .6rem; align-items: start; }
+.forja-uso li svg { width: 1.75rem; height: 1.75rem; color: var(--acento); }
+.forja-uso b { display: block; font-size: .95rem; }
+.forja-uso b em { font-style: normal; font-weight: 400; font-family: var(--f-codigo); font-size: .78rem; color: var(--acento); margin-left: .25rem; }
+.forja-uso p { margin: .2rem 0 .3rem; font-size: .88rem; line-height: 1.5; }
+.forja-uso a { font-size: .82rem; }
+code, pre, kbd, samp { font-variant-ligatures: none; }
+[data-reto] > code { display: inline; }
 /* ===== FIN NÚCLEO FORJA: CSS ===== */
 </style>
 </head>
@@ -131,6 +180,13 @@ button, input { font: inherit; min-height: 44px; }
            <button type="button" data-opcion="b">…</button>
          </div>
          <p class="veredicto" hidden></p>
+         <div data-ayuda="pred-1">
+           <ol>
+             <li>Primer paso del razonamiento (sin dar la respuesta).</li>
+             <li>Segundo paso…</li>
+             <li data-respuesta>La respuesta y por qué.</li>
+           </ol>
+         </div>
        </div>
        …y SOLO el resultado lleva data-tras-prediccion="pred-1" (el panel de salida, la lectura, el
        veredicto del simulador). Los controles y el diagrama quedan visibles: el usuario ve la
@@ -211,12 +267,175 @@ button, input { font: inherit; min-height: 44px; }
   }), { rootMargin: '-45% 0px -50% 0px' });
   secciones.forEach(s => obs.observe(s));
 
+  // Texto legible sobre un fondo de acento: elige claro u oscuro según el contraste (WCAG).
+  function contrastar(el) {
+    const rgb = c => (c.match(/[\d.]+/g) || [255, 255, 255]).slice(0, 3).map(Number);
+    const lum = c => { const [r, g, b] = c.map(v => { v /= 255; return v <= .03928 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4; });
+      return .2126 * r + .7152 * g + .0722 * b; };
+    const ratio = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((m, n) => n - m); return (x + .05) / (y + .05); };
+    el.style.color = '';
+    const fondo = rgb(getComputedStyle(el).backgroundColor), raiz = getComputedStyle(document.documentElement);
+    const claro = getComputedStyle(document.body).backgroundColor, oscuro = raiz.getPropertyValue('--tinta').trim() || '#111';
+    const prueba = document.createElement('span'); prueba.style.color = oscuro; document.body.append(prueba);
+    const cOscuro = rgb(getComputedStyle(prueba).color); prueba.remove();
+    el.style.color = ratio(fondo, rgb(claro)) >= ratio(fondo, cOscuro) ? claro : `rgb(${cOscuro.join(',')})`;
+  }
+
+  // --- Ayuda paso a paso: "Explícamelo paso a paso" ---
+  // Un paso por clic, "Ya entendí, lo intento" para volver a intentarlo, y la respuesta al final.
+  const ayudas = {}; // id de la predicción -> se pidió ayuda antes de responder
+  function montarAyuda(caja, pasos, respuesta) {
+    caja.querySelector(':scope > .ayuda-ui')?.remove();
+    if (!pasos.length && !respuesta) return;
+    const ui = document.createElement('div');
+    ui.className = 'ayuda-ui';
+    ui.innerHTML = `<button type="button" class="ayuda-abrir">${caja.dataset.ayudaTexto || 'Explícamelo paso a paso'}</button>
+      <div class="ayuda-panel" hidden aria-live="polite"><ol></ol>
+      <div class="ayuda-botones"><button type="button" class="ayuda-siguiente">Siguiente paso</button>
+      <button type="button" class="ayuda-cerrar">Ya entendí, lo intento</button></div></div>`;
+    caja.append(ui);
+    const abrir = ui.querySelector('.ayuda-abrir'), panel = ui.querySelector('.ayuda-panel');
+    const lista = panel.querySelector('ol'), sig = panel.querySelector('.ayuda-siguiente');
+    const total = pasos.length + (respuesta ? 1 : 0);
+    let n = 0;
+    const mostrar = () => {
+      const li = document.createElement('li');
+      if (n < pasos.length) li.innerHTML = pasos[n];
+      else { li.className = 'respuesta'; li.innerHTML = respuesta; }
+      lista.append(li);
+      n++;
+      sig.hidden = n >= total;
+      sig.textContent = n === pasos.length && respuesta ? 'Ver la respuesta' : 'Siguiente paso';
+    };
+    abrir.addEventListener('click', () => {
+      if (caja.dataset.ayuda) ayudas[caja.dataset.ayuda] = true;
+      panel.hidden = false; abrir.hidden = true;
+      if (!n) mostrar();
+      (sig.hidden ? panel.querySelector('.ayuda-cerrar') : sig).focus();
+    });
+    sig.addEventListener('click', mostrar);
+    panel.querySelector('.ayuda-cerrar').addEventListener('click', () => {
+      panel.hidden = true; abrir.hidden = false;
+      abrir.textContent = n >= total ? 'Ver la explicación' : 'Seguir con la explicación';
+      abrir.focus();
+    });
+  }
+
+  // --- Animaciones de proceso: forja.animar(caja, dibujar, opciones) ---
+  // dibujar(fase) recibe la fase del ciclo de 0 a 1 y coloca TODO a partir de ella (física real, no adorno).
+  // Trae pausa, velocidad, "Paso a paso", respeta reducir movimiento y se detiene fuera de pantalla.
+  const reducir = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function animar(caja, dibujar, { periodo = 4, inicio = 0, pasos = 12 } = {}) {
+    let fase = inicio, vel = 1, corriendo = !reducir, visible = true, t0 = null;
+    const ctl = document.createElement('div');
+    ctl.className = 'anima-ctl';
+    ctl.innerHTML = `<button type="button" class="anima-play"></button>
+      <button type="button" class="anima-paso">Paso a paso ›</button>
+      <label>Velocidad <input type="range" min="0.25" max="2" step="0.25" value="1"><span class="anima-vel">1×</span></label>`;
+    caja.append(ctl);
+    const play = ctl.querySelector('.anima-play');
+    const boton = () => { play.textContent = corriendo ? 'Pausa' : 'Reproducir'; caja.classList.toggle('pausado', !corriendo); contrastar(play); };
+    play.addEventListener('click', () => { corriendo = !corriendo; boton(); });
+    ctl.querySelector('.anima-paso').addEventListener('click', () => { corriendo = false; boton(); fase = (Math.round(fase * pasos) + 1) % pasos / pasos; dibujar(fase); });
+    ctl.querySelector('input').addEventListener('input', e => { vel = +e.target.value; ctl.querySelector('.anima-vel').textContent = vel + '×'; });
+    new IntersectionObserver(es => { visible = es[0].isIntersecting; }).observe(caja);
+    const bucle = ts => {
+      if (t0 !== null && corriendo && visible) { fase = (fase + (ts - t0) / 1000 * vel / periodo) % 1; dibujar(fase); }
+      t0 = ts; requestAnimationFrame(bucle);
+    };
+    caja.__fijar = f => { corriendo = false; boton(); fase = f; dibujar(f); };  // lo usa revisar_ilustraciones.py
+    boton(); dibujar(fase); requestAnimationFrame(bucle);
+  }
+  // Ayudas de dibujo calculado: úsalas en lugar de poner coordenadas a ojo.
+  const kit = {
+    // Flecha ondulada (calor, flujo): de (x, y0) a (x, y1), vertical.
+    onda(x, y0, y1, amp = 5, n = 4) {
+      // Termina con un tramo recto para que la punta de flecha quede derecha.
+      const cola = Math.min(6, Math.abs(y0 - y1) * .15) * (Math.sign(y0 - y1) || 1);
+      let d = `M${x} ${y0}`; const s = (y0 - y1 - cola) / n;
+      for (let k = 0; k < n; k++) d += ` Q${x + (k % 2 ? -amp : amp)} ${y0 - s * (k + .5)} ${x} ${y0 - s * (k + 1)}`;
+      return d + ` L${x} ${y1}`;
+    },
+    // Biela-manivela: centro (cx, cy), radio de manivela r, largo de biela L, ángulo a (rad), eje horizontal en y = cy.
+    // Devuelve el perno de la manivela {px, py} y la posición del perno del pistón {wx}. La biela mide L siempre.
+    bielaManivela(cx, cy, r, L, a, lado = -1) {
+      const px = cx + r * Math.cos(a), py = cy + r * Math.sin(a);
+      return { px, py, wx: px + lado * Math.sqrt(L * L - (py - cy) ** 2), wy: cy };
+    },
+    // Mezcla dos colores hex (#rrggbb) con t de 0 a 1.
+    mezcla(c1, c2, t) {
+      const a = c1.slice(1).match(/../g).map(h => parseInt(h, 16)), b = c2.slice(1).match(/../g).map(h => parseInt(h, 16));
+      return '#' + a.map((v, i) => Math.round(v + (b[i] - v) * Math.max(0, Math.min(1, t))).toString(16).padStart(2, '0')).join('');
+    },
+  };
+
   // La API se define antes de dibujar nada: las flashcards y las predicciones restauradas pueden usarla.
   window.forja = {
     reto(id) { if (!estado.retos.includes(id)) { estado.retos.push(id); guardar(); pintar(); } },
     guardar(clave, valor) { estado.extra[clave] = valor; guardar(); },
     leer(clave) { return estado.extra[clave]; },
+    // Para ejercicios generados por JS: forja.ayuda(elemento, ['paso 1', 'paso 2'], 'respuesta')
+    ayuda(caja, pasos, respuesta) { montarAyuda(caja, pasos, respuesta); },
+    // forja.animar(caja, fase => {...}, { periodo: segundos por ciclo })
+    animar,
+    kit,
   };
+
+  // Etiquetas de ilustración: <g class="etiqueta" data-punto="x y"> con un título y una frase.
+  // En pantallas angostas se ocultan y quedan un número sobre la pieza + una leyenda debajo del dibujo.
+  // El número se mide con el ancho REAL del SVG para que siempre se vea de ~13 px.
+  const NS = 'http://www.w3.org/2000/svg';
+  const numeros = [];
+  document.querySelectorAll('svg').forEach(svg => {
+    const ets = [...svg.querySelectorAll('g.etiqueta[data-punto]')];
+    if (!ets.length) return;
+    const ol = document.createElement('ol');
+    ol.className = 'et-leyenda';
+    ets.forEach((g, i) => {
+      const [x, y] = g.dataset.punto.split(/[ ,]+/).map(Number);
+      const t0 = g.querySelector('text');
+      let ux = 0, uy = 0;
+      if (t0) {
+        const dx = +t0.getAttribute('x') - x, dy = +t0.getAttribute('y') - y, d = Math.hypot(dx, dy) || 1;
+        ux = dx / d; uy = dy / d;
+      }
+      const n = document.createElementNS(NS, 'g');
+      n.setAttribute('class', 'et-num');
+      n.innerHTML = `<circle/><text text-anchor="middle" dominant-baseline="central">${i + 1}</text>`;
+      svg.appendChild(n);
+      numeros.push({ svg, n, x, y, ux, uy });
+      const [t, ...resto] = g.querySelectorAll('text');
+      const li = document.createElement('li');
+      li.innerHTML = `<b>${t ? t.textContent : ''}</b> ${resto.map(e => e.textContent).join(' ')}`;
+      ol.appendChild(li);
+    });
+    const tras = svg.closest('[data-anima]') ? svg : (svg.closest('figure') || svg);
+    tras.after(ol);
+  });
+  function colocarNumeros() {
+    for (const { svg, n, x, y, ux, uy } of numeros) {
+      const vb = svg.viewBox.baseVal, ancho = svg.getBoundingClientRect().width;
+      if (!vb || !vb.width || !ancho) continue;
+      const r = 12 * vb.width / ancho;   // radio de 12 px en pantalla
+      // El número no tapa la pieza: se corre del punto hacia donde estaba el texto, sin salir del viewBox.
+      const cx = Math.min(Math.max(x + ux * r * 1.6, vb.x + r), vb.x + vb.width - r);
+      const cy = Math.min(Math.max(y + uy * r * 1.6, vb.y + r), vb.y + vb.height - r);
+      const [c, t] = n.children;
+      c.setAttribute('cx', cx); c.setAttribute('cy', cy); c.setAttribute('r', r);
+      t.setAttribute('x', cx); t.setAttribute('y', cy); t.setAttribute('font-size', r * 1.1);
+    }
+  }
+  if (numeros.length) {
+    colocarNumeros();
+    addEventListener('resize', colocarNumeros);
+    if ('ResizeObserver' in window) new ResizeObserver(colocarNumeros).observe(document.body);
+  }
+
+  document.querySelectorAll('[data-ayuda]').forEach(caja => {
+    const items = [...caja.querySelectorAll(':scope > ol > li')];
+    const resp = items.find(li => li.hasAttribute('data-respuesta'));
+    montarAyuda(caja, items.filter(li => li !== resp).map(li => li.innerHTML), resp?.innerHTML);
+  });
 
   predicciones.forEach((p, i) => {
     const id = p.id || `prediccion-${i + 1}`;
@@ -235,14 +454,15 @@ button, input { font: inherit; min-height: 44px; }
         b.disabled = true;
         b.classList.toggle('elegida', b === elegido);
         b.classList.toggle('correcta', b.dataset.opcion === p.dataset.correcta);
+        if (b.classList.contains('correcta')) contrastar(b); else b.style.color = '';
       });
       if (veredicto) {
         veredicto.hidden = false;
-        veredicto.innerHTML = (acierto ? '<strong>Acertaste.</strong> ' : `<strong>Predijiste «${elegido?.textContent.trim()}».</strong> Mira qué pasa en realidad. `) +
+        veredicto.innerHTML = (acierto ? `<strong>${ayudas[id] ? 'Acertaste con ayuda.' : 'Acertaste.'}</strong> ` : `<strong>Predijiste «${elegido?.textContent.trim()}».</strong> Mira qué pasa en realidad. `) +
           (p.dataset.explicacion || '') + ' <button type="button" class="rehacer">Volver a predecir</button>';
         veredicto.querySelector('.rehacer').addEventListener('click', () => {
           delete estado.predicciones[id]; guardar();
-          botones.forEach(b => { b.disabled = false; b.classList.remove('elegida', 'correcta'); });
+          botones.forEach(b => { b.disabled = false; b.classList.remove('elegida', 'correcta'); b.style.color = ''; });
           veredicto.hidden = true; objetivos().forEach(o => o.classList.remove('revelado')); pintar();
         });
       }
@@ -328,6 +548,70 @@ button, input { font: inherit; min-height: 44px; }
     location.hash = ''; location.reload();
   }));
   document.querySelectorAll('[data-forja-mapa] a').forEach(a => a.addEventListener('click', () => a.closest('details')?.removeAttribute('open')));
+  // "Cómo usar esta guía": se arma solo, contando lo que trae la guía. Va debajo del mapa de la portada.
+  (function instrucciones() {
+    const ancla = document.querySelector('nav.mapa-portada');
+    if (!ancla || document.querySelector('.forja-uso')) return;
+    const todos = sel => [...document.querySelectorAll(sel)];
+    const ir = els => { const s = els[0]?.closest('section[id]'); return s ? `<a href="#${s.id}">Ir a la primera ›</a>` : ''; };
+    const ico = d => `<svg viewBox="0 0 28 28" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
+    let nTarjetas = 0;
+    try { nTarjetas = JSON.parse(document.getElementById('forja-tarjetas')?.textContent || '[]').length; } catch {}
+    const minutos = todos('section[data-minutos]').reduce((a, s) => a + (+s.dataset.minutos || 0), 0);
+    const preds = todos('[data-prediccion][data-correcta]'), retos = todos('[data-reto]'), animas = todos('[data-anima]');
+    const ayudas = todos('[data-ayuda], [data-ayuda-dinamica], .ayuda-abrir');
+    const tipo = t => todos(`[data-interaccion="${t}"]:not([data-prediccion])`);
+    const items = [
+      [preds.length, 'pregunta', 'preguntas', 'Antes de ver, adivina',
+        'Elige lo que crees que pasa. Lo que está borroso se aclara y te dice si acertaste y por qué. Equivocarte también sirve: así se recuerda mejor. Puedes tocar «Volver a predecir».',
+        ico('<circle cx="14" cy="14" r="10"/><path d="M11 11a3 3 0 1 1 4 2.8c-.7.3-1 .9-1 1.6"/><circle cx="14" cy="19.5" r=".6" fill="currentColor"/>'), preds],
+      [ayudas.length ? 1 : 0, '', '', '¿Te atoraste?',
+        'Toca «Explícamelo paso a paso»: te da una pista a la vez. Con «Ya entendí, lo intento» vuelves a intentarlo tú. La respuesta solo aparece al final, si la pides.',
+        ico('<path d="M6 21h4l11-11-4-4L6 17z"/><path d="M15 8l4 4"/>'), []],
+      [retos.length, 'reto', 'retos', 'Retos',
+        'Las casillas se marcan solas cuando haces lo que piden (no hay que palomearlas). Cuentan para tu avance.',
+        ico('<rect x="5" y="5" width="18" height="18" rx="3"/><path d="M9.5 14.5l3 3 6-7"/>'), retos],
+      [animas.length, 'animación', 'animaciones', 'Animaciones',
+        'Se mueven solas. «Pausa» la detiene, «Paso a paso ›» avanza un momento a la vez y la barra cambia la velocidad. El texto de abajo dice qué pasa en cada momento.',
+        ico('<circle cx="14" cy="14" r="10"/><path d="M12 10l6 4-6 4z" fill="currentColor"/>'), animas],
+      [tipo('diagrama').length, 'diagrama', 'diagramas', 'Diagramas',
+        'Toca cada pieza del dibujo para ver qué es y para qué sirve.',
+        ico('<rect x="4" y="5" width="8" height="6" rx="1.5"/><rect x="16" y="17" width="8" height="6" rx="1.5"/><path d="M8 11v4a2 2 0 0 0 2 2h6"/>'), tipo('diagrama')],
+      [tipo('simulador').length, 'simulador', 'simuladores', 'Simuladores',
+        'Mueve el control o elige opciones y mira qué cambia. Prueba casos extremos: ahí se entiende la idea.',
+        ico('<path d="M5 9h18M5 19h18"/><circle cx="10" cy="9" r="2.5" fill="currentColor"/><circle cx="18" cy="19" r="2.5" fill="currentColor"/>'), tipo('simulador')],
+      [tipo('pasos').length, '', '', 'Paso a paso guiado',
+        'Los primeros pasos vienen resueltos; después completas tú lo que falta y ves el porqué.',
+        ico('<path d="M5 22h5v-5h5v-5h5V7h3"/>'), tipo('pasos')],
+      [tipo('otra').length, 'ejercicio', 'ejercicios', 'Ejercicios',
+        'Para practicar: responde y la guía te dice si vas bien y qué revisar.',
+        ico('<path d="M8 4h10l4 4v16H8z"/><path d="M12 13h6M12 17h6M12 9h3"/>'), tipo('otra')],
+      [nTarjetas, 'tarjeta', 'tarjetas', 'Tarjetas de repaso',
+        'Lee la pregunta, respóndela en tu cabeza y toca la tarjeta para voltearla. Luego «Lo sabía» o «Repasar». Las que repasas vuelven después de unos días (1, 3, 7…), para que no se olviden.',
+        ico('<rect x="4" y="8" width="16" height="12" rx="2"/><path d="M8 5h14a2 2 0 0 1 2 2v10"/>'), todos('[data-forja-flashcards]')],
+    ].filter(i => i[0] > 0);
+    const resumen = [
+      preds.length && `${preds.length} ${preds.length === 1 ? 'pregunta' : 'preguntas'}`,
+      retos.length && `${retos.length} retos`,
+      animas.length && `${animas.length} ${animas.length === 1 ? 'animación' : 'animaciones'}`,
+      nTarjetas && `${nTarjetas} tarjetas`,
+      minutos && `unos ${minutos} min`,
+    ].filter(Boolean);
+    const caja = document.createElement('details');
+    caja.className = 'forja-uso';
+    const nueva = !estado.vistas.length || (estado.vistas.length <= 1 && !Object.keys(estado.predicciones).length);
+    if (nueva) caja.open = true;
+    caja.innerHTML = `<summary><span>Cómo usar esta guía</span><small>${resumen.join(' · ')}</small></summary>
+      <ul>${items.map(([n, uno, varios, titulo, texto, icono, els]) => `<li>${icono}<div>
+        <b>${titulo}${n > 1 || uno ? ` <em>${n} ${n === 1 ? uno : varios}</em>` : ''}</b>
+        <p>${texto}</p>${ir(els)}</div></li>`).join('')}
+        <li>${ico('<path d="M4 7l6-2 8 3 6-2v15l-6 2-8-3-6 2z"/><path d="M10 5v15M18 8v15"/>')}<div>
+        <b>Mapa y avance</b><p>Arriba, «Mapa» muestra las secciones y tu porcentaje. Tu avance se guarda en este navegador: puedes cerrar y seguir después con «Continuar donde ibas». No necesitas cuenta.</p></div></li>
+      </ul>`;
+    const cont = ancla.nextElementSibling?.matches('[data-forja-continuar]') ? ancla.nextElementSibling : ancla;
+    cont.after(caja);
+  })();
+
   pintar();
 })();
 /* ===== FIN NÚCLEO FORJA: JS ===== */

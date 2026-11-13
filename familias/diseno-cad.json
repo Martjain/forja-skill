@@ -1,0 +1,40 @@
+{
+  "familia": "diseno-cad",
+  "descripcion": "Guías sobre diseño mecánico asistido por computadora y sus herramientas (CAD paramétrico, modelos como código, formatos STEP/STL, visores 3D, fabricación).",
+  "origen": "Paleta de plano técnico tomada de los archivos de marca del repositorio text-to-cad (apps/docs/public/brand/*.svg, commit 337ac4e) y de su sitio de documentación (apps/docs/src/app/globals.css), sin usar ningún logo. Tinta #123E59: el azul marino dominante de los logos. Superficie #D1F1FF y fondo #EBF7FD: los azules claros de relleno de los logos. Borde #B3DAED: un azul intermedio de logo-texttocad.svg. Azul de geometría #249DDD: el azul medio de los logos. Tinta suave #2C7197: el --brand del sitio de documentación. Fondo oscuro #082F4A: el azul más profundo de los logos animados. Acento ámbar #FFB347: el destello cálido de los logos animados; en fondo claro se usa oscurecido (#9A5208) para que el texto pase 4.5:1. Coincide con el dominio: el azul de un plano (blueprint) y un solo acento cálido.",
+  "paleta": {
+    "fondo": "#EBF7FD",
+    "superficie": "#D1F1FF",
+    "borde": "#B3DAED",
+    "tinta": "#123E59",
+    "tinta_suave": "#2C7197",
+    "gris_medio": "#8FB3C7",
+    "acento": "#9A5208",
+    "acento_claro": "#FFB347",
+    "secundario_azul": "#249DDD"
+  },
+  "bloques_oscuros": {
+    "fondo": "#082F4A",
+    "tinta": "#EBF7FD",
+    "tinta_suave": "#94D9FA",
+    "acento": "#FFB347",
+    "azul": "#51ADE1"
+  },
+  "tipografia": {
+    "titulos": "bricolage-grotesque",
+    "cuerpo": "ibm-plex-sans",
+    "codigo": "jetbrains-mono",
+    "nota": "ids de assets/fuentes/catalogo.json; se incrustan con scripts/fuentes.py css. Bricolage Grotesque tiene el aire 'maker' de hacer cosas con las manos; IBM Plex Sans es la sans de ingeniería para explicar mecanismos; JetBrains Mono para el código de los modelos y los comandos."
+  },
+  "tono": "Como un ingeniero de producto que te enseña junto al plano y la terminal: primero la pieza, luego el código que la describe y al final el comando. Frases cortas, ejemplos sacados de piezas reales (bridas, soportes, ménsulas).",
+  "rasgos": [
+    "Fondo azul muy claro de papel de plano con una cuadrícula técnica muy tenue",
+    "Azul de geometría para lo exacto (sólidos, caras, cotas); ámbar solo para lo que está pasando o lo importante",
+    "Bloques azul profundo, como una copia heliográfica, para alternar el ritmo",
+    "Código de modelos en monoespaciada con marcatextos sobre las líneas que importan",
+    "Ilustraciones de dibujo técnico: vistas superiores y cortes con achurado, cotas finas"
+  ],
+  "motivos_por_tema": {
+    "text-to-cad": "la hoja de plano que se vuelve pieza: una frase escrita se convierte en líneas de Python, el servidor las corre como un torno que va quitando material operación por operación (cilindro, barreno, agujeros, chaflán) y la pieza aparece en el visor; cada operación ya hecha queda guardada como una ficha en un casillero y solo se vuelve a maquinar la que cambió"
+  }
+}
