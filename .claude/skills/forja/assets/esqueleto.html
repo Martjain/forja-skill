@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<!--
+  Esqueleto de una guía forja (v2). Es la ESTRUCTURA, no el estilo:
+  - Reemplaza lo que está entre {{ }}.
+  - Copia SIN CAMBIOS los bloques marcados "NÚCLEO FORJA" (CSS y JS):
+    dan la barra de progreso, el mapa, las predicciones, los retos y el guardado.
+  - El diseño (layouts, ilustraciones, interacciones) se construye encima
+    siguiendo reference/diseno.md y reference/interacciones.md.
+  - Borra este comentario en la guía final.
+-->
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="forja:familia" content="{{familia}}">
+<meta name="forja:nivel" content="{{principiante|intermedio|avanzado}}">
+<meta name="forja:slug" content="{{slug}}">
+<meta name="forja:fecha" content="{{AAAA-MM-DD}}">
+<title>{{Título de la guía}}</title>
+<style>
+/* {{Pega aquí la salida completa de: scripts/fuentes.py css --titulos <id> --cuerpo <id> --codigo <id>}} */
+
+:root {
+  /* Valores de familias/{{familia}}.json */
+  --fondo: {{paleta.fondo}};
+  --superficie: {{paleta.superficie}};
+  --borde: {{paleta.borde}};
+  --tinta: {{paleta.tinta}};
+  --tinta-suave: {{paleta.tinta_suave}};
+  --acento: {{paleta.acento}};
+  --oscuro-fondo: {{bloques_oscuros.fondo}};
+  --oscuro-tinta: {{bloques_oscuros.tinta}};
+  --ancho: 72rem;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-padding-top: 4rem; }
+body { margin: 0; background: var(--fondo); color: var(--tinta); font: 400 1.0625rem/1.65 var(--f-cuerpo); overflow-wrap: anywhere; }
+img, svg { max-width: 100%; height: auto; }
+pre, code { font-family: var(--f-codigo); }
+pre { overflow-x: auto; white-space: pre; }
+section { padding: clamp(3rem, 8vw, 6rem) clamp(1.25rem, 5vw, 3rem); }
+section > * { max-width: var(--ancho); margin-inline: auto; }
+section[data-tono="oscuro"] { background: var(--oscuro-fondo); color: var(--oscuro-tinta); }
+h1, h2, h3 { font-family: var(--f-titulos); font-weight: 600; line-height: 1.12; letter-spacing: -0.01em; }
+a { color: inherit; text-decoration-color: var(--acento); text-underline-offset: 3px; }
+a.cita { font-size: .75em; vertical-align: super; text-decoration: none; color: var(--acento); }
+:focus-visible { outline: 3px solid var(--acento); outline-offset: 3px; }
+button, input { font: inherit; min-height: 44px; }
+
+/* ===== NÚCLEO FORJA: CSS (copiar sin cambios) ===== */
+.forja-barra { position: sticky; top: 0; z-index: 50; display: flex; justify-content: flex-end; padding: .5rem clamp(1rem, 4vw, 2rem); pointer-events: none; }
+[data-forja-progreso] { position: fixed; inset: 0 0 auto 0; height: 4px; background: color-mix(in srgb, var(--acento) 18%, transparent); }
+[data-forja-progreso]::after { content: ""; display: block; height: 100%; width: var(--avance, 0%); background: var(--acento); transition: width .4s ease; }
+.forja-mapa { pointer-events: auto; position: relative; font-size: .875rem; }
+.forja-mapa > summary { list-style: none; cursor: pointer; display: inline-flex; gap: .5rem; align-items: center; min-height: 40px; padding: .35rem .9rem; border-radius: 999px; background: var(--tinta); color: var(--fondo); font-family: var(--f-codigo); }
+.forja-mapa > summary::-webkit-details-marker { display: none; }
+.forja-mapa[open] > nav { position: absolute; right: 0; top: calc(100% + .5rem); width: min(22rem, 90vw); max-height: 70vh; overflow: auto; background: var(--fondo); color: var(--tinta); border: 1px solid var(--borde); border-radius: 12px; padding: .75rem; box-shadow: 0 12px 32px rgb(0 0 0 / .14); }
+[data-forja-mapa] ol { list-style: none; margin: 0; padding: 0; display: grid; gap: .15rem; }
+[data-forja-mapa] a { display: grid; grid-template-columns: 3.2rem 1fr auto; gap: .5rem; align-items: center; padding: .45rem .5rem; border-radius: 8px; text-decoration: none; }
+[data-forja-mapa] a:hover, [data-forja-mapa] a[aria-current="true"] { background: color-mix(in srgb, var(--acento) 12%, transparent); }
+[data-forja-mapa] .mapa-num { font-family: var(--f-codigo); color: var(--acento); }
+[data-forja-mapa] .mapa-min { font-size: .8em; opacity: .65; }
+[data-forja-mapa] a.vista .mapa-num::after { content: " ✓"; }
+[data-forja-continuar] { display: inline-flex; gap: .75rem; align-items: center; margin-top: 1.5rem; }
+[data-forja-continuar][hidden] { display: none; }
+[data-forja-continuar] a { display: inline-flex; align-items: center; min-height: 44px; padding: .5rem 1.1rem; border-radius: 8px; background: var(--acento); color: var(--fondo); text-decoration: none; font-weight: 600; }
+[data-forja-reiniciar] { background: none; border: 0; color: inherit; text-decoration: underline; opacity: .7; cursor: pointer; }
+[data-tras-prediccion]:not(.revelado) { filter: blur(3px) grayscale(.5); opacity: .5; pointer-events: none; user-select: none; }
+[data-tras-prediccion] { transition: filter .5s ease, opacity .5s ease; }
+.sin-fuente { text-decoration: underline dotted; text-underline-offset: 3px; }
+.sin-fuente::after { content: "†"; color: var(--acento); font-size: .75em; vertical-align: super; margin-left: .1em; }
+.leyenda-sin-fuente { font-size: .875rem; opacity: .8; }
+[data-forja-flashcards] { display: grid; gap: .75rem; max-width: 36rem; }
+.fc-progreso { display: flex; justify-content: space-between; font-family: var(--f-codigo); font-size: .8rem; opacity: .8; }
+.fc-tarjeta { display: grid; align-content: center; gap: .5rem; min-height: 12rem; padding: 1.5rem; border: 1.5px solid currentColor; border-radius: 12px; background: transparent; color: inherit; text-align: left; cursor: pointer; font: inherit; }
+.fc-lado { font-family: var(--f-codigo); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--acento); }
+.fc-texto { font-family: var(--f-titulos); font-size: clamp(1.15rem, 3vw, 1.5rem); line-height: 1.3; }
+.fc-pista { font-size: .8rem; opacity: .65; }
+.fc-botones { display: flex; gap: .5rem; flex-wrap: wrap; }
+.fc-botones button { padding: .5rem 1.1rem; border-radius: 8px; border: 1.5px solid currentColor; background: transparent; color: inherit; cursor: pointer; }
+.fc-botones .fc-sabia { background: var(--acento); border-color: var(--acento); color: var(--fondo); }
+@media (prefers-reduced-motion: no-preference) { .fc-tarjeta .fc-texto { animation: forja-entra .35s ease both; } }
+[data-prediccion] .opciones { display: flex; flex-wrap: wrap; gap: .5rem; margin: .75rem 0; }
+[data-prediccion] [data-opcion] { cursor: pointer; padding: .5rem 1rem; border-radius: 8px; border: 1.5px solid currentColor; background: transparent; color: inherit; }
+[data-prediccion] [data-opcion]:disabled { cursor: default; opacity: .55; }
+[data-prediccion] [data-opcion].elegida { opacity: 1; border-width: 2.5px; }
+[data-prediccion] [data-opcion].correcta { opacity: 1; background: var(--acento); border-color: var(--acento); color: var(--fondo); }
+[data-prediccion] .veredicto { margin: .5rem 0 0; }
+[data-prediccion] .rehacer { background: none; border: 0; padding: 0; min-height: 0; color: inherit; text-decoration: underline; cursor: pointer; font-size: .875rem; opacity: .75; }
+[data-retos] { list-style: none; padding: 0; margin: 1rem 0; display: grid; gap: .4rem; }
+[data-reto] { display: grid; grid-template-columns: 1.4rem 1fr; gap: .5rem; align-items: start; }
+[data-reto]::before { content: ""; width: 1rem; height: 1rem; margin-top: .3rem; border: 2px solid currentColor; border-radius: 4px; opacity: .6; }
+[data-reto].logrado::before { content: "✓"; display: grid; place-items: center; font-size: .75rem; line-height: 1; background: var(--acento); border-color: var(--acento); color: var(--fondo); opacity: 1; }
+[data-reto].logrado { text-decoration: line-through; text-decoration-color: color-mix(in srgb, currentColor 40%, transparent); }
+@media (prefers-reduced-motion: no-preference) {
+  .entra { opacity: 0; transform: translateY(14px); animation: forja-entra .7s cubic-bezier(.2, .7, .2, 1) forwards; animation-delay: calc(var(--i, 0) * 90ms); }
+  @keyframes forja-entra { to { opacity: 1; transform: none; } }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+/* ===== FIN NÚCLEO FORJA: CSS ===== */
+</style>
+</head>
+<body>
+<header class="forja-barra">
+  <div data-forja-progreso role="progressbar" aria-label="Avance de la guía" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
+  <details class="forja-mapa">
+    <summary>Mapa · <span data-forja-pct>0%</span></summary>
+    <nav data-forja-mapa aria-label="Secciones de la guía"></nav>
+  </details>
+</header>
+<main>
+
+  <section id="inicio" data-layout="portada" data-minutos="1">
+    <!-- Título, una frase, 2-3 cifras clave y la ilustración SVG del motivo.
+         Los elementos de la portada llevan class="entra" style="--i:0..5" para la entrada escalonada. -->
+    <nav data-forja-mapa class="mapa-portada" aria-label="Recorrido de la guía"></nav>
+    <p data-forja-continuar hidden><a href="#">Continuar donde ibas</a> <button type="button" data-forja-reiniciar>Empezar de cero</button></p>
+  </section>
+
+  <!-- 4 a 8 secciones más. Cada una: id, data-layout del catálogo, data-minutos (estimado),
+       sin repetir layout en secciones seguidas; al menos una con data-tono="oscuro".
+
+       Patrón de predicción (dentro del contenedor data-interaccion):
+       <div data-prediccion id="pred-1" data-correcta="b"
+            data-explicacion="Por qué pasa lo que pasa, en una o dos frases.">
+         <p><strong>Antes de mover nada:</strong> ¿qué crees que pasa si…?</p>
+         <div class="opciones">
+           <button type="button" data-opcion="a">…</button>
+           <button type="button" data-opcion="b">…</button>
+         </div>
+         <p class="veredicto" hidden></p>
+       </div>
+       …y SOLO el resultado lleva data-tras-prediccion="pred-1" (el panel de salida, la lectura, el
+       veredicto del simulador). Los controles y el diagrama quedan visibles: el usuario ve la
+       pregunta y la estructura, solo no ve la respuesta. Nunca pongas data-tras-prediccion
+       en un contenedor que tenga botones, inputs o el diagrama completo.
+
+       Datos sin fuente oficial: <span class="sin-fuente">el dato</span> (el núcleo agrega la leyenda).
+
+       Patrón de retos:
+       <ul data-retos>
+         <li data-reto="reto-1">Mueve el slider hasta que …</li>
+       </ul>
+       …y el JS de la interacción llama a forja.reto('reto-1') cuando el usuario lo logra. -->
+
+  <section id="repaso" data-layout="repaso" data-minutos="5">
+    <h2>{{Título del repaso}}</h2>
+    <!-- El núcleo dibuja las flashcards a partir del JSON de abajo y las suma al repaso espaciado
+         del índice. No escribas JS para ellas; puedes ajustar su CSS (.fc-*). 8 a 15 tarjetas;
+         ids estables y cortos; HTML simple permitido en q y a (code, strong). -->
+    <div data-interaccion="flashcards" data-forja-flashcards></div>
+    <script type="application/json" id="forja-tarjetas">
+    [
+      {"id": "{{id-corto}}", "q": "{{Pregunta}}", "a": "{{Respuesta corta}}"}
+    ]
+    </script>
+  </section>
+
+  <section id="fuentes" data-layout="lista-grande">
+    <h2>Fuentes</h2>
+    <ol>
+      <li><a href="{{URL}}">{{Título de la fuente}}</a></li>
+    </ol>
+  </section>
+
+</main>
+<script>
+/* ===== NÚCLEO FORJA: JS (copiar sin cambios) ===== */
+(() => {
+  const meta = n => document.querySelector(`meta[name="forja:${n}"]`)?.content;
+  const SLUG = meta('slug') || location.pathname;
+  const CLAVE = 'forja:' + SLUG;
+  const leer = () => { try { return JSON.parse(localStorage.getItem(CLAVE)) || {}; } catch { return {}; } };
+  const estado = Object.assign({ vistas: [], retos: [], predicciones: {}, ultima: null, extra: {} }, leer());
+  const guardar = () => { try { localStorage.setItem(CLAVE, JSON.stringify(estado)); } catch { /* sin almacenamiento: la guía sigue funcionando */ } };
+
+  const secciones = [...document.querySelectorAll('main > section[id]')].filter(s => s.id !== 'fuentes');
+  const retos = [...document.querySelectorAll('[data-reto]')];
+  const predicciones = [...document.querySelectorAll('[data-prediccion]')];
+  const total = secciones.length + retos.length + predicciones.length;
+
+  const titulo = (s, i) => s.dataset.titulo || s.querySelector('h1, h2')?.textContent.trim() || `Sección ${i + 1}`;
+  document.querySelectorAll('[data-forja-mapa]').forEach(nav => {
+    nav.innerHTML = '<ol>' + secciones.map((s, i) =>
+      `<li><a href="#${s.id}" data-mapa="${s.id}"><span class="mapa-num">${String(i + 1).padStart(2, '0')}</span>` +
+      `<span>${titulo(s, i).replace(/</g, '&lt;')}</span>` +
+      (s.dataset.minutos ? `<span class="mapa-min">${s.dataset.minutos} min</span>` : '') + '</a></li>').join('') + '</ol>';
+  });
+
+  const pintar = () => {
+    const hechos = estado.vistas.length + estado.retos.length + Object.keys(estado.predicciones).length;
+    const pct = total ? Math.min(100, Math.round(100 * hechos / total)) : 0;
+    if (estado.pct !== pct) { estado.pct = pct; guardar(); } // el índice muestra este avance
+    document.querySelectorAll('[data-forja-progreso]').forEach(b => { b.style.setProperty('--avance', pct + '%'); b.setAttribute('aria-valuenow', pct); });
+    document.querySelectorAll('[data-forja-pct]').forEach(e => { e.textContent = pct + '%'; });
+    document.querySelectorAll('[data-mapa]').forEach(a => {
+      a.classList.toggle('vista', estado.vistas.includes(a.dataset.mapa));
+      a.setAttribute('aria-current', String(a.dataset.mapa === estado.ultima));
+    });
+    retos.forEach(r => r.classList.toggle('logrado', estado.retos.includes(r.dataset.reto)));
+  };
+
+  // Una sección cuenta como vista cuando cruza la franja central de la pantalla.
+  const obs = new IntersectionObserver(entradas => entradas.forEach(e => {
+    if (!e.isIntersecting) return;
+    estado.ultima = e.target.id;
+    if (!estado.vistas.includes(e.target.id)) estado.vistas.push(e.target.id);
+    guardar(); pintar();
+  }), { rootMargin: '-45% 0px -50% 0px' });
+  secciones.forEach(s => obs.observe(s));
+
+  // La API se define antes de dibujar nada: las flashcards y las predicciones restauradas pueden usarla.
+  window.forja = {
+    reto(id) { if (!estado.retos.includes(id)) { estado.retos.push(id); guardar(); pintar(); } },
+    guardar(clave, valor) { estado.extra[clave] = valor; guardar(); },
+    leer(clave) { return estado.extra[clave]; },
+  };
+
+  predicciones.forEach((p, i) => {
+    const id = p.id || `prediccion-${i + 1}`;
+    const caja = p.closest('[data-interaccion]') || p.parentElement;
+    // Revela solo SU objetivo: data-tras-prediccion="<id>". Sin valor, lo que esté en su misma interacción.
+    const objetivos = () => {
+      const propios = [...document.querySelectorAll(`[data-tras-prediccion="${id}"]`)];
+      return propios.length ? propios : [...caja.querySelectorAll('[data-tras-prediccion=""]')];
+    };
+    const veredicto = p.querySelector('.veredicto');
+    const botones = [...p.querySelectorAll('[data-opcion]')];
+    const resolver = (opcion, restaurando) => {
+      const elegido = botones.find(b => b.dataset.opcion === opcion);
+      const acierto = opcion === p.dataset.correcta;
+      botones.forEach(b => {
+        b.disabled = true;
+        b.classList.toggle('elegida', b === elegido);
+        b.classList.toggle('correcta', b.dataset.opcion === p.dataset.correcta);
+      });
+      if (veredicto) {
+        veredicto.hidden = false;
+        veredicto.innerHTML = (acierto ? '<strong>Acertaste.</strong> ' : `<strong>Predijiste «${elegido?.textContent.trim()}».</strong> Mira qué pasa en realidad. `) +
+          (p.dataset.explicacion || '') + ' <button type="button" class="rehacer">Volver a predecir</button>';
+        veredicto.querySelector('.rehacer').addEventListener('click', () => {
+          delete estado.predicciones[id]; guardar();
+          botones.forEach(b => { b.disabled = false; b.classList.remove('elegida', 'correcta'); });
+          veredicto.hidden = true; objetivos().forEach(o => o.classList.remove('revelado')); pintar();
+        });
+      }
+      objetivos().forEach(o => o.classList.add('revelado'));
+      caja.dispatchEvent(new CustomEvent('forja:revelado', { detail: { id, opcion, acierto } }));
+      if (!restaurando) { estado.predicciones[id] = opcion; guardar(); pintar(); }
+    };
+    botones.forEach(b => b.addEventListener('click', () => resolver(b.dataset.opcion)));
+    if (estado.predicciones[id]) resolver(estado.predicciones[id], true);
+  });
+
+  // --- Repaso espaciado compartido entre guías (cajas de Leitner) ---
+  // forja:mazo   = { slug: { titulo, url, tarjetas: [{id, q, a}] } }
+  // forja:repaso = { "slug::id": { caja: 1-5, proxima: "AAAA-MM-DD" } }
+  const INTERVALOS = [0, 1, 3, 7, 16, 35]; // días hasta el próximo repaso según la caja
+  const fecha = f => `${f.getFullYear()}-${String(f.getMonth() + 1).padStart(2, '0')}-${String(f.getDate()).padStart(2, '0')}`; // fecha local, no UTC
+  const hoy = () => fecha(new Date());
+  const enDias = n => { const f = new Date(); f.setDate(f.getDate() + n); return fecha(f); };
+  const leerJSON = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } };
+  const escribirJSON = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} };
+  const calificar = (clave, sabia) => {
+    const rep = leerJSON('forja:repaso', {});
+    const r = rep[clave] || { caja: 0 };
+    r.caja = sabia ? Math.min(5, r.caja + 1) : 1;
+    r.proxima = enDias(sabia ? INTERVALOS[r.caja] : 1);
+    rep[clave] = r; escribirJSON('forja:repaso', rep);
+  };
+  let tarjetas = [];
+  try { tarjetas = JSON.parse(document.getElementById('forja-tarjetas')?.textContent || '[]'); } catch {}
+  if (tarjetas.length) {
+    const mazo = leerJSON('forja:mazo', {});
+    mazo[SLUG] = { titulo: document.title, url: location.href.split('#')[0], tarjetas };
+    escribirJSON('forja:mazo', mazo);
+  }
+  document.querySelectorAll('[data-forja-flashcards]').forEach(caja => {
+    if (!tarjetas.length) return;
+    const guardado = estado.extra.flashcards;
+    let cola = guardado?.cola?.filter(i => i < tarjetas.length) ?? tarjetas.map((_, i) => i);
+    let dominadas = guardado?.dominadas ?? 0;
+    let volteada = false;
+    const persistir = () => { estado.extra.flashcards = { cola, dominadas }; guardar(); };
+    const dibujar = () => {
+      if (!cola.length) {
+        caja.innerHTML = `<p class="fc-progreso"><span>${tarjetas.length} de ${tarjetas.length} dominadas</span></p>
+          <p class="fc-texto">Dominaste el mazo. Estas tarjetas vuelven en el <strong>repaso de hoy</strong> del índice cuando toque repasarlas.</p>
+          <div class="fc-botones"><button type="button" class="fc-otra">Barajar de nuevo</button></div>`;
+        caja.querySelector('.fc-otra').addEventListener('click', () => { cola = tarjetas.map((_, i) => i).sort(() => Math.random() - .5); dominadas = 0; persistir(); dibujar(); });
+        if (document.querySelector('[data-reto="flashcards"]')) window.forja.reto('flashcards');
+        return;
+      }
+      const t = tarjetas[cola[0]];
+      caja.innerHTML = `<p class="fc-progreso"><span>Quedan ${cola.length}</span><span>${dominadas} de ${tarjetas.length} dominadas</span></p>
+        <button type="button" class="fc-tarjeta" aria-live="polite">
+          <span class="fc-lado">${volteada ? 'Respuesta' : 'Pregunta'}</span>
+          <span class="fc-texto">${volteada ? t.a : t.q}</span>
+          ${volteada ? '' : '<span class="fc-pista">Intenta responder en tu cabeza. Luego toca, Enter o espacio para voltear.</span>'}
+        </button>
+        ${volteada ? '<div class="fc-botones"><button type="button" class="fc-sabia">Lo sabía</button><button type="button" class="fc-repasar">Repasar</button></div>' : ''}`;
+      caja.querySelector('.fc-tarjeta').addEventListener('click', () => { if (!volteada) { volteada = true; dibujar(); caja.querySelector('.fc-sabia')?.focus(); } });
+      caja.querySelector('.fc-sabia')?.addEventListener('click', () => { calificar(`${SLUG}::${t.id}`, true); cola.shift(); dominadas++; volteada = false; persistir(); dibujar(); });
+      caja.querySelector('.fc-repasar')?.addEventListener('click', () => { calificar(`${SLUG}::${t.id}`, false); cola.push(cola.shift()); volteada = false; persistir(); dibujar(); });
+    };
+    dibujar();
+  });
+
+  // --- Datos sin fuente oficial: leyenda automática en la sección de fuentes ---
+  const sinFuente = document.querySelectorAll('.sin-fuente').length;
+  if (sinFuente) {
+    const p = document.createElement('p');
+    p.className = 'leyenda-sin-fuente';
+    p.textContent = `† ${sinFuente === 1 ? 'Un dato de esta guía no se encontró' : `${sinFuente} datos de esta guía no se encontraron`} en una fuente oficial. Verifícalos antes de confiar en ellos.`;
+    document.getElementById('fuentes')?.append(p);
+  }
+
+
+  const continuar = document.querySelector('[data-forja-continuar]');
+  if (continuar && estado.ultima && estado.ultima !== secciones[0]?.id) {
+    continuar.hidden = false;
+    continuar.querySelector('a')?.setAttribute('href', '#' + estado.ultima);
+  }
+  document.querySelectorAll('[data-forja-reiniciar]').forEach(b => b.addEventListener('click', () => {
+    try { localStorage.removeItem(CLAVE); } catch {}
+    location.hash = ''; location.reload();
+  }));
+  document.querySelectorAll('[data-forja-mapa] a').forEach(a => a.addEventListener('click', () => a.closest('details')?.removeAttribute('open')));
+  pintar();
+})();
+/* ===== FIN NÚCLEO FORJA: JS ===== */
+
+// Interacciones de la guía: un bloque por interacción, independientes entre sí.
+</script>
+</body>
+</html>

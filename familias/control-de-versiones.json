@@ -1,0 +1,46 @@
+{
+  "familia": "control-de-versiones",
+  "descripcion": "Guías sobre control de versiones y su ecosistema (git, ramas, remotos, flujos de trabajo, revisión de cambios).",
+  "origen": "Paleta tomada de los objetos del tema: el ámbar de una terminal de fósforo, el gris cálido del papel de impresora continua donde se imprimía un historial, y el verde y rojo con que se leen las líneas agregadas y borradas de un diff. Sin logos ni marcas de ningún producto.",
+  "paleta": {
+    "fondo": "#F5F3EC",
+    "superficie": "#EAE7DC",
+    "borde": "#D6D1C2",
+    "tinta": "#1D1B16",
+    "tinta_suave": "#57534A",
+    "gris_medio": "#A39E90",
+    "acento": "#E39A1C",
+    "acento_oscuro": "#8F5400",
+    "secundario_verde": "#256B42",
+    "secundario_rojo": "#A33328"
+  },
+  "bloques_oscuros": {
+    "fondo": "#17150F",
+    "tinta": "#F3E9D2",
+    "tinta_suave": "#B8AD95",
+    "acento": "#FFB000",
+    "verde": "#5FC08A",
+    "rojo": "#F07A6A"
+  },
+  "tipografia": {
+    "titulos": "courier-prime",
+    "cuerpo": "ibm-plex-sans",
+    "codigo": "ibm-plex-mono",
+    "nota": "ids de assets/fuentes/catalogo.json; se incrustan con scripts/fuentes.py css"
+  },
+  "tono": "Paciente y concreto, como alguien que te enseña con la terminal abierta. Cada idea va con el comando real y la salida que vas a ver.",
+  "rasgos": [
+    "Fondo de papel cálido con bloques oscuros de terminal de fósforo alternados",
+    "El ámbar marca lo importante: el commit actual, el puntero que se mueve, el comando clave",
+    "Verde y rojo solo para lo que se agrega y lo que se quita, como en un diff",
+    "Hashes y salidas de terminal en monoespaciada, con aspecto de impresión",
+    "Bordes finos y esquinas casi rectas, como fichas de archivo"
+  ],
+  "motivos_por_tema": {
+    "git": "cuentas en un hilo de papel continuo: cada commit es una cuenta, las ramas son etiquetas-puntero que cuelgan de una cuenta y se mueven cuando el hilo crece",
+    "ramas": "un hilo que se abre en dos y vuelve a anudarse en un commit de fusión",
+    "remotos": "dos copias del mismo hilo en máquinas distintas, con marcadores de dónde estaba el otro la última vez",
+    "diffs": "renglones de papel impreso con márgenes verde y rojo",
+    "ramas-merge-rebase-conflictos": "cinta de papel perforado que avanza de izquierda a derecha: cada commit es un tramo rectangular con su patrón de perforaciones, cada rama es una pista de cinta con su etiqueta; merge empalma dos pistas con un tramo de unión de dos padres, rebase corta los tramos y los vuelve a perforar al final de otra pista (copias con hash nuevo, los originales quedan como recortes); un conflicto son dos perforaciones distintas en el mismo renglón"
+  }
+}

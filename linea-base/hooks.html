@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hooks de Claude Code — Guía visual para empezar</title>
+<style>
+  :root{
+    --bg:#14120f; --bg2:#1c1915; --card:#221f1a; --card2:#2a261f; --line:#3a342b;
+    --ink:#f2ece2; --ink2:#c9bfae; --mute:#8f8574;
+    --acc:#e07a4f; --acc2:#f3a27c; --ok:#6fc28b; --bad:#e46a6a; --warn:#e7b85a; --info:#6fa8e0; --vio:#b490e6;
+    --mono: ui-monospace, "JetBrains Mono", "Fira Code", Menlo, Consolas, monospace;
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, sans-serif;
+    --r:14px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 var(--sans)}
+  a{color:var(--acc2)}
+  code{font-family:var(--mono);font-size:.9em;background:#2e2922;padding:.1em .35em;border-radius:5px;color:#ffd9c4}
+  pre code{background:none;padding:0;color:inherit}
+  #progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--acc),var(--warn));width:0;z-index:50}
+  /* layout */
+  .wrap{display:grid;grid-template-columns:240px 1fr;max-width:1280px;margin:0 auto}
+  nav.side{position:sticky;top:0;height:100vh;padding:28px 18px;border-right:1px solid var(--line);overflow:auto}
+  nav.side .brand{font-weight:700;font-size:15px;margin-bottom:18px;display:flex;gap:8px;align-items:center}
+  nav.side .brand span{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:7px;background:var(--acc);color:#1a120c;font-family:var(--mono)}
+  nav.side a{display:block;color:var(--ink2);text-decoration:none;padding:6px 10px;border-radius:8px;font-size:14px;border-left:2px solid transparent}
+  nav.side a:hover{background:var(--card)}
+  nav.side a.active{color:var(--ink);border-left-color:var(--acc);background:var(--card)}
+  nav.side .num{font-family:var(--mono);color:var(--mute);margin-right:6px;font-size:12px}
+  main{padding:40px 48px 120px;min-width:0}
+  section{padding:46px 0 30px;border-bottom:1px dashed var(--line)}
+  section:last-child{border-bottom:none}
+  h1{font-size:44px;line-height:1.1;margin:0 0 14px;letter-spacing:-.02em}
+  h1 em{font-style:normal;color:var(--acc)}
+  h2{font-size:28px;margin:0 0 8px;letter-spacing:-.01em}
+  h2 .tag{font-family:var(--mono);font-size:13px;color:var(--acc);display:block;margin-bottom:6px;letter-spacing:.08em}
+  h3{font-size:18px;margin:22px 0 8px}
+  p.lead{font-size:19px;color:var(--ink2);max-width:760px}
+  p{max-width:820px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px}
+  .grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .note{border-left:4px solid var(--warn);background:#2a2418;padding:12px 16px;border-radius:0 10px 10px 0;margin:16px 0;color:var(--ink2);max-width:860px}
+  .note.ok{border-color:var(--ok);background:#1b2a20}
+  .note.bad{border-color:var(--bad);background:#2c1c1c}
+  .note b{color:var(--ink)}
+  .pill{display:inline-block;font-family:var(--mono);font-size:12px;padding:2px 9px;border-radius:99px;border:1px solid var(--line);color:var(--ink2);margin:2px}
+  .pill.y{border-color:#5b3a2a;color:var(--acc2);background:#2c1f18}
+  .pill.g{border-color:#2f5a3e;color:var(--ok);background:#18261d}
+  .pill.r{border-color:#5f2e2e;color:var(--bad);background:#2a1818}
+  button{font:inherit;cursor:pointer}
+  .btn{background:var(--acc);color:#1a110b;border:none;padding:9px 16px;border-radius:10px;font-weight:650;font-size:14px}
+  .btn:hover{filter:brightness(1.1)}
+  .btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+  .btn.ghost:hover{background:var(--card2)}
+  .btn:disabled{opacity:.4;cursor:default}
+  /* code */
+  .code{position:relative;background:#0f0d0b;border:1px solid var(--line);border-radius:12px;margin:12px 0;overflow:hidden}
+  .code .bar{display:flex;justify-content:space-between;align-items:center;padding:7px 12px;background:#191612;border-bottom:1px solid var(--line);font-family:var(--mono);font-size:12px;color:var(--mute)}
+  .code .bar button{background:none;border:1px solid var(--line);color:var(--ink2);border-radius:6px;padding:2px 9px;font-size:12px}
+  .code .bar button:hover{color:var(--ink);border-color:var(--acc)}
+  .code pre{margin:0;padding:14px 16px;overflow:auto;font:13px/1.55 var(--mono);color:#e9e1d4}
+  .k{color:#f3a27c}.s{color:#a9d78c}.n{color:#d7b4f3}.c{color:#7d7464;font-style:italic}.kw{color:#7fb6ee}.b{color:#f0c674}
+  /* hero */
+  .hero{display:grid;grid-template-columns:1.1fr .9fr;gap:30px;align-items:center;padding-top:10px}
+  .analogy{display:flex;flex-direction:column;gap:10px}
+  .analogy .row{display:flex;gap:12px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;opacity:0;transform:translateY(10px);animation:rise .6s forwards}
+  .analogy .row:nth-child(2){animation-delay:.25s}.analogy .row:nth-child(3){animation-delay:.5s}.analogy .row:nth-child(4){animation-delay:.75s}
+  .analogy .ico{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;font-family:var(--mono);font-weight:700;flex:none}
+  @keyframes rise{to{opacity:1;transform:none}}
+  .kpis{display:flex;gap:12px;margin-top:22px;flex-wrap:wrap}
+  .kpi{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 16px;min-width:150px}
+  .kpi b{display:block;font-size:22px;color:var(--acc)}
+  .kpi span{font-size:13px;color:var(--mute)}
+  /* compare */
+  .vs{display:grid;grid-template-columns:1fr 60px 1fr;gap:0;align-items:stretch;margin-top:16px}
+  .vs .mid{display:grid;place-items:center;font-family:var(--mono);color:var(--mute)}
+  .vs .card h4{margin:0 0 6px}
+  /* lifecycle */
+  .life{position:relative;background:var(--bg2);border:1px solid var(--line);border-radius:18px;padding:26px 20px 20px;margin-top:14px}
+  .lane{display:flex;align-items:center;gap:0;flex-wrap:nowrap;overflow-x:auto;padding:18px 12px 14px}
+  .ev{flex:none;position:relative;background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;min-width:118px;text-align:center;cursor:pointer;transition:.25s;font-family:var(--mono);font-size:12.5px}
+  .ev small{display:block;font-family:var(--sans);color:var(--mute);font-size:11px;margin-top:2px}
+  .ev:hover{border-color:var(--acc2)}
+  .ev.sel{border-color:var(--acc);background:#2e2018;box-shadow:0 0 0 4px #e07a4f22}
+  .ev.lit{border-color:var(--warn);background:#30281a;transform:translateY(-4px);box-shadow:0 8px 24px #e7b85a33}
+  .ev.tool{background:repeating-linear-gradient(45deg,#1f1c18,#1f1c18 6px,#25211b 6px,#25211b 12px);cursor:default;color:var(--mute)}
+  .ev .blk{position:absolute;top:-8px;right:-8px;background:var(--bad);color:#fff;font-size:10px;border-radius:99px;padding:1px 6px;font-family:var(--sans)}
+  .arrow{flex:none;width:30px;height:2px;background:var(--line);position:relative}
+  .arrow:after{content:"";position:absolute;right:-1px;top:-4px;border:5px solid transparent;border-left-color:var(--line)}
+  .lanelabel{font-size:12px;color:var(--mute);font-family:var(--mono);letter-spacing:.08em;margin:6px 4px}
+  .loopnote{font-size:12px;color:var(--mute);margin:-4px 4px 10px;font-family:var(--mono)}
+  .side-ev{display:flex;gap:10px;flex-wrap:wrap;padding:6px 4px}
+  .lifebar{display:flex;gap:10px;align-items:center;margin-top:12px;flex-wrap:wrap}
+  .narr{font-family:var(--mono);font-size:13px;color:var(--ink2);min-height:22px}
+  .evinfo{margin-top:16px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+  .evinfo .card h4{margin:0 0 6px;font-family:var(--mono);color:var(--acc2)}
+  .evinfo dl{margin:0;display:grid;grid-template-columns:120px 1fr;gap:6px 10px;font-size:14px}
+  .evinfo dt{color:var(--mute)}
+  .evinfo dd{margin:0}
+  /* anatomy */
+  .anat{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:20px;align-items:start}
+  .jsonview{font:14px/1.75 var(--mono);background:#0f0d0b;border:1px solid var(--line);border-radius:12px;padding:16px;white-space:pre;overflow:auto}
+  .jsonview .seg{border-radius:5px;transition:.2s;padding:1px 2px}
+  .seg.e.on{background:#f3a27c1f}.seg.m.on{background:#7fb6ee30}.seg.h.on{background:#a9d78c24}.seg.t.on{background:#d7b4f330}
+  .seg.e{color:#f3a27c}.seg.m{color:#7fb6ee}.seg.h{color:#a9d78c}.seg.t{color:#d7b4f3}
+  .layers{display:flex;flex-direction:column;gap:10px}
+  .layer{border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;cursor:pointer;transition:.2s;background:var(--card)}
+  .layer:hover,.layer.on{transform:translateX(4px)}
+  .layer h4{margin:0 0 4px;font-size:15px;display:flex;gap:8px;align-items:center}
+  .layer p{margin:0;font-size:14px;color:var(--ink2)}
+  .layer .dot{width:12px;height:12px;border-radius:4px}
+  .nest{margin-top:16px;padding:14px;border:2px solid #f3a27c66;border-radius:14px;position:relative}
+  .nest .lbl{position:absolute;top:-11px;left:12px;background:var(--bg);padding:0 6px;font-family:var(--mono);font-size:12px}
+  .nest .nest{margin-top:20px}
+  /* simulator */
+  .sim{display:grid;grid-template-columns:260px minmax(0,1fr);gap:18px}
+  .scen{display:flex;flex-direction:column;gap:8px}
+  .scen button{text-align:left;background:var(--card);border:1.5px solid var(--line);color:var(--ink);border-radius:12px;padding:10px 12px;font-size:14px}
+  .scen button:hover{border-color:var(--acc2)}
+  .scen button.on{border-color:var(--acc);background:#2e2018}
+  .scen button code{font-size:12px}
+  .pipe{display:grid;grid-template-columns:minmax(0,1fr) 40px minmax(0,1fr) 40px minmax(0,1fr);align-items:center;gap:0;margin:6px 0 14px}
+  .box{background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:12px;min-height:92px;transition:.3s}
+  .box h5{margin:0 0 4px;font-size:12px;font-family:var(--mono);color:var(--mute);letter-spacing:.06em}
+  .box .v{font-family:var(--mono);font-size:13px;word-break:break-word}
+  .box.lit{border-color:var(--warn);box-shadow:0 0 0 4px #e7b85a22}
+  .flow{height:2px;background:var(--line);position:relative;overflow:visible}
+  .flow .pk{position:absolute;top:-5px;left:0;width:12px;height:12px;border-radius:50%;background:var(--warn);opacity:0}
+  .flow.go .pk{animation:pk .7s ease-in-out forwards}
+  @keyframes pk{0%{left:0;opacity:1}100%{left:calc(100% - 12px);opacity:1}}
+  .steps{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+  .steps span{font-size:12px;font-family:var(--mono);padding:3px 9px;border-radius:99px;border:1px solid var(--line);color:var(--mute)}
+  .steps span.on{color:#1a110b;background:var(--warn);border-color:var(--warn)}
+  .steps span.done{color:var(--ink2);border-color:var(--ink2)}
+  .simgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:14px}
+  .simcode pre .hl{background:#e7b85a2e;display:inline-block;width:100%;outline:1px solid #e7b85a66}
+  .result{border-radius:12px;padding:14px 16px;font-size:15px;border:1.5px solid var(--line);background:var(--card);min-height:60px;transition:.3s}
+  .result.ok{border-color:var(--ok);background:#18261d}
+  .result.bad{border-color:var(--bad);background:#2a1818}
+  .result.warn{border-color:var(--warn);background:#2a2418}
+  .exitbig{font-family:var(--mono);font-size:30px;font-weight:700}
+  /* exit codes */
+  .exits{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .exit{border-radius:14px;padding:18px;border:1.5px solid var(--line);background:var(--card);cursor:pointer;transition:.2s}
+  .exit:hover{transform:translateY(-3px)}
+  .exit .code-n{font-family:var(--mono);font-size:40px;font-weight:800;line-height:1}
+  .exit.e0 .code-n{color:var(--ok)} .exit.e2 .code-n{color:var(--bad)} .exit.eo .code-n{color:var(--warn)}
+  .exit .more{display:none;margin-top:10px;font-size:14px;color:var(--ink2)}
+  .exit.open .more{display:block}
+  .exit.open.e0{border-color:var(--ok)} .exit.open.e2{border-color:var(--bad)} .exit.open.eo{border-color:var(--warn)}
+  .dest{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:14px}
+  .dest div{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:14px}
+  .dest b{font-family:var(--mono);display:block;margin-bottom:3px}
+  /* matcher */
+  .mt{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;align-items:start}
+  label.f{display:block;font-size:13px;color:var(--mute);margin:10px 0 4px;font-family:var(--mono)}
+  input.in{width:100%;background:#0f0d0b;border:1.5px solid var(--line);color:var(--ink);border-radius:10px;padding:10px 12px;font:15px var(--mono)}
+  input.in:focus{outline:none;border-color:var(--acc)}
+  .chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+  .chips button{background:var(--card2);border:1px solid var(--line);color:var(--ink2);border-radius:99px;padding:3px 10px;font:12px var(--mono)}
+  .chips button:hover{color:var(--ink);border-color:var(--acc2)}
+  .tools{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:8px}
+  .tools div{font-family:var(--mono);font-size:12px;word-break:break-all;gap:6px;padding:8px 10px;border-radius:9px;border:1.5px solid var(--line);background:var(--card);display:flex;justify-content:space-between;transition:.2s}
+  .tools div.y{border-color:var(--ok);background:#18261d}
+  .tools div:after{flex:none;white-space:nowrap}
+  td code{white-space:nowrap}
+  .tools div.y:after{content:"dispara";color:var(--ok);font-size:11px}
+  .tools div.nn{opacity:.55}
+  .tools div.nn:after{content:"no";color:var(--mute);font-size:11px}
+  .mode{margin-top:12px;font-size:14px;padding:10px 12px;border-radius:10px;background:var(--card2);border:1px solid var(--line)}
+  /* scope */
+  .scopes{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;align-items:start}
+  .rings{position:relative;aspect-ratio:1/1;max-width:420px;margin:0 auto;width:100%}
+  .ring{position:absolute;border-radius:50%;border:2px solid;display:flex;justify-content:center;cursor:pointer;transition:.25s}
+  .ring span{font-family:var(--mono);font-size:12px;margin-top:10px;background:var(--bg);padding:0 6px;height:18px}
+  .ring:hover,.ring.on{filter:brightness(1.35)}
+  .r1{inset:0;border-color:#b490e6;background:#b490e60d}
+  .r2{inset:13%;border-color:#6fa8e0;background:#6fa8e010}
+  .r3{inset:27%;border-color:#e07a4f;background:#e07a4f14}
+  .r4{inset:40%;border-color:#6fc28b;background:#6fc28b1a}
+  .scopeinfo h4{margin:0 0 4px;font-family:var(--mono)}
+  table{border-collapse:collapse;width:100%;font-size:14px;margin-top:10px}
+  th,td{border-bottom:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+  th{color:var(--mute);font-weight:600;font-size:12px;font-family:var(--mono);letter-spacing:.05em}
+  tr.on td{background:#2e2018}
+  /* tabs */
+  .tabs{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0 0}
+  .tabs button{background:var(--card);border:1.5px solid var(--line);color:var(--ink2);border-radius:10px 10px 0 0;padding:8px 14px;font-size:14px;border-bottom:none}
+  .tabs button.on{color:var(--ink);border-color:var(--acc);background:#2e2018}
+  .tabpanel{border:1.5px solid var(--acc);border-radius:0 12px 12px 12px;padding:18px;background:var(--bg2)}
+  .tabpanel .meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+  .ostabs{display:flex;gap:4px;margin-top:6px}
+  .ostabs button{background:none;border:1px solid var(--line);color:var(--mute);padding:3px 10px;border-radius:7px;font-size:12px}
+  .ostabs button.on{color:var(--ink);border-color:var(--acc2)}
+  /* types */
+  .types{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+  .type{background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:14px;cursor:pointer;transition:.2s}
+  .type:hover,.type.on{border-color:var(--acc);transform:translateY(-3px)}
+  .type .tt{font-family:var(--mono);color:var(--acc2);font-size:14px}
+  .type p{font-size:13px;color:var(--ink2);margin:6px 0 0}
+  .type .exp{font-size:10px;color:var(--warn);font-family:var(--mono)}
+  /* troubleshooting */
+  details{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 16px;margin:10px 0}
+  details summary{cursor:pointer;font-weight:600}
+  details[open]{border-color:var(--acc2)}
+  details ul{margin:10px 0 0;padding-left:20px;color:var(--ink2)}
+  details li{margin:4px 0}
+  /* quiz */
+  .q{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin:12px 0}
+  .q .qt{font-weight:600;margin-bottom:10px}
+  .q .opts{display:grid;gap:7px}
+  .q .opts button{text-align:left;background:var(--bg2);border:1.5px solid var(--line);color:var(--ink);padding:9px 12px;border-radius:10px;font-size:14px}
+  .q .opts button:hover:not(:disabled){border-color:var(--acc2)}
+  .q .opts button.right{border-color:var(--ok);background:#18261d}
+  .q .opts button.wrong{border-color:var(--bad);background:#2a1818}
+  .q .fb{margin-top:10px;font-size:14px;color:var(--ink2);display:none}
+  .q.done .fb{display:block}
+  .score{font-family:var(--mono);font-size:15px;margin-top:10px}
+  .cheat{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:14px}
+  .cheat .card{padding:14px}
+  .cheat h4{margin:0 0 6px;font-size:13px;font-family:var(--mono);color:var(--acc2)}
+  .cheat p{margin:0;font-size:13.5px;color:var(--ink2)}
+  .src li{margin:4px 0}
+  @media (max-width:1000px){
+    .wrap{grid-template-columns:1fr} nav.side{display:none}
+    main{padding:24px 18px 80px}
+    .hero,.grid2,.anat,.sim,.simgrid,.mt,.scopes,.evinfo{grid-template-columns:1fr}
+    .grid3,.exits,.dest,.types,.cheat{grid-template-columns:1fr 1fr}
+    .vs{grid-template-columns:1fr} .vs .mid{padding:8px}
+    .pipe{grid-template-columns:1fr;gap:8px} .flow{display:none}
+    h1{font-size:34px}
+  }
+</style>
+</head>
+<body>
+<div id="progress"></div>
+<div class="wrap">
+<nav class="side" id="nav">
+  <div class="brand"><span>⚓</span> Hooks · guía visual</div>
+  <a href="#que"><span class="num">01</span>¿Qué es un hook?</a>
+  <a href="#ciclo"><span class="num">02</span>El ciclo de vida</a>
+  <a href="#anatomia"><span class="num">03</span>Anatomía de la config</a>
+  <a href="#primero"><span class="num">04</span>Tu primer hook</a>
+  <a href="#sim"><span class="num">05</span>Simulador entrada/salida</a>
+  <a href="#exit"><span class="num">06</span>Códigos de salida</a>
+  <a href="#json"><span class="num">07</span>Salida JSON</a>
+  <a href="#matcher"><span class="num">08</span>Matchers e <code>if</code></a>
+  <a href="#donde"><span class="num">09</span>¿Dónde se guardan?</a>
+  <a href="#recetas"><span class="num">10</span>Recetas listas</a>
+  <a href="#tipos"><span class="num">11</span>Tipos de hook</a>
+  <a href="#problemas"><span class="num">12</span>Problemas comunes</a>
+  <a href="#quiz"><span class="num">13</span>Pon a prueba lo aprendido</a>
+  <a href="#fuentes"><span class="num">14</span>Fuentes</a>
+</nav>
+
+<main>
+<!-- ============ 01 ============ -->
+<section id="que" style="padding-top:0">
+  <div class="hero">
+    <div>
+      <div style="font-family:var(--mono);font-size:13px;color:var(--acc);letter-spacing:.08em;margin-bottom:10px">GUÍA PARA PRINCIPIANTES · CLAUDE CODE</div>
+      <h1>Hooks: <em>reglas que siempre se cumplen</em></h1>
+      <p class="lead">Un hook es un comando tuyo que Claude Code ejecuta <b>automáticamente</b> en momentos concretos de su ciclo de vida: antes de usar una herramienta, después de editar un archivo, cuando necesita tu atención, cuando termina de responder…</p>
+      <p>La documentación lo resume así: los hooks dan <b>control determinista</b>. Ciertas acciones <i>siempre</i> ocurren, en vez de depender de que el modelo decida hacerlas.</p>
+      <div class="kpis">
+        <div class="kpi"><b>stdin</b><span>Claude Code te envía JSON</span></div>
+        <div class="kpi"><b>exit code</b><span>tú respondes con 0, 2 u otro</span></div>
+        <div class="kpi"><b>/hooks</b><span>menú para ver lo configurado</span></div>
+      </div>
+    </div>
+    <div class="analogy">
+      <div class="row"><div class="ico" style="background:#2c1f18;color:var(--acc2)">1</div><div><b>Ocurre un evento</b><br><span style="color:var(--mute);font-size:14px">p. ej. Claude va a ejecutar <code>rm -rf build</code></span></div></div>
+      <div class="row"><div class="ico" style="background:#1a2433;color:var(--info)">2</div><div><b>Claude Code busca hooks</b><br><span style="color:var(--mute);font-size:14px">¿hay alguno para <code>PreToolUse</code> + <code>Bash</code>?</span></div></div>
+      <div class="row"><div class="ico" style="background:#2a2418;color:var(--warn)">3</div><div><b>Ejecuta tu script</b><br><span style="color:var(--mute);font-size:14px">le pasa los datos del evento como JSON por stdin</span></div></div>
+      <div class="row"><div class="ico" style="background:#2a1818;color:var(--bad)">4</div><div><b>Tu script decide</b><br><span style="color:var(--mute);font-size:14px"><code>exit 0</code> sigue · <code>exit 2</code> bloquea</span></div></div>
+    </div>
+  </div>
+
+  <h3>¿Por qué no basta con pedírselo a Claude en el prompt o en CLAUDE.md?</h3>
+  <div class="vs">
+    <div class="card"><h4>📝 Instrucción (CLAUDE.md / prompt)</h4><p style="margin:0;color:var(--ink2);font-size:15px">“Por favor, formatea con Prettier después de editar.” El modelo <b>probablemente</b> lo hará… pero es una sugerencia que puede olvidar.</p></div>
+    <div class="mid">vs</div>
+    <div class="card" style="border-color:var(--acc)"><h4>⚓ Hook</h4><p style="margin:0;color:var(--ink2);font-size:15px">Un <code>PostToolUse</code> que ejecuta Prettier tras cada <code>Edit</code>/<code>Write</code>. Lo ejecuta <b>Claude Code</b>, no el modelo: ocurre <b>siempre</b>.</p></div>
+  </div>
+  <div class="note"><b>Usos típicos:</b> formatear código tras editar, bloquear comandos peligrosos, proteger archivos sensibles, recibir una notificación cuando Claude te necesita, reinyectar contexto tras compactar, auditar cambios de configuración.</div>
+</section>
+
+<!-- ============ 02 ============ -->
+<section id="ciclo">
+  <h2><span class="tag">02 · EL CICLO DE VIDA</span>¿Cuándo se dispara cada hook?</h2>
+  <p>Los eventos ocurren a tres ritmos: <b>por sesión</b>, <b>por turno</b> y <b>por cada llamada a herramienta</b>. Pulsa <b>▶ Reproducir un turno</b> para ver el recorrido, o haz clic en cualquier evento para ver su ficha. La etiqueta <span class="pill r">bloquea</span> indica que el hook puede detener la acción.</p>
+  <div class="life">
+    <div class="lanelabel">FLUJO PRINCIPAL DE UNA SESIÓN</div>
+    <div class="lane" id="lane"></div>
+    <div class="loopnote">↺ PreToolUse → herramienta → PostToolUse se repite por cada herramienta que Claude use dentro del turno. Todo el turno se repite por cada prompt.</div>
+    <div class="lanelabel">EVENTOS “LATERALES” (ocurren cuando toca)</div>
+    <div class="side-ev" id="sideEv"></div>
+    <div class="lifebar">
+      <button class="btn" id="playBtn">▶ Reproducir un turno</button>
+      <div class="narr" id="narr">Pulsa reproducir o haz clic en un evento.</div>
+    </div>
+  </div>
+  <div class="evinfo" id="evinfo"></div>
+  <div class="note">La referencia oficial enumera más de 30 eventos (incluidos <code>SubagentStop</code>, <code>TaskCreated</code>, <code>CwdChanged</code>, <code>FileChanged</code>, <code>WorktreeCreate</code>, <code>PreModelSwitch</code>, <code>Elicitation</code>…). Aquí ves los más útiles para empezar; el resto sigue el mismo patrón.</div>
+</section>
+
+<!-- ============ 03 ============ -->
+<section id="anatomia">
+  <h2><span class="tag">03 · ANATOMÍA</span>Tres niveles anidados</h2>
+  <p>Todo hook vive dentro de la clave <code>"hooks"</code> de un archivo de configuración (<code>settings.json</code>). La estructura siempre tiene tres niveles: <b>evento → grupo con matcher → manejadores</b>. Pasa el ratón por cada capa.</p>
+  <div class="anat">
+    <div class="jsonview" id="jv"></div>
+    <div class="layers">
+      <div class="layer" data-seg="e" style="border-color:#f3a27c66"><h4><span class="dot" style="background:#f3a27c"></span>1 · Evento</h4><p><code>PostToolUse</code>: <b>cuándo</b>. El nombre del momento del ciclo de vida. Cada evento es una clave dentro del único objeto <code>hooks</code>.</p></div>
+      <div class="layer" data-seg="m" style="border-color:#7fb6ee66"><h4><span class="dot" style="background:#7fb6ee"></span>2 · Matcher</h4><p><code>"Edit|Write"</code>: <b>filtro</b>. En eventos de herramientas filtra por nombre de herramienta. Vacío u omitido = siempre.</p></div>
+      <div class="layer" data-seg="h" style="border-color:#a9d78c66"><h4><span class="dot" style="background:#a9d78c"></span>3 · Manejadores</h4><p>La lista <code>hooks</code> interna: <b>qué ejecutar</b>. Puede haber varios; todos los que coinciden se ejecutan <b>en paralelo</b>.</p></div>
+      <div class="layer" data-seg="t" style="border-color:#d7b4f366"><h4><span class="dot" style="background:#d7b4f3"></span>type + command</h4><p><code>"type": "command"</code> ejecuta un comando de shell. Campos opcionales: <code>timeout</code> (segundos), <code>if</code>, <code>statusMessage</code>…</p></div>
+    </div>
+  </div>
+  <div class="note"><b>Error típico:</b> si tu <code>settings.json</code> ya tiene una clave <code>hooks</code>, añade el nuevo evento <b>como hermano</b> de los existentes; no reemplaces todo el objeto. Y recuerda: el JSON no admite comas finales ni comentarios.</div>
+</section>
+
+<!-- ============ 04 ============ -->
+<section id="primero">
+  <h2><span class="tag">04 · PASO A PASO</span>Tu primer hook: aviso cuando Claude te necesita</h2>
+  <p>Es el ejemplo con el que empieza la guía oficial: una notificación de escritorio cada vez que Claude espera tu respuesta o un permiso, para que no tengas que vigilar la terminal.</p>
+  <div class="grid2">
+    <div>
+      <h3>① Edita <code>~/.claude/settings.json</code></h3>
+      <p style="font-size:14px;color:var(--ink2)">Si el archivo no existe, créalo. Elige tu sistema:</p>
+      <div class="ostabs" id="osTabs">
+        <button data-os="linux" class="on">Linux</button><button data-os="mac">macOS</button><button data-os="win">Windows</button>
+      </div>
+      <div class="code"><div class="bar"><span>~/.claude/settings.json</span><button data-copy="osCode">copiar</button></div><pre><code id="osCode"></code></pre></div>
+      <p style="font-size:13px;color:var(--mute)" id="osTip"></p>
+    </div>
+    <div>
+      <h3>② Verifica con <code>/hooks</code></h3>
+      <p style="font-size:15px;color:var(--ink2)">Escribe <code>/hooks</code> en el prompt de Claude Code. Se abre el navegador de hooks y el tuyo aparece bajo <code>Notification</code>.</p>
+      <h3>③ Pruébalo</h3>
+      <p style="font-size:15px;color:var(--ink2)">Pulsa <code>Esc</code> para volver. Pide a Claude algo que necesite permiso y cambia a otra ventana: deberías recibir la notificación.</p>
+      <h3>④ Afínalo con el matcher</h3>
+      <p style="font-size:15px;color:var(--ink2)"><code>"matcher": ""</code> dispara con todos los tipos de notificación. Para limitarlo:</p>
+      <table>
+        <tr><th>MATCHER</th><th>SE DISPARA CUANDO</th></tr>
+        <tr><td><code>permission_prompt</code></td><td>Claude necesita que apruebes una herramienta (tras ~6 s esperando)</td></tr>
+        <tr><td><code>idle_prompt</code></td><td>Claude terminó hace ~60 s y no has escrito nada</td></tr>
+        <tr><td><code>auth_success</code></td><td>Se completa la autenticación</td></tr>
+      </table>
+      <div class="note ok" style="margin-top:14px">💡 También puedes describirle a Claude en la CLI el hook que quieres y pedirle que lo escriba por ti.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 05 ============ -->
+<section id="sim">
+  <h2><span class="tag">05 · SIMULADOR</span>Cómo “hablan” Claude Code y tu script</h2>
+  <p>Un hook de tipo <code>command</code> se comunica sólo con <b>stdin</b> (recibe JSON), <b>stdout/stderr</b> (texto) y el <b>código de salida</b>. Elige un escenario y avanza paso a paso.</p>
+  <div class="sim">
+    <div class="scen" id="scen"></div>
+    <div>
+      <div class="steps" id="steps"></div>
+      <div class="pipe">
+        <div class="box" id="bxA"><h5>CLAUDE CODE</h5><div class="v" id="vA">—</div></div>
+        <div class="flow" id="f1"><div class="pk"></div></div>
+        <div class="box" id="bxB"><h5>TU SCRIPT</h5><div class="v" id="vB">—</div></div>
+        <div class="flow" id="f2"><div class="pk"></div></div>
+        <div class="box" id="bxC"><h5>RESULTADO</h5><div class="v" id="vC">—</div></div>
+      </div>
+      <div class="simgrid">
+        <div><div class="code"><div class="bar"><span>stdin → JSON que recibe el script</span></div><pre><code id="simIn"></code></pre></div></div>
+        <div class="simcode"><div class="code"><div class="bar"><span id="simFile">script</span></div><pre><code id="simCode"></code></pre></div></div>
+      </div>
+      <div class="result" id="simRes">Elige un escenario a la izquierda.</div>
+      <div class="lifebar"><button class="btn ghost" id="simPrev">← Atrás</button><button class="btn" id="simNext">Siguiente paso →</button><button class="btn ghost" id="simAuto">▶ Automático</button></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 06 ============ -->
+<section id="exit">
+  <h2><span class="tag">06 · CÓDIGOS DE SALIDA</span>Tres respuestas posibles</h2>
+  <p>El código con el que termina tu script decide qué pasa después. Haz clic en cada tarjeta.</p>
+  <div class="exits">
+    <div class="exit e0"><div class="code-n">0</div><b>Sin objeción</b><div style="font-size:13px;color:var(--mute)">clic para detalles</div>
+      <div class="more">La acción continúa. <b>Ojo:</b> en <code>PreToolUse</code> no significa “aprobado”: el flujo normal de permisos sigue aplicándose.<br><br>En <code>UserPromptSubmit</code> y <code>SessionStart</code>, el texto que imprimas por stdout se añade al contexto de Claude. Si stdout es un único objeto JSON, se interpreta como salida estructurada (sección 07).</div></div>
+    <div class="exit e2"><div class="code-n">2</div><b>Bloquear</b><div style="font-size:13px;color:var(--mute)">clic para detalles</div>
+      <div class="more">Error bloqueante: en los eventos que pueden bloquear, la acción se detiene. Escribe el <b>motivo en stderr</b>; según el evento se le envía a Claude como feedback (para que ajuste su enfoque) o se te muestra a ti.<br><br>En eventos que no pueden bloquear (p. ej. <code>SessionStart</code>), sólo se muestra stderr y todo continúa.</div></div>
+    <div class="exit eo"><div class="code-n">1, 3…</div><b>Error no bloqueante</b><div style="font-size:13px;color:var(--mute)">clic para detalles</div>
+      <div class="more">La acción <b>sigue adelante</b> y aparece un aviso <code>&lt;nombre&gt; hook error</code> en la transcripción con la primera línea de stderr.<br><br><b>Trampa clásica:</b> <code>exit 1</code> NO bloquea. Para hacer cumplir una política, usa <code>exit 2</code>.</div></div>
+  </div>
+  <h3>¿A dónde va cada salida?</h3>
+  <div class="dest">
+    <div><b style="color:var(--info)">stdin</b>JSON del evento que Claude Code te envía: <code>session_id</code>, <code>cwd</code>, <code>hook_event_name</code>, <code>tool_name</code>, <code>tool_input</code>…</div>
+    <div><b style="color:var(--ok)">stdout</b>Con exit 0: JSON de decisión, o texto que se añade al contexto (sólo en algunos eventos).</div>
+    <div><b style="color:var(--bad)">stderr</b>Con exit 2: el motivo del bloqueo. Con otros códigos: aparece en el aviso de error.</div>
+  </div>
+  <div class="note">Si varios hooks coinciden con el mismo evento, <b>todos se ejecutan hasta el final</b> y luego se combinan sus resultados. En <code>PreToolUse</code> gana la respuesta más restrictiva: <code>deny</code> &gt; <code>defer</code> &gt; <code>ask</code> &gt; <code>allow</code>. Un <code>deny</code> no impide que un hook “hermano” (p. ej. uno que registra en un log) ya haya hecho su trabajo.</div>
+</section>
+
+<!-- ============ 07 ============ -->
+<section id="json">
+  <h2><span class="tag">07 · SALIDA JSON</span>Cuando necesitas algo más fino que “sí / no”</h2>
+  <p>Los códigos de salida sólo permiten bloquear o callar. Para más control: termina con <code>exit 0</code> e imprime <b>un único objeto JSON</b> por stdout. Elige uno u otro enfoque por hook, no los mezcles.</p>
+  <div class="tabs" id="jsonTabs"></div>
+  <div class="tabpanel" id="jsonPanel"></div>
+  <div class="note bad"><b>Campo en el nivel equivocado = ignorado en silencio.</b> Por ejemplo, <code>permissionDecision</code> y <code>additionalContext</code> van <i>dentro</i> de <code>hookSpecificOutput</code>. Si los pones en el nivel superior, el JSON se acepta pero no tiene efecto.</div>
+</section>
+
+<!-- ============ 08 ============ -->
+<section id="matcher">
+  <h2><span class="tag">08 · MATCHERS</span>Probador de matchers</h2>
+  <p>Sin matcher, un hook se dispara en cada ocurrencia de su evento. Con matcher, sólo cuando coincide. Escribe un matcher y mira qué herramientas lo dispararían. Las reglas aplicadas son las de la referencia oficial.</p>
+  <div class="mt">
+    <div class="card">
+      <label class="f">"matcher":</label>
+      <input class="in" id="mIn" value="Edit|Write" spellcheck="false">
+      <div class="chips" id="mChips"></div>
+      <div class="mode" id="mMode"></div>
+      <label class="f">Prueba un nombre de herramienta:</label>
+      <input class="in" id="mTool" value="mcp__github__search_repositories" spellcheck="false">
+      <div class="mode" id="mToolRes"></div>
+    </div>
+    <div>
+      <div style="font-size:13px;color:var(--mute);font-family:var(--mono)">HERRAMIENTAS DE EJEMPLO</div>
+      <div class="tools" id="mTools"></div>
+      <h3>Las 3 reglas</h3>
+      <ul style="color:var(--ink2);font-size:14.5px;padding-left:18px">
+        <li><code>"*"</code>, <code>""</code> u omitido → coincide con <b>todo</b>.</li>
+        <li>Sólo letras, dígitos, <code>_</code>, <code>-</code>, espacios, <code>,</code> y <code>|</code> → nombres <b>exactos</b> (o lista). <code>"Edit, Write"</code> equivale a <code>"Edit|Write"</code>.</li>
+        <li>Cualquier otro carácter → <b>expresión regular</b> de JavaScript, sin anclar. <code>mcp__memory__.*</code> = todas las herramientas del servidor <code>memory</code>.</li>
+      </ul>
+      <div class="note">Los matchers distinguen <b>mayúsculas</b>: <code>bash</code> no coincide con <code>Bash</code>.</div>
+    </div>
+  </div>
+  <h3>Un filtro más fino: el campo <code>if</code></h3>
+  <p>El matcher filtra sólo por nombre de herramienta. El campo <code>if</code> usa la sintaxis de reglas de permisos para filtrar por herramienta <b>y argumentos</b>, así el proceso sólo se lanza cuando coincide. Sólo funciona en eventos de herramientas.</p>
+  <div class="grid2">
+    <div class="code"><div class="bar"><span>sólo comandos git</span><button data-copy="ifCode">copiar</button></div><pre><code id="ifCode" data-lang="json"></code></pre></div>
+    <table>
+      <tr><th><code>if</code></th><th>COMANDO BASH</th><th>¿CORRE?</th></tr>
+      <tr><td><code>Bash(git *)</code></td><td><code>git push</code></td><td><span class="pill g">sí</span></td></tr>
+      <tr><td><code>Bash(git *)</code></td><td><code>npm test &amp;&amp; git push</code></td><td><span class="pill g">sí</span> cada subcomando se revisa</td></tr>
+      <tr><td><code>Bash(git *)</code></td><td><code>echo $(git log)</code></td><td><span class="pill g">sí</span> se revisa dentro de <code>$()</code></td></tr>
+      <tr><td><code>Bash(git *)</code></td><td><code>echo $(date)</code></td><td><span class="pill r">no</span></td></tr>
+    </table>
+  </div>
+  <div class="note">El filtro <code>if</code> es de “mejor esfuerzo”. Para reglas duras de permitir/denegar, usa el <b>sistema de permisos</b>, no un hook.</div>
+</section>
+
+<!-- ============ 09 ============ -->
+<section id="donde">
+  <h2><span class="tag">09 · UBICACIÓN</span>¿Dónde guardo el hook?</h2>
+  <p>El archivo donde lo pongas define su alcance. Las entradas de distintos niveles <b>se suman</b>, no se reemplazan. Haz clic en los anillos.</p>
+  <div class="scopes">
+    <div class="rings">
+      <div class="ring r1" data-i="3"><span style="color:#b490e6">managed (organización)</span></div>
+      <div class="ring r2" data-i="0"><span style="color:#6fa8e0">~/.claude/settings.json</span></div>
+      <div class="ring r3" data-i="1"><span style="color:#e07a4f">.claude/settings.json</span></div>
+      <div class="ring r4" data-i="2"><span style="color:#6fc28b">.local.json</span></div>
+    </div>
+    <div>
+      <div class="card scopeinfo" id="scopeInfo"></div>
+      <table id="scopeTbl">
+        <tr><th>UBICACIÓN</th><th>ALCANCE</th><th>¿SE COMPARTE?</th></tr>
+        <tr><td><code>~/.claude/settings.json</code></td><td>Todos tus proyectos</td><td>No, sólo tu máquina</td></tr>
+        <tr><td><code>.claude/settings.json</code></td><td>Un proyecto</td><td>Sí, se puede commitear</td></tr>
+        <tr><td><code>.claude/settings.local.json</code></td><td>Un proyecto</td><td>No (gitignored)</td></tr>
+        <tr><td>Managed policy settings</td><td>Toda la organización</td><td>Sí, lo controla un admin</td></tr>
+        <tr><td>Plugin <code>hooks/hooks.json</code></td><td>Mientras el plugin esté activo</td><td>Sí, va con el plugin</td></tr>
+        <tr><td>Frontmatter de skill</td><td>Resto de la sesión tras invocarla</td><td>Sí</td></tr>
+        <tr><td>Frontmatter de subagente</td><td>Mientras el subagente corre</td><td>Sí</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="note ok">Para desactivar todos los hooks: <code>"disableAllHooks": true</code> en tu settings. Si editas los archivos con Claude Code abierto, el vigilante de archivos normalmente recoge los cambios solo.</div>
+</section>
+
+<!-- ============ 10 ============ -->
+<section id="recetas">
+  <h2><span class="tag">10 · RECETAS</span>Ejemplos listos para copiar</h2>
+  <p>Todos salen de la guía oficial. Los ejemplos en Bash usan <code>jq</code> para leer el JSON (<code>apt-get install jq</code> en Debian/Ubuntu, <code>brew install jq</code> en macOS).</p>
+  <div class="tabs" id="recTabs"></div>
+  <div class="tabpanel" id="recPanel"></div>
+</section>
+
+<!-- ============ 11 ============ -->
+<section id="tipos">
+  <h2><span class="tag">11 · TIPOS</span>No todo hook es un comando de shell</h2>
+  <p>El campo <code>type</code> decide cómo se ejecuta el manejador. La mayoría usa <code>command</code>; hay cuatro más. Haz clic en cada uno.</p>
+  <div class="types" id="types"></div>
+  <div id="typeDetail" style="margin-top:14px"></div>
+</section>
+
+<!-- ============ 12 ============ -->
+<section id="problemas">
+  <h2><span class="tag">12 · DEPURACIÓN</span>Cuando algo no funciona</h2>
+  <div class="grid2">
+    <div>
+      <details open><summary>🔇 El hook nunca se ejecuta</summary><ul>
+        <li>Ejecuta <code>/hooks</code> y confirma que aparece bajo el evento correcto.</li>
+        <li>Revisa que el matcher coincida <b>exactamente</b> (distingue mayúsculas).</li>
+        <li>¿Evento correcto? <code>PreToolUse</code> es antes de la herramienta; <code>PostToolUse</code>, después.</li>
+        <li>Si el script no corre: hazlo ejecutable con <code>chmod +x</code>.</li></ul></details>
+      <details><summary>⚠️ Veo “PreToolUse hook error: …”</summary><ul>
+        <li>Tu script salió con un código distinto de 0 sin querer. Pruébalo a mano:</li></ul>
+        <div class="code"><div class="bar"><span>terminal</span><button data-copy="dbg1">copiar</button></div><pre><code id="dbg1" data-lang="bash"></code></pre></div>
+        <ul><li>“command not found”: usa rutas absolutas o <code>"$CLAUDE_PROJECT_DIR"</code>.</li>
+        <li>“jq: command not found”: instala <code>jq</code> o usa Python/Node para parsear.</li></ul></details>
+      <details><summary>📭 <code>/hooks</code> no muestra nada</summary><ul>
+        <li>Valida el JSON: sin comas finales ni comentarios.</li>
+        <li>Ubicación correcta: <code>.claude/settings.json</code> (proyecto) o <code>~/.claude/settings.json</code> (global).</li>
+        <li>Si tras unos segundos no aparece, reinicia la sesión.</li></ul></details>
+    </div>
+    <div>
+      <details><summary>🧩 Mi JSON no tiene efecto</summary><ul>
+        <li><b>Texto extra antes del JSON</b>: un <code>echo</code> en tu <code>~/.bashrc</code> puede colarse en stdout y entonces la salida ya no empieza por <code>{</code>. Envuélvelo así:</li></ul>
+        <div class="code"><div class="bar"><span>~/.bashrc</span><button data-copy="dbg2">copiar</button></div><pre><code id="dbg2" data-lang="bash"></code></pre></div>
+        <ul><li><b>Campo en el nivel equivocado</b>: compáralo con el formato de salida JSON.</li></ul></details>
+      <details><summary>🔁 El hook Stop no deja parar a Claude</summary><ul>
+        <li>Claude Code anula un Stop hook tras <b>8 bloqueos seguidos</b>. Comprueba <code>stop_hook_active</code> y sal pronto si es <code>true</code>:</li></ul>
+        <div class="code"><div class="bar"><span>stop-hook.sh</span><button data-copy="dbg3">copiar</button></div><pre><code id="dbg3" data-lang="bash"></code></pre></div></details>
+      <details><summary>🔍 ¿Cómo sé qué hizo un hook?</summary><ul>
+        <li><code>Ctrl+O</code> abre la vista de transcripción. Si todo va bien, <b>no verás nada</b>: comprueba el efecto (p. ej. el archivo formateado).</li>
+        <li>Log completo: <code>claude --debug-file /tmp/claude.log</code> y en otra terminal <code>tail -f /tmp/claude.log</code>. A mitad de sesión: <code>/debug</code>.</li></ul></details>
+      <details><summary>🚧 Límites a tener en cuenta</summary><ul>
+        <li><code>PostToolUse</code> no puede deshacer: la herramienta ya se ejecutó.</li>
+        <li><code>Stop</code> se dispara cada vez que Claude termina de responder, no sólo al acabar la tarea.</li>
+        <li>Timeout por defecto de <code>command</code>: 10 min (30 s en <code>UserPromptSubmit</code>). Cámbialo con <code>timeout</code> en segundos.</li>
+        <li>Un <code>deny</code> de <code>PreToolUse</code> bloquea incluso en modo <code>bypassPermissions</code>; pero un <code>allow</code> no salta las reglas de denegación de settings.</li></ul></details>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 13 ============ -->
+<section id="quiz">
+  <h2><span class="tag">13 · REPASO</span>Pon a prueba lo aprendido</h2>
+  <div id="quizBox"></div>
+  <div class="score" id="score"></div>
+  <h3>Chuleta para tus notas</h3>
+  <div class="cheat">
+    <div class="card"><h4>ESTRUCTURA</h4><p>hooks → Evento → [{ matcher, hooks: [{ type, command }] }]</p></div>
+    <div class="card"><h4>ENTRADA</h4><p>JSON por stdin. Léelo con <code>INPUT=$(cat)</code> y <code>jq</code>.</p></div>
+    <div class="card"><h4>SALIDA</h4><p><code>0</code> sigue · <code>2</code> bloquea (motivo en stderr) · otro = error no bloqueante.</p></div>
+    <div class="card"><h4>COMPROBAR</h4><p><code>/hooks</code> para ver · <code>Ctrl+O</code> transcripción · <code>--debug-file</code> log.</p></div>
+  </div>
+</section>
+
+<!-- ============ 14 ============ -->
+<section id="fuentes">
+  <h2><span class="tag">14 · FUENTES</span>Documentación oficial consultada</h2>
+  <ul class="src">
+    <li><a href="https://code.claude.com/docs/en/hooks-guide" target="_blank" rel="noopener">Automate actions with hooks (guía de hooks)</a> — code.claude.com</li>
+    <li><a href="https://code.claude.com/docs/en/hooks" target="_blank" rel="noopener">Hooks reference (referencia completa)</a> — code.claude.com</li>
+  </ul>
+  <p style="color:var(--mute);font-size:14px">Contenido traducido y adaptado para principiantes. Ante cualquier duda, la referencia oficial es la fuente de verdad: los eventos y campos evolucionan con cada versión.</p>
+</section>
+</main>
+</div>
+
+<!-- ===================== CODE SNIPPETS (texto plano) ===================== -->
+<script type="text/plain" id="t-anat">{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.file_path' | xargs npx prettier --write"
+          }
+        ]
+      }
+    ]
+  }
+}</script>
+<script type="text/plain" id="t-linux">{
+  "hooks": {
+    "Notification": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "notify-send 'Claude Code' 'Claude Code needs your attention'"
+          }
+        ]
+      }
+    ]
+  }
+}</script>
+<script type="text/plain" id="t-mac">{
+  "hooks": {
+    "Notification": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "osascript -e 'display notification \"Claude Code needs your attention\" with title \"Claude Code\"'"
+          }
+        ]
+      }
+    ]
+  }
+}</script>
+<script type="text/plain" id="t-win">{
+  "hooks": {
+    "Notification": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell.exe -Command \"[System.Reflection.Assembly]::LoadWithPartialName('System.Windows.Forms'); [System.Windows.Forms.MessageBox]::Show('Claude Code needs your attention', 'Claude Code')\""
+          }
+        ]
+      }
+    ]
+  }
+}</script>
+<script type="text/plain" id="t-if">{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "if": "Bash(git *)",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/check-git-policy.sh"
+          }
+        ]
+      }
+    ]
+  }
+}</script>
+<script type="text/plain" id="t-dbg1">echo '{"tool_name":"Bash","tool_input":{"command":"ls"}}' | ./my-hook.sh
+echo $?  # Comprueba el código de salida</script>
+<script type="text/plain" id="t-dbg2"># En ~/.zshrc o ~/.bashrc
+if [[ $- == *i* ]]; then
+  echo "Shell ready"
+fi</script>
+<script type="text/plain" id="t-dbg3">#!/bin/bash
+INPUT=$(cat)
+if [ "$(echo "$INPUT" | jq -r '.stop_hook_active')" = "true" ]; then
+  exit 0  # Deja que Claude se detenga
+fi
+# ... resto de la lógica de tu hook</script>
+<script type="text/plain" id="t-blockrm">#!/bin/bash
+# Lee el JSON de stdin y revisa el comando
+input=$(cat)
+command=$(jq -r '.tool_input.command' <<<"$input")
+
+if [[ "$command" == rm* ]]; then
+  echo "Blocked: rm commands are not allowed" >&2
+  exit 2  # Bloqueante: se impide la llamada
+fi
+
+exit 0  # Sin decisión: aplica el flujo normal de permisos</script>
+<script type="text/plain" id="t-protect">#!/bin/bash
+# protect-files.sh
+
+INPUT=$(cat)
+FILE_PATH=$(echo "$INPUT" | jq -r '.tool_input.file_path // empty')
+
+# Normaliza separadores de Windows
+FILE_PATH="${FILE_PATH//\\//}"
+
+PROTECTED_PATTERNS=(".env" "package-lock.json" ".git/")
+
+for pattern in "${PROTECTED_PATTERNS[@]}"; do
+  if [[ "$FILE_PATH" == *"$pattern"* ]]; then
+    echo "Blocked: $FILE_PATH matches protected pattern '$pattern'" >&2
+    exit 2
+  fi
+done
+
+exit 0</script>
+<script type="text/plain" id="t-prettier-cmd"># comando del hook PostToolUse (una sola línea)
+jq -r '.tool_input.file_path' | xargs npx prettier --write
+
+# 1) jq extrae .tool_input.file_path del JSON de stdin
+# 2) xargs se lo pasa a prettier
+# 3) prettier reescribe el archivo
+# 4) termina con exit 0</script>
+<script type="text/plain" id="t-ctx">{
+  "hookSpecificOutput": {
+    "hookEventName": "UserPromptSubmit",
+    "additionalContext": "Current branch: release-42. Deploy freeze until Friday."
+  }
+}</script>
+<script type="text/plain" id="t-deny">{
+  "hookSpecificOutput": {
+    "hookEventName": "PreToolUse",
+    "permissionDecision": "deny",
+    "permissionDecisionReason": "Use rg instead of grep for better performance"
+  }
+}</script>
+<script type="text/plain" id="t-block">{
+  "decision": "block",
+  "reason": "Test suite must pass before proceeding"
+}</script>
+<script type="text/plain" id="t-stop">{ "continue": false, "stopReason": "Build failed, fix errors before continuing" }</script>
+<script type="text/plain" id="t-perm">{
+  "hookSpecificOutput": {
+    "hookEventName": "PermissionRequest",
+    "decision": {
+      "behavior": "allow"
+    }
+  }
+}</script>
+<script type="text/plain" id="r-prettier">{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.file_path' | xargs npx prettier --write"
+          }
+        ]
+      }
+    ]
+  }
+}</script>
+<script type="text/plain" id="r-protect-reg">{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/protect-files.sh"
+          }
+        ]
+      }
+    ]
+  }
+}</script>
+<script type="text/plain" id="r-chmod">chmod +x .claude/hooks/protect-files.sh</script>
+<script type="text/plain" id="r-compact">{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo 'Reminder: use Bun, not npm. Run bun test before committing. Current sprint: auth refactor.'"
+          }
+        ]
+      }
+    ]
+  }
+}</script>
+<script type="text/plain" id="r-log">{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.command' >> ~/.claude/command-log.txt"
+          }
+        ]
+      }
+    ]
+  }
+}</script>
+<script type="text/plain" id="r-plan">{
+  "hooks": {
+    "PermissionRequest": [
+      {
+        "matcher": "ExitPlanMode",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '{\"hookSpecificOutput\": {\"hookEventName\": \"PermissionRequest\", \"decision\": {\"behavior\": \"allow\"}}}'"
+          }
+        ]
+      }
+    ]
+  }
+}</script>
+<script type="text/plain" id="r-audit">{
+  "hooks": {
+    "ConfigChange": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -c '{timestamp: now | todate, source: .source, file: .file_path}' >> ~/claude-config-audit.log"
+          }
+        ]
+      }
+    ]
+  }
+}</script>
+<script type="text/plain" id="ty-command">{
+  "type": "command",
+  "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/check-style.sh",
+  "timeout": 30
+}</script>
+<script type="text/plain" id="ty-http">{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "http",
+            "url": "http://localhost:8080/hooks/tool-use",
+            "headers": {
+              "Authorization": "Bearer $MY_TOKEN"
+            },
+            "allowedEnvVars": ["MY_TOKEN"]
+          }
+        ]
+      }
+    ]
+  }
+}</script>
+<script type="text/plain" id="ty-mcp">{
+  "type": "mcp_tool",
+  "server": "nombre-del-servidor",
+  "tool": "nombre-de-la-herramienta",
+  "input": { "path": "${tool_input.file_path}" }
+}</script>
+<script type="text/plain" id="ty-prompt">{
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "Check if all tasks are complete. If not, respond with {\"ok\": false, \"reason\": \"what remains to be done\"}."
+          }
+        ]
+      }
+    ]
+  }
+}</script>
+<script type="text/plain" id="ty-agent">{
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "agent",
+            "prompt": "Verify that all unit tests pass. Run the test suite and check the results. $ARGUMENTS",
+            "timeout": 120
+          }
+        ]
+      }
+    ]
+  }
+}</script>
+
+<script>
+/* ---------- utilidades ---------- */
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const T = id => document.getElementById(id).textContent;
+const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+function hlJSON(src){
+  return esc(src).replace(/("(?:\\.|[^"\\])*")(\s*:)?|\b(true|false|null)\b|(-?\b\d+\b)/g,(m,str,colon,bool,num)=>{
+    if(str) return colon ? `<span class="k">${str}</span>${colon}` : `<span class="s">${str}</span>`;
+    if(bool) return `<span class="b">${bool}</span>`;
+    return `<span class="n">${num}</span>`;
+  });
+}
+function hlBash(src){
+  return src.split('\n').map(line=>{
+    let e = esc(line);
+    const ci = line.search(/(^|\s)#/);
+    let code=e, com='';
+    if(ci>-1 && !line.startsWith('#!')){
+      const idx = esc(line.slice(0,ci)).length;
+      code = e.slice(0,idx); com = `<span class="c">${e.slice(idx)}</span>`;
+    } else if(line.startsWith('#!')){ return `<span class="c">${e}</span>`; }
+    code = code.replace(/("(?:[^"\\]|\\.)*"|'[^']*')/g,'<span class="s">$1</span>')
+               .replace(/\b(if|then|fi|for|in|do|done|exit|echo|else)\b/g,'<span class="kw">$1</span>');
+    return code+com;
+  }).join('\n');
+}
+function render(el, src, lang){
+  el.dataset.raw = src;
+  el.innerHTML = lang==='bash' ? hlBash(src) : hlJSON(src);
+}
+function codeBlock(title, srcId, lang='json'){
+  const id = 'cb'+Math.random().toString(36).slice(2,8);
+  setTimeout(()=>{ const el=document.getElementById(id); if(el) render(el, T(srcId), lang); });
+  return `<div class="code"><div class="bar"><span>${title}</span><button data-copy="${id}">copiar</button></div><pre><code id="${id}"></code></pre></div>`;
+}
+document.addEventListener('click', e=>{
+  const b = e.target.closest('[data-copy]'); if(!b) return;
+  const el = document.getElementById(b.dataset.copy);
+  const txt = el.dataset.raw ?? el.textContent;
+  navigator.clipboard?.writeText(txt).then(()=>{ b.textContent='¡copiado!'; setTimeout(()=>b.textContent='copiar',1200); })
+    .catch(()=>{ b.textContent='selecciona y copia'; });
+});
+
+/* ---------- progreso + nav ---------- */
+const secs = $$('main section');
+window.addEventListener('scroll',()=>{
+  const h = document.documentElement; $('#progress').style.width = (h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';
+  let cur = secs[0].id; secs.forEach(s=>{ if(s.getBoundingClientRect().top < 160) cur = s.id; });
+  $$('nav.side a').forEach(a=>a.classList.toggle('active', a.getAttribute('href')==='#'+cur));
+});
+
+/* ---------- 02 ciclo de vida ---------- */
+const EV = {
+  SessionStart:{sub:'inicia la sesión', when:'Cuando una sesión empieza o se reanuda.', block:false, matcher:'startup, resume, clear, compact, fork', use:'Inyectar contexto (lo que imprimas por stdout se añade al contexto). Con matcher compact, reinyectar reglas tras compactar.', cad:'por sesión'},
+  UserPromptSubmit:{sub:'envías un prompt', when:'Al enviar un prompt, antes de que Claude lo procese.', block:true, matcher:'(no admite matcher; siempre se dispara)', use:'Validar prompts o añadir contexto (p. ej. la rama actual) con additionalContext.', cad:'por turno'},
+  PreToolUse:{sub:'antes de la herramienta', when:'Antes de que se ejecute una llamada a herramienta.', block:true, matcher:'nombre de herramienta: Bash, Edit|Write, mcp__.*', use:'Bloquear comandos peligrosos, proteger archivos, permitir/denegar/preguntar.', cad:'por herramienta'},
+  PermissionRequest:{sub:'pide permiso', when:'Cuando una llamada a herramienta necesita una decisión de permiso (Claude Code está a punto de preguntarte).', block:true, matcher:'nombre de herramienta', use:'Aprobar automáticamente prompts concretos, como ExitPlanMode. Mantén el matcher lo más estrecho posible.', cad:'por herramienta'},
+  Tool:{tool:true},
+  PostToolUse:{sub:'tras la herramienta', when:'Después de que una llamada a herramienta tenga éxito.', block:true, blockNote:'decision:"block" da feedback a Claude, pero no puede deshacer: la herramienta ya se ejecutó.', matcher:'nombre de herramienta', use:'Formatear con Prettier tras Edit/Write, registrar comandos Bash en un log.', cad:'por herramienta'},
+  Stop:{sub:'Claude termina', when:'Cuando Claude termina de responder (cada vez, no sólo al acabar la tarea). No se dispara si tú interrumpes.', block:true, matcher:'(no admite matcher)', use:'Comprobar que todo está hecho o que los tests pasan antes de dejar parar a Claude.', cad:'por turno'},
+  SessionEnd:{sub:'termina la sesión', when:'Cuando la sesión termina.', block:false, matcher:'clear, resume, logout, prompt_input_exit, other', use:'Limpiar archivos temporales. Ojo: comparte un presupuesto de tiempo muy corto (1,5 s por defecto).', cad:'por sesión'},
+};
+const SIDE = {
+  Notification:{when:'Cuando Claude Code envía una notificación (espera input o permiso).', block:false, matcher:'permission_prompt, idle_prompt, auth_success, elicitation_dialog…', use:'Notificación de escritorio cuando Claude te necesita.', cad:'cuando toca'},
+  PostToolUseFailure:{when:'Después de que una llamada a herramienta falle.', block:false, matcher:'nombre de herramienta', use:'Registrar o analizar fallos.', cad:'por herramienta'},
+  PreCompact:{when:'Antes de compactar el contexto.', block:true, matcher:'manual, auto', use:'Guardar información antes del resumen.', cad:'cuando toca'},
+  SubagentStart:{when:'Cuando se lanza un subagente.', block:false, matcher:'tipo de agente: Explore, Plan, nombres propios', use:'Registrar o preparar el trabajo de subagentes.', cad:'cuando toca'},
+  SubagentStop:{when:'Cuando un subagente termina.', block:true, matcher:'tipo de agente', use:'Verificar el resultado del subagente.', cad:'cuando toca'},
+  ConfigChange:{when:'Cuando cambia un archivo de configuración durante la sesión.', block:true, matcher:'user_settings, project_settings, local_settings, policy_settings, skills', use:'Auditar cambios de configuración en un log.', cad:'cuando toca'},
+  CwdChanged:{when:'Cuando cambia el directorio de trabajo (p. ej. Claude hace cd).', block:false, matcher:'(no admite matcher)', use:'Recargar variables de entorno con direnv escribiendo en CLAUDE_ENV_FILE.', cad:'cuando toca'},
+  FileChanged:{when:'Cuando un archivo vigilado cambia en disco.', block:false, matcher:'nombres literales: .envrc|.env', use:'Reaccionar a cambios de archivos concretos, los escriba quien los escriba.', cad:'cuando toca'},
+};
+const lane = $('#lane'), side=$('#sideEv');
+Object.entries(EV).forEach(([k,v],i,arr)=>{
+  const d=document.createElement('div');
+  d.className='ev'+(v.tool?' tool':''); d.dataset.k=k;
+  d.innerHTML = v.tool ? '⚙ herramienta<small>Bash, Edit, Read…</small>' : `${k}<small>${v.sub}</small>${v.block?'<span class="blk">bloquea</span>':''}`;
+  if(!v.tool) d.onclick=()=>showEv(k);
+  lane.appendChild(d);
+  if(i<arr.length-1){ const a=document.createElement('div'); a.className='arrow'; lane.appendChild(a); }
+});
+Object.entries(SIDE).forEach(([k,v])=>{
+  const d=document.createElement('div'); d.className='ev'; d.dataset.k=k;
+  d.innerHTML=`${k}${v.block?'<span class="blk">bloquea</span>':''}`; d.onclick=()=>showEv(k); side.appendChild(d);
+});
+function showEv(k){
+  const v = EV[k]||SIDE[k];
+  $$('.ev').forEach(e=>e.classList.toggle('sel', e.dataset.k===k));
+  $('#evinfo').innerHTML = `<div class="card"><h4>${k}</h4><dl>
+    <dt>Cuándo</dt><dd>${v.when}</dd>
+    <dt>Ritmo</dt><dd><span class="pill">${v.cad}</span></dd>
+    <dt>¿Bloquea?</dt><dd>${v.block?'<span class="pill r">sí</span>':'<span class="pill g">no</span>'} ${v.blockNote?'<br><span style="font-size:13px;color:var(--mute)">'+v.blockNote+'</span>':''}</dd>
+    <dt>Matcher</dt><dd><code>${v.matcher}</code></dd></dl></div>
+    <div class="card"><h4>Para qué sirve</h4><p style="margin:0;color:var(--ink2)">${v.use}</p></div>`;
+}
+showEv('PreToolUse');
+const script = [
+  ['SessionStart','Abres Claude Code → se dispara SessionStart.'],
+  ['UserPromptSubmit','Escribes “arregla el bug y formatea” → UserPromptSubmit, antes de que Claude lo lea.'],
+  ['PreToolUse','Claude quiere usar Edit → PreToolUse: tu hook puede bloquearlo aquí.'],
+  ['PermissionRequest','Hace falta permiso → PermissionRequest (y una Notification si tardas).'],
+  ['Tool','La herramienta Edit se ejecuta.'],
+  ['PostToolUse','Edit terminó con éxito → PostToolUse: aquí corre Prettier.'],
+  ['PreToolUse','Claude usa otra herramienta (Bash: npm test) → otra vez PreToolUse…'],
+  ['Tool','…se ejecuta Bash…'],
+  ['PostToolUse','…y PostToolUse de nuevo.'],
+  ['Stop','Claude termina de responder → Stop.'],
+  ['SessionEnd','Cierras la sesión → SessionEnd.'],
+];
+let playing=false;
+$('#playBtn').onclick = async ()=>{
+  if(playing) return; playing=true; $('#playBtn').disabled=true;
+  for(const [k,msg] of script){
+    $$('.ev').forEach(e=>e.classList.remove('lit'));
+    const el = lane.querySelector(`[data-k="${k}"]`); el.classList.add('lit');
+    el.scrollIntoView({block:'nearest',inline:'center',behavior:'smooth'});
+    if(k==='PermissionRequest') side.querySelector('[data-k="Notification"]').classList.add('lit');
+    $('#narr').textContent = msg;
+    if(k!=='Tool') showEv(k);
+    await new Promise(r=>setTimeout(r,1500));
+  }
+  $$('.ev').forEach(e=>e.classList.remove('lit'));
+  $('#narr').textContent='Fin del recorrido. Haz clic en cualquier evento para repasarlo.';
+  playing=false; $('#playBtn').disabled=false;
+};
+
+/* ---------- 03 anatomía ---------- */
+(function(){
+  const jv = $('#jv');
+  jv.innerHTML =
+`{
+  "hooks": {
+    <span class="seg e" data-s="e">"PostToolUse": [
+      {
+        <span class="seg m" data-s="m">"matcher": "Edit|Write"</span>,
+        <span class="seg h" data-s="h">"hooks": [
+          {
+            <span class="seg t" data-s="t">"type": "command",
+            "command": "jq -r '.tool_input.file_path' | xargs npx prettier --write"</span>
+          }
+        ]</span>
+      }
+    ]</span>
+  }
+}`;
+  const on = s => { $$('#jv .seg').forEach(x=>x.classList.toggle('on', x.dataset.s===s)); $$('.layer').forEach(l=>l.classList.toggle('on', l.dataset.seg===s)); };
+  $$('.layer').forEach(l=>{ l.onmouseenter=()=>on(l.dataset.seg); l.onclick=()=>on(l.dataset.seg); });
+  $$('#jv .seg').forEach(x=>x.onmouseenter=e=>{ e.stopPropagation(); on(x.dataset.s); });
+  on('e');
+})();
+
+/* ---------- 04 primer hook ---------- */
+const OS = {
+  linux:{id:'t-linux',tip:'notify-send necesita un demonio de notificaciones (no hay en servidores sin escritorio, SSH ni la mayoría de contenedores). Si no existe, instala libnotify-bin en Debian/Ubuntu. Pruébalo antes: notify-send \'Claude Code\' \'test\''},
+  mac:{id:'t-mac',tip:'osascript usa la app Script Editor. Si no tiene permiso de notificaciones, falla en silencio: ve a Ajustes del Sistema → Notificaciones → Script Editor → Permitir.'},
+  win:{id:'t-win',tip:'Abre un cuadro de diálogo (puede quedar detrás de la terminal). Si usas WSL, powershell.exe debe estar en tu PATH.'}
+};
+function setOS(k){ render($('#osCode'), T(OS[k].id)); $('#osTip').textContent = OS[k].tip; $$('#osTabs button').forEach(b=>b.classList.toggle('on', b.dataset.os===k)); }
+$$('#osTabs button').forEach(b=>b.onclick=()=>setOS(b.dataset.os)); setOS('linux');
+render($('#ifCode'), T('t-if'));
+['dbg1','dbg2','dbg3'].forEach(id=>render(document.getElementById(id), T('t-'+id), 'bash'));
+
+/* ---------- 05 simulador ---------- */
+const SC = [
+  {title:'Claude ejecuta <code>npm test</code>', ev:'PreToolUse', tool:'Bash', matcher:'Bash', file:'.claude/hooks/block-rm.sh', code:'t-blockrm',
+   input:{session_id:'abc123',cwd:'/home/user/my-project',hook_event_name:'PreToolUse',tool_name:'Bash',tool_input:{command:'npm test'}},
+   lines:[3,4,6,11], exit:0, stderr:'', res:['ok','Sin objeción. El comando no empieza por <code>rm</code>, así que el script sale con <b>exit 0</b>. Ojo: eso no lo aprueba, sólo sigue el <b>flujo normal de permisos</b>.']},
+  {title:'Claude ejecuta <code>rm -rf /tmp/build</code>', ev:'PreToolUse', tool:'Bash', matcher:'Bash', file:'.claude/hooks/block-rm.sh', code:'t-blockrm',
+   input:{session_id:'abc123',cwd:'/home/user/my-project',hook_event_name:'PreToolUse',tool_name:'Bash',tool_input:{command:'rm -rf /tmp/build'}},
+   lines:[3,4,6,7,8], exit:2, stderr:'Blocked: rm commands are not allowed', res:['bad','<b>Bloqueado.</b> Exit 2: el comando no se ejecuta y Claude recibe el texto de stderr como feedback, así que puede buscar otra forma.']},
+  {title:'Claude edita <code>.env</code>', ev:'PreToolUse', tool:'Edit', matcher:'Edit|Write', file:'.claude/hooks/protect-files.sh', code:'t-protect',
+   input:{session_id:'abc123',cwd:'/home/user/my-project',hook_event_name:'PreToolUse',tool_name:'Edit',tool_input:{file_path:'/home/user/my-project/.env'}},
+   lines:[4,5,8,10,12,13,14,15], exit:2, stderr:"Blocked: /home/user/my-project/.env matches protected pattern '.env'", res:['bad','<b>Edición bloqueada antes de ocurrir.</b> El archivo coincide con un patrón protegido; Claude recibe el mensaje <code>Blocked:</code> y ajusta su enfoque.']},
+  {title:'Claude edita <code>src/app.js</code>', ev:'PostToolUse', tool:'Write', matcher:'Edit|Write', file:'comando en settings.json', code:'t-prettier-cmd', lang:'bash',
+   input:{session_id:'abc123',cwd:'/home/user/my-project',hook_event_name:'PostToolUse',tool_name:'Write',tool_input:{file_path:'/home/user/my-project/src/app.js'}},
+   lines:[2,4,5,6,7], exit:0, stderr:'', res:['ok','<b>Archivo formateado.</b> El hook corre <i>después</i> de la edición, así que no puede impedirla, pero deja el archivo con el estilo de Prettier. En la conversación no aparece nada: comprueba el efecto en el archivo.']},
+  {title:'Claude usa <code>Read</code> (sin hook)', ev:'PreToolUse', tool:'Read', matcher:'Edit|Write', file:'protect-files.sh (no se ejecuta)', code:'t-protect',
+   input:{session_id:'abc123',cwd:'/home/user/my-project',hook_event_name:'PreToolUse',tool_name:'Read',tool_input:{file_path:'/home/user/my-project/.env'}},
+   lines:[], exit:null, stderr:'', skip:true, res:['warn','<b>El hook ni siquiera se lanza.</b> El matcher <code>Edit|Write</code> no coincide con <code>Read</code>, así que Claude Code no ejecuta el script.']},
+];
+const STEPS=['1 · evento','2 · matcher','3 · stdin','4 · script','5 · salida','6 · resultado'];
+let sc=0, st=0, auto=null;
+$('#scen').innerHTML = SC.map((s,i)=>`<button data-i="${i}">${s.title}<br><span style="font-size:12px;color:var(--mute)">${s.ev} · matcher <code>${s.matcher}</code></span></button>`).join('');
+$$('#scen button').forEach(b=>b.onclick=()=>{ sc=+b.dataset.i; st=0; stopAuto(); drawSim(); });
+function pulse(id){ const f=$(id); f.classList.remove('go'); void f.offsetWidth; f.classList.add('go'); }
+function drawSim(){
+  const s=SC[sc];
+  $$('#scen button').forEach((b,i)=>b.classList.toggle('on',i===sc));
+  $('#steps').innerHTML = STEPS.map((t,i)=>`<span class="${i===st?'on':i<st?'done':''}">${t}</span>`).join('');
+  $('#simFile').textContent = s.file;
+  const lang = s.lang||'bash';
+  const src = T(s.code);
+  // código con resaltado de líneas
+  const showLines = st>=3 ? s.lines : [];
+  const html = (lang==='bash'?hlBash(src):hlJSON(src)).split('\n').map((l,i)=> showLines.includes(i+1) ? `<span class="hl">${l||' '}</span>` : l).join('\n');
+  $('#simCode').innerHTML = html;
+  $('#simIn').innerHTML = st>=2 && !s.skip ? hlJSON(JSON.stringify(s.input,null,2)) : '<span class="c">// todavía no se ha enviado nada</span>';
+  ['#bxA','#bxB','#bxC'].forEach(b=>$(b).classList.remove('lit'));
+  const toolCall = s.tool==='Bash' ? `${s.tool}: ${s.input.tool_input.command}` : `${s.tool}: ${s.input.tool_input.file_path.split('/').pop()}`;
+  $('#vA').innerHTML = st>=0 ? `evento <b>${s.ev}</b><br>${esc(toolCall)}` : '—';
+  $('#vB').innerHTML='—'; $('#vC').innerHTML='—';
+  const R=$('#simRes'); R.className='result';
+  if(st===0){ $('#bxA').classList.add('lit'); R.innerHTML=`Claude decide usar <code>${s.tool}</code>. Claude Code dispara el evento <code>${s.ev}</code> ${s.ev==='PreToolUse'?'(<i>antes</i> de ejecutar la herramienta)':'(<i>después</i> de que la herramienta tuvo éxito)'}.`; }
+  if(st===1){ $('#bxA').classList.add('lit'); const m = matches(s.matcher,s.tool);
+    R.innerHTML=`¿El matcher <code>${s.matcher}</code> coincide con <code>${s.tool}</code>? → ${m?'<b style="color:var(--ok)">sí</b>, se lanzará el hook.':'<b style="color:var(--bad)">no</b>. Este hook se omite.'}`; }
+  if(st===2){ if(s.skip){ R.className='result warn'; R.innerHTML='No hay nada que enviar: el hook no coincide.'; } else { pulse('#f1'); $('#bxB').classList.add('lit'); $('#vB').innerHTML='recibiendo JSON…'; R.innerHTML='Claude Code lanza tu script y le escribe el JSON del evento en <b>stdin</b>. Además de los campos comunes, incluye <code>tool_name</code> y <code>tool_input</code>.'; } }
+  if(st===3){ $('#bxB').classList.add('lit'); $('#vB').innerHTML= s.skip?'(no se ejecuta)':'ejecutando…'; R.innerHTML = s.skip?'El script no se ejecuta.':'El script lee stdin (<code>$(cat)</code>), extrae el campo con <code>jq</code> y decide. Las líneas resaltadas son las que se ejecutan en este caso.'; }
+  if(st===4){ $('#bxB').classList.add('lit');
+    if(s.skip){ $('#vB').innerHTML='—'; R.className='result warn'; R.innerHTML='Sin código de salida: no se ejecutó.'; }
+    else { $('#vB').innerHTML=`<span class="exitbig" style="color:${s.exit===2?'var(--bad)':'var(--ok)'}">exit ${s.exit}</span>${s.stderr?`<br><span style="color:var(--bad);font-size:12px">stderr: ${esc(s.stderr)}</span>`:''}`;
+      R.innerHTML = s.exit===2 ? 'El script termina con <b>exit 2</b> y deja el motivo en <b>stderr</b>.' : 'El script termina con <b>exit 0</b> y no escribe nada relevante.'; } }
+  if(st===5){ pulse('#f2'); $('#bxC').classList.add('lit'); R.className='result '+s.res[0]; R.innerHTML=s.res[1];
+    $('#vC').innerHTML = s.res[0]==='bad'?'<b style="color:var(--bad)">⛔ bloqueado</b>': s.res[0]==='ok'?'<b style="color:var(--ok)">✔ continúa</b>':'<b style="color:var(--warn)">↷ hook omitido</b>';
+    $('#vB').innerHTML = s.skip?'(no se ejecutó)':`exit ${s.exit}`; }
+  $('#simPrev').disabled = st===0; $('#simNext').disabled = st===STEPS.length-1;
+}
+function stopAuto(){ if(auto){clearInterval(auto);auto=null;$('#simAuto').textContent='▶ Automático';} }
+$('#simNext').onclick=()=>{ if(st<5){st++;drawSim();} };
+$('#simPrev').onclick=()=>{ if(st>0){st--;drawSim();} };
+$('#simAuto').onclick=()=>{
+  if(auto){ stopAuto(); return; }
+  st=0; drawSim(); $('#simAuto').textContent='⏸ Pausa';
+  auto=setInterval(()=>{ if(st<5){st++;drawSim();} else stopAuto(); },1700);
+};
+
+/* ---------- 06 exit ---------- */
+$$('.exit').forEach(x=>x.onclick=()=>x.classList.toggle('open'));
+
+/* ---------- 07 JSON ---------- */
+const JT = [
+  {n:'Denegar herramienta', id:'t-deny', ev:'PreToolUse', txt:'Cancela la llamada y envía <code>permissionDecisionReason</code> a Claude. Valores posibles de <code>permissionDecision</code>: <span class="pill r">deny</span> cancela · <span class="pill y">ask</span> muestra el prompt de permiso normal · <span class="pill g">allow</span> se salta el prompt interactivo (pero las reglas de denegación siguen aplicando) · <span class="pill">defer</span> sólo en modo no interactivo con <code>-p</code>.'},
+  {n:'Añadir contexto', id:'t-ctx', ev:'UserPromptSubmit', txt:'Inyecta texto en el contexto de Claude en cada prompt. <code>additionalContext</code> debe ir <b>dentro</b> de <code>hookSpecificOutput</code>; en el nivel superior se ignora en silencio.'},
+  {n:'Bloqueo genérico', id:'t-block', ev:'PostToolUse · Stop · UserPromptSubmit…', txt:'Varios eventos usan un <code>decision</code> en el nivel superior. Sólo <code>"block"</code> es válido, acompañado de un <code>reason</code>.'},
+  {n:'Aprobar permiso', id:'t-perm', ev:'PermissionRequest', txt:'Responde al diálogo de permiso por ti. Úsalo con un matcher muy concreto (p. ej. <code>ExitPlanMode</code>); con <code>.*</code> aprobarías todo.'},
+  {n:'Detener a Claude', id:'t-stop', ev:'cualquier evento', txt:'Campo universal: <code>continue: false</code> hace que Claude se detenga tras el hook y tiene prioridad sobre las decisiones del evento. <code>stopReason</code> se te muestra a ti.'},
+];
+$('#jsonTabs').innerHTML = JT.map((t,i)=>`<button data-i="${i}">${t.n}</button>`).join('');
+function setJT(i){ const t=JT[i]; $$('#jsonTabs button').forEach((b,j)=>b.classList.toggle('on',i===j));
+  $('#jsonPanel').innerHTML = `<div class="meta"><span class="pill y">${t.ev}</span><span class="pill">exit 0 + JSON por stdout</span></div><p style="color:var(--ink2);margin:6px 0">${t.txt}</p>${codeBlock('stdout del hook', t.id)}`; }
+$$('#jsonTabs button').forEach(b=>b.onclick=()=>setJT(+b.dataset.i)); setJT(0);
+
+/* ---------- 08 matcher ---------- */
+function matchMode(m){
+  if(m===undefined||m===''||m==='*') return {mode:'all'};
+  if(/^[A-Za-z0-9_\- ,|]+$/.test(m)) return {mode:'exact', list:m.split(/[|,]/).map(x=>x.trim()).filter(Boolean)};
+  try { return {mode:'regex', re:new RegExp(m)}; } catch(e){ return {mode:'error', err:e.message}; }
+}
+function matches(m,tool){ const r=matchMode(m); if(r.mode==='all') return true; if(r.mode==='exact') return r.list.includes(tool); if(r.mode==='regex') return r.re.test(tool); return false; }
+const TOOLS=['Bash','Edit','Write','Read','Grep','Glob','NotebookEdit','WebFetch','mcp__github__search_repositories','mcp__memory__create_entities','mcp__filesystem__write_file','ExitPlanMode'];
+const PRE=['Edit|Write','Bash','*','Edit, Write','mcp__.*','mcp__github__.*','^Notebook','mcp__.*__write.*','bash'];
+$('#mChips').innerHTML = PRE.map(p=>`<button>${esc(p)}</button>`).join('');
+$$('#mChips button').forEach(b=>b.onclick=()=>{ $('#mIn').value=b.textContent; drawM(); });
+function drawM(){
+  const m=$('#mIn').value, r=matchMode(m);
+  $('#mMode').innerHTML = r.mode==='all' ? '🌐 <b>Coincide con todo.</b> El hook se dispara en cada ocurrencia del evento.'
+    : r.mode==='exact' ? `🎯 <b>Nombres exactos:</b> ${r.list.map(x=>`<code>${esc(x)}</code>`).join(' o ')}`
+    : r.mode==='regex' ? `🧪 <b>Expresión regular</b> (sin anclar): <code>/${esc(m)}/</code>` : `❌ Regex no válida: ${esc(r.err)}`;
+  $('#mTools').innerHTML = TOOLS.map(t=>`<div class="${matches(m,t)?'y':'nn'}"><span>${t}</span></div>`).join('');
+  const t=$('#mTool').value; const ok=matches(m,t);
+  $('#mToolRes').innerHTML = t ? (ok?`✅ <code>${esc(t)}</code> <b style="color:var(--ok)">dispararía</b> el hook`:`⛔ <code>${esc(t)}</code> <b style="color:var(--bad)">no</b> lo dispararía`) : '';
+}
+$('#mIn').oninput=drawM; $('#mTool').oninput=drawM; drawM();
+
+/* ---------- 09 scope ---------- */
+const SCO=[
+  {n:'~/.claude/settings.json', c:'#6fa8e0', t:'Usuario: se aplica a <b>todos tus proyectos</b> en tu máquina. Ideal para cosas personales como las notificaciones de escritorio.'},
+  {n:'.claude/settings.json', c:'#e07a4f', t:'Proyecto: vive en la raíz del repo y <b>se puede commitear</b> para que todo el equipo tenga los mismos hooks (formateo, archivos protegidos).'},
+  {n:'.claude/settings.local.json', c:'#6fc28b', t:'Proyecto, pero <b>sólo para ti</b>: queda fuera de git. Útil para probar hooks sin afectar al equipo.'},
+  {n:'Managed policy settings', c:'#b490e6', t:'Organización: los define un administrador. Siguen ejecutándose aunque pongas <code>disableAllHooks</code> en tu settings (salvo que también se ponga en managed).'},
+];
+function setScope(i){ const s=SCO[i]; $$('.ring').forEach(r=>r.classList.toggle('on', +r.dataset.i===i));
+  $('#scopeInfo').innerHTML=`<h4 style="color:${s.c}">${s.n}</h4><p style="margin:0;color:var(--ink2)">${s.t}</p>`;
+  $$('#scopeTbl tr').forEach((tr,j)=>tr.classList.toggle('on', j===i+1)); }
+$$('.ring').forEach(r=>r.onclick=e=>{ e.stopPropagation(); setScope(+r.dataset.i); }); setScope(1);
+
+/* ---------- 10 recetas ---------- */
+const REC=[
+  {n:'🎨 Formatear tras editar', ev:'PostToolUse', m:'Edit|Write', where:'.claude/settings.json',
+   body:()=>`<p>Ejecuta Prettier sobre cada archivo que Claude edite. <code>jq</code> extrae la ruta del archivo del JSON de entrada y se la pasa a Prettier.</p>${codeBlock('.claude/settings.json','r-prettier')}<p style="font-size:14px;color:var(--ink2)"><b>Pruébalo:</b> pide a Claude que añada una línea con comillas simples a un archivo JS; Prettier (por defecto) las cambiará a dobles.</p>`},
+  {n:'🔒 Proteger archivos', ev:'PreToolUse', m:'Edit|Write', where:'.claude/settings.json + script',
+   body:()=>`<p>Impide editar <code>.env</code>, <code>package-lock.json</code> o cualquier cosa en <code>.git/</code>. Tres pasos:</p><b>1. Crea el script</b>${codeBlock('.claude/hooks/protect-files.sh','t-protect','bash')}<b>2. Hazlo ejecutable</b>${codeBlock('terminal','r-chmod','bash')}<b>3. Regístralo</b>${codeBlock('.claude/settings.json','r-protect-reg')}<p style="font-size:14px;color:var(--ink2)"><b>Pruébalo:</b> pide a Claude que añada un comentario a tu <code>.env</code>.</p>`},
+  {n:'🧠 Contexto tras compactar', ev:'SessionStart', m:'compact', where:'.claude/settings.json',
+   body:()=>`<p>Cuando el contexto se llena, la compactación lo resume y puede perder detalles. Este hook reinyecta lo importante: el texto que imprime por stdout se añade al contexto de Claude.</p>${codeBlock('.claude/settings.json','r-compact')}<p style="font-size:14px;color:var(--ink2)">Puedes cambiar el <code>echo</code> por algo dinámico, como <code>git log --oneline -5</code>. Para contexto en <i>cada</i> inicio, mejor usa <code>CLAUDE.md</code>.</p>`},
+  {n:'📜 Log de comandos', ev:'PostToolUse', m:'Bash', where:'~/.claude/settings.json',
+   body:()=>`<p>Guarda cada comando Bash que Claude ejecuta en un archivo de texto.</p>${codeBlock('~/.claude/settings.json','r-log')}`},
+  {n:'✅ Auto-aprobar plan', ev:'PermissionRequest', m:'ExitPlanMode', where:'~/.claude/settings.json',
+   body:()=>`<p>Se salta el diálogo de aprobación cuando Claude termina de presentar un plan. Aquí no basta con un código de salida: el hook escribe una <b>decisión JSON</b> en stdout.</p>${codeBlock('~/.claude/settings.json','r-plan')}<div class="note bad">Mantén el matcher lo más estrecho posible. Con <code>.*</code> o vacío aprobarías <b>todos</b> los permisos, incluidas escrituras y comandos de shell.</div>`},
+  {n:'🕵️ Auditar configuración', ev:'ConfigChange', m:'""', where:'~/.claude/settings.json',
+   body:()=>`<p>Registra cada cambio de archivos de configuración durante la sesión (una línea JSON por cambio).</p>${codeBlock('~/.claude/settings.json','r-audit')}<p style="font-size:14px;color:var(--ink2)">Para bloquear el cambio: <code>exit 2</code> o devuelve <code>{"decision": "block"}</code>.</p>`},
+];
+$('#recTabs').innerHTML = REC.map((r,i)=>`<button data-i="${i}">${r.n}</button>`).join('');
+function setRec(i){ const r=REC[i]; $$('#recTabs button').forEach((b,j)=>b.classList.toggle('on',i===j));
+  $('#recPanel').innerHTML = `<div class="meta"><span class="pill y">evento: ${r.ev}</span><span class="pill">matcher: ${esc(r.m)}</span><span class="pill g">${r.where}</span></div>${r.body()}`; }
+$$('#recTabs button').forEach(b=>b.onclick=()=>setRec(+b.dataset.i)); setRec(0);
+
+/* ---------- 11 tipos ---------- */
+const TY=[
+  {t:'command', s:'Ejecuta un comando de shell. Recibe JSON por stdin. El más común.', id:'ty-command', d:'Timeout por defecto: 600 s. Si añades <code>"args": []</code> se ejecuta en “exec form” (sin shell), útil para evitar problemas de comillas.'},
+  {t:'http', s:'Hace POST del JSON a una URL.', id:'ty-http', d:'La respuesta usa el mismo formato JSON que un command. Si el endpoint responde con un estado que no es 2xx o falla, es un error no bloqueante. En las cabeceras sólo se resuelven las variables listadas en <code>allowedEnvVars</code>.'},
+  {t:'mcp_tool', s:'Llama a una herramienta de un servidor MCP configurado.', id:'ty-mcp', d:'Campos <code>server</code>, <code>tool</code> e <code>input</code>, con sustitución <code>${ruta}</code> desde el JSON de entrada, como <code>${tool_input.file_path}</code>.'},
+  {t:'prompt', s:'Un modelo Claude evalúa y decide (una sola llamada).', id:'ty-prompt', d:'El modelo responde <code>{"ok": true}</code> para seguir o <code>{"ok": false, "reason": "..."}</code>. En <code>Stop</code>, el <code>reason</code> vuelve a Claude como su siguiente instrucción. Timeout por defecto: 30 s. Úsalo cuando los datos del evento bastan para decidir.'},
+  {t:'agent', s:'Un subagente con herramientas (Read, Grep…) verifica antes de decidir.', id:'ty-agent', exp:true, d:'<b>Experimental.</b> Igual formato <code>ok</code>/<code>reason</code>, timeout por defecto de 60 s y hasta 50 turnos de herramientas. Úsalo cuando haya que comprobar el estado real del código (p. ej. que los tests pasan). <code>$ARGUMENTS</code> se sustituye por el JSON de entrada.'},
+];
+$('#types').innerHTML = TY.map((t,i)=>`<div class="type" data-i="${i}"><div class="tt">"${t.t}"</div>${t.exp?'<div class="exp">EXPERIMENTAL</div>':''}<p>${t.s}</p></div>`).join('');
+function setTy(i){ const t=TY[i]; $$('.type').forEach((x,j)=>x.classList.toggle('on',i===j));
+  $('#typeDetail').innerHTML = `<div class="grid2"><div class="card"><h4 style="margin:0 0 6px;font-family:var(--mono);color:var(--acc2)">type: "${t.t}"</h4><p style="margin:0;color:var(--ink2)">${t.d}</p></div><div>${codeBlock('ejemplo', t.id)}</div></div>`; }
+$$('.type').forEach(x=>x.onclick=()=>setTy(+x.dataset.i)); setTy(0);
+
+/* ---------- 13 quiz ---------- */
+const QZ=[
+  {q:'Tu script de <code>PreToolUse</code> detecta un comando peligroso. ¿Con qué código debe salir para bloquearlo?', o:['exit 1','exit 2','exit 0','exit 127'], a:1, f:'Sólo <code>exit 2</code> bloquea. <code>exit 1</code> (y otros) son errores <b>no bloqueantes</b>: la acción sigue adelante.'},
+  {q:'¿Cómo recibe tu script los datos del evento (herramienta, argumentos, cwd…)?', o:['Como argumentos de línea de comandos','Como JSON por stdin','Leyendo un archivo temporal','En variables de entorno TOOL_NAME y TOOL_INPUT'], a:1, f:'Claude Code envía un JSON por <b>stdin</b>. Por eso los ejemplos empiezan con <code>INPUT=$(cat)</code> y usan <code>jq</code>.'},
+  {q:'Quieres que un hook se ejecute sólo cuando Claude edita o crea archivos. ¿Qué matcher usas en PostToolUse?', o:['"edit|write"','"Edit|Write"','"*"','"Bash"'], a:1, f:'Los matchers distinguen mayúsculas: los nombres de herramienta son <code>Edit</code> y <code>Write</code>. <code>"*"</code> coincidiría con todo.'},
+  {q:'Un hook PreToolUse sale con <code>exit 0</code> sin imprimir nada. ¿Qué pasa con la llamada?', o:['Queda aprobada automáticamente','Se bloquea','Sigue el flujo normal de permisos','Se repite'], a:2, f:'Exit 0 significa “sin objeción”, no “aprobado”. El flujo normal de permisos sigue aplicándose.'},
+  {q:'Quieres que todo tu equipo tenga el hook de Prettier al clonar el repo. ¿Dónde lo pones?', o:['~/.claude/settings.json','.claude/settings.local.json','.claude/settings.json','En CLAUDE.md'], a:2, f:'<code>.claude/settings.json</code> es de proyecto y se puede commitear. El <code>.local.json</code> queda fuera de git y el de <code>~</code> es sólo tuyo.'},
+  {q:'¿Qué comando abre el navegador de hooks dentro de Claude Code para verificar tu configuración?', o:['/config','/hooks','/settings','/debug'], a:1, f:'<code>/hooks</code> muestra todos los hooks configurados agrupados por evento. <code>/debug</code> activa el log de depuración.'},
+];
+let score=0, answered=0;
+$('#quizBox').innerHTML = QZ.map((q,i)=>`<div class="q" id="q${i}"><div class="qt">${i+1}. ${q.q}</div><div class="opts">${q.o.map((o,j)=>`<button data-q="${i}" data-o="${j}">${o.startsWith('"')||o.startsWith('/')||o.startsWith('exit')||o.startsWith('~')||o.startsWith('.')?'<code>'+o+'</code>':o}</button>`).join('')}</div><div class="fb">${q.f}</div></div>`).join('');
+$$('#quizBox button').forEach(b=>b.onclick=()=>{
+  const qi=+b.dataset.q, oi=+b.dataset.o, q=QZ[qi], box=$('#q'+qi);
+  if(box.classList.contains('done')) return;
+  box.classList.add('done'); answered++;
+  box.querySelectorAll('button').forEach((x,j)=>{ x.disabled=true; if(j===q.a) x.classList.add('right'); });
+  if(oi===q.a) score++; else b.classList.add('wrong');
+  $('#score').textContent = `Puntuación: ${score}/${answered}` + (answered===QZ.length ? (score===QZ.length?' — ¡perfecto! Ya puedes escribir tu primer hook.':' — repasa las secciones de las preguntas falladas.') : '');
+});
+</script>
+</body>
+</html>

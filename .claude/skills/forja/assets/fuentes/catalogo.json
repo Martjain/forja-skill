@@ -1,0 +1,19 @@
+{
+  "nota": "Fuentes con licencia SIL Open Font License 1.1 (ver LICENSE de cada carpeta), subconjunto latin (incluye á é í ó ú ñ ü ¿ ¡). Origen: paquetes @fontsource de npm.",
+  "fuentes": {
+    "newsreader":            {"nombre": "Newsreader",            "rol": ["titulos", "cuerpo"], "pesos": [400, 600, 700], "caracter": "Serif editorial de periódico; serio y cálido. Buena para temas técnicos explicados con calma."},
+    "fraunces":              {"nombre": "Fraunces",              "rol": ["titulos"],           "pesos": [400, 600, 700], "caracter": "Serif 'old style' con curvas suaves y algo de humor. Temas de oficio, cocina, naturaleza, historia."},
+    "source-serif-4":        {"nombre": "Source Serif 4",        "rol": ["titulos", "cuerpo"], "pesos": [400, 600, 700], "caracter": "Serif de lectura, sobria y muy legible. Temas académicos y científicos."},
+    "literata":              {"nombre": "Literata",              "rol": ["titulos", "cuerpo"], "pesos": [400, 600, 700], "caracter": "Serif hecha para leer en pantalla por horas. Temas largos, literatura, humanidades."},
+    "dm-serif-display":      {"nombre": "DM Serif Display",      "rol": ["titulos"],           "pesos": [400],           "caracter": "Display de alto contraste, elegante. Solo para títulos grandes. Arte, diseño, finanzas."},
+    "instrument-serif":      {"nombre": "Instrument Serif",      "rol": ["titulos"],           "pesos": [400],           "caracter": "Display condensada y fina, moderna. Solo títulos grandes. Tecnología con tono editorial."},
+    "bricolage-grotesque":   {"nombre": "Bricolage Grotesque",   "rol": ["titulos"],           "pesos": [400, 600, 700], "caracter": "Grotesca con personalidad y trazos irregulares. Temas creativos, hacer cosas con las manos, maker."},
+    "ibm-plex-sans":         {"nombre": "IBM Plex Sans",         "rol": ["cuerpo"],            "pesos": [400, 600, 700], "caracter": "Sans industrial y precisa. Ingeniería, industria, petróleo, sistemas."},
+    "instrument-sans":       {"nombre": "Instrument Sans",       "rol": ["cuerpo"],            "pesos": [400, 600, 700], "caracter": "Sans contemporánea y limpia. Software, producto, interfaces."},
+    "atkinson-hyperlegible": {"nombre": "Atkinson Hyperlegible", "rol": ["cuerpo"],            "pesos": [400, 700],      "caracter": "Diseñada para máxima legibilidad (letras que no se confunden). Úsala cuando el texto sea denso o técnico."},
+    "jetbrains-mono":        {"nombre": "JetBrains Mono",        "rol": ["codigo"],            "pesos": [400, 600, 700], "caracter": "Monoespaciada de programación, muy clara. Código y terminal."},
+    "ibm-plex-mono":         {"nombre": "IBM Plex Mono",         "rol": ["codigo", "titulos"], "pesos": [400, 600, 700], "caracter": "Monoespaciada industrial. Código, datos, y títulos de temas de terminal."},
+    "courier-prime":         {"nombre": "Courier Prime",         "rol": ["codigo", "titulos"], "pesos": [400, 700],      "caracter": "Máquina de escribir / impresora. Temas de archivo, historial, documentos, guiones."}
+  },
+  "prohibidas_como_principal": ["Inter", "Roboto", "Arial", "Helvetica", "Open Sans", "Space Grotesk", "Poppins", "Montserrat"]
+}

@@ -1,0 +1,45 @@
+{
+  "familia": "claude-code",
+  "descripcion": "Guías sobre Claude Code y sus piezas (skills, hooks, subagentes, MCP, plugins).",
+  "origen": "Paleta inspirada en los colores públicos de Anthropic. Sin logos, wordmarks ni ilustraciones de la marca.",
+  "paleta": {
+    "fondo": "#FAF9F5",
+    "superficie": "#F0EEE6",
+    "borde": "#E8E6DC",
+    "tinta": "#141413",
+    "tinta_suave": "#5E5D59",
+    "gris_medio": "#B0AEA5",
+    "acento": "#D97757",
+    "acento_oscuro": "#B4532F",
+    "secundario_azul": "#6A9BCC",
+    "secundario_verde": "#788C5D"
+  },
+  "bloques_oscuros": {
+    "fondo": "#141413",
+    "tinta": "#FAF9F5",
+    "acento": "#D97757"
+  },
+  "tipografia": {
+    "titulos": "newsreader",
+    "cuerpo": "instrument-sans",
+    "codigo": "jetbrains-mono",
+    "nota": "ids de assets/fuentes/catalogo.json; se incrustan con scripts/fuentes.py css"
+  },
+  "tono": "Directo y cálido, como alguien que te enseña junto a la terminal. Frases cortas, ejemplos con comandos reales.",
+  "rasgos": [
+    "Fondo crema con bloques oscuros alternados para dar ritmo",
+    "El acento terracota marca lo importante; no se usa de relleno",
+    "Bloques de código con aspecto de terminal",
+    "Esquinas suaves y bordes finos"
+  ],
+  "motivos_por_tema": {
+    "skills": "capas y carpetas que se abren (divulgación progresiva)",
+    "hooks": "eventos y gatillos sobre una línea de tiempo de la sesión",
+    "hooks-v2": "garitas de control: una pluma que se abre o se cierra en el camino de cada acción",
+    "subagentes": "ramas que se separan y vuelven con un resultado",
+    "mcp": "conectores y enchufes entre sistemas",
+    "plugins": "paquetes que agrupan piezas",
+    "hooks-v3": "circuito de relés: la señal de cada evento corre por un cable, el matcher es un selector de vía y tu script es un relé que deja pasar la corriente o la corta",
+    "hooks-v4": "línea de ensamblaje: la sesión es una banda transportadora, cada evento una estación fija, el matcher el lector de etiquetas y el hook la pluma que deja pasar, detiene (exit 2) o avisa"
+  }
+}
