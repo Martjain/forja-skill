@@ -1,0 +1,46 @@
+{
+  "familia": "lengua-y-literatura",
+  "descripcion": "Guías de Español, lengua y literatura de secundaria y bachillerato (tipos de texto, ensayo, argumentación, géneros literarios, gramática, ortografía).",
+  "origen": "Paleta tomada de los objetos con que se estudia Español: la hoja de cuaderno de rayas con sus renglones azul claro y su margen rojo, la tinta azul del bolígrafo, el grafito del lápiz y los marcatextos con que se subraya un texto (amarillo, azul, verde, rosa). Los bloques oscuros son la pasta azul marino de un libro de texto, sobre la que los marcatextos brillan. Sin logos ni marcas.",
+  "paleta": {
+    "fondo": "#FBF8F1",
+    "superficie": "#F1ECDF",
+    "borde": "#DCD3BF",
+    "tinta": "#1E2433",
+    "tinta_suave": "#545B6B",
+    "gris_medio": "#A3A6AE",
+    "renglon": "#B9CDE6",
+    "margen": "#D9534A",
+    "acento": "#C2410C",
+    "acento_oscuro": "#9A330A",
+    "marcatextos": "#F6D743",
+    "azul": "#2B4C9B",
+    "verde": "#2F7D5B",
+    "rosa": "#D9468A"
+  },
+  "bloques_oscuros": {
+    "fondo": "#1B2340",
+    "tinta": "#F2EFE6",
+    "tinta_suave": "#B5BACB",
+    "acento": "#F6D743",
+    "azul": "#9DB8F2",
+    "verde": "#7FD1A8",
+    "rosa": "#F59AC2"
+  },
+  "tipografia": {
+    "titulos": "literata",
+    "cuerpo": "atkinson-hyperlegible",
+    "codigo": "courier-prime",
+    "nota": "ids de assets/fuentes/catalogo.json. Literata es una serif hecha para leer literatura en pantalla; Atkinson Hyperlegible da máxima claridad a estudiantes de secundaria; Courier Prime, de máquina de escribir, para los fragmentos de texto que se analizan, como si fueran borradores."
+  },
+  "tono": "Como una buena maestra de Español que te presta su cuaderno: frases cortas, ejemplos de la vida diaria de un adolescente, y siempre el porqué. Nada de definiciones de diccionario sin un ejemplo al lado.",
+  "rasgos": [
+    "Fondo de hoja de cuaderno: renglones azul claro muy tenues y un margen rojo fino a la izquierda en las secciones principales",
+    "El significado de los marcatextos es fijo en toda la familia y se declara una vez: amarillo = la idea principal o tesis, azul = argumentos o razones, verde = conclusión o cierre, rosa = ejemplos y datos",
+    "Los textos que se analizan van en letra de máquina de escribir, como borradores, y se subrayan con marcatextos",
+    "Bloques oscuros azul marino de pasta de libro, donde los marcatextos brillan"
+  ],
+  "motivos_por_tema": {
+    "el ensayo": "la tesis subrayada en amarillo como la tabla de una mesa, sostenida por argumentos en azul como patas: si le quitas patas, la mesa se cae; la conclusión en verde es el piso que la vuelve a apoyar"
+  }
+}

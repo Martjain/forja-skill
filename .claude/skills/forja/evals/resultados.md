@@ -217,3 +217,26 @@ Lo pidió el usuario. Un agente por guía, en paralelo, editando la guía origin
   - en merge-rebase, el laboratorio dibujaba el rebase y el fast-forward se veía;
   - en motor, dos etiquetas.
 - **Mejoras a la skill a partir de los reportes:** el número de etiqueta en el celular se mide con el ancho real; `svg_kit` suma `registrar`, `conector`, `color_sub`, `em` y atributos del svg; el revisor tiene `data-fases` y captura sin el desenfoque; `onda` termina recta; se documentaron la clase `.etiqueta` reservada, `ancho_movil` con min-width, cómo animar ilustraciones interactivas y los degradados con `userSpaceOnUse`.
+
+## Guía nueva: el ensayo (secundaria), primera guía con la skill de ilustración
+
+- **Pedido:** la sobrina del usuario estudia para su examen de Español y no entiende el ensayo (características, estructura, tipos y propósitos). Nivel: secundaria, principiante.
+- **Familia nueva `lengua-y-literatura`:** cuaderno de rayas con margen rojo, tinta azul y pasta azul marino. Los marcatextos tienen significado fijo: amarillo = tesis, azul = argumentos, verde = conclusión, rosa = ejemplos y datos. Fuentes: Literata, Atkinson Hyperlegible y Courier Prime.
+- **Motivo:** la mesa. La tesis es la tabla y los argumentos son las patas.
+- **Fuentes:** fichas de la SEP de 3.º de secundaria, CCH UNAM (tutoría y examen diagnóstico), UANL, UAEMex, publicaciones de la UNAM, UNLP y SEP Jalisco.
+- **Contenido:**
+  - 9 secciones, 3 de ellas oscuras.
+  - Un probador "¿es ensayo o no?" con 6 borradores.
+  - Una animación de un ensayo que se escribe y se marca.
+  - Un diagrama de párrafos y un laboratorio de la mesa (8 argumentos y qué tan absoluta es la tesis).
+  - Un clasificador de tipos y un paso a paso que se desvanece para escribir una tesis.
+  - 13 flashcards y un mini examen.
+- **Calificación de las ilustraciones:** de 8 a 9.5. Validador, celular e ilustraciones sin problemas; 10 retos recorridos con Playwright.
+- **Ajustes a la skill a partir de esta guía:**
+  - `svg_kit` pone la letra monoespaciada con `style`, porque el atributo no acepta `var()`.
+  - El validador ya no cuenta como relleno los conectores citados entre comillas: una guía de redacción puede enseñar «en conclusión,».
+- **Pendiente:**
+  - documentar cómo ocultar una animación que revela una predicción;
+  - avisar del `min-width: 0` en cuadrículas;
+  - que el revisor capture los diagramas después de responder la predicción;
+  - revisar si el simulador debe exigir un control deslizante.

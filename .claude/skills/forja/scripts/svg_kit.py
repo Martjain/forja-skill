@@ -68,7 +68,7 @@ class Lienzo:
             f"{self.nombre}: '{txt}' mide {size} y el mínimo en este viewBox es {self.letra_min}"
         self._caja(x, y, txt, size, anchor, mono, em)
         a = f' text-anchor="{anchor}"' if anchor != "start" else ""
-        m = ' font-family="var(--f-codigo)"' if mono else ""
+        m = ' style="font-family:var(--f-codigo)"' if mono else ""
         return f'<text x="{r1(x)}" y="{r1(y)}" font-size="{size}" fill="{color}"{a}{m}{extra}>{txt}</text>'
 
     def etiqueta(self, punto, ruta, titulo, sub, color, anchor="start", color_sub="var(--tinta)"):

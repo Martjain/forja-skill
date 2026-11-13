@@ -267,7 +267,9 @@ def validar(ruta: Path):
         errores.append(f"La sección de fuentes tiene {len(lector.links_fuentes)} enlace(s); se esperan al menos 2")
 
     # 3. Texto de relleno
-    bajo = texto.lower()
+    # Lo que va entre comillas «…» o "…" es un ejemplo que se analiza (una guía de redacción puede
+    # enseñar el conector «en conclusión,»): no cuenta como relleno de la guía.
+    bajo = re.sub(r"«[^»]{0,400}»|“[^”]{0,400}”", " ", texto.lower())
     encontradas = sorted({m.group(0) for p in FRASES_RELLENO for m in re.finditer(p, bajo)})
     if encontradas:
         errores.append(f"Texto de relleno: {', '.join(repr(f) for f in encontradas)}")
