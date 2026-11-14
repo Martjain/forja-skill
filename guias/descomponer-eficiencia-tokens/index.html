@@ -75,7 +75,7 @@ button, input { font: inherit; min-height: 44px; }
 [data-forja-continuar][hidden] { display: none; }
 [data-forja-continuar] a { display: inline-flex; align-items: center; min-height: 44px; padding: .5rem 1.1rem; border-radius: 8px; background: var(--acento); color: var(--fondo); text-decoration: none; font-weight: 600; }
 [data-forja-reiniciar] { background: none; border: 0; color: inherit; text-decoration: underline; opacity: .7; cursor: pointer; }
-[data-tras-prediccion]:not(.revelado) { filter: blur(7px) grayscale(.6); opacity: .4; pointer-events: none; user-select: none; }
+[data-tras-prediccion]:not(.revelado) { filter: blur(12px) grayscale(.8); opacity: .3; pointer-events: none; user-select: none; }
 [data-tras-prediccion] { transition: filter .5s ease, opacity .5s ease; }
 .sin-fuente { text-decoration: underline dotted; text-underline-offset: 3px; }
 .sin-fuente::after { content: "†"; color: var(--acento); font-size: .75em; vertical-align: super; margin-left: .1em; }
@@ -1057,14 +1057,19 @@ details.porque summary { cursor: pointer; min-height: 44px; display: flex; align
     }
   }
   // La primera vez no anima (no sabe desde dónde). Si el número se crea con innerHTML, ponle data-valor con el de partida.
-  function contar(el, valor, { decimales = 0, sufijo = '', prefijo = '', ms = 450, miles = true } = {}) {
+  // final: texto o función (n => texto) para el último cuadro, por ejemplo «llena» al llegar a 100.
+  function contar(el, valor, { decimales = 0, sufijo = '', prefijo = '', ms = 450, miles = true, final = null } = {}) {
     if (!el) return;
     const previo = el.__mostrado ?? parseFloat(el.dataset.valor ?? valor);
+    if (previo === valor && el.dataset.valor == valor && !(enCurso.get(el) || {}).texto) return;   // ya está ahí
     el.dataset.valor = valor;
     // Signo menos tipográfico (−), como en el resto de la guía.
     const fmt = n => prefijo + (miles ? n.toLocaleString('en-US', { minimumFractionDigits: decimales, maximumFractionDigits: decimales })
       : n.toFixed(decimales)).replace(/^-/, '−') + sufijo;
-    interpolar(el, 'texto', { n: previo }, { n: valor }, ms, v => { el.__mostrado = v.n; el.textContent = fmt(v.n); });
+    interpolar(el, 'texto', { n: previo }, { n: valor }, ms, v => {
+      el.__mostrado = v.n;
+      el.textContent = v.n === valor && final != null ? (typeof final === 'function' ? final(valor) : final) : fmt(v.n);
+    });
   }
   // Para lo que no es un atributo (una curva que se redibuja, una figura calculada): anima los números de un
   // objeto de estado y llama a dibujar(estado) en cada cuadro.
@@ -1078,10 +1083,17 @@ details.porque summary { cursor: pointer; min-height: 44px; display: flex; align
     const mapa = enCurso.get(estado);
     if (mapa) mapa.__destino = destino;
   }
-  function escalonar(lista, fn, pasoMs = 45) {
+  // Devuelve una función que cancela lo que falta. Con clave, una nueva llamada con la misma clave cancela la anterior
+  // (por ejemplo, si el usuario mueve otro control a media secuencia).
+  const escalonados = {};
+  function escalonar(lista, fn, pasoMs = 45, clave = null) {
+    if (clave && escalonados[clave]) escalonados[clave]();
     const els = [...lista];
-    if (reducir || !pasoMs) { els.forEach(fn); return; }
-    els.forEach((el, i) => setTimeout(() => fn(el, i), i * pasoMs));
+    if (reducir || !pasoMs) { els.forEach(fn); return () => {}; }
+    const ids = els.map((el, i) => setTimeout(() => fn(el, i), i * pasoMs));
+    const cancelar = () => { ids.forEach(clearTimeout); if (clave) delete escalonados[clave]; };
+    if (clave) escalonados[clave] = cancelar;
+    return cancelar;
   }
 
   // Ayudas de dibujo calculado: úsalas en lugar de poner coordenadas a ojo.

@@ -181,7 +181,9 @@ Si el tema no tiene ninguna variable numérica, el simulador puede ser un select
 - `forja.transitar(estado, { h: 0.5 }, 450, e => redibujar(e))` para lo que se **calcula y redibuja** (una curva, una figura con geometría): anima los números del estado y redibuja en cada cuadro con la fórmula real. Así una curva cambia de forma en lugar de saltar.
 - `forja.escalonar(lista, (el, i) => …, 45)` marca cosas una tras otra (una cadena de pasos, filas que se llenan): así se ve el orden. El total no debe pasar de unos 600 ms.
 - Cada atributo lleva su propia animación: puedes deslizar `x` y luego `width` del mismo elemento sin que se pisen. Si una animación se reapunta a medio camino (al arrastrar), sigue sin volver a arrancar desde cero.
-- `forja.contar` no anima la primera vez. Si el número se crea con `innerHTML`, ponle `data-valor` con el valor de partida.
+- `forja.contar` no anima la primera vez. Si el número se crea con `innerHTML`, ponle `data-valor` con el valor de partida. Para que termine en un texto («llena») usa `final`: `forja.contar(el, 100, { sufijo: ' %', final: 'llena' })`.
+- `forja.escalonar` devuelve una función que cancela lo pendiente; con una clave (`forja.escalonar(cajas, fn, 45, 'cadena')`) una nueva secuencia cancela la anterior. Úsala si el usuario puede mover otro control a media secuencia.
+- **Barras HTML** (`<div>`, `<i>`): `deslizar` con un nombre normal cambia un atributo, y el ancho de un elemento HTML no es atributo. Desliza una variable CSS y úsala: `forja.deslizar(barra, {'--w': 62})` con `width: calc(var(--w) * 1%)`. Y quita cualquier `transition: width` del CSS de esa barra: si no, las dos animaciones se encadenan.
 - **Ángulos y giros:** `deslizar` no mueve `transform`. Desliza una propiedad CSS (`forja.deslizar(el, {'--ang': 120})`) y úsala en el CSS: `transform: rotate(calc(var(--ang) * 1deg)); transform-box: view-box; transform-origin: 200px 150px;`.
 - `forja.reducir` dice si el usuario pidió menos movimiento, por si necesitas decidir algo a mano.
 - Ambas respetan «reducir movimiento»: ahí el cambio es inmediato.

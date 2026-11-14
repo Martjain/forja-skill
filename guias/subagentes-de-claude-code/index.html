@@ -67,7 +67,7 @@ button, input { font: inherit; min-height: 44px; }
 [data-forja-continuar][hidden] { display: none; }
 [data-forja-continuar] a { display: inline-flex; align-items: center; min-height: 44px; padding: .5rem 1.1rem; border-radius: 8px; background: var(--acento); color: var(--fondo); text-decoration: none; font-weight: 600; }
 [data-forja-reiniciar] { background: none; border: 0; color: inherit; text-decoration: underline; opacity: .7; cursor: pointer; }
-[data-tras-prediccion]:not(.revelado) { filter: blur(7px) grayscale(.6); opacity: .4; pointer-events: none; user-select: none; }
+[data-tras-prediccion]:not(.revelado) { filter: blur(12px) grayscale(.8); opacity: .3; pointer-events: none; user-select: none; }
 [data-tras-prediccion] { transition: filter .5s ease, opacity .5s ease; }
 .sin-fuente { text-decoration: underline dotted; text-underline-offset: 3px; }
 .sin-fuente::after { content: "†"; color: var(--acento); font-size: .75em; vertical-align: super; margin-left: .1em; }
@@ -229,7 +229,7 @@ section[data-tono="oscuro"] .nota { color: var(--gris); }
 .barra-fila .num { font-family: var(--f-codigo); text-align: right; }
 .barra { position: relative; height: 28px; background: var(--fondo); border: 1.5px solid var(--tinta); border-radius: 6px; overflow: hidden; display: flex; }
 .barra.chica { height: 16px; border-width: 1px; }
-.barra i { display: block; height: 100%; transition: width .35s ease; }
+.barra i { display: block; height: 100%; width: calc(var(--w, 0) * 1%); }   /* --w lo desliza forja.deslizar */
 .barra .base { background: var(--gris); }
 .barra .trabajo { background: var(--terracota); }
 .barra .resumenes { background: var(--azul); }
@@ -260,7 +260,7 @@ section[data-tono="oscuro"] .nota { color: var(--gris); }
 .tarea > p:first-child, .caso > p:first-child { font-weight: 600; margin-bottom: .5rem; }
 .elige { display: flex; flex-wrap: wrap; gap: .5rem; }
 .elige button { padding: .4rem .9rem; border-radius: 8px; border: 1.5px solid currentColor; background: transparent; color: inherit; cursor: pointer; font-family: var(--f-codigo); font-size: .85rem; }
-.elige button.bien { background: var(--verde); border-color: var(--verde); color: #fff; }
+.elige button.bien { background: #62744A; border-color: #62744A; color: #fff; }
 .elige button.mal { text-decoration: line-through; opacity: .6; }
 .respuesta { font-size: .95rem; margin: .5rem 0 0; }
 .respuesta strong { color: var(--acento); }
@@ -535,7 +535,7 @@ svg .etiqueta { font-family: var(--f-cuerpo); font-size: inherit; letter-spacing
       </li>
     </ol>
 
-    <div data-anima data-animacion="proceso" id="anima-delegar">
+    <div data-anima data-animacion="proceso" id="anima-delegar" data-fases="0.08 0.2 0.37 0.6 0.83 0.95">
       <svg viewBox="0 0 560 436" role="img" aria-labelledby="t-delegar"><title id="t-delegar">Animación de una delegación: tu pedido entra a tu conversación; Claude compara la tarea con las descriptions y elige Explore; le manda un mensaje con la tarea; Explore lee y trabaja en su propia ventana; al terminar, solo su resultado vuelve a tu conversación.</title><path d="M24 0V436M48 0V436M72 0V436M96 0V436M120 0V436M144 0V436M168 0V436M192 0V436M216 0V436M240 0V436M264 0V436M288 0V436M312 0V436M336 0V436M360 0V436M384 0V436M408 0V436M432 0V436M456 0V436M480 0V436M504 0V436M528 0V436M552 0V436M0 24H560M0 48H560M0 72H560M0 96H560M0 120H560M0 144H560M0 168H560M0 192H560M0 216H560M0 240H560M0 264H560M0 288H560M0 312H560M0 336H560M0 360H560M0 384H560M0 408H560M0 432H560" stroke="rgba(20,20,19,.055)" stroke-width="1" fill="none"/><rect x="24" y="92" width="160" height="320" rx="10" fill="var(--superficie)" stroke="var(--tinta)" stroke-width="2.5" stroke-linejoin="round"/><path d="M24 128V102Q24 92 34 92H174Q184 92 184 102V128Z" fill="var(--tinta)" opacity=".06"/><line x1="24" y1="128" x2="184" y2="128" stroke="var(--tinta)" stroke-width="1.25" opacity=".45"/><text x="36" y="117" font-size="18.0" fill="var(--tinta)" font-family="var(--f-codigo)">principal</text><rect x="100" y="142" width="72" height="10" rx="3" fill="var(--gris)"/><rect x="36" y="166" width="124" height="10" rx="3" fill="var(--gris)"/><rect x="36" y="190" width="96" height="10" rx="3" fill="var(--gris)"/><rect id="dl-pedido" x="172" y="214" width="0" height="10" rx="3" fill="var(--tinta)"/><rect id="dl-res" x="36" y="238" width="0" height="10" rx="3" fill="var(--azul)"/><g id="dl-chip-0"><rect x="208" y="106" width="144" height="36" rx="8" fill="var(--fondo)" stroke="var(--gris)" stroke-width="1.25"/><text x="222" y="130.5" font-size="18.0" fill="var(--tinta)" font-family="var(--f-codigo)">debugger</text></g><g id="dl-chip-1"><rect x="208" y="154" width="144" height="36" rx="8" fill="var(--fondo)" stroke="var(--gris)" stroke-width="1.25"/><text x="222" y="178.5" font-size="18.0" fill="var(--tinta)" font-family="var(--f-codigo)">revisor</text></g><g id="dl-chip-2"><rect x="208" y="202" width="144" height="36" rx="8" fill="var(--fondo)" stroke="var(--gris)" stroke-width="1.25"/><text x="222" y="226.5" font-size="18.0" fill="var(--tinta)" font-family="var(--f-codigo)">Explore</text></g><g id="dl-enlace" opacity="0"><path d="M184 220.0H208" stroke="var(--tinta)" stroke-width="2.5"/><circle cx="184" cy="220" r="4.5" fill="var(--tinta)" stroke="var(--fondo)" stroke-width="1.25"/></g><g id="dl-sub"><rect x="376" y="92" width="160" height="320" rx="10" fill="color-mix(in srgb, var(--terracota) 7%, var(--fondo))" stroke="var(--terracota)" stroke-width="2.5" stroke-linejoin="round"/><path d="M376 128V102Q376 92 386 92H526Q536 92 536 102V128Z" fill="var(--terracota)" opacity=".14"/><line x1="376" y1="128" x2="536" y2="128" stroke="var(--terracota)" stroke-width="1.25" opacity=".45"/><text x="388" y="117" font-size="18.0" fill="var(--acento)" font-family="var(--f-codigo)">Explore</text><rect id="dl-tarea" x="388" y="142" width="0" height="10" rx="3" fill="var(--azul)"/><rect id="dl-trab-0" x="388" y="166" width="0" height="10" rx="3" fill="var(--terracota)"/><rect id="dl-trab-1" x="388" y="190" width="0" height="10" rx="3" fill="var(--terracota)"/><rect id="dl-trab-2" x="388" y="214" width="0" height="10" rx="3" fill="var(--terracota)"/><rect id="dl-trab-3" x="388" y="238" width="0" height="10" rx="3" fill="var(--terracota)"/><rect id="dl-trab-4" x="388" y="262" width="0" height="10" rx="3" fill="var(--terracota)"/><rect id="dl-trab-5" x="388" y="286" width="0" height="10" rx="3" fill="var(--terracota)"/><rect id="dl-trab-6" x="388" y="310" width="0" height="10" rx="3" fill="var(--terracota)"/><rect id="dl-trab-7" x="388" y="334" width="0" height="10" rx="3" fill="var(--terracota)"/><rect id="dl-res-sub" x="388" y="358" width="0" height="10" rx="3" fill="var(--azul)"/></g><path d="M352 220 L364 220 L364 147 L373 147" stroke="var(--gris)" stroke-width="2.5" fill="none" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#pta-gris)" id="dl-ida"/><path d="M376 363 L196 363 L196 243 L187 243" stroke="var(--gris)" stroke-width="2.5" fill="none" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#pta-gris)" id="dl-vuelta"/><circle cx="352" cy="220" r="4.5" fill="var(--gris)" stroke="var(--fondo)" stroke-width="1.25"/><circle cx="376" cy="363" r="4.5" fill="var(--gris)" stroke="var(--fondo)" stroke-width="1.25"/><rect id="dl-sobre-ida" x="-9" y="-6" width="18" height="12" rx="3" fill="var(--azul)" stroke="var(--fondo)" stroke-width="1.25" opacity="0"/><rect id="dl-sobre-vuelta" x="-9" y="-6" width="18" height="12" rx="3" fill="var(--azul)" stroke="var(--fondo)" stroke-width="1.25" opacity="0"/><g class="etiqueta" data-punto="44 92"><path d="M44 92 L44 40" stroke="var(--tinta)" stroke-width="1" fill="none" opacity=".7"/><circle cx="44" cy="92" r="3" fill="var(--tinta)"/><text x="50" y="44.5" font-size="13.5" font-weight="600" fill="var(--tinta)">Tu conversación</text><text x="50" y="61.5" font-size="12" fill="var(--tinta)" opacity=".75">pedido y resultado</text></g><g class="etiqueta" data-punto="222 106"><path d="M222 106 L222 40" stroke="var(--tinta)" stroke-width="1" fill="none" opacity=".7"/><circle cx="222" cy="106" r="3" fill="var(--tinta)"/><text x="228" y="44.5" font-size="13.5" font-weight="600" fill="var(--tinta)">descriptions</text><text x="228" y="61.5" font-size="12" fill="var(--tinta)" opacity=".75">con ellas elige Claude</text></g><g class="etiqueta" data-punto="392 92"><path d="M392 92 L392 40" stroke="var(--acento)" stroke-width="1" fill="none" opacity=".7"/><circle cx="392" cy="92" r="3" fill="var(--acento)"/><text x="398" y="44.5" font-size="13.5" font-weight="600" fill="var(--acento)">Su propia ventana</text><text x="398" y="61.5" font-size="12" fill="var(--tinta)" opacity=".75">lee y trabaja aparte</text></g></svg>
       <ul class="leyenda">
         <li style="--c: var(--gris)">lo que ya platicaron</li>
@@ -1091,14 +1091,19 @@ Eres un revisor de código. Corre git diff…</span></button>
     }
   }
   // La primera vez no anima (no sabe desde dónde). Si el número se crea con innerHTML, ponle data-valor con el de partida.
-  function contar(el, valor, { decimales = 0, sufijo = '', prefijo = '', ms = 450, miles = true } = {}) {
+  // final: texto o función (n => texto) para el último cuadro, por ejemplo «llena» al llegar a 100.
+  function contar(el, valor, { decimales = 0, sufijo = '', prefijo = '', ms = 450, miles = true, final = null } = {}) {
     if (!el) return;
     const previo = el.__mostrado ?? parseFloat(el.dataset.valor ?? valor);
+    if (previo === valor && el.dataset.valor == valor && !(enCurso.get(el) || {}).texto) return;   // ya está ahí
     el.dataset.valor = valor;
     // Signo menos tipográfico (−), como en el resto de la guía.
     const fmt = n => prefijo + (miles ? n.toLocaleString('en-US', { minimumFractionDigits: decimales, maximumFractionDigits: decimales })
       : n.toFixed(decimales)).replace(/^-/, '−') + sufijo;
-    interpolar(el, 'texto', { n: previo }, { n: valor }, ms, v => { el.__mostrado = v.n; el.textContent = fmt(v.n); });
+    interpolar(el, 'texto', { n: previo }, { n: valor }, ms, v => {
+      el.__mostrado = v.n;
+      el.textContent = v.n === valor && final != null ? (typeof final === 'function' ? final(valor) : final) : fmt(v.n);
+    });
   }
   // Para lo que no es un atributo (una curva que se redibuja, una figura calculada): anima los números de un
   // objeto de estado y llama a dibujar(estado) en cada cuadro.
@@ -1112,10 +1117,17 @@ Eres un revisor de código. Corre git diff…</span></button>
     const mapa = enCurso.get(estado);
     if (mapa) mapa.__destino = destino;
   }
-  function escalonar(lista, fn, pasoMs = 45) {
+  // Devuelve una función que cancela lo que falta. Con clave, una nueva llamada con la misma clave cancela la anterior
+  // (por ejemplo, si el usuario mueve otro control a media secuencia).
+  const escalonados = {};
+  function escalonar(lista, fn, pasoMs = 45, clave = null) {
+    if (clave && escalonados[clave]) escalonados[clave]();
     const els = [...lista];
-    if (reducir || !pasoMs) { els.forEach(fn); return; }
-    els.forEach((el, i) => setTimeout(() => fn(el, i), i * pasoMs));
+    if (reducir || !pasoMs) { els.forEach(fn); return () => {}; }
+    const ids = els.map((el, i) => setTimeout(() => fn(el, i), i * pasoMs));
+    const cancelar = () => { ids.forEach(clearTimeout); if (clave) delete escalonados[clave]; };
+    if (clave) escalonados[clave] = cancelar;
+    return cancelar;
   }
 
   // Ayudas de dibujo calculado: úsalas en lugar de poner coordenadas a ojo.
@@ -1437,8 +1449,35 @@ Eres un revisor de código. Corre git diff…</span></button>
   const DELEGACION = 1;              // el mensaje que Claude escribe
   const ARRANQUE_SUB = 5;            // prompt de sistema + entorno del subagente
   let modo = forja.leer('sim-modo') || 'sub';
+  const lectura = lab.querySelector('.lectura');
+  // Una fila fija por subagente posible: se muestran u ocultan en lugar de reconstruirse,
+  // para que sus barras se deslicen a su nuevo valor (forja.deslizar) en vez de saltar.
+  const filas = Array.from({ length: Number(sSubs.max) }, (_, i) => {
+    const fila = document.createElement('div');
+    fila.className = 'barra-fila';
+    fila.innerHTML = `<span>Subagente ${i + 1}</span><div class="barra chica"><i class="base" style="--w:${ARRANQUE_SUB}"></i><i class="trabajo" style="--w:0"></i></div><span class="num">${ARRANQUE_SUB}%</span>`;
+    $('#b-subs').append(fila);
+    return { fila, barra: fila.querySelector('.barra'), trab: fila.querySelector('.trabajo'), num: fila.querySelector('.num') };
+  });
+  // Porcentaje que cuenta hasta su valor (forja.contar). Al llegar a 100 (no antes) la barra se marca llena
+  // y, en un subagente, el número dice «llena»: así la marca sale cuando la barra de verdad se llenó.
+  const numero = (el, v, ms, barra, lleno) => {
+    const yaLleno = v >= 100 && el.dataset.valor === '100' && el.__mostrado >= 100;
+    if (!yaLleno) forja.contar(el, Math.min(100, v), { ms, sufijo: '%' });   // ya lleno: nada que contar
+    if (v < 100) { barra.classList.remove('llena'); return; }
+    const marcar = () => {
+      if (el.dataset.valor !== '100') return;                       // ya va hacia otro valor
+      if (el.__mostrado < 100) { requestAnimationFrame(marcar); return; }
+      barra.classList.add('llena'); if (lleno) el.textContent = lleno;
+    };
+    marcar();
+  };
+  let turno = 0;
 
-  const pinta = () => {
+  // ms: 120 al arrastrar, 450 con un botón. apilar: al delegar, el trabajo se apila en orden y luego llega el resultado.
+  const pinta = (ms = 0, apilar = false, retraso = 0) => {
+    if (!lectura.classList.contains('revelado')) { ms = 0; apilar = false; }   // detrás de la predicción no se anima nada
+    const gen = ++turno;
     const archivos = Number(sArch.value), n = Number(sSubs.value), det = Number(sDet.value);
     $('#o-archivos').textContent = archivos;
     $('#o-subs').textContent = n;
@@ -1456,16 +1495,35 @@ Eres un revisor de código. Corre git diff…</span></button>
     }
     const total = BASE + trabajo + resultados;
     const cap = v => Math.min(100, v);
-    const barra = $('#b-principal');
+    const barra = $('#b-principal'), nPrincipal = $('#n-principal');
     const [iBase, iTrab, iRes] = barra.querySelectorAll('i');
-    iBase.style.width = cap(BASE) + '%';
-    iTrab.style.width = Math.max(0, cap(BASE + trabajo) - BASE) + '%';
-    iRes.style.width = Math.max(0, cap(total) - cap(BASE + trabajo)) + '%';
-    barra.classList.toggle('llena', total >= 100);
-    $('#n-principal').textContent = (total >= 100 ? '100' : total) + '%';
-
-    $('#b-subs').innerHTML = subs.map((u, i) =>
-      `<div class="barra-fila"><span>Subagente ${i + 1}</span><div class="barra chica${u >= 100 ? ' llena' : ''}"><i class="base" style="width:${ARRANQUE_SUB}%"></i><i class="trabajo" style="width:${cap(u) - ARRANQUE_SUB}%"></i></div><span class="num">${u >= 100 ? 'llena' : u + '%'}</span></div>`).join('');
+    const enOrden = apilar && subs.length > 0 && !forja.reducir;
+    forja.deslizar(iBase, { '--w': cap(BASE) }, ms);
+    forja.deslizar(iTrab, { '--w': Math.max(0, cap(BASE + trabajo) - BASE) }, enOrden ? 300 : ms);   // al delegar, sale al paso de su número
+    filas.forEach((r, i) => {
+      const u = subs[i];
+      r.fila.style.display = u === undefined ? 'none' : '';
+      if (u === undefined) { forja.deslizar(r.trab, { '--w': 0 }, 0); numero(r.num, ARRANQUE_SUB, 0, r.barra); }   // al volver, crece desde vacía
+    });
+    const activas = filas.slice(0, subs.length);
+    const llenar = (r, i, d) => { forja.deslizar(r.trab, { '--w': cap(subs[i]) - ARRANQUE_SUB }, d); numero(r.num, subs[i], d, r.barra, 'llena'); };
+    const traer = d => { forja.deslizar(iRes, { '--w': Math.max(0, cap(total) - cap(BASE + trabajo)) }, d); numero(nPrincipal, total, d, barra); };
+    if (enOrden) {
+      // Al delegar: el trabajo se apila primero en las ventanas de los subagentes, uno tras otro (forja.escalonar),
+      // y solo después el resultado entra a la tuya. Así se ve que lo pesado se queda allá. Todo en 600 ms o menos.
+      activas.forEach(r => { forja.deslizar(r.trab, { '--w': 0 }, 0); numero(r.num, ARRANQUE_SUB, 0, r.barra); });
+      forja.deslizar(iRes, { '--w': 0 }, 0);
+      numero(nPrincipal, cap(BASE + trabajo), 300, barra);
+      const paso = activas.length > 1 ? 150 / (activas.length - 1) : 0;
+      setTimeout(() => {
+        if (gen !== turno) return;   // el usuario ya cambió otra cosa
+        forja.escalonar(activas, (r, i) => { if (gen === turno) llenar(r, i, 200); }, paso);
+        setTimeout(() => { if (gen === turno) traer(250); }, paso * (activas.length - 1) + 200);
+      }, retraso);
+    } else {
+      activas.forEach((r, i) => llenar(r, i, ms));
+      traer(ms);
+    }
 
     let frase;
     if (modo === 'principal') {
@@ -1486,8 +1544,13 @@ Eres un revisor de código. Corre git diff…</span></button>
     if (modo === 'sub' && subs.some(u => u >= 100)) forja.reto('reto-compacta');
     if (modo === 'sub' && resultados >= 50) forja.reto('reto-resultados');
   };
-  [sArch, sSubs, sDet].forEach(s => s.addEventListener('input', pinta));
-  lab.querySelectorAll('[data-modo]').forEach(b => b.addEventListener('click', () => { modo = b.dataset.modo; forja.guardar('sim-modo', modo); pinta(); }));
+  [sArch, sSubs, sDet].forEach(s => s.addEventListener('input', () => pinta(120)));
+  lab.querySelectorAll('[data-modo]').forEach(b => b.addEventListener('click', () => {
+    const antes = modo; modo = b.dataset.modo; forja.guardar('sim-modo', modo);
+    pinta(450, modo === 'sub' && antes !== 'sub');
+  }));
+  // Al contestar la predicción (no antes), la delegación se ve en orden: el trabajo allá, luego el resultado aquí.
+  lab.addEventListener('forja:revelado', e => { if (e.detail.id === 'pred-ventana') pinta(450, true, 300); });
   pinta();
 })();
 
@@ -1637,7 +1700,7 @@ Eres un revisor de código. Corre git diff…</span></button>
     const n = f < T.elige[0] ? 0 : f < T.delega[0] ? 1 : f < T.delega[1] ? 2 : f < T.regresa[0] ? 3 : 4;
     $('dl-fase-et').textContent = FASES[n][0];
     $('dl-fase-tx').textContent = FASES[n][1];
-  }, { periodo: 12, pasos: 12 });
+  }, { periodo: 12, pasos: 12, inicio: forja.reducir ? .95 : 0 });
 })();
 
 </script>
