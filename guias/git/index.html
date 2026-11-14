@@ -485,7 +485,7 @@ input[type="range"] { width: 100%; accent-color: var(--acento); }
             </ol>
           </div>
         </div>
-        <div data-anima id="anima-zonas">
+        <div data-anima data-animacion="proceso" id="anima-zonas">
           <div class="diagrama-scroll">
           <svg viewBox="0 0 640 290" role="img" aria-labelledby="t-zonas" xmlns="http://www.w3.org/2000/svg"><title id="t-zonas">Tres cajas de izquierda a derecha: working tree, staging area y directorio .git, con el hilo de commits y la etiqueta main. Flecha git add de la primera a la segunda, git commit de la segunda a la tercera y git switch de vuelta del repositorio a la carpeta. Una copia de README.md viaja por las flechas.</title><defs><marker id="zonas-pta" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1 L8 5 L1 9 Z" style="fill:var(--tinta)"/></marker><clipPath id="zonas-hilo"><rect x="451" y="64" width="170" height="132"/></clipPath></defs><path data-une="wt staging add" d="M172 114 H230 M222 107 L230 114 L222 121" stroke-linejoin="round" stroke-linecap="round"/><path data-une="staging repo commit" d="M388 114 H446 M438 107 L446 114 L438 121" stroke-linejoin="round" stroke-linecap="round"/><path data-une="repo wt switch" d="M536 196 V240 Q536 248 528 248 H367 M263 248 H102 Q94 248 94 240 V199 M87 207 L94 199 L101 207" stroke-linejoin="round" stroke-linecap="round"/><line x1="202" y1="46" x2="202" y2="105" stroke="var(--gris)" stroke-width="1" stroke-dasharray="2 3"/><line x1="418" y1="46" x2="418" y2="105" stroke="var(--gris)" stroke-width="1" stroke-dasharray="2 3"/><g pointer-events="none"><path id="zn-f-add" class="flujo" d="M175 114 H220" stroke="var(--ambar)" stroke-width="2.5" fill="none" opacity="0"/><path id="zn-f-commit" class="flujo" d="M391 114 H436" stroke="var(--ambar)" stroke-width="2.5" fill="none" opacity="0"/></g><g data-nodo="wt" tabindex="0" role="button" aria-label="Working tree"><rect class="caja" x="16" y="64" width="156" height="132" rx="3"/><text x="94" y="90" font-size="17" fill="var(--tinta)" text-anchor="middle" font-family="var(--f-titulos)" font-weight="700">Working tree</text><text x="94" y="110" font-size="13" fill="var(--tinta-suave)" text-anchor="middle" font-family="var(--f-codigo)">tu carpeta</text></g><g data-nodo="staging" tabindex="0" role="button" aria-label="Staging area"><rect class="caja" x="232" y="64" width="156" height="132" rx="3"/><text x="310" y="90" font-size="17" fill="var(--tinta)" text-anchor="middle" font-family="var(--f-titulos)" font-weight="700">Staging area</text><text x="310" y="110" font-size="13" fill="var(--tinta-suave)" text-anchor="middle" font-family="var(--f-codigo)">el index</text></g><g data-nodo="repo" tabindex="0" role="button" aria-label="Directorio .git"><rect class="caja" x="448" y="64" width="176" height="132" rx="3"/><text x="536" y="90" font-size="17" fill="var(--tinta)" text-anchor="middle" font-family="var(--f-titulos)" font-weight="700">.git</text><text x="536" y="110" font-size="13" fill="var(--tinta-suave)" text-anchor="middle" font-family="var(--f-codigo)">el repositorio</text></g><g pointer-events="none"><rect x="30" y="134" width="128" height="32" rx="2" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="1.25"/><rect id="zn-wt-barra" x="30" y="134" width="5" height="32" fill="var(--rojo)"/><text x="43" y="155" font-size="13" fill="var(--tinta)" font-family="var(--f-codigo)">README.md</text><text x="148" y="155" font-size="13" fill="var(--rojo)" text-anchor="end" font-family="var(--f-codigo)" font-weight="700" id="zn-wt-m">M</text><rect x="246" y="134" width="128" height="32" rx="2" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="1.25"/><rect id="zn-ix-barra" x="246" y="134" width="5" height="32" fill="var(--gris)"/><text x="259" y="155" font-size="13" fill="var(--tinta)" font-family="var(--f-codigo)">README.md</text><text x="364" y="155" font-size="13" fill="var(--verde)" text-anchor="end" font-family="var(--f-codigo)" font-weight="700" id="zn-ix-m">M</text><g clip-path="url(#zonas-hilo)" pointer-events="none"><line id="zn-l1" x1="499" y1="150" x2="482" y2="150" stroke="var(--tinta)" stroke-width="1.25" marker-end="url(#zonas-pta)"/><line id="zn-l2" x1="539" y1="150" x2="522" y2="150" stroke="var(--tinta)" stroke-width="1.25" marker-end="url(#zonas-pta)"/><line id="zn-l3" x1="579" y1="150" x2="562" y2="150" stroke="var(--tinta)" stroke-width="1.25" marker-end="url(#zonas-pta)" opacity="0"/><circle id="zn-b0" cx="470" cy="150" r="10" fill="var(--tinta)" stroke="var(--tinta)" stroke-width="1.25"/><circle id="zn-b1" cx="510" cy="150" r="10" fill="var(--tinta)" stroke="var(--tinta)" stroke-width="1.25"/><circle id="zn-b2" cx="550" cy="150" r="10" fill="var(--ambar)" stroke="var(--tinta)" stroke-width="1.25"/><circle id="zn-b3" cx="590" cy="150" r="10" fill="var(--tinta)" stroke="var(--tinta)" stroke-width="1.25" opacity="0"/><g id="zn-main"><line x1="550" y1="160" x2="550" y2="166" stroke="var(--tinta)" stroke-width="1.25"/><rect x="528.0" y="166" width="44" height="20" rx="2" fill="var(--fondo)" stroke="var(--tinta)" stroke-width="1.25"/><text x="550" y="181" font-size="12" fill="var(--tinta)" text-anchor="middle" font-family="var(--f-codigo)">main</text></g></g></g><g data-nodo="add" tabindex="0" role="button" aria-label="git add"><rect class="etq" x="163.7" y="22" width="76.6" height="24" rx="2"/><text x="202" y="39" font-size="13" fill="var(--tinta)" text-anchor="middle" font-family="var(--f-codigo)">git add</text></g><g data-nodo="commit" tabindex="0" role="button" aria-label="git commit"><rect class="etq" x="368" y="22" width="100" height="24" rx="2"/><text x="418" y="39" font-size="13" fill="var(--tinta)" text-anchor="middle" font-family="var(--f-codigo)">git commit</text></g><g data-nodo="switch" tabindex="0" role="button" aria-label="git switch"><rect class="etq" x="265" y="236" width="100" height="24" rx="2"/><text x="315" y="253" font-size="13" fill="var(--tinta)" text-anchor="middle" font-family="var(--f-codigo)">git switch</text></g><g id="zn-viaje" pointer-events="none" opacity="0"><g id="zn-viaje-in"><rect x="-64.0" y="-16.0" width="128" height="32" rx="2" fill="var(--fondo)" stroke="var(--ambar)" stroke-width="2.5"/><rect x="-64.0" y="-16.0" width="5" height="32" fill="var(--ambar)"/><text x="-51" y="5" font-size="13" fill="var(--tinta)" font-family="var(--f-codigo)">README.md</text></g></g></svg>
           </div>
@@ -1046,6 +1046,46 @@ Switched to branch 'idea'</pre>
     caja.__fijar = f => { corriendo = false; boton(); fase = f; dibujar(f); };  // lo usa revisar_ilustraciones.py
     boton(); dibujar(fase); requestAnimationFrame(bucle);
   }
+  // Transiciones: al cambiar el estado de un simulador o un diagrama, las piezas se deslizan
+  // en vez de saltar, para que se vea QUÉ cambió. Respetan "reducir movimiento".
+  //   forja.deslizar(el, { width: 120, x: 30, 'stroke-width': 2.5 }, 450)  atributos numéricos del SVG
+  //   forja.deslizar(el, { '--avance': 60 }, 450)                           propiedades CSS numéricas (style)
+  //   forja.contar(elTexto, 15.2, { decimales: 2, sufijo: ' %' })          un número que cuenta hasta su valor
+  const enCurso = new WeakMap();
+  const suave = t => t < .5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2;
+  function interpolar(el, desde, hasta, ms, aplicar) {
+    cancelAnimationFrame(enCurso.get(el) || 0);
+    if (reducir || !ms) { aplicar(hasta); return; }
+    let t0 = null;
+    const paso = ts => {
+      t0 ??= ts;
+      const t = Math.max(0, Math.min(1, (ts - t0) / ms)), k = suave(t);
+      aplicar(Object.fromEntries(Object.keys(hasta).map(c => [c, desde[c] + (hasta[c] - desde[c]) * k])));
+      if (t < 1) enCurso.set(el, requestAnimationFrame(paso)); else enCurso.delete(el);
+    };
+    enCurso.set(el, requestAnimationFrame(paso));
+  }
+  function deslizar(el, valores, ms = 450) {
+    if (!el) return;
+    const css = c => c.startsWith('--'), desde = {};
+    for (const c in valores) {
+      const actual = css(c) ? parseFloat(el.style.getPropertyValue(c)) : parseFloat(el.getAttribute(c));
+      desde[c] = Number.isFinite(actual) ? actual : valores[c];
+    }
+    interpolar(el, desde, valores, ms, v => {
+      for (const c in v) css(c) ? el.style.setProperty(c, v[c]) : el.setAttribute(c, +v[c].toFixed(2));
+    });
+  }
+  function contar(el, valor, { decimales = 0, sufijo = '', prefijo = '', ms = 450, miles = true } = {}) {
+    if (!el) return;
+    // Parte de lo que se ve ahora (aunque otra cuenta vaya a medias). La primera vez no anima.
+    const previo = el.__mostrado ?? parseFloat(el.dataset.valor ?? valor);
+    el.dataset.valor = valor;
+    const fmt = n => prefijo + (miles ? n.toLocaleString('en-US', { minimumFractionDigits: decimales, maximumFractionDigits: decimales })
+      : n.toFixed(decimales)) + sufijo;
+    interpolar(el, { n: previo }, { n: valor }, ms, v => { el.__mostrado = v.n; el.textContent = fmt(v.n); });
+  }
+
   // Ayudas de dibujo calculado: úsalas en lugar de poner coordenadas a ojo.
   const kit = {
     // Flecha ondulada (calor, flujo): de (x, y0) a (x, y1), vertical.
@@ -1079,6 +1119,9 @@ Switched to branch 'idea'</pre>
     // forja.animar(caja, fase => {...}, { periodo: segundos por ciclo })
     animar,
     kit,
+    // forja.deslizar(el, {atributo: valor}, ms) y forja.contar(el, número, {decimales, sufijo})
+    deslizar,
+    contar,
   };
 
   // Etiquetas de ilustración: <g class="etiqueta" data-punto="x y"> con un título y una frase.

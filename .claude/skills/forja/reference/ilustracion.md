@@ -11,7 +11,7 @@ Referencia de nivel: [ejemplos/motor-animado.html](../assets/ejemplos/motor-anim
 4. Geometría calculada, nunca a ojo
 5. Etiquetas y composición
 6. Formas orgánicas
-7. Animar procesos
+7. Cuándo, dónde y cómo animar
 8. El kit
 9. Rúbrica (mínimo 8 de 10)
 10. Proceso de trabajo
@@ -82,21 +82,62 @@ Según el tema, uno de estos (y mantenlo en toda la guía):
 
 Llamas, agua, órganos, hojas: curvas Bézier cúbicas **simétricas** y en **dos capas** (silueta + núcleo más claro). La llama del kit es el modelo: forma de gota con punta inclinada, núcleo amarillo al 55%. Varias copias con tamaños distintos (no idénticas).
 
-## 7. Animar procesos
+## 7. Cuándo, dónde y cómo animar
 
-**Si el tema es un proceso, un mecanismo, un ciclo o un flujo, su ilustración central se anima.** Una animación explica lo que un dibujo fijo no puede: *cuándo* pasa cada cosa.
+Toda guía lleva animación, pero **solo de los tipos de este catálogo, en los lugares que dice y con sus condiciones**. Si algo no cabe en el catálogo, no se anima. `validar.py` comprueba lo que se puede contar.
 
-- **Todo sale de una fase de 0 a 1.** Usa `forja.animar(caja, fase => { … }, { periodo: 4 })`: la función recibe la fase y coloca cada pieza con la física o las matemáticas reales.
-- **Sincroniza el estado con el movimiento:** lo que entra o sale (calor, corriente, datos) se enciende justo cuando pasa, no siempre.
-- **Narra la fase:** un `<p class="anima-fase"><b>Fase</b><span>qué pasa y por qué</span></p>` que `dibujar` actualiza.
-- **Flujos** con la clase `flujo` (líneas punteadas que avanzan) y **llamas** con `titila`. Nada se anima solo por adorno.
-- El núcleo pone los controles (Pausa, **Paso a paso**, velocidad), respeta "reducir movimiento" y pausa la animación fuera de pantalla. No los programes tú.
-- Contenedor: `<div data-anima id="anima-…">` con el SVG y la narración dentro.
-- **Una o dos animaciones por guía**: la del proceso central. Las demás ilustraciones pueden ser fijas.
-- **No reveles una predicción.** Si la animación (o cualquier dibujo) responde una pregunta de su sección, ponle `data-tras-prediccion` al SVG y a la narración `.anima-fase`, nunca al contenedor `[data-anima]` (los controles deben quedar a la vista); o usa otros valores que no den la respuesta. Revisa también el texto que acompaña al dibujo. La prueba de la fuga está en [interacciones.md](interacciones.md), sección 1.1. Si el JS reescribe el resultado con `innerHTML`, no la metas ahí: ponla después. Revisa también las ilustraciones fijas: un dibujo que muestra el resultado antes de responder también revela.
+### 7.1 El catálogo
+
+| Tipo | Cuándo | Dónde | Cuántas | Cómo |
+|---|---|---|---|---|
+| **A. Proceso central** · `data-animacion="proceso"` | **Siempre.** Todo tema tiene algo que cambia con el tiempo: un mecanismo, un flujo, un ciclo, algo que se construye, o un valor que se acerca a otro | En la sección que explica ese proceso, junto a su explicación (puede ser la portada, si ahí se presenta el proceso) | **1** (2 solo si el tema son dos procesos distintos, como dos motores; y entonces sin B) | `forja.animar` con controles y narración |
+| **B. Motivo de portada** · `data-animacion="portada"` | Solo si el motivo de la portada **es el mismo proceso en pequeño** (algo que avanza, se llena o se corta) | En la portada | **0 o 1** | `forja.animar`, periodo lento (10–14 s) |
+| **C. Transición** | **Siempre** que el usuario cambia un estado: mueve un control, carga un caso, avanza un paso | En simuladores, diagramas que cambian y pasos guiados | Las que haga falta; no cuentan como animación | `forja.deslizar` y `forja.contar`, 120–600 ms |
+| **D. Detalle del kit** | Solo **dentro** de una A o una B | La clase `flujo` (algo que circula) y `titila` (una llama) | — | Clases del núcleo |
+
+**Cómo elegir el proceso central (A)**, según el tema:
+
+| El tema es… | La animación muestra… | Ejemplos de este repo |
+|---|---|---|
+| Un mecanismo (física, máquinas, cuerpo) | Las piezas moviéndose con la física real; lo que entra o sale encendiéndose cuando pasa | Stirling, ciclo de vapor |
+| Un flujo (software, datos, procesos de trabajo) | Un mensaje o una petición viajando por las piezas reales, en orden | Hooks, subagentes, text-to-cad |
+| Algo que se construye (un texto, una estructura, un modelo) | Las partes apareciendo en orden y conectándose | El ensayo |
+| Un cambio de estado (git, una base de datos) | El antes y el después de una operación, paso por paso | Tres zonas de git, merge contra rebase |
+| Un valor que se acerca a otro (matemáticas) | La variable cambiando y el resultado acercándose a su límite | La secante que se vuelve tangente |
+| Un método o una medición (un paper) | Casos que pasan por el método y cómo se cuentan | Las tandas del paper |
+| Historia o una secuencia en el tiempo | Una línea de tiempo que avanza y deja sus marcas | — |
+
+### 7.2 Prohibido
+
+- **Animar comparaciones, resultados, tablas o rankings** (barras de modelos, perfiles, tablas de posiciones). Se leen quietos. Lo único que se anima ahí es el **cambio** (tipo C).
+- **Animar por adorno:** fondos que se mueven, íconos que rebotan, texto que entra volando. La única entrada permitida es la `.entra` del núcleo en la portada.
+- **Animaciones propias con `@keyframes`** fuera de las clases del núcleo, o que corren sin controles. Todo movimiento de un proceso va por `forja.animar`.
+- **Más de 2 `[data-anima]`** por guía (A + B, o A + A si el tema son dos procesos).
+- **Animar en el repaso, en las fuentes o en «leer con criterio».**
+- **Revelar una predicción** (ver 7.4).
+
+### 7.3 Condiciones de toda animación A o B
+
+1. **Escribe en el plan** (paso 5) qué muestra que un dibujo fijo no puede, en una frase: «*cuándo* entra y sale el calor respecto al movimiento del pistón».
+2. **Todo sale de una fase de 0 a 1** y de la física, la lógica o los datos reales: `forja.animar(caja, fase => { … }, { periodo })`.
+3. **De 3 a 6 momentos con nombre**, narrados en `<p class="anima-fase"><b>Momento</b><span>qué pasa y por qué</span></p>`, que `dibujar` actualiza.
+4. **Lo que entra o sale se enciende cuando pasa**, no siempre.
+5. **`data-fases`** con los momentos clave, para que el revisor los capture: `data-fases="0 .3 .55 .8"`.
+6. **Calidad ≥ 8/10** en la rúbrica, revisando las 4 fases.
+7. **Con «reducir movimiento»** muestra el momento más completo (`inicio` de `forja.animar`).
+
+### 7.4 Dónde va respecto a las predicciones
+
+- Si la animación responde una pregunta de su sección, ponle `data-tras-prediccion` al **SVG** y a la **narración** `.anima-fase`, nunca al contenedor `[data-anima]`: los controles quedan a la vista. O usa otros valores que no den la respuesta.
+- Revisa también el texto que acompaña al dibujo (la prueba de la fuga: [interacciones.md](interacciones.md) 1.1).
+- Si el JS reescribe el resultado de la predicción con `innerHTML`, pon la animación después, no adentro.
+
+### 7.5 Detalles técnicos
+
+- Contenedor: `<div data-anima data-animacion="proceso|portada" id="anima-…" data-fases="…">` con el SVG y la narración dentro. El núcleo pone los controles (Pausa, **Paso a paso**, velocidad), respeta «reducir movimiento» y pausa fuera de pantalla: no los programes.
 - **Si el proceso central no tiene ilustración**, créala: es la que más enseña.
-- **Si la ilustración que animas ya es interactiva** (nodos clicables que se atenúan), pon las piezas que se mueven en una capa propia con `pointer-events: none`, fuera de los nodos, para que el atenuado no apague la animación.
-- **Momentos clave fuera de 0, .25, .5 y .75** (un mensaje a medio viaje): ponlos en `data-fases="0 .37 .5 .83"` del `[data-anima]` para que el revisor los capture.
+- **Si la ilustración ya es interactiva** (nodos clicables que se atenúan), pon las piezas que se mueven en una capa propia con `pointer-events: none`, fuera de los nodos.
+- La narración debe tener altura fija (`min-height`) para que los controles no brinquen entre momentos.
 - Si la narración lleva espacios que importan (la salida de `git status -s`), usa `<code style="white-space:pre">`.
 
 ## 8. El kit
@@ -123,7 +164,7 @@ Llamas, agua, órganos, hojas: curvas Bézier cúbicas **simétricas** y en **do
 | 1 | **Composición:** proporciones, márgenes, foco claro |
 | 1 | **Legible en celular:** etiquetas en `g.etiqueta` y el resto del texto ≥ 11 px a 390 px |
 | 1 | **Se entiende sin leer:** el dibujo solo ya explica el mecanismo |
-| 1 | **Animación** sincronizada con la física (si el tema es un proceso); si no aplica, un detalle de calidad que ayude a entender |
+| 1 | **Animación** (si es una A o una B): cumple las condiciones de 7.3; si es una ilustración fija, un detalle de calidad que ayude a entender |
 
 ## 10. Proceso de trabajo
 

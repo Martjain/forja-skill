@@ -401,9 +401,52 @@ def validar(ruta: Path):
 
     # Ilustraciones: animación del proceso central y etiquetas adaptables al celular
     contenido = re.sub(r"NÚCLEO FORJA: (CSS|JS).*?FIN NÚCLEO FORJA: \1", "", html, flags=re.S)
-    if not re.search(r"<(?:div|figure|section)\b[^>]*\sdata-anima\b", contenido):
-        advertencias.append("Ninguna ilustración animada (data-anima). Si el tema es un proceso, un mecanismo o un ciclo, "
-                            "anima su ilustración central con forja.animar (reference/ilustracion.md, sección 7)")
+    # Animaciones: catálogo de reference/ilustracion.md §7 (A = proceso, B = portada, C = transiciones)
+    REF_ANIM = "(reference/ilustracion.md, sección 7)"
+    animas = []  # (atributos, sección)
+    for m in re.finditer(r"<(div|figure|section)\b([^>]*\sdata-anima\b[^>]*)>", contenido):
+        antes = contenido[:m.start()]
+        sec = re.findall(r'<section\b[^>]*?(?:id="([^"]*)")?[^>]*?(?:data-layout="([^"]*)")?[^>]*>', antes)
+        sec_id = re.findall(r'<section\b[^>]*\bid="([^"]*)"', antes)
+        sec_layout = re.findall(r'<section\b[^>]*\bdata-layout="([^"]*)"', antes)
+        animas.append((m.group(2), sec_id[-1] if sec_id else "?", sec_layout[-1] if sec_layout else "?", m.end()))
+    tipos = [re.search(r'data-animacion="([^"]*)"', a) for a, *_ in animas]
+    tipos = [t.group(1) if t else None for t in tipos]
+    if not animas:
+        errores.append(f"Falta la animación del proceso central (tipo A): un <div data-anima data-animacion=\"proceso\"> con forja.animar {REF_ANIM}")
+    if len(animas) > 2:
+        errores.append(f"{len(animas)} animaciones [data-anima]: el máximo es 2 (una A de proceso y, si aplica, una B de portada) {REF_ANIM}")
+    for (attrs, sid, lay, fin), t in zip(animas, tipos):
+        donde = f"#{sid}"
+        if t not in ("proceso", "portada"):
+            errores.append(f'Animación en {donde} sin tipo: agrega data-animacion="proceso" (A) o "portada" (B) {REF_ANIM}')
+        if t == "portada" and lay != "portada":
+            errores.append(f"La animación de tipo portada (B) está en {donde}, que no es la portada {REF_ANIM}")
+        if lay == "repaso" or sid in ("fuentes", "criterio"):
+            errores.append(f"Animación en {donde}: no se anima en el repaso, las fuentes ni «leer con criterio» {REF_ANIM}")
+        # ¿tiene narración dentro? (busca .anima-fase antes del cierre aproximado del bloque)
+        if "anima-fase" not in contenido[fin:fin + 60000].split("data-anima", 1)[0]:
+            errores.append(f"Animación en {donde} sin narración <p class=\"anima-fase\"> {REF_ANIM}, 7.3")
+        if "data-fases" not in attrs:
+            advertencias.append(f"Animación en {donde} sin data-fases con sus momentos clave {REF_ANIM}, 7.3")
+    if tipos.count("proceso") == 0 and animas:
+        errores.append(f'Ninguna animación es del proceso central (data-animacion="proceso") {REF_ANIM}')
+    if tipos.count("portada") > 1:
+        errores.append(f"Solo puede haber una animación de portada (B) {REF_ANIM}")
+    if tipos.count("proceso") == 2:
+        advertencias.append("Dos animaciones de proceso (A): solo vale si el tema son dos procesos distintos "
+                            f"(por ejemplo, dos motores). Si no, deja una {REF_ANIM}")
+    if "forja.animar(" not in contenido and animas:
+        errores.append(f"Hay [data-anima] pero ningún forja.animar(…) que lo mueva {REF_ANIM}")
+    # C: transiciones en lo que cambia de estado
+    if 'data-interaccion="simulador"' in contenido and not re.search(r"forja\.(deslizar|contar)\(", contenido):
+        advertencias.append("El simulador no usa transiciones: al cambiar de estado, usa forja.deslizar y forja.contar "
+                            "(reference/interacciones.md, sección 4)")
+    # Prohibido: animaciones propias con @keyframes
+    propios = re.findall(r"@keyframes\s+([\w-]+)", contenido)
+    if propios:
+        advertencias.append(f"Animaciones propias con @keyframes {sorted(set(propios))[:5]}: todo movimiento va por forja.animar, "
+                            f"forja.deslizar o las clases del núcleo {REF_ANIM}, 7.2")
     if not re.search(r'<g\b[^>]*\bclass="[^"]*\betiqueta\b[^"]*"[^>]*\bdata-punto=', contenido):
         advertencias.append('Las etiquetas de los SVG no usan <g class="etiqueta" data-punto="x y">: en el celular no se adaptan '
                             "(reference/ilustracion.md, sección 5)")
