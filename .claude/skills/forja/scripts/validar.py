@@ -439,8 +439,8 @@ def validar(ruta: Path):
     if "forja.animar(" not in contenido and animas:
         errores.append(f"Hay [data-anima] pero ningún forja.animar(…) que lo mueva {REF_ANIM}")
     # C: transiciones en lo que cambia de estado
-    if 'data-interaccion="simulador"' in contenido and not re.search(r"forja\.(deslizar|contar)\(", contenido):
-        advertencias.append("El simulador no usa transiciones: al cambiar de estado, usa forja.deslizar y forja.contar "
+    if 'data-interaccion="simulador"' in contenido and not re.search(r"forja\.(deslizar|contar|transitar|escalonar)\(", contenido):
+        advertencias.append("El simulador no usa transiciones: al cambiar de estado, usa forja.deslizar, forja.contar o forja.transitar "
                             "(reference/interacciones.md, sección 4)")
     # Prohibido: animaciones propias con @keyframes
     propios = re.findall(r"@keyframes\s+([\w-]+)", contenido)

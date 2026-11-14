@@ -1180,6 +1180,7 @@ input[type="range"] { width: 100%; accent-color: var(--acento); }
   //   forja.deslizar(el, { width: 120, x: 30, 'stroke-width': 2.5 }, 450)  atributos numéricos del SVG
   //   forja.deslizar(el, { '--avance': 60 }, 450)                           propiedades CSS numéricas (style)
   //   forja.contar(elTexto, 15.2, { decimales: 2, sufijo: ' %' })          un número que cuenta hasta su valor
+  //   forja.transitar(estado, { h: 0.5 }, 450, e => redibujar(e))         una curva o figura calculada que cambia
   //   forja.escalonar(lista, (el, i) => {...}, 45)                      una cosa tras otra (inmediato con reducir movimiento)
   //   forja.reducir                                                       true si el usuario pidió menos movimiento
   // Cada atributo lleva su propia animación: dos deslizar sobre el mismo elemento no se pisan.
@@ -1219,9 +1220,22 @@ input[type="range"] { width: 100%; accent-color: var(--acento); }
     if (!el) return;
     const previo = el.__mostrado ?? parseFloat(el.dataset.valor ?? valor);
     el.dataset.valor = valor;
+    // Signo menos tipográfico (−), como en el resto de la guía.
     const fmt = n => prefijo + (miles ? n.toLocaleString('en-US', { minimumFractionDigits: decimales, maximumFractionDigits: decimales })
-      : n.toFixed(decimales)) + sufijo;
+      : n.toFixed(decimales)).replace(/^-/, '−') + sufijo;
     interpolar(el, 'texto', { n: previo }, { n: valor }, ms, v => { el.__mostrado = v.n; el.textContent = fmt(v.n); });
+  }
+  // Para lo que no es un atributo (una curva que se redibuja, una figura calculada): anima los números de un
+  // objeto de estado y llama a dibujar(estado) en cada cuadro.
+  //   const est = { a: 1, h: 2 };  forja.transitar(est, { h: 0.5 }, 450, e => dibujarSecante(e.a, e.h));
+  function transitar(estado, hasta, ms, dibujar) {
+    // Junta los destinos: si antes se pidió {a} y ahora {h}, la a sigue hacia su destino.
+    const destino = Object.assign(enCurso.get(estado)?.__destino || {}, hasta);
+    const desde = {};
+    for (const c in destino) desde[c] = Number.isFinite(estado[c]) ? estado[c] : destino[c];
+    interpolar(estado, 'estado', desde, { ...destino }, ms, v => { Object.assign(estado, v); dibujar(estado); });
+    const mapa = enCurso.get(estado);
+    if (mapa) mapa.__destino = destino;
   }
   function escalonar(lista, fn, pasoMs = 45) {
     const els = [...lista];
@@ -1265,6 +1279,7 @@ input[type="range"] { width: 100%; accent-color: var(--acento); }
     // forja.deslizar(el, {atributo: valor}, ms) y forja.contar(el, número, {decimales, sufijo})
     deslizar,
     contar,
+    transitar,
     escalonar,
     reducir,
   };

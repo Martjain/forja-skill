@@ -440,17 +440,22 @@ code, pre, kbd, samp { font-variant-ligatures: none; }
     if (!el) return;
     const previo = el.__mostrado ?? parseFloat(el.dataset.valor ?? valor);
     el.dataset.valor = valor;
+    // Signo menos tipográfico (−), como en el resto de la guía.
     const fmt = n => prefijo + (miles ? n.toLocaleString('en-US', { minimumFractionDigits: decimales, maximumFractionDigits: decimales })
-      : n.toFixed(decimales)) + sufijo;
+      : n.toFixed(decimales)).replace(/^-/, '−') + sufijo;
     interpolar(el, 'texto', { n: previo }, { n: valor }, ms, v => { el.__mostrado = v.n; el.textContent = fmt(v.n); });
   }
   // Para lo que no es un atributo (una curva que se redibuja, una figura calculada): anima los números de un
   // objeto de estado y llama a dibujar(estado) en cada cuadro.
   //   const est = { a: 1, h: 2 };  forja.transitar(est, { h: 0.5 }, 450, e => dibujarSecante(e.a, e.h));
   function transitar(estado, hasta, ms, dibujar) {
+    // Junta los destinos: si antes se pidió {a} y ahora {h}, la a sigue hacia su destino.
+    const destino = Object.assign(enCurso.get(estado)?.__destino || {}, hasta);
     const desde = {};
-    for (const c in hasta) desde[c] = Number.isFinite(estado[c]) ? estado[c] : hasta[c];
-    interpolar(estado, 'estado', desde, hasta, ms, v => { Object.assign(estado, v); dibujar(estado); });
+    for (const c in destino) desde[c] = Number.isFinite(estado[c]) ? estado[c] : destino[c];
+    interpolar(estado, 'estado', desde, { ...destino }, ms, v => { Object.assign(estado, v); dibujar(estado); });
+    const mapa = enCurso.get(estado);
+    if (mapa) mapa.__destino = destino;
   }
   function escalonar(lista, fn, pasoMs = 45) {
     const els = [...lista];

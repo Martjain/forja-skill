@@ -567,7 +567,7 @@ section > .anima-caja { max-width: 46rem; margin-left: max(0px, calc((100% - var
         <li data-reto="reto-horizontal">Encuentra el punto a donde la tangente queda horizontal, con h entre −0.1 y 0.1.</li>
       </ul>
     </div>
-    <div class="anima-caja" data-anima data-animacion="proceso" id="anima-secante">
+    <div class="anima-caja" data-anima data-animacion="proceso" id="anima-secante" data-fases="0.05 0.25 0.5 0.85">
 <svg id="an-svg" data-tras-prediccion="pred-limite" viewBox="0 0 480 400" role="img" aria-labelledby="t-anima">
 <title id="t-anima">Animación: sobre la parábola y = x al cuadrado, P queda fijo en x = 1.5 y Q se acerca a P. La secante PQ gira hasta confundirse con la tangente en P, y su pendiente, 3 + h, baja hasta 3.</title>
 <defs><clipPath id="cl-an"><rect x="56" y="20" width="406" height="242"/></clipPath><marker id="pta-an" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1 L8 5 L1 9 Z" style="fill:var(--tinta-suave)"/></marker></defs>
@@ -1200,6 +1200,7 @@ section > .anima-caja { max-width: 46rem; margin-left: max(0px, calc((100% - var
   //   forja.deslizar(el, { width: 120, x: 30, 'stroke-width': 2.5 }, 450)  atributos numéricos del SVG
   //   forja.deslizar(el, { '--avance': 60 }, 450)                           propiedades CSS numéricas (style)
   //   forja.contar(elTexto, 15.2, { decimales: 2, sufijo: ' %' })          un número que cuenta hasta su valor
+  //   forja.transitar(estado, { h: 0.5 }, 450, e => redibujar(e))         una curva o figura calculada que cambia
   //   forja.escalonar(lista, (el, i) => {...}, 45)                      una cosa tras otra (inmediato con reducir movimiento)
   //   forja.reducir                                                       true si el usuario pidió menos movimiento
   // Cada atributo lleva su propia animación: dos deslizar sobre el mismo elemento no se pisan.
@@ -1239,9 +1240,22 @@ section > .anima-caja { max-width: 46rem; margin-left: max(0px, calc((100% - var
     if (!el) return;
     const previo = el.__mostrado ?? parseFloat(el.dataset.valor ?? valor);
     el.dataset.valor = valor;
+    // Signo menos tipográfico (−), como en el resto de la guía.
     const fmt = n => prefijo + (miles ? n.toLocaleString('en-US', { minimumFractionDigits: decimales, maximumFractionDigits: decimales })
-      : n.toFixed(decimales)) + sufijo;
+      : n.toFixed(decimales)).replace(/^-/, '−') + sufijo;
     interpolar(el, 'texto', { n: previo }, { n: valor }, ms, v => { el.__mostrado = v.n; el.textContent = fmt(v.n); });
+  }
+  // Para lo que no es un atributo (una curva que se redibuja, una figura calculada): anima los números de un
+  // objeto de estado y llama a dibujar(estado) en cada cuadro.
+  //   const est = { a: 1, h: 2 };  forja.transitar(est, { h: 0.5 }, 450, e => dibujarSecante(e.a, e.h));
+  function transitar(estado, hasta, ms, dibujar) {
+    // Junta los destinos: si antes se pidió {a} y ahora {h}, la a sigue hacia su destino.
+    const destino = Object.assign(enCurso.get(estado)?.__destino || {}, hasta);
+    const desde = {};
+    for (const c in destino) desde[c] = Number.isFinite(estado[c]) ? estado[c] : destino[c];
+    interpolar(estado, 'estado', desde, { ...destino }, ms, v => { Object.assign(estado, v); dibujar(estado); });
+    const mapa = enCurso.get(estado);
+    if (mapa) mapa.__destino = destino;
   }
   function escalonar(lista, fn, pasoMs = 45) {
     const els = [...lista];
@@ -1285,6 +1299,7 @@ section > .anima-caja { max-width: 46rem; margin-left: max(0px, calc((100% - var
     // forja.deslizar(el, {atributo: valor}, ms) y forja.contar(el, número, {decimales, sufijo})
     deslizar,
     contar,
+    transitar,
     escalonar,
     reducir,
   };
@@ -1542,11 +1557,12 @@ const setLinea = (el, x1, y1, x2, y2) => { el.setAttribute('x1', x1); el.setAttr
   el('sec-curva').setAttribute('d', d);
   // recta por (xa, ya) con pendiente m, recortada al área (el clipPath hace el resto)
   const recta = (linea, xa, ya, m) => setLinea(linea, X(X0), Y(ya + m * (X0 - xa)), X(X1), Y(ya + m * (X1 - xa)));
-  const pintar = () => {
-    let h = Number(sh.value); const a = Number(sa.value);
-    const cero = h === 0;
-    if (cero) h = 0.001;
-    const fa = f(a), fq = f(a + h), dy = fq - fa, m = dy / h, t = 2 * a;
+  // Lo que se dibuja sale de est = {a, h}, que transita (forja.transitar) hacia lo que marcan los controles:
+  // en cada cuadro P, Q, la secante, el escalón y las lecturas se calculan con la fórmula real.
+  const est = {};
+  const dibujar = ({ a, h }) => {
+    const fa = f(a), fq = f(a + h), dy = fq - fa, t = 2 * a;
+    const m = Math.abs(h) > 1e-6 ? dy / h : t + h;   // a medio camino h puede pasar por 0: ahí (f(a+h) − f(a)) / h = 2a + h
     recta(el('sec-linea'), a, fa, m);
     recta(el('sec-tan'), a, fa, t);
     setLinea(el('sec-dx'), X(a), Y(fa), X(a + h), Y(fa));
@@ -1559,9 +1575,6 @@ const setLinea = (el, x1, y1, x2, y2) => { el.setAttribute('x1', x1); el.setAttr
     el('sec-tdy').setAttribute('x', X(a + h) + (h > 0 ? 8 : -30)); el('sec-tdy').setAttribute('y', (Y(fa) + Y(fq)) / 2 + 6);
     const chico = Math.abs(h) < 0.15;
     el('sec-th').style.display = el('sec-tdy').style.display = chico ? 'none' : '';
-    el('o-h').textContent = cero ? '0.00' : fmt(h);
-    el('o-a').textContent = fmt(a, 1);
-    el('nota-h').textContent = cero ? 'h = 0 no se vale: dividirías entre 0. Uso h = 0.001.' : '';
     el('r-dy').textContent = fmt(dy, 4);
     el('r-m').textContent = fmt(m, 3);
     el('r-t').textContent = fmt(t, 3);
@@ -1570,14 +1583,24 @@ const setLinea = (el, x1, y1, x2, y2) => { el.setAttribute('x1', x1); el.setAttr
     el('r-frase').textContent = Math.abs(m - t) < 0.0005
       ? `Con h = ${fmt(h, 3)} la secante prácticamente es la tangente: pendiente ${fmt(t)}.`
       : `Con h = ${fmt(h, 3)} la secante tiene pendiente ${fmt(m, 3)}: ${lado} ${fmt(Math.abs(m - t), 3)} para llegar a ${fmt(t)}, la pendiente de la tangente.`;
+  };
+  // Los controles: su valor, la nota, los retos y lo guardado van al instante; el dibujo transita (120 ms al arrastrar).
+  const pintar = (ms = 120) => {
+    let h = Number(sh.value); const a = Number(sa.value);
+    const cero = h === 0;
+    if (cero) h = 0.001;
+    el('o-h').textContent = cero ? '0.00' : fmt(h);
+    el('o-a').textContent = fmt(a, 1);
+    el('nota-h').textContent = cero ? 'h = 0 no se vale: dividirías entre 0. Uso h = 0.001.' : '';
     if (!cero && h > 0 && h < 0.05) forja.reto('reto-h-chico');
     if (!cero && h < 0 && h > -0.1) forja.reto('reto-h-negativo');
     if (a === 0 && Math.abs(h) <= 0.1) forja.reto('reto-horizontal');
     forja.guardar('lab', { h: sh.value, a: sa.value });
+    forja.transitar(est, { a, h }, ms, dibujar);   // siempre a y h juntas: una transición nueva reemplaza a la anterior
   };
   const g = forja.leer('lab'); if (g) { sh.value = g.h; sa.value = g.a; }
-  sh.addEventListener('input', pintar); sa.addEventListener('input', pintar);
-  pintar();
+  sh.addEventListener('input', () => pintar()); sa.addEventListener('input', () => pintar());
+  pintar(0);
 })();
 
 // ---- 04 Diagrama: la fórmula pieza por pieza ----
@@ -1666,22 +1689,35 @@ const setLinea = (el, x1, y1, x2, y2) => { el.setAttribute('x1', x1); el.setAttr
     for (let k = 0; k <= 64; k++) { const x = -1.6 + 3.2 * k / 64; const y = Math.max(-M, Math.min(M, g(x))); d += (d ? ' L' : 'M') + (20 + (x + 1.6) / 3.2 * 280).toFixed(1) + ',' + (110 - y / M * 85).toFixed(1); }
     return d;
   };
-  const dibujar = (conDerivada) => {
+  // La curva es el polinomio c0 + c1·x + … + c6·x⁶. Al cambiar de ejercicio, sus coeficientes y la escala M
+  // transitan (forja.transitar) y en cada cuadro se evalúa el polinomio intermedio: la curva cambia de forma.
+  const GRADO = 6, est = {}; let conD = false;
+  const coefs = (a, n) => Object.fromEntries(Array.from({ length: GRADO + 1 }, (_, j) => ['c' + j, j === n ? a : 0]));
+  const poli = (e, x) => { let s = 0; for (let j = 0; j <= GRADO; j++) s += e['c' + j] * x ** j; return s; };
+  const dpoli = (e, x) => { let s = 0; for (let j = 1; j <= GRADO; j++) s += j * e['c' + j] * x ** (j - 1); return s; };
+  const trazar = e => {
+    $('pr-f').setAttribute('d', polilinea(x => poli(e, x), e.M));
+    $('pr-d').setAttribute('d', conD ? polilinea(x => dpoli(e, x), e.M) : '');
+  };
+  const dibujar = (conDerivada, ms = 450) => {
     const [a, n] = EJ[i];
     const f = x => a * x ** n, df = x => a * n * x ** Math.max(0, n - 1) * (n === 0 ? 0 : 1);
     let M = 1;
     for (let k = 0; k <= 32; k++) { const x = -1.6 + 3.2 * k / 32; M = Math.max(M, Math.abs(f(x)), conDerivada ? Math.abs(df(x)) : 0); }
     M = Math.min(M, 40);
-    $('pr-f').setAttribute('d', polilinea(f, M));
-    const eje = v => String(Math.round(v * 10) / 10);
-    $('pr-ymax').textContent = eje(M); $('pr-ymin').textContent = '−' + eje(M);
-    $('pr-d').setAttribute('d', conDerivada ? polilinea(df, M) : '');
+    conD = conDerivada;
+    if (!conD) $('pr-d').setAttribute('d', '');   // la derivada es la respuesta: se quita al instante, nunca transita
+    // Los números del eje cuentan hasta la nueva escala (1 decimal, o ninguno si es entero).
+    const dec = Number.isInteger(Math.round(M * 10) / 10) ? 0 : 1;
+    forja.contar($('pr-ymax'), M, { decimales: dec, miles: false, ms });
+    forja.contar($('pr-ymin'), M, { decimales: dec, miles: false, prefijo: '−', ms });
     $('pr-ley-d').textContent = conDerivada ? `f ′(x) = ${texto(a * n, Math.max(0, n - 1))}` : 'f ′(x), al comprobar';
+    forja.transitar(est, { ...coefs(a, n), M }, ms, trazar);
   };
-  const nuevo = () => {
+  const nuevo = (ms = 450) => {
     $('pr-ej').textContent = texto(...EJ[i]);
     ic.value = ''; ie.value = '';
-    dibujar(false);
+    dibujar(false, ms);
     $('pr-racha').textContent = racha;
     // "Explícamelo paso a paso" de ESTE ejercicio
     const [a, n] = EJ[i];
@@ -1720,7 +1756,7 @@ const setLinea = (el, x1, y1, x2, y2) => { el.setAttribute('x1', x1); el.setAttr
   $('pr-ok').addEventListener('click', comprobar);
   [ic, ie].forEach(inp => inp.addEventListener('keydown', e => { if (e.key === 'Enter') comprobar(); }));
   $('pr-otro').addEventListener('click', () => { i = (i + 1) % EJ.length; forja.guardar('pr-i', i); fb.className = 'pr-fb'; fb.textContent = 'Nuevo ejercicio. Coeficiente y exponente de tu respuesta.'; nuevo(); });
-  nuevo();
+  nuevo(0);
 })();
 
 // ---- 07 Altura contra inclinación ----
@@ -1730,20 +1766,27 @@ const setLinea = (el, x1, y1, x2, y2) => { el.setAttribute('x1', x1); el.setAttr
   const X = x => 30 + (x + 1.5) / 5 * 300;
   const Yf = y => 250 - (y + 1.5) / 7 * 230, Yd = y => 250 - (y + 5.5) / 11 * 230;
   const f = x => x * x - 2 * x, df = x => 2 * x - 2;
-  const pintar = () => {
-    const x = Number(sl.value), y = f(x), m = df(x), w = 0.7;
+  // est = {x} transita (forja.transitar) hacia el control: en cada cuadro los dos puntos, la tangente y los
+  // valores salen de f y f′ en el mismo x, así que se deslizan juntos por sus curvas.
+  const est = {};
+  const dibujar = ({ x }) => {
+    const y = f(x), m = df(x), w = 0.7;
     const tan = caja.querySelector('#vp-tan');
     setLinea(tan, X(x - w), Yf(y - m * w), X(x + w), Yf(y + m * w));
     caja.querySelector('#vp-pt').setAttribute('cx', X(x)); caja.querySelector('#vp-pt').setAttribute('cy', Yf(y));
     caja.querySelector('#vp-dpt').setAttribute('cx', X(x)); caja.querySelector('#vp-dpt').setAttribute('cy', Yd(m));
     setLinea(caja.querySelector('#vp-guia'), X(x), Yd(0), X(x), Yd(m));
-    caja.querySelector('#o-x').textContent = fmt(x);
     const estado = m > 0 ? 'La curva sube: pendiente positiva.' : m < 0 ? 'La curva baja: pendiente negativa.' : 'Fondo del valle: la tangente es horizontal y la pendiente es 0, aunque f valga −1.';
     caja.querySelector('#vp-frase').textContent = `En x = ${fmt(x)}: f vale ${fmt(y)} y f′ vale ${fmt(m)}. ${estado}`;
-    if (x === 2) forja.reto('reto-dos');
   };
-  sl.addEventListener('input', pintar);
-  pintar();
+  const pintar = (ms = 120) => {
+    const x = Number(sl.value);
+    caja.querySelector('#o-x').textContent = fmt(x);
+    if (x === 2) forja.reto('reto-dos');
+    forja.transitar(est, { x }, ms, dibujar);
+  };
+  sl.addEventListener('input', () => pintar());
+  pintar(0);
 })();
 // ---- Ilustración animada: la secante se vuelve tangente (h → 0) ----
 // Todo sale de la fase (0 a 1): fase → h → Q = (a + h, (a + h)²) → secante, escalón y medidor.
