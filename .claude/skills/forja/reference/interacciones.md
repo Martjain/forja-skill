@@ -177,7 +177,12 @@ Si el tema no tiene ninguna variable numérica, el simulador puede ser un select
 **Transiciones.** Cuando el usuario mueve un control o elige otro caso, las piezas **se deslizan** a su nuevo valor en lugar de saltar: así se ve qué cambió y cuánto. Usa el núcleo, no lo programes:
 - `forja.deslizar(el, { width: 120, y: 40 }, 450)` mueve atributos numéricos de un SVG (también propiedades CSS como `'--avance'`).
 - `forja.contar(elNumero, 15.2, { decimales: 2, sufijo: ' %' })` hace que un número cuente hasta su nuevo valor.
-- Entre 300 y 600 ms. Con un slider que se arrastra, usa un tiempo corto (150 ms) o ninguno; con botones que cargan un caso, el tiempo completo.
+- **Duraciones (las mismas en toda la skill):** mientras se arrastra un control, **120 ms**; con un botón que carga un caso o corre algo, **450 ms** (máximo 600).
+- `forja.escalonar(lista, (el, i) => …, 45)` marca cosas una tras otra (una cadena de pasos, filas que se llenan): así se ve el orden. El total no debe pasar de unos 600 ms.
+- Cada atributo lleva su propia animación: puedes deslizar `x` y luego `width` del mismo elemento sin que se pisen. Si una animación se reapunta a medio camino (al arrastrar), sigue sin volver a arrancar desde cero.
+- `forja.contar` no anima la primera vez. Si el número se crea con `innerHTML`, ponle `data-valor` con el valor de partida.
+- **Ángulos y giros:** `deslizar` no mueve `transform`. Desliza una propiedad CSS (`forja.deslizar(el, {'--ang': 120})`) y úsala en el CSS: `transform: rotate(calc(var(--ang) * 1deg)); transform-box: view-box; transform-origin: 200px 150px;`.
+- `forja.reducir` dice si el usuario pidió menos movimiento, por si necesitas decidir algo a mano.
 - Ambas respetan «reducir movimiento»: ahí el cambio es inmediato.
 
 ## 5. Paso a paso guiado — `data-interaccion="pasos"`

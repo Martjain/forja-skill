@@ -92,7 +92,7 @@ Toda guía lleva animación, pero **solo de los tipos de este catálogo, en los 
 |---|---|---|---|---|
 | **A. Proceso central** · `data-animacion="proceso"` | **Siempre.** Todo tema tiene algo que cambia con el tiempo: un mecanismo, un flujo, un ciclo, algo que se construye, o un valor que se acerca a otro | En la sección que explica ese proceso, junto a su explicación (puede ser la portada, si ahí se presenta el proceso) | **1** (2 solo si el tema son dos procesos distintos, como dos motores; y entonces sin B) | `forja.animar` con controles y narración |
 | **B. Motivo de portada** · `data-animacion="portada"` | Solo si el motivo de la portada **es el mismo proceso en pequeño** (algo que avanza, se llena o se corta) | En la portada | **0 o 1** | `forja.animar`, periodo lento (10–14 s) |
-| **C. Transición** | **Siempre** que el usuario cambia un estado: mueve un control, carga un caso, avanza un paso | En simuladores, diagramas que cambian y pasos guiados | Las que haga falta; no cuentan como animación | `forja.deslizar` y `forja.contar`, 120–600 ms |
+| **C. Transición** | **Siempre** que el usuario cambia un estado: mueve un control, carga un caso, avanza un paso | En simuladores, diagramas que cambian y pasos guiados | Las que haga falta; no cuentan como animación | `forja.deslizar`, `forja.contar` y `forja.escalonar`: 120 ms al arrastrar, 450 ms con un botón ([interacciones.md](interacciones.md) §4) |
 | **D. Detalle del kit** | Solo **dentro** de una A o una B | La clase `flujo` (algo que circula) y `titila` (una llama) | — | Clases del núcleo |
 
 **Cómo elegir el proceso central (A)**, según el tema:

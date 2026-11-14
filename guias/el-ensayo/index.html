@@ -1180,39 +1180,53 @@ input[type="range"] { width: 100%; accent-color: var(--acento); }
   //   forja.deslizar(el, { width: 120, x: 30, 'stroke-width': 2.5 }, 450)  atributos numéricos del SVG
   //   forja.deslizar(el, { '--avance': 60 }, 450)                           propiedades CSS numéricas (style)
   //   forja.contar(elTexto, 15.2, { decimales: 2, sufijo: ' %' })          un número que cuenta hasta su valor
-  const enCurso = new WeakMap();
+  //   forja.escalonar(lista, (el, i) => {...}, 45)                      una cosa tras otra (inmediato con reducir movimiento)
+  //   forja.reducir                                                       true si el usuario pidió menos movimiento
+  // Cada atributo lleva su propia animación: dos deslizar sobre el mismo elemento no se pisan.
+  const enCurso = new WeakMap();   // elemento → { clave: id de requestAnimationFrame }
   const suave = t => t < .5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2;
-  function interpolar(el, desde, hasta, ms, aplicar) {
-    cancelAnimationFrame(enCurso.get(el) || 0);
+  const salida = t => 1 - (1 - t) ** 3;   // al reapuntar una animación en marcha: sin volver a arrancar desde cero
+  function interpolar(el, clave, desde, hasta, ms, aplicar) {
+    const mapa = enCurso.get(el) || {};
+    enCurso.set(el, mapa);
+    const enMarcha = clave in mapa;
+    cancelAnimationFrame(mapa[clave]);
+    delete mapa[clave];
     if (reducir || !ms) { aplicar(hasta); return; }
+    const curva = enMarcha ? salida : suave;
     let t0 = null;
     const paso = ts => {
       t0 ??= ts;
-      const t = Math.max(0, Math.min(1, (ts - t0) / ms)), k = suave(t);
+      const t = Math.max(0, Math.min(1, (ts - t0) / ms)), k = curva(t);
       aplicar(Object.fromEntries(Object.keys(hasta).map(c => [c, desde[c] + (hasta[c] - desde[c]) * k])));
-      if (t < 1) enCurso.set(el, requestAnimationFrame(paso)); else enCurso.delete(el);
+      if (t < 1) mapa[clave] = requestAnimationFrame(paso); else delete mapa[clave];
     };
-    enCurso.set(el, requestAnimationFrame(paso));
+    mapa[clave] = requestAnimationFrame(paso);
   }
   function deslizar(el, valores, ms = 450) {
     if (!el) return;
-    const css = c => c.startsWith('--'), desde = {};
     for (const c in valores) {
-      const actual = css(c) ? parseFloat(el.style.getPropertyValue(c)) : parseFloat(el.getAttribute(c));
-      desde[c] = Number.isFinite(actual) ? actual : valores[c];
+      const css = c.startsWith('--');
+      const actual = css ? parseFloat(el.style.getPropertyValue(c)) : parseFloat(el.getAttribute(c));
+      const desde = Number.isFinite(actual) ? actual : valores[c];
+      interpolar(el, c, { v: desde }, { v: valores[c] }, ms, x => {
+        css ? el.style.setProperty(c, x.v) : el.setAttribute(c, +x.v.toFixed(2));
+      });
     }
-    interpolar(el, desde, valores, ms, v => {
-      for (const c in v) css(c) ? el.style.setProperty(c, v[c]) : el.setAttribute(c, +v[c].toFixed(2));
-    });
   }
+  // La primera vez no anima (no sabe desde dónde). Si el número se crea con innerHTML, ponle data-valor con el de partida.
   function contar(el, valor, { decimales = 0, sufijo = '', prefijo = '', ms = 450, miles = true } = {}) {
     if (!el) return;
-    // Parte de lo que se ve ahora (aunque otra cuenta vaya a medias). La primera vez no anima.
     const previo = el.__mostrado ?? parseFloat(el.dataset.valor ?? valor);
     el.dataset.valor = valor;
     const fmt = n => prefijo + (miles ? n.toLocaleString('en-US', { minimumFractionDigits: decimales, maximumFractionDigits: decimales })
       : n.toFixed(decimales)) + sufijo;
-    interpolar(el, { n: previo }, { n: valor }, ms, v => { el.__mostrado = v.n; el.textContent = fmt(v.n); });
+    interpolar(el, 'texto', { n: previo }, { n: valor }, ms, v => { el.__mostrado = v.n; el.textContent = fmt(v.n); });
+  }
+  function escalonar(lista, fn, pasoMs = 45) {
+    const els = [...lista];
+    if (reducir || !pasoMs) { els.forEach(fn); return; }
+    els.forEach((el, i) => setTimeout(() => fn(el, i), i * pasoMs));
   }
 
   // Ayudas de dibujo calculado: úsalas en lugar de poner coordenadas a ojo.
@@ -1251,6 +1265,8 @@ input[type="range"] { width: 100%; accent-color: var(--acento); }
     // forja.deslizar(el, {atributo: valor}, ms) y forja.contar(el, número, {decimales, sufijo})
     deslizar,
     contar,
+    escalonar,
+    reducir,
   };
 
   // Etiquetas de ilustración: <g class="etiqueta" data-punto="x y"> con un título y una frase.

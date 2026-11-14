@@ -930,39 +930,53 @@ section[data-tono="oscuro"] [data-prediccion] { background: rgba(15, 62, 94, .6)
   //   forja.deslizar(el, { width: 120, x: 30, 'stroke-width': 2.5 }, 450)  atributos numéricos del SVG
   //   forja.deslizar(el, { '--avance': 60 }, 450)                           propiedades CSS numéricas (style)
   //   forja.contar(elTexto, 15.2, { decimales: 2, sufijo: ' %' })          un número que cuenta hasta su valor
-  const enCurso = new WeakMap();
+  //   forja.escalonar(lista, (el, i) => {...}, 45)                      una cosa tras otra (inmediato con reducir movimiento)
+  //   forja.reducir                                                       true si el usuario pidió menos movimiento
+  // Cada atributo lleva su propia animación: dos deslizar sobre el mismo elemento no se pisan.
+  const enCurso = new WeakMap();   // elemento → { clave: id de requestAnimationFrame }
   const suave = t => t < .5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2;
-  function interpolar(el, desde, hasta, ms, aplicar) {
-    cancelAnimationFrame(enCurso.get(el) || 0);
+  const salida = t => 1 - (1 - t) ** 3;   // al reapuntar una animación en marcha: sin volver a arrancar desde cero
+  function interpolar(el, clave, desde, hasta, ms, aplicar) {
+    const mapa = enCurso.get(el) || {};
+    enCurso.set(el, mapa);
+    const enMarcha = clave in mapa;
+    cancelAnimationFrame(mapa[clave]);
+    delete mapa[clave];
     if (reducir || !ms) { aplicar(hasta); return; }
+    const curva = enMarcha ? salida : suave;
     let t0 = null;
     const paso = ts => {
       t0 ??= ts;
-      const t = Math.max(0, Math.min(1, (ts - t0) / ms)), k = suave(t);
+      const t = Math.max(0, Math.min(1, (ts - t0) / ms)), k = curva(t);
       aplicar(Object.fromEntries(Object.keys(hasta).map(c => [c, desde[c] + (hasta[c] - desde[c]) * k])));
-      if (t < 1) enCurso.set(el, requestAnimationFrame(paso)); else enCurso.delete(el);
+      if (t < 1) mapa[clave] = requestAnimationFrame(paso); else delete mapa[clave];
     };
-    enCurso.set(el, requestAnimationFrame(paso));
+    mapa[clave] = requestAnimationFrame(paso);
   }
   function deslizar(el, valores, ms = 450) {
     if (!el) return;
-    const css = c => c.startsWith('--'), desde = {};
     for (const c in valores) {
-      const actual = css(c) ? parseFloat(el.style.getPropertyValue(c)) : parseFloat(el.getAttribute(c));
-      desde[c] = Number.isFinite(actual) ? actual : valores[c];
+      const css = c.startsWith('--');
+      const actual = css ? parseFloat(el.style.getPropertyValue(c)) : parseFloat(el.getAttribute(c));
+      const desde = Number.isFinite(actual) ? actual : valores[c];
+      interpolar(el, c, { v: desde }, { v: valores[c] }, ms, x => {
+        css ? el.style.setProperty(c, x.v) : el.setAttribute(c, +x.v.toFixed(2));
+      });
     }
-    interpolar(el, desde, valores, ms, v => {
-      for (const c in v) css(c) ? el.style.setProperty(c, v[c]) : el.setAttribute(c, +v[c].toFixed(2));
-    });
   }
+  // La primera vez no anima (no sabe desde dónde). Si el número se crea con innerHTML, ponle data-valor con el de partida.
   function contar(el, valor, { decimales = 0, sufijo = '', prefijo = '', ms = 450, miles = true } = {}) {
     if (!el) return;
-    // Parte de lo que se ve ahora (aunque otra cuenta vaya a medias). La primera vez no anima.
     const previo = el.__mostrado ?? parseFloat(el.dataset.valor ?? valor);
     el.dataset.valor = valor;
     const fmt = n => prefijo + (miles ? n.toLocaleString('en-US', { minimumFractionDigits: decimales, maximumFractionDigits: decimales })
       : n.toFixed(decimales)) + sufijo;
-    interpolar(el, { n: previo }, { n: valor }, ms, v => { el.__mostrado = v.n; el.textContent = fmt(v.n); });
+    interpolar(el, 'texto', { n: previo }, { n: valor }, ms, v => { el.__mostrado = v.n; el.textContent = fmt(v.n); });
+  }
+  function escalonar(lista, fn, pasoMs = 45) {
+    const els = [...lista];
+    if (reducir || !pasoMs) { els.forEach(fn); return; }
+    els.forEach((el, i) => setTimeout(() => fn(el, i), i * pasoMs));
   }
 
   // Ayudas de dibujo calculado: úsalas en lugar de poner coordenadas a ojo.
@@ -1001,6 +1015,8 @@ section[data-tono="oscuro"] [data-prediccion] { background: rgba(15, 62, 94, .6)
     // forja.deslizar(el, {atributo: valor}, ms) y forja.contar(el, número, {decimales, sufijo})
     deslizar,
     contar,
+    escalonar,
+    reducir,
   };
 
   // Etiquetas de ilustración: <g class="etiqueta" data-punto="x y"> con un título y una frase.
@@ -1351,35 +1367,105 @@ try {
       k += `|R|${v.F}`; out.push({ et: 'R', k });
       return out;
     };
-    const dibujarBrida = () => {
-      const v = vals(), k = 2.6, c = 150, R = v.D / 2 * k;
-      svgB.querySelectorAll(':scope > :not(title)').forEach(n => n.remove());
-      const g = el('g', {}, svgB);
-      el('path', { d: `M${c - R - 10} ${c}H${c + R + 10}M${c} ${c - R - 10}V${c + R + 10}`, stroke: 'var(--tinta-suave)', 'stroke-width': 1, 'stroke-dasharray': '10 3 2 3', fill: 'none', opacity: .8 }, g);
-      el('circle', { cx: c, cy: c, r: R, fill: 'url(#met)', stroke: 'var(--tinta)', 'stroke-width': 2.5 }, g);
-      el('circle', { cx: c, cy: c, r: R - v.F * k, fill: 'none', stroke: 'var(--tinta)', 'stroke-width': 1, opacity: .55 }, g);
-      el('circle', { cx: c, cy: c, r: BORE / 2 * k, fill: 'var(--fondo)', stroke: 'var(--tinta)', 'stroke-width': 2.5 }, g);
-      el('circle', { cx: c, cy: c, r: BC / 2 * k, fill: 'none', stroke: 'var(--tinta-suave)', 'stroke-width': 1, 'stroke-dasharray': '10 3 2 3' }, g);
-      agujeros(v.N).forEach(([x, y], i) => {
-        el('circle', { cx: c + x * k, cy: c - y * k, r: HOLE / 2 * k, fill: 'var(--fondo)', stroke: 'var(--tinta)', 'stroke-width': 1.25 }, g);
-        const a = 2 * Math.PI * i / v.N, rt = BC / 2 * k - 19;
-        const t = el('text', { x: c + rt * Math.cos(a), y: c - rt * Math.sin(a) + 4, 'font-size': 12, 'text-anchor': 'middle', fill: 'var(--tinta-suave)', style: 'font-family:var(--f-codigo)' }, g);
-        t.textContent = i + 1;
+    const k = 2.6, c = 150;
+    const quieto = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // La brida se arma una vez; al cambiar una medida, sus piezas se deslizan (forja.deslizar) a la nueva.
+    const gB = el('g', {}, svgB);
+    const eje = { stroke: 'var(--tinta-suave)', 'stroke-width': 1, 'stroke-dasharray': '10 3 2 3', opacity: .8 };
+    const ejeH = el('line', { ...eje, y1: c, y2: c }, gB), ejeV = el('line', { ...eje, x1: c, x2: c }, gB);
+    const disco = el('circle', { cx: c, cy: c, fill: 'url(#met)', stroke: 'var(--tinta)', 'stroke-width': 2.5 }, gB);
+    const filete = el('circle', { cx: c, cy: c, fill: 'none', stroke: 'var(--tinta)', 'stroke-width': 1, opacity: .55 }, gB);
+    el('circle', { cx: c, cy: c, r: BORE / 2 * k, fill: 'var(--fondo)', stroke: 'var(--tinta)', 'stroke-width': 2.5 }, gB);
+    el('circle', { cx: c, cy: c, r: BC / 2 * k, fill: 'none', stroke: 'var(--tinta-suave)', 'stroke-width': 1, 'stroke-dasharray': '10 3 2 3' }, gB);
+    // Un agujero por cada valor posible de BOLT_HOLE_COUNT. Cada uno gira por el círculo de barrenos
+    // hasta su ángulo (polar_point: 360° · i / N); el número se contragira para quedar derecho.
+    const huecos = Array.from({ length: +sN.max }, (_, i) => {
+      const h = el('g', { style: `transform-origin:${c}px ${c}px;transform:rotate(calc(var(--ang) * -1deg))` }, gB);
+      el('circle', { cx: c + BC / 2 * k, cy: c, r: HOLE / 2 * k, fill: 'var(--fondo)', stroke: 'var(--tinta)', 'stroke-width': 1.25 }, h);
+      const t = el('text', { x: c + BC / 2 * k - 19, y: c + 4, 'font-size': 12, 'text-anchor': 'middle', fill: 'var(--tinta-suave)', style: 'font-family:var(--f-codigo);transform-box:fill-box;transform-origin:center;transform:rotate(calc(var(--ang) * 1deg))' }, h);
+      t.textContent = i + 1;
+      return h;
+    });
+    const dibujarBrida = (ms = 0) => {
+      const v = vals(), R = v.D / 2 * k;
+      forja.deslizar(ejeH, { x1: c - R - 10, x2: c + R + 10 }, ms);
+      forja.deslizar(ejeV, { y1: c - R - 10, y2: c + R + 10 }, ms);
+      forja.deslizar(disco, { r: R }, ms);
+      forja.deslizar(filete, { r: R - v.F * k }, ms);
+      // Los agujeros que sobran se juntan con el 1 (360°) y se apagan; los nuevos salen de ahí.
+      huecos.forEach((h, i) => {
+        const esta = i < v.N;
+        clearTimeout(h.__fin);
+        if (esta) h.style.display = '';
+        forja.deslizar(h, { '--ang': esta ? 360 * i / v.N : 360, opacity: esta ? 1 : 0 }, ms);
+        if (!esta) h.__fin = setTimeout(() => { h.style.display = 'none'; }, ms);
       });
     };
-    const dibujarCadena = (lista, estados) => {
-      svgC.querySelectorAll(':scope > :not(title)').forEach(n => n.remove());
-      const w = 34, gap = 4, n = lista.length, x0 = (480 - (n * w + (n - 1) * gap)) / 2;
-      
+    // La cadena: una caja por operación. Al correr, las cajas se acomodan (forja.deslizar) y se marcan
+    // una por una en orden de ejecución, recalculada o repetida, con un pequeño escalonado.
+    const w = 34, gap = 4, cajasOp = new Map();
+    const pie = el('text', { y: 98, 'font-size': 16, fill: 'var(--tinta-suave)', style: 'font-family:var(--f-codigo)' }, svgC);
+    pie.textContent = 'orden de ejecución →';
+    let ronda = 0, ultimaCadena = null;
+    const cajaOp = et => {
+      if (cajasOp.has(et)) return cajasOp.get(et);
+      // Un <svg> anidado por caja: su x es la posición de toda la caja, y la marca anima solo su alto
+      // (un mismo elemento no puede llevar dos forja.deslizar a la vez: el segundo cancela al primero).
+      const g = el('svg', { x: 0, opacity: 0, overflow: 'visible' }, svgC);
+      el('rect', { y: 30, width: w, height: 40, rx: 6, fill: 'var(--fondo)', stroke: 'var(--borde)', 'stroke-width': 2.5 }, g);
+      const marca = el('rect', { y: 70, width: w, height: 0, rx: 6, class: 'op' }, g);
+      const t = el('text', { x: w / 2, y: 56, 'font-size': 16, 'text-anchor': 'middle', fill: 'var(--tinta)', style: 'font-family:var(--f-codigo);font-weight:600' }, g);
+      t.textContent = et;
+      const o = { g, marca };
+      cajasOp.set(et, o);
+      return o;
+    };
+    // Marca la última corrida: cada caja se llena con su estado y las cuentas suben (forja.contar) al mismo paso.
+    const marcar = animado => {
+      if (!ultimaCadena) return;
+      const { lista, estados } = ultimaCadena, mia = ++ronda;
+      const nRec = lectura.querySelector('[data-n="rec"]'), nRep = lectura.querySelector('[data-n="rep"]'), sal = lectura.querySelector('.salida');
+      const paso = animado ? Math.min(45, 380 / Math.max(1, lista.length - 1)) : 0, dur = animado ? 180 : 0;
+      let rec = 0, rep = 0;
+      if (animado) {
+        forja.contar(nRec, 0, { ms: 0 }); forja.contar(nRep, 0, { ms: 0 });
+        if (sal) sal.style.visibility = 'hidden';
+        lectura.setAttribute('aria-busy', 'true');
+      }
       lista.forEach((o, i) => {
-        const x = x0 + i * (w + gap);
-        el('rect', { x, y: 30, width: w, height: 40, rx: 6, class: 'op ' + estados[i] }, svgC);
-        const t = el('text', { x: x + w / 2, y: 56, 'font-size': 16, 'text-anchor': 'middle', fill: 'var(--tinta)', style: 'font-family:var(--f-codigo);font-weight:600' }, svgC);
-        t.textContent = o.et;
+        const { marca } = cajasOp.get(o.et);
+        if (animado) { marca.setAttribute('class', 'op'); forja.deslizar(marca, { y: 70, height: 0 }, 0); }
+        const llenar = () => {
+          if (mia !== ronda) return;
+          marca.setAttribute('class', 'op ' + estados[i]);
+          forja.deslizar(marca, { y: 30, height: 40 }, dur);
+          // La cuenta que cambia sube una unidad antes de la marca siguiente (reapuntar a media curva la frena).
+          if (estados[i] === 'rec') forja.contar(nRec, ++rec, { ms: paso * .8 }); else forja.contar(nRep, ++rep, { ms: paso * .8 });
+          if (i === lista.length - 1) { if (sal) sal.style.visibility = ''; lectura.removeAttribute('aria-busy'); }
+        };
+        if (animado) setTimeout(llenar, i * paso); else llenar();
       });
-      const t = el('text', { x: x0, y: 98, 'font-size': 16, fill: 'var(--tinta-suave)', style: 'font-family:var(--f-codigo)' }, svgC);
-      t.textContent = 'orden de ejecución →';
     };
+    const dibujarCadena = (lista, estados, animado) => {
+      const ms = animado ? 450 : 0, n = lista.length, x0 = (480 - (n * w + (n - 1) * gap)) / 2;
+      const vivas = new Set(lista.map(o => o.et));
+      for (const [et, o] of cajasOp) {
+        if (vivas.has(et)) continue;   // un agujero que ya no existe: su caja se apaga
+        cajasOp.delete(et);
+        forja.deslizar(o.g, { opacity: 0 }, ms);
+        setTimeout(() => o.g.remove(), ms);
+      }
+      lista.forEach((o, i) => {
+        const nueva = !cajasOp.has(o.et), caja = cajaOp(o.et), x = x0 + i * (w + gap);
+        if (nueva) caja.g.setAttribute('x', x);   // una caja nueva aparece en su lugar; las demás se recorren
+        forja.deslizar(caja.g, { x, opacity: 1 }, ms);
+      });
+      forja.deslizar(pie, { x: x0 }, ms);
+      ultimaCadena = { lista, estados };
+      marcar(animado);
+    };
+    // Antes de contestar la predicción la cadena está velada: ahí no se anima, para no llamar la atención.
+    const visible = () => !quieto && !!svgC.closest('[data-tras-prediccion]')?.classList.contains('revelado');
     const nombres = { D: 'OUTER_DIAMETER', N: 'BOLT_HOLE_COUNT', F: 'OUTER_FILLET' };
     const cambios = (a, b) => Object.keys(nombres).filter(k => a[k] !== b[k]).map(k => `${nombres[k]} ${a[k]} → ${b[k]}`);
     const pendiente = () => {
@@ -1393,7 +1479,6 @@ try {
       let rec = 0;
       const estados = lista.map(o => { const hit = vistas.has(o.k); if (!hit) rec++; return hit ? 'rep' : 'rec'; });
       lista.forEach(o => vistas.add(o.k));
-      dibujarCadena(lista, estados);
       const rep = lista.length - rec;
       let que;
       if (inicial) que = 'Primera corrida, en frío: el worker no tenía nada guardado.';
@@ -1401,7 +1486,8 @@ try {
       else if (mismo) que = 'No cambiaste nada.';
       else que = `Cambiaste ${cambios(ultimo, v).join(', ')}.`;
       const salida = mismo ? 'took … nothing ran' : `bodies 1 run; ${rec} misses, ${rep} hits`;
-      lectura.innerHTML = `${que} Cuerpo: ${mismo ? 'repetido, no corre' : 'corre'}. <strong>${mismo ? 0 : rec} recalculadas</strong>, ${mismo ? lista.length : rep} repetidas.<span class="salida">${salida}</span>`;
+      lectura.innerHTML = `${que} Cuerpo: ${mismo ? 'repetido, no corre' : 'corre'}. <strong><span data-n="rec" data-valor="0">${mismo ? 0 : rec}</span> recalculadas</strong>, <span data-n="rep" data-valor="0">${mismo ? lista.length : rep}</span> repetidas.<span class="salida">${salida}</span>`;
+      dibujarCadena(lista, estados, !inicial && visible());
       if (!inicial && !mismo && rec === lista.length) forja.reto('reto-todo');
       if (!inicial && ultimo && ultimo.D === v.D && ultimo.F === v.F && ultimo.N !== v.N) forja.reto('reto-salva');
       ultimo = v; comentAntes = comentarios;
@@ -1412,9 +1498,10 @@ try {
       $('o-n').textContent = sN.value;
       $('o-r').textContent = `${(+sR.value).toFixed(1)} mm`;
     };
-    [sD, sN, sR].forEach(s => s.addEventListener('input', () => { salidas(); dibujarBrida(); pendiente(); }));
+    [sD, sN, sR].forEach(s => s.addEventListener('input', () => { salidas(); dibujarBrida(120); pendiente(); }));
     $('b-comentario').addEventListener('click', () => { comentarios++; pendiente(); });
     $('b-correr').addEventListener('click', () => correr(false));
+    $('int-sim').addEventListener('forja:revelado', e => { if (e.detail?.id === 'pred-comentario' && visible()) setTimeout(() => marcar(true), 250); });
     salidas(); dibujarBrida(); correr(true);
   })();
 } catch (e) { console.error(e); }
