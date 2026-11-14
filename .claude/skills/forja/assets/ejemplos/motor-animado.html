@@ -400,6 +400,7 @@ code, pre, kbd, samp { font-variant-ligatures: none; }
   //   forja.deslizar(el, { width: 120, x: 30, 'stroke-width': 2.5 }, 450)  atributos numéricos del SVG
   //   forja.deslizar(el, { '--avance': 60 }, 450)                           propiedades CSS numéricas (style)
   //   forja.contar(elTexto, 15.2, { decimales: 2, sufijo: ' %' })          un número que cuenta hasta su valor
+  //   forja.transitar(estado, { h: 0.5 }, 450, e => redibujar(e))         una curva o figura calculada que cambia
   //   forja.escalonar(lista, (el, i) => {...}, 45)                      una cosa tras otra (inmediato con reducir movimiento)
   //   forja.reducir                                                       true si el usuario pidió menos movimiento
   // Cada atributo lleva su propia animación: dos deslizar sobre el mismo elemento no se pisan.
@@ -443,6 +444,14 @@ code, pre, kbd, samp { font-variant-ligatures: none; }
       : n.toFixed(decimales)) + sufijo;
     interpolar(el, 'texto', { n: previo }, { n: valor }, ms, v => { el.__mostrado = v.n; el.textContent = fmt(v.n); });
   }
+  // Para lo que no es un atributo (una curva que se redibuja, una figura calculada): anima los números de un
+  // objeto de estado y llama a dibujar(estado) en cada cuadro.
+  //   const est = { a: 1, h: 2 };  forja.transitar(est, { h: 0.5 }, 450, e => dibujarSecante(e.a, e.h));
+  function transitar(estado, hasta, ms, dibujar) {
+    const desde = {};
+    for (const c in hasta) desde[c] = Number.isFinite(estado[c]) ? estado[c] : hasta[c];
+    interpolar(estado, 'estado', desde, hasta, ms, v => { Object.assign(estado, v); dibujar(estado); });
+  }
   function escalonar(lista, fn, pasoMs = 45) {
     const els = [...lista];
     if (reducir || !pasoMs) { els.forEach(fn); return; }
@@ -485,6 +494,7 @@ code, pre, kbd, samp { font-variant-ligatures: none; }
     // forja.deslizar(el, {atributo: valor}, ms) y forja.contar(el, número, {decimales, sufijo})
     deslizar,
     contar,
+    transitar,
     escalonar,
     reducir,
   };
